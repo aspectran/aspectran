@@ -163,7 +163,7 @@ public class AponParser {
         } else {
             value = parseValue(parameters, name, false);
         }
-        
+
         parameters.putValue(name, value);
 
         Parameter parameter = parameters.getParameter(name);
@@ -179,7 +179,7 @@ public class AponParser {
         }
     }
 
-    private String readQuotedString(char quoteChar) throws IOException {
+    private @NonNull String readQuotedString(char quoteChar) throws IOException {
         StringBuilder sb = new StringBuilder();
         while (true) {
             char c = readRawChar();
@@ -360,6 +360,7 @@ public class AponParser {
         }
     }
 
+    @Nullable
     private String readToken(boolean inArray) throws IOException {
         skipWhitespace();
         char firstChar = peekChar();
@@ -375,7 +376,7 @@ public class AponParser {
                         c == ARRAY_OPEN || c == ARRAY_CLOSE) {
                     break;
                 }
-                
+
                 if (c == COMMA_CHAR) {
                     if (inArray || hasColonAheadOnLine()) {
                         break;
@@ -496,7 +497,7 @@ public class AponParser {
             originalLine = line;
             currentLine = line;
             linePos = 0;
-            
+
             skipWhitespaceOnlyOnLine();
             if (linePos < currentLine.length()) {
                 char c = currentLine.charAt(linePos);
@@ -544,6 +545,7 @@ public class AponParser {
         return currentLine.charAt(linePos++);
     }
 
+    @Nullable
     private String nextLine() throws IOException {
         while ((originalLine = reader.readLine()) != null) {
             lineNumber++;
@@ -590,10 +592,12 @@ public class AponParser {
         }
     }
 
+    @NonNull
     private AponParseException syntaxError(String message) {
         return new MalformedAponException(lineNumber, originalLine, currentLine, message);
     }
 
+    @NonNull
     private AponParseException syntaxError(String message, Throwable cause) {
         MalformedAponException e = new MalformedAponException(lineNumber, originalLine, currentLine, message);
         e.initCause(cause);

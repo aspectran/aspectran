@@ -19,8 +19,6 @@ import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AponNoBracketsTest {
 
     @Test
-    void testNoBracketsForStringArray() throws IOException {
+    void testNoBracketsForStringArray() {
         IncludeExcludeParameters params = new IncludeExcludeParameters();
         params.addIncludePattern("/**");
         params.addExcludePattern("/assets/**");
@@ -49,16 +47,16 @@ class AponNoBracketsTest {
     }
 
     @Test
-    void testNoBracketsInNestedStructure() throws IOException {
+    void testNoBracketsInNestedStructure() {
         // Simulating WebConfig structure
         Parameters webConfig = new VariableParameters();
-        
+
         // Simulating AcceptableConfig (which inherits IncludeExcludeParameters)
         IncludeExcludeParameters acceptable = new IncludeExcludeParameters();
         acceptable.addIncludePattern("/**");
         acceptable.addExcludePattern("/assets/**");
         acceptable.addExcludePattern("/favicon.ico");
-        
+
         webConfig.putValue("acceptable", acceptable);
 
         String result = webConfig.toString();
@@ -84,13 +82,13 @@ class AponNoBracketsTest {
                   id: 2
                 }
                 """;
-        
+
         // Parsing without schema (using VariableParameters)
         Parameters root = AponReader.read(apon);
-        
+
         // Writing back should preserve repeated keys instead of creating [ ]
         String result = root.toString();
-        
+
         assertEquals(apon.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
     }
 
