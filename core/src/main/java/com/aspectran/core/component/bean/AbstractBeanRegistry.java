@@ -417,7 +417,12 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     private void instantiateSingleton(@NonNull BeanRule beanRule) {
         if (beanRule.isSingleton() && !beanRule.isLazyInit()
                 && !singletonScope.containsBeanRule(beanRule)) {
-            getSingletonScopeBean(beanRule);
+            try {
+                getSingletonScopeBean(beanRule);
+            } catch (Exception e) {
+                logger.error("Failed to instantiate singleton bean {}", beanRule, e);
+                throw e;
+            }
         }
     }
 

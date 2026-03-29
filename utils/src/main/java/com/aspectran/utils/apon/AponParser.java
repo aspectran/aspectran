@@ -125,8 +125,11 @@ public class AponParser {
     private void parseItem(Parameters parameters) throws IOException {
         skipWhitespaceAndCommas();
         char peek = peekChar();
-        if (peek == NO_CONTROL_CHAR || peek == BLOCK_CLOSE || peek == ARRAY_CLOSE) {
+        if (peek == NO_CONTROL_CHAR) {
             return;
+        }
+        if (peek == BLOCK_CLOSE || peek == ARRAY_CLOSE) {
+            throw syntaxError("Unexpected character '" + peek + "'");
         }
 
         int startLinePos = linePos;
@@ -611,12 +614,12 @@ public class AponParser {
 
     @NonNull
     private AponParseException syntaxError(String message) {
-        return new MalformedAponException(lineNumber, originalLine, currentLine, message);
+        return new MalformedAponException(lineNumber, linePos, currentLine, message);
     }
 
     @NonNull
     private AponParseException syntaxError(String message, Throwable cause) {
-        MalformedAponException e = new MalformedAponException(lineNumber, originalLine, currentLine, message);
+        MalformedAponException e = new MalformedAponException(lineNumber, linePos, currentLine, message);
         e.initCause(cause);
         return e;
     }

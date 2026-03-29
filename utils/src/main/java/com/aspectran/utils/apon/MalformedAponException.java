@@ -44,26 +44,12 @@ public class MalformedAponException extends AponParseException {
     /**
      * Constructor to create exception with a message.
      * @param lineNumber the line number
+     * @param columnNumber the column number
      * @param line the character line
-     * @param trimmedLine the trimmed character line
      * @param msg a message to associate with the exception
      */
-    public MalformedAponException(int lineNumber, String line, String trimmedLine, String msg) {
-        super(makeMessage(lineNumber, line, trimmedLine, msg));
-    }
-
-    /**
-     * Constructor to create exception with a message.
-     * @param lineNumber the line number
-     * @param line the character line
-     * @param trimmedLine the trimmed character line
-     * @param parameterValue the actual value type
-     * @param expectedValueType the expected value type
-     */
-    public MalformedAponException(
-            int lineNumber, String line, String trimmedLine, ParameterValue parameterValue,
-            ValueType expectedValueType) {
-        super(makeMessage(lineNumber, line, trimmedLine, parameterValue, expectedValueType));
+    public MalformedAponException(int lineNumber, int columnNumber, String line, String msg) {
+        super(makeMessage(lineNumber, columnNumber, line, msg));
     }
 
     /**
@@ -78,51 +64,59 @@ public class MalformedAponException extends AponParseException {
     /**
      * Create a detail message.
      * @param lineNumber the line number
+     * @param columnNumber the column number
      * @param line the character line
-     * @param trimmedLine the trimmed character line
      * @param msg the message
      * @return the detail message
      */
     @NonNull
-    private static String makeMessage(int lineNumber, String line, String trimmedLine, String msg) {
-        if (line == null) {
-            return msg + " [lineNumber: " + lineNumber + "]";
-        }
-        int columnNumber = (trimmedLine != null ? line.indexOf(trimmedLine) : 0);
+    private static String makeMessage(int lineNumber, int columnNumber, String line, String msg) {
         StringBuilder sb = new StringBuilder();
         if (msg != null) {
             sb.append(msg);
         }
         sb.append(" [lineNumber: ").append(lineNumber);
-        if (columnNumber != -1) {
-            String lspace = line.substring(0, columnNumber);
-            int tabCnt = StringUtils.search(lspace, "\t");
-            if (trimmedLine != null && trimmedLine.length() > 33) {
-                trimmedLine = trimmedLine.substring(0, 30) + "...";
+        sb.append(", columnNumber: ").append(columnNumber > 0 ? columnNumber : 1);
+        sb.append("]");
+        if (line != null) {
+            String context = getContext(line, columnNumber);
+            if (StringUtils.hasLength(context)) {
+                sb.append(" ").append(context);
             }
-            sb.append(", columnNumber: ").append(columnNumber + 1);
-            if (tabCnt != 0) {
-                sb.append(" (");
-                sb.append("Tabs ").append(tabCnt);
-                sb.append(", Spaces ").append(columnNumber - tabCnt);
-                sb.append(")");
-            }
-            sb.append("] ").append(trimmedLine);
         }
         return sb.toString();
     }
 
     @NonNull
-    private static String makeMessage(
-            int lineNumber, String line, String trimmedLine, ParameterValue parameterValue,
-            ValueType expectedValueType) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Incompatible value type with expected value type '");
-        sb.append(expectedValueType).append("'");
-        if (parameterValue != null) {
-            sb.append(" for the specified parameter ").append(parameterValue);
+    private static String getContext(String line, int columnNumber) {
+        if (line == null || line.isEmpty()) {
+            return StringUtils.EMPTY;
         }
-        return makeMessage(lineNumber, line, trimmedLine, sb.toString());
+        // Find the first non-whitespace character to adjust display
+        int firstNonWhsp = 0;
+        while (firstNonWhsp < line.length() && Character.isWhitespace(line.charAt(firstNonWhsp))) {
+            firstNonWhsp++;
+        }
+
+        String trimmed = line.trim();
+        if (trimmed.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
+
+        // If the line is too long, crop it around the columnNumber
+        if (trimmed.length() > 103) {
+            int start = Math.max(0, (columnNumber > 0 ? columnNumber - 1 : 0) - firstNonWhsp - 40);
+            int end = Math.min(trimmed.length(), start + 100);
+            if (start > 0) {
+                trimmed = "..." + trimmed.substring(start, end);
+            } else {
+                trimmed = trimmed.substring(0, end);
+            }
+            if (end < line.trim().length()) {
+                trimmed += "...";
+            }
+        }
+        return trimmed;
     }
 
 }
