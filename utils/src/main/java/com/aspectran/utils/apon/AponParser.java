@@ -614,12 +614,12 @@ public class AponParser {
 
     @NonNull
     private AponParseException syntaxError(String message) {
-        return new MalformedAponException(lineNumber, linePos, currentLine, message);
+        return new MalformedAponException(lineNumber, linePos + 1, currentLine, message);
     }
 
     @NonNull
     private AponParseException syntaxError(String message, Throwable cause) {
-        MalformedAponException e = new MalformedAponException(lineNumber, linePos, currentLine, message);
+        MalformedAponException e = new MalformedAponException(lineNumber, linePos + 1, currentLine, message);
         e.initCause(cause);
         return e;
     }
