@@ -49,8 +49,10 @@ class AspectranConfigTest {
 
         String expected = readAllCharactersOneByOne(new FileReader(outputFile));
         String actual = AponReader.read(outputFile).toString();
-
         assertEquals(expected, actual);
+
+        Parameters p = AponReader.read(expected, AspectranConfig.class);
+        assertEquals(expected, p.toString(false));
     }
 
     static String readAllCharactersOneByOne(@NonNull Reader reader) throws IOException {

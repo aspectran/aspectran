@@ -75,25 +75,8 @@ class AponNoBracketsTest {
     }
 
     @Test
-    void testNoBracketsForNestedParameters() throws IOException {
-        Parameters root = new VariableParameters();
-        
-        // Let's construct the parameters and set bracketed manually
-        Parameters p1 = new VariableParameters();
-        p1.putValue("id", 1);
-        Parameters p2 = new VariableParameters();
-        p2.putValue("id", 2);
-        
-        List<Parameters> list = new ArrayList<>();
-        list.add(p1);
-        list.add(p2);
-        
-        root.putValue("item", list);
-        root.getParameter("item").setBracketed(false); // Force no brackets
-
-        String result = root.toString();
-
-        String expected = """
+    void testRoundTripWithRepeatedKeys() throws IOException {
+        String apon = """
                 item: {
                   id: 1
                 }
@@ -101,8 +84,14 @@ class AponNoBracketsTest {
                   id: 2
                 }
                 """;
-
-        assertEquals(expected.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
+        
+        // Parsing without schema (using VariableParameters)
+        Parameters root = AponReader.read(apon);
+        
+        // Writing back should preserve repeated keys instead of creating [ ]
+        String result = root.toString();
+        
+        assertEquals(apon.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
     }
 
 }

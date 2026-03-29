@@ -153,18 +153,28 @@ public class AponParser {
             }
         }
 
+        // Before putting the value, check if this key is already assigned.
+        // If it is, this is a repeated key (no brackets).
+        boolean repeatedKey = parameters.isAssigned(name);
+
         Object value;
         if (valueType != null) {
             value = parseHintedValue(parameters, name, valueType);
         } else {
             value = parseValue(parameters, name, false);
         }
+        
         parameters.putValue(name, value);
 
-        if (valueTypeHinted) {
-            Parameter parameter = parameters.getParameter(name);
-            if (parameter != null) {
+        Parameter parameter = parameters.getParameter(name);
+        if (parameter != null) {
+            if (valueTypeHinted) {
                 parameter.setValueTypeHinted(true);
+            }
+            // If the key was already assigned, it means this was a repeated key.
+            // We force bracketed = false only if the parameter is NOT fixed.
+            if (repeatedKey && parameter.isArray() && !parameter.isValueTypeFixed()) {
+                parameter.setBracketed(false);
             }
         }
     }
@@ -386,7 +396,7 @@ public class AponParser {
 
                 if (c == ESCAPE_CHAR) {
                     readChar();
-                    char next = readChar();
+                    char next = readRawChar();
                     if (next == NO_CONTROL_CHAR) break;
                     if (next == COMMA_CHAR || next == ESCAPE_CHAR) {
                         sb.append(next);
