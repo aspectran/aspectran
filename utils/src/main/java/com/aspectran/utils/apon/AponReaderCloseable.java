@@ -19,22 +19,23 @@ import java.io.Closeable;
 import java.io.Reader;
 
 /**
- * A {@link AponReader} variant that implements {@link Closeable} for use with
+ * An {@link AponReader} variant that implements {@link Closeable} for use with
  * try-with-resources blocks.
- * <p>
- * Example:
+ * <p>This class allows for automatic resource management of the underlying
+ * character stream while parsing APON formatted data.</p>
+ *
+ * <p>Example usage:</p>
  * <pre>{@code
- * try (AponReaderCloseable reader = new AponReaderCloseable(myReader)) {
- *     Parameters ps = reader.read();
+ * try (AponReaderCloseable reader = new AponReaderCloseable(new FileReader("config.apon"))) {
+ *     Parameters params = reader.read();
  * }
  * }</pre>
- * </p>
  */
 public class AponReaderCloseable extends AponReader implements Closeable {
 
     /**
-     * Instantiates a new AponReader.
-     * @param reader the character stream capable of parsing content into APON
+     * Instantiates a new AponReaderCloseable with the specified character stream.
+     * @param reader the character stream to read APON data from
      */
     public AponReaderCloseable(Reader reader) {
         super(reader);

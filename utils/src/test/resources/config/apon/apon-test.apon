@@ -107,7 +107,7 @@ aspectran: {
             type: transform/text
             contentType: text/plain
             template: {
-                content: (1) Hello, World!
+                content: "(1) Hello, World!"
             }
         }
     }
@@ -127,7 +127,7 @@ aspectran: {
             type: transform/text
             contentType: text/plain
             template: {
-                content: (2) Hello, World!
+                content: "(2) Hello, World!"
             }
         }
     }

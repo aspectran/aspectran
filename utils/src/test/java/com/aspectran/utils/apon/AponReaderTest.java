@@ -173,8 +173,8 @@ class AponReaderTest {
         String input = """
             emptyBlock: {}
             arrayWithEmpty: [
-                []
-                []
+                {}
+                {}
             ]
             """;
         Parameters params = AponReader.read(input);
@@ -237,20 +237,20 @@ class AponReaderTest {
             """;
         Parameters params = AponReader.read(apon);
 
-        assertFalse(params.isCompactStyle());
+        assertFalse(params.isBraceless());
         assertEquals("John Doe", params.getString("name"));
         assertEquals(30, params.getInt("age"));
     }
 
     @Test
-    void testParseNonBracedRootAndCompactStyle() throws AponParseException {
+    void testParseNonBracedRootAndBraceless() throws AponParseException {
         String apon = """
             name: John Doe
             age: 30
             """;
         Parameters params = AponReader.read(apon);
 
-        assertTrue(params.isCompactStyle());
+        assertTrue(params.isBraceless());
         assertEquals("John Doe", params.getString("name"));
         assertEquals(30, params.getInt("age"));
     }

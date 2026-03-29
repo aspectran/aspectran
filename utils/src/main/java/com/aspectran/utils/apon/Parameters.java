@@ -38,19 +38,32 @@ import java.util.List;
 public interface Parameters {
 
     /**
-     * Returns whether to use compact style when rendering APON.
-     * @return true if compact style is enabled, false otherwise
+     * Returns whether to omit root braces when rendering APON.
+     * @return true if root braces should be omitted, false otherwise
      */
-    boolean isCompactStyle();
+    boolean isBraceless();
 
     /**
-     * Sets whether to use compact style when rendering APON.
-     * @param compactStyle true to enable compact style, false to disable
+     * Sets whether to omit root braces when rendering APON.
+     * @param braceless true to omit root braces, false otherwise
      */
-    void setCompactStyle(boolean compactStyle);
+    void setBraceless(boolean braceless);
 
     /**
-     * Returns whether the parameter structure is fixed. A fixed structure means
+     * Returns the rendering style for APON.
+     * @return the rendering style
+     */
+    AponRenderStyle getRenderStyle();
+
+    /**
+     * Sets the rendering style for APON.
+     * @param renderStyle the rendering style
+     */
+    void setRenderStyle(AponRenderStyle renderStyle);
+
+    /**
+     * Returns whether the parameter structure is fixed.
+ A fixed structure means
      * that new parameters cannot be added at runtime.
      * @return {@code true} if the structure is fixed, otherwise {@code false}
      */

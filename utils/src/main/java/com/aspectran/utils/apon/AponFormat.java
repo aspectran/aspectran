@@ -16,111 +16,130 @@
 package com.aspectran.utils.apon;
 
 /**
- * Common constants and symbols used by the APON (Aspectran Parameters Object Notation)
- * reader/writer implementations.
- * <p>
- * APON is a human-friendly data notation inspired by JSON but optimized for
- * configuration and structured data exchange in Aspectran. It uses newlines as
- * separators instead of commas and supports an additional text value type for
- * multi-line strings. See the project guide for details.
- * </p>
+ * Defines the format for APON (Aspectran Parameters Object Notation).
+ * <p>APON is a data serialization format designed for both readability and efficiency.</p>
  */
 public abstract class AponFormat {
 
-    /** Opening curly bracket used to start a parameters block: '{'. */
-    protected static final char BLOCK_OPEN = '{';
+    /** The character used to open a parameter block. */
+    public static final char BLOCK_OPEN = '{';
 
-    /** Closing curly bracket used to end a parameters block: '}'. */
-    protected static final char BLOCK_CLOSE = '}';
+    /** The character used to close a parameter block. */
+    public static final char BLOCK_CLOSE = '}';
 
-    /** String representation of an empty parameters block: "{}". */
-    protected static final String EMPTY_BLOCK = "{}";
+    /** The character used to open an array. */
+    public static final char ARRAY_OPEN = '[';
 
-    /** Opening square bracket used to start an array value: '['. */
-    protected static final char ARRAY_OPEN = '[';
+    /** The character used to close an array. */
+    public static final char ARRAY_CLOSE = ']';
 
-    /** Closing square bracket used to end an array value: ']'. */
-    protected static final char ARRAY_CLOSE = ']';
+    /** The character used to start a multi-line text block or wrap value type hints. */
+    public static final char TEXT_OPEN = '(';
 
-    /** String representation of an empty array: "[]". */
-    protected static final String EMPTY_ARRAY = "[]";
+    /** The character used to end a multi-line text block or wrap value type hints. */
+    public static final char TEXT_CLOSE = ')';
 
-    /** Opening round bracket used to start a multi-line text value: '('. */
-    protected static final char TEXT_OPEN = '(';
+    /** The character used to separate a parameter name and its value. */
+    public static final char NAME_VALUE_SEPARATOR = ':';
 
-    /** Closing round bracket used to end a multi-line text value: ')'. */
-    protected static final char TEXT_CLOSE = ')';
+    /** The character used to separate multiple entries in a single line. */
+    public static final char COMMA_CHAR = ',';
 
-    /** Prefix character for each line within a multi-line text value. */
+    /** The character used to start a comment line. */
+    public static final char COMMENT_LINE_START = '#';
+
+    /** The character used at the beginning of each line in a multi-line text block. */
     public static final char TEXT_LINE_START = '|';
 
-    /** Separator between name and value in a parameter: ':'. */
-    protected static final char NAME_VALUE_SEPARATOR = ':';
+    /** The double quote character used for wrapping string values. */
+    public static final char DOUBLE_QUOTE_CHAR = '"';
 
-    /** Start-of-line character that denotes a comment line. */
-    protected static final char COMMENT_LINE_START = '#';
+    /** The single quote character used for wrapping string values. */
+    public static final char SINGLE_QUOTE_CHAR = '\'';
 
-    /** Special marker meaning 'no control char' in parser state. */
-    protected static final char NO_CONTROL_CHAR = 0;
+    /** The escape character used within quoted strings. */
+    public static final char ESCAPE_CHAR = '\\';
 
-    /** Double quote character used for quoting string values. */
-    protected static final char DOUBLE_QUOTE_CHAR = '"';
+    /** The space character. */
+    public static final char SPACE_CHAR = ' ';
 
-    /** Single quote character optionally used for quoting string values. */
-    protected static final char SINGLE_QUOTE_CHAR = '\'';
-
-    /** Escape character used to escape quotes and special characters. */
-    protected static final char ESCAPE_CHAR = '\\';
-
-    /** Newline character used by APON as a delimiter between entries. */
+    /** The newline character. */
     public static final char NEW_LINE_CHAR = '\n';
 
-    /** Newline string constant (LF). */
+    /** A null character representation. */
+    public static final char NO_CONTROL_CHAR = '\0';
+
+    /** Literal string for a null value. */
+    public static final String NULL = "null";
+
+    /** Literal string for a true boolean value. */
+    public static final String TRUE = "true";
+
+    /** Literal string for a false boolean value. */
+    public static final String FALSE = "false";
+
+    /** Representation of an empty block. */
+    public static final String EMPTY_BLOCK = "{}";
+
+    /** Representation of an empty array. */
+    public static final String EMPTY_ARRAY = "[]";
+
+    /** Default indentation string (two spaces). */
+    public static final String DEFAULT_INDENT_STRING = "  ";
+
+    /** String representation of a single space. */
+    public static final String SPACE = " ";
+
+    /** String representation of a newline. */
     public static final String NEW_LINE = "\n";
 
-    /** System-dependent newline sequence. */
+    /** The system-dependent newline separator. */
     public static final String SYSTEM_NEW_LINE = System.lineSeparator();
 
-    /** Default indentation string used when pretty-printing. */
-    protected static final String DEFAULT_INDENT_STRING = "  ";
-
-    /** A single space string convenience. */
-    protected static final String SPACE = " ";
-
-    /** A single space character convenience. */
-    protected static final char SPACE_CHAR = ' ';
-
-    /** Literal token for null textual representation. */
-    protected static final String NULL = "null";
-
-    /** Literal token for boolean true textual representation. */
-    protected static final String TRUE = "true";
-
-    /** Literal token for boolean false textual representation. */
-    protected static final String FALSE = "false";
-
     /**
-     * Determines if the given string needs to be enclosed in quotes when written to APON.
-     * A string requires quoting if it contains special characters (double quotes, single quotes, newlines)
-     * or if it starts or ends with a space, as these conditions could lead to parsing ambiguity
-     * or loss of literal value in unquoted APON strings.
+     * Determines whether the given string needs to be wrapped in quotes.
+     * <p>A string needs quoting if it:</p>
+     * <ul>
+     *   <li>Starts with whitespace or structural characters like '{', '[', '(', '#', etc.</li>
+     *   <li>Contains quotes, commas, colons, or control characters.</li>
+     *   <li>Ends with whitespace.</li>
+     * </ul>
      * @param str the string to check
-     * @return {@code true} if the string needs quoting; {@code false} otherwise
+     * @return true if the string needs quoting, false otherwise
      */
-    static boolean needsQuoting(String str) {
-        return (str != null && (str.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
-                str.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
-                str.startsWith(SPACE) ||
-                str.endsWith(SPACE) ||
-                str.contains(NEW_LINE)));
+    public static boolean needsQuoting(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        char firstChar = str.charAt(0);
+        if (Character.isWhitespace(firstChar) ||
+                firstChar == BLOCK_OPEN ||
+                firstChar == BLOCK_CLOSE ||
+                firstChar == ARRAY_OPEN ||
+                firstChar == ARRAY_CLOSE ||
+                firstChar == TEXT_OPEN ||
+                firstChar == TEXT_CLOSE ||
+                firstChar == COMMENT_LINE_START) {
+            return true;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == DOUBLE_QUOTE_CHAR ||
+                    c == SINGLE_QUOTE_CHAR ||
+                    c == COMMA_CHAR ||
+                    c == NAME_VALUE_SEPARATOR ||
+                    c == NEW_LINE_CHAR ||
+                    c == '\r') {
+                return true;
+            }
+        }
+        return Character.isWhitespace(str.charAt(str.length() - 1));
     }
 
     /**
-     * Checks if the given string is enclosed in either double quotes ({@code "}) or single quotes ({@code '}).
-     * This method considers a string "quoted" if it starts and ends with the same type of quote character
-     * and has a length greater than 1.
+     * Checks if the given string was already wrapped in double or single quotes.
      * @param str the string to check
-     * @return {@code true} if the string is quoted; {@code false} otherwise
+     * @return true if the string is quoted, false otherwise
      */
     static boolean wasQuoted(String str) {
         return (str != null && str.length() > 1 &&
@@ -129,113 +148,67 @@ public abstract class AponFormat {
     }
 
     /**
-     * Escapes characters in a {@code String} to be APON-compliant.
-     * @param str the string to escape, may be null
-     * @return the escaped string, or null if the input was null
+     * Escapes special characters within a string for APON serialization.
+     * @param str the string to escape
+     * @return the escaped string
      */
-    static String escape(String str) {
-        if (str == null) {
-            return null;
-        }
-
-        int len = str.length();
-        if (len == 0) {
+    public static String escape(String str) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
-
-        StringBuilder sb = new StringBuilder(Math.min(len * 2, len + 16));
-        char c;
-        String t;
-        for (int pos = 0; pos < len; pos++) {
-            c = str.charAt(pos);
-            switch (c) {
-                case ESCAPE_CHAR:
-                case DOUBLE_QUOTE_CHAR:
-                    sb.append('\\');
-                    sb.append(c);
-                    break;
-                case '\b':
-                    sb.append("\\b");
-                    break;
-                case '\t':
-                    sb.append("\\t");
-                    break;
-                case '\n':
-                    sb.append("\\n");
-                    break;
-                case '\f':
-                    sb.append("\\f");
-                    break;
-                case '\r':
-                    sb.append("\\r");
-                    break;
-                default:
-                    if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
-                        t = "000" + Integer.toHexString(c);
-                        sb.append("\\u").append(t.substring(t.length() - 4));
-                    } else {
-                        sb.append(c);
-                    }
-            }
+        StringBuilder sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == DOUBLE_QUOTE_CHAR) sb.append("\\\"");
+            else if (c == ESCAPE_CHAR) sb.append("\\\\");
+            else if (c == '\b') sb.append("\\b");
+            else if (c == '\t') sb.append("\\t");
+            else if (c == '\n') sb.append("\\n");
+            else if (c == '\f') sb.append("\\f");
+            else if (c == '\r') sb.append("\\r");
+            else sb.append(c);
         }
         return sb.toString();
     }
 
     /**
-     * Unescapes a string that contains APON-style escape sequences.
-     * @param str the string to unescape, may be null
-     * @return a new unescaped string, or the input if null or no escaping is needed
-     * @throws IllegalArgumentException if the string contains an invalid escape sequence
+     * Unescapes escaped characters within an APON string.
+     * @param str the string to unescape
+     * @return the unescaped string
      */
-    public static String unescape(String str) throws IllegalArgumentException {
-        if (str == null || str.indexOf(ESCAPE_CHAR) == -1) {
+    public static String unescape(String str) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
-
-        int len = str.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int pos = 0; pos < len;) {
-            char c = str.charAt(pos++);
-            if (c == ESCAPE_CHAR) {
-                if (pos >= len) {
-                    throw new IllegalArgumentException("Unterminated escape sequence");
-                }
-                c = str.charAt(pos++);
-                switch (c) {
-                    case ESCAPE_CHAR:
-                    case DOUBLE_QUOTE_CHAR:
-                    case SINGLE_QUOTE_CHAR:
-                        sb.append(c);
-                        break;
-                    case 'b':
-                        sb.append('\b');
-                        break;
-                    case 't':
-                        sb.append('\t');
-                        break;
-                    case 'n':
-                        sb.append('\n');
-                        break;
-                    case 'f':
-                        sb.append('\f');
-                        break;
-                    case 'r':
-                        sb.append('\r');
-                        break;
+        StringBuilder sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == ESCAPE_CHAR && i + 1 < str.length()) {
+                char next = str.charAt(++i);
+                switch (next) {
+                    case DOUBLE_QUOTE_CHAR: sb.append(DOUBLE_QUOTE_CHAR); break;
+                    case SINGLE_QUOTE_CHAR: sb.append(SINGLE_QUOTE_CHAR); break;
+                    case ESCAPE_CHAR: sb.append(ESCAPE_CHAR); break;
+                    case 'b': sb.append('\b'); break;
+                    case 't': sb.append('\t'); break;
+                    case 'n': sb.append('\n'); break;
+                    case 'f': sb.append('\f'); break;
+                    case 'r': sb.append('\r'); break;
                     case 'u':
-                        if (pos + 4 > len) {
-                            throw new IllegalArgumentException("Unterminated escape sequence");
+                        if (i + 4 < str.length()) {
+                            String hex = str.substring(i + 1, i + 5);
+                            try {
+                                sb.append((char)Integer.parseInt(hex, 16));
+                                i += 4;
+                            } catch (NumberFormatException e) {
+                                sb.append(ESCAPE_CHAR).append(next);
+                            }
+                        } else {
+                            sb.append(ESCAPE_CHAR).append(next);
                         }
-                        String hex = str.substring(pos, pos + 4);
-                        try {
-                            sb.append((char)Integer.parseInt(hex, 16));
-                        } catch (NumberFormatException e) {
-                            throw new IllegalArgumentException("Invalid unicode escape sequence: \\u" + hex, e);
-                        }
-                        pos += 4;
                         break;
                     default:
-                        throw new IllegalArgumentException("Invalid escape sequence: " + c);
+                        sb.append(ESCAPE_CHAR).append(next);
                 }
             } else {
                 sb.append(c);

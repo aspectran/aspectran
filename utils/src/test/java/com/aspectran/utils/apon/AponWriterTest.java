@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -193,17 +194,45 @@ class AponWriterTest {
         // Test with prettyPrint = false
         AponWriter compactWriter = new AponWriter().prettyPrint(false);
         String compactApon = compactWriter.write(params).toString();
-        String expectedCompact = "emptyBlock:{}\nemptyArray:[]\n";
-        assertEquals(expectedCompact.replace("\n", AponFormat.SYSTEM_NEW_LINE), compactApon);
+        String expectedCompact = "emptyBlock:{},emptyArray:[]";
+        assertEquals(expectedCompact, compactApon);
 
         // Test with prettyPrint = true (default)
-        params.setCompactStyle(false);
+        params.setBraceless(false);
         AponWriter noCompactWriter = new AponWriter();
         String noCompactApon = noCompactWriter.write(params).toString();
         assertFalse(noCompactApon.contains("emptyBlock:{}"));
         assertFalse(noCompactApon.contains("emptyArray:[]"));
-        assertTrue(noCompactApon.contains("emptyBlock: {\n  }".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
-        assertTrue(noCompactApon.contains("emptyArray: [\n  ]".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
+        assertTrue(noCompactApon.contains("emptyBlock: {}"));
+        assertTrue(noCompactApon.contains("emptyArray: []"));
+    }
+
+    @Test
+    void testCompactObject() throws IOException {
+        Parameters params = new VariableParameters();
+        params.putValue("name", "John");
+        params.putValue("age", 30);
+        params.setRenderStyle(AponRenderStyle.COMPACT);
+
+        AponWriter writer = new AponWriter();
+        String apon = writer.write(params).toString();
+        assertEquals("name:John,age:30", apon);
+    }
+
+    @Test
+    void testStringifyContext() throws IOException {
+        Parameters params = new VariableParameters();
+        LocalDateTime ldt = LocalDateTime.of(2026, 3, 29, 16, 30);
+        params.putValue("dateTime", ldt);
+
+        com.aspectran.utils.StringifyContext context = new com.aspectran.utils.StringifyContext();
+        context.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+        context.setPrettyPrint(false);
+
+        AponWriter writer = new AponWriter().apply(context);
+        String apon = writer.write(params).toString();
+
+        assertEquals("dateTime:\"2026-03-29 16:30:00\"", apon);
     }
 
 }

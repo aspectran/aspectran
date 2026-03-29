@@ -32,12 +32,15 @@ import static com.aspectran.utils.apon.AponFormat.ARRAY_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.ARRAY_OPEN;
 import static com.aspectran.utils.apon.AponFormat.BLOCK_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.BLOCK_OPEN;
+import static com.aspectran.utils.apon.AponFormat.COMMA_CHAR;
 import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
 import static com.aspectran.utils.apon.AponFormat.FALSE;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
+import static com.aspectran.utils.apon.AponFormat.NEW_LINE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.NO_CONTROL_CHAR;
 import static com.aspectran.utils.apon.AponFormat.NULL;
 import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
@@ -47,15 +50,7 @@ import static com.aspectran.utils.apon.AponFormat.TEXT_OPEN;
 import static com.aspectran.utils.apon.AponFormat.TRUE;
 
 /**
- * A modern, structure-based parser for APON (Aspectran Parameters Object Notation).
- *
- * <p>This class provides a more efficient and intuitive alternative to AponReader,
- * especially for handling multi-dimensional arrays. It parses APON text by
- * identifying structural tokens ({}, [], etc.) and recursively building the
- * corresponding object graph. Nested arrays are parsed directly into nested
- * {@code List} objects.</p>
- *
- * @since 9.4.0
+ * A character-level parser for APON (Aspectran Parameters Object Notation).
  */
 public class AponParser {
 
@@ -63,22 +58,18 @@ public class AponParser {
 
     private int lineNumber = 0;
 
+    private int linePos = 0;
+
     private String originalLine;
 
     private String currentLine;
 
-    /**
-     * Creates a new AponParser for the given APON-formatted string.
-     * @param apon the APON formatted string
-     */
+    private static final char ESCAPE_CHAR = AponFormat.ESCAPE_CHAR;
+
     public AponParser(String apon) {
         this(new StringReader(apon));
     }
 
-    /**
-     * Creates a new AponParser for the given {@link Reader}.
-     * @param reader the character stream to read from
-     */
     public AponParser(Reader reader) {
         Assert.notNull(reader, "reader must not be null");
         if (reader instanceof BufferedReader bufferedReader) {
@@ -88,57 +79,69 @@ public class AponParser {
         }
     }
 
-    /**
-     * Parses an APON document and populates the given {@link Parameters} object.
-     * @param <T> the type of the parameters object
-     * @param parameters the {@code Parameters} object to populate
-     * @return the populated {@code Parameters} object
-     * @throws AponParseException if an error occurs during parsing
-     */
     public <T extends Parameters> T parse(T parameters) throws AponParseException {
         Assert.notNull(parameters, "parameters must not be null");
         try {
-            if (nextLine() == null) {
-                // Empty input
+            skipWhitespaceAndCommas();
+            char firstChar = peekChar();
+            if (firstChar == NO_CONTROL_CHAR) {
                 return parameters;
             }
 
-            if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_OPEN) {
-                // Braced style (improved way)
-                parameters.setCompactStyle(false); // false means braced
+            if (firstChar == BLOCK_OPEN) {
+                readChar();
+                parameters.setBraceless(false);
                 parseNestedObject(parameters);
-
-                if (nextLine() != null) {
+                skipWhitespaceAndCommas();
+                if (peekChar() != NO_CONTROL_CHAR) {
                     throw syntaxError("Unexpected content after closing brace '}' of root object");
                 }
+            } else if (firstChar == ARRAY_OPEN) {
+                readChar();
+                List<Object> list = parseArray(parameters, ArrayParameters.NONAME);
+                parameters.putValue(ArrayParameters.NONAME, list);
+                skipWhitespaceAndCommas();
+                if (peekChar() != NO_CONTROL_CHAR) {
+                    throw syntaxError("Unexpected content after closing bracket ']' of root array");
+                }
             } else {
-                // Non-braced style (existing way)
-                parameters.setCompactStyle(true); // true means non-braced
-                parseLine(currentLine, parameters);
-
-                while (nextLine() != null) {
-                    if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_CLOSE) {
+                parameters.setBraceless(true);
+                while (peekChar() != NO_CONTROL_CHAR) {
+                    if (peekChar() == BLOCK_CLOSE) {
                         throw syntaxError("Unexpected closing brace '}' at top level");
                     }
-                    parseLine(currentLine, parameters);
+                    parseItem(parameters);
+                    skipWhitespaceAndCommas();
                 }
             }
         } catch (AponParseException e) {
             throw e;
         } catch (IOException e) {
-            throw new AponParseException("Failed to parse APON document into " + parameters.getClass().getName(), e);
+            throw new AponParseException("Failed to parse APON document", e);
         }
         return parameters;
     }
 
-    private void parseLine(@NonNull String line, Parameters parameters) throws IOException {
-        int separatorIndex = line.indexOf(NAME_VALUE_SEPARATOR);
-        if (separatorIndex == -1) {
-            throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
+    private void parseItem(Parameters parameters) throws IOException {
+        skipWhitespaceAndCommas();
+        char peek = peekChar();
+        if (peek == NO_CONTROL_CHAR || peek == BLOCK_CLOSE || peek == ARRAY_CLOSE) {
+            return;
         }
 
-        String name = line.substring(0, separatorIndex).trim();
-        String valueStr = line.substring(separatorIndex + 1).trim();
+        int startLinePos = linePos;
+        String name = readName();
+        if (StringUtils.isEmpty(name)) {
+            throw syntaxError("Parameter name is missing");
+        }
+
+        skipWhitespace();
+        if (peekChar() != NAME_VALUE_SEPARATOR) {
+            linePos = startLinePos;
+            throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
+        }
+        readChar(); // consume ':'
+        skipWhitespace();
 
         ValueType valueType = ValueType.resolveByHint(name);
         boolean valueTypeHinted = false;
@@ -152,9 +155,9 @@ public class AponParser {
 
         Object value;
         if (valueType != null) {
-            value = parseHintedValue(valueStr, valueType);
+            value = parseHintedValue(parameters, name, valueType);
         } else {
-            value = parseValue(valueStr);
+            value = parseValue(parameters, name, false);
         }
         parameters.putValue(name, value);
 
@@ -166,280 +169,437 @@ public class AponParser {
         }
     }
 
-    /**
-     * Parses a nested parameter block (content within braces).
-     * @param container the current parameters object to populate
-     * @throws IOException if an I/O error occurs
-     */
-    private void parseNestedObject(Parameters container) throws IOException {
-        while (nextLine() != null) {
-            if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_CLOSE) {
-                return; // End of current object
+    private String readQuotedString(char quoteChar) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        while (true) {
+            char c = readRawChar();
+            if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR) {
+                throw syntaxError("Unclosed quotation mark");
             }
-
-            int separatorIndex = currentLine.indexOf(NAME_VALUE_SEPARATOR);
-            if (separatorIndex == -1) {
-                throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
+            if (c == quoteChar) {
+                break;
             }
-
-            String name = currentLine.substring(0, separatorIndex).trim();
-            String valueStr = currentLine.substring(separatorIndex + 1).trim();
-
-            ValueType valueType = ValueType.resolveByHint(name);
-            if (valueType != null) {
-                name = ValueType.stripHint(name);
-                if (valueType == ValueType.VARIABLE || valueType == ValueType.PARAMETERS) {
-                    valueType = null;
+            if (c == ESCAPE_CHAR) {
+                char next = readRawChar();
+                if (next == NO_CONTROL_CHAR) {
+                    throw syntaxError("Unterminated escape sequence");
                 }
-            }
-
-            Object value;
-            if (valueType != null) {
-                value = parseHintedValue(valueStr, valueType);
+                if (next == 'b') sb.append('\b');
+                else if (next == 't') sb.append('\t');
+                else if (next == 'n') sb.append('\n');
+                else if (next == 'f') sb.append('\f');
+                else if (next == 'r') sb.append('\r');
+                else if (next == 'u') {
+                    StringBuilder hex = new StringBuilder();
+                    for (int i = 0; i < 4; i++) {
+                        char h = readRawChar();
+                        if (h == NO_CONTROL_CHAR) throw syntaxError("Unterminated escape sequence");
+                        hex.append(h);
+                    }
+                    try {
+                        sb.append((char)Integer.parseInt(hex.toString(), 16));
+                    } catch (NumberFormatException e) {
+                        throw syntaxError("Invalid unicode escape sequence: \\u" + hex, e);
+                    }
+                } else sb.append(next);
             } else {
-                value = parseValue(valueStr);
+                sb.append(c);
             }
-            container.putValue(name, value);
         }
-        throw syntaxError("Unclosed object block");
+        return sb.toString();
     }
 
-    /**
-     * Parses an array.
-     * @return a new List containing the parsed elements
-     * @throws IOException if an I/O error occurs
-     */
-    private List<Object> parseArray() throws IOException {
-        List<Object> list = new ArrayList<>();
-        while (nextLine() != null) {
-            if (currentLine.length() == 1 && currentLine.charAt(0) == ARRAY_CLOSE) {
-                return list; // End of current array
+    private String readName() throws IOException {
+        skipWhitespace();
+        char firstChar = peekChar();
+        if (firstChar == DOUBLE_QUOTE_CHAR || firstChar == SINGLE_QUOTE_CHAR) {
+            readChar();
+            return readQuotedString(firstChar);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                char c = peekChar();
+                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR || c == NAME_VALUE_SEPARATOR ||
+                        c == COMMA_CHAR || c == BLOCK_OPEN || c == BLOCK_CLOSE ||
+                        c == ARRAY_OPEN || c == ARRAY_CLOSE) {
+                    break;
+                }
+                if (Character.isWhitespace(c)) {
+                    int savedPos = linePos;
+                    skipWhitespace();
+                    char next = peekChar();
+                    if (next == NAME_VALUE_SEPARATOR) {
+                        break;
+                    }
+                    linePos = savedPos;
+                }
+                sb.append(readChar());
             }
-            Object value = parseValue(currentLine);
+            return sb.toString().trim();
+        }
+    }
+
+    private void parseNestedObject(Parameters container) throws IOException {
+        while (true) {
+            skipWhitespaceAndCommas();
+            char firstChar = peekChar();
+            if (firstChar == NO_CONTROL_CHAR) break;
+            if (firstChar == BLOCK_CLOSE) {
+                readChar();
+                return;
+            }
+            parseItem(container);
+        }
+        throw syntaxError("Unclosed object block; no closing curly bracket '}' was found");
+    }
+
+    private List<Object> parseArray(Parameters container, String name) throws IOException {
+        List<Object> list = new ArrayList<>();
+        while (true) {
+            skipWhitespaceAndCommas();
+            char firstChar = peekChar();
+            if (firstChar == NO_CONTROL_CHAR) break;
+            if (firstChar == ARRAY_CLOSE) {
+                readChar();
+                return list;
+            }
+            Object value = parseValue(container, name, true);
             list.add(value);
         }
-        throw syntaxError("Unclosed array bracket");
+        throw syntaxError("Unclosed array bracket; no closing square bracket ']' was found");
     }
 
-    /**
-     * Parses the next value from the stream, which could be a scalar,
-     * an object, or an array.
-     * @param valueStr the string representation of the value
-     * @return the parsed value as an Object
-     * @throws IOException if an I/O error occurs
-     */
+    private List<Object> parseHintedArray(Parameters container, String name, ValueType valueType) throws IOException {
+        List<Object> list = new ArrayList<>();
+        while (true) {
+            skipWhitespaceAndCommas();
+            char firstChar = peekChar();
+            if (firstChar == NO_CONTROL_CHAR) break;
+            if (firstChar == ARRAY_CLOSE) {
+                readChar();
+                return list;
+            }
+            Object value = parseHintedValue(container, name, valueType);
+            list.add(value);
+        }
+        throw syntaxError("Unclosed array bracket; no closing square bracket ']' was found");
+    }
+
     @Nullable
-    private Object parseValue(@NonNull String valueStr) throws IOException {
-        if (valueStr.isEmpty()) {
-            return null;
-        }
+    private Object parseValue(Parameters container, String name, boolean inArray) throws IOException {
+        skipWhitespace();
+        char firstChar = peekChar();
+        if (firstChar == NO_CONTROL_CHAR) return null;
 
-        if (EMPTY_BLOCK.equals(valueStr)) {
-            return new VariableParameters();
-        }
-        if (EMPTY_ARRAY.equals(valueStr)) {
-            return new ArrayList<>();
-        }
-
-        char firstChar = valueStr.charAt(0);
-        int length = valueStr.length();
-
-        if (length == 1) {
-            if (firstChar == BLOCK_OPEN) {
-                Parameters nestedParams = new VariableParameters();
-                parseNestedObject(nestedParams);
-                return nestedParams;
+        if (firstChar == BLOCK_OPEN) {
+            readChar();
+            Parameters nestedParams = null;
+            if (container instanceof ArrayParameters arrayParameters) {
+                nestedParams = arrayParameters.createParameters(ArrayParameters.NONAME);
+            } else if (container != null && name != null && container.hasParameter(name)) {
+                nestedParams = container.createParameters(name);
             }
-            if (firstChar == ARRAY_OPEN) {
-                return parseArray();
-            }
-            if (firstChar == TEXT_OPEN) {
+            if (nestedParams == null) nestedParams = new VariableParameters();
+            parseNestedObject(nestedParams);
+            return nestedParams;
+        }
+        if (firstChar == ARRAY_OPEN) {
+            readChar();
+            return parseArray(container, name);
+        }
+        if (firstChar == TEXT_OPEN) {
+            int savedPos = linePos;
+            readChar();
+            skipWhitespaceOnlyOnLine();
+            if (peekChar() == NEW_LINE_CHAR) {
                 return parseTextBlock();
             }
+            linePos = savedPos;
         }
 
-        switch (valueStr) {
-            case NULL -> {
-                return null;
-            }
-            case TRUE -> {
-                return Boolean.TRUE;
-            }
-            case FALSE -> {
-                return Boolean.FALSE;
-            }
-        }
+        if (firstChar == BLOCK_CLOSE || firstChar == ARRAY_CLOSE) return null;
 
-        if ((firstChar == DOUBLE_QUOTE_CHAR && valueStr.charAt(length - 1) == DOUBLE_QUOTE_CHAR) ||
-                (firstChar == SINGLE_QUOTE_CHAR && valueStr.charAt(length - 1) == SINGLE_QUOTE_CHAR)) {
-            return unescape(valueStr.substring(1, length - 1));
-        }
+        String valueStr = readToken(inArray);
+        if (valueStr == null) return null;
 
-        // Try parsing as a number
+        if (EMPTY_BLOCK.equals(valueStr)) {
+            Parameters nestedParams = null;
+            if (container instanceof ArrayParameters arrayParameters) {
+                nestedParams = arrayParameters.createParameters(ArrayParameters.NONAME);
+            } else if (container != null && name != null && container.hasParameter(name)) {
+                nestedParams = container.createParameters(name);
+            }
+            return (nestedParams != null ? nestedParams : new VariableParameters());
+        }
+        if (EMPTY_ARRAY.equals(valueStr)) return new ArrayList<>();
+
+        if (NULL.equals(valueStr)) return null;
+        if (TRUE.equals(valueStr)) return Boolean.TRUE;
+        if (FALSE.equals(valueStr)) return Boolean.FALSE;
+
         try {
             if (valueStr.indexOf('.') > -1 || valueStr.indexOf('e') > -1 || valueStr.indexOf('E') > -1) {
                 return Double.parseDouble(valueStr);
             } else {
                 long longValue = Long.parseLong(valueStr);
-                if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) {
-                    return (int)longValue;
-                } else {
-                    return longValue;
-                }
+                if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) return (int)longValue;
+                return longValue;
             }
         } catch (NumberFormatException e) {
-            // Not a number, treat as an unquoted string
+            return valueStr;
         }
+    }
 
-        return valueStr;
+    private String readToken(boolean inArray) throws IOException {
+        skipWhitespace();
+        char firstChar = peekChar();
+        if (firstChar == DOUBLE_QUOTE_CHAR || firstChar == SINGLE_QUOTE_CHAR) {
+            readChar();
+            return readQuotedString(firstChar);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                char c = peekChar();
+                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR ||
+                        c == BLOCK_OPEN || c == BLOCK_CLOSE ||
+                        c == ARRAY_OPEN || c == ARRAY_CLOSE) {
+                    break;
+                }
+                
+                if (c == COMMA_CHAR) {
+                    if (inArray || hasColonAheadOnLine()) {
+                        break;
+                    }
+                }
+
+                if (Character.isWhitespace(c)) {
+                    int savedPos = linePos;
+                    skipWhitespaceOnlyOnLine();
+                    char next = peekChar();
+                    if (next == BLOCK_OPEN || next == BLOCK_CLOSE ||
+                            next == ARRAY_OPEN || next == ARRAY_CLOSE || next == COMMA_CHAR) {
+                        linePos = savedPos;
+                        break;
+                    }
+                    linePos = savedPos;
+                }
+
+                if (c == ESCAPE_CHAR) {
+                    readChar();
+                    char next = readChar();
+                    if (next == NO_CONTROL_CHAR) break;
+                    if (next == COMMA_CHAR || next == ESCAPE_CHAR) {
+                        sb.append(next);
+                    } else {
+                        sb.append(ESCAPE_CHAR).append(next);
+                    }
+                    continue;
+                }
+                sb.append(readChar());
+            }
+            String valueStr = sb.toString().trim();
+            return (valueStr.isEmpty() ? null : valueStr);
+        }
+    }
+
+    private boolean hasColonAheadOnLine() {
+        if (currentLine == null) return false;
+        for (int i = linePos + 1; i < currentLine.length(); i++) {
+            char next = currentLine.charAt(i);
+            if (next == NAME_VALUE_SEPARATOR) return true;
+            if (next == BLOCK_OPEN || next == BLOCK_CLOSE || next == ARRAY_OPEN || next == ARRAY_CLOSE) break;
+        }
+        return false;
     }
 
     @Nullable
-    private Object parseHintedValue(@NonNull String valueStr, @NonNull ValueType valueType) throws IOException {
-        if (valueStr.isEmpty() || NULL.equals(valueStr)) {
-            return null;
+    private Object parseHintedValue(Parameters container, String name, @NonNull ValueType valueType) throws IOException {
+        skipWhitespace();
+        char firstChar = peekChar();
+        if (firstChar == NO_CONTROL_CHAR) return null;
+
+        if (firstChar == BLOCK_OPEN) {
+            readChar();
+            Parameters nestedParams = null;
+            if (container instanceof ArrayParameters arrayParameters) {
+                nestedParams = arrayParameters.createParameters(ArrayParameters.NONAME);
+            } else if (container != null && name != null && container.hasParameter(name)) {
+                nestedParams = container.createParameters(name);
+            }
+            if (nestedParams == null) nestedParams = new VariableParameters();
+            parseNestedObject(nestedParams);
+            return nestedParams;
+        }
+        if (firstChar == ARRAY_OPEN) {
+            readChar();
+            return parseHintedArray(container, name, valueType);
         }
 
-        boolean wasQuoted = AponFormat.wasQuoted(valueStr);
-
-        // Validation: Non-string, non-structural types cannot be quoted.
-        if (wasQuoted && valueType != ValueType.STRING) {
-            throw syntaxError("Value for a parameter of type '" + valueType + "' cannot be quoted: '" + valueStr + "'");
+        if (valueType == ValueType.TEXT) {
+            if (firstChar == TEXT_OPEN) {
+                int savedPos = linePos;
+                readChar();
+                skipWhitespaceOnlyOnLine();
+                if (peekChar() == NEW_LINE_CHAR) {
+                    return parseTextBlock();
+                }
+                linePos = savedPos;
+            }
+            String valueStr = readToken(false);
+            return (NULL.equals(valueStr) ? null : valueStr);
         }
+
+        String valueStr = readToken(false);
+        if (valueStr == null || NULL.equals(valueStr)) return null;
+
+        if (EMPTY_BLOCK.equals(valueStr)) return new VariableParameters();
+        if (EMPTY_ARRAY.equals(valueStr)) return new ArrayList<>();
 
         try {
             switch (valueType) {
-                case STRING:
-                    if (wasQuoted) {
-                        valueStr = unescape(valueStr.substring(1, valueStr.length() - 1));
-                    }
-                    return valueStr;
-                case INT:
-                    return Integer.parseInt(valueStr);
-                case LONG:
-                    return Long.parseLong(valueStr);
-                case FLOAT:
-                    return Float.parseFloat(valueStr);
-                case DOUBLE:
-                    return Double.parseDouble(valueStr);
-                case BOOLEAN:
-                    return Boolean.parseBoolean(valueStr);
-                case PARAMETERS:
-                    if (EMPTY_BLOCK.equals(valueStr)) {
-                        return new VariableParameters();
-                    }
-                    if (valueStr.charAt(0) == BLOCK_OPEN) {
-                        Parameters nestedParams = new VariableParameters();
-                        parseNestedObject(nestedParams);
-                        return nestedParams;
-                    }
-                    throw syntaxError("Value for a parameter of type 'parameters' must be an object block {}");
-                case TEXT:
-                    if (valueStr.charAt(0) == TEXT_OPEN) {
-                        return parseTextBlock();
-                    }
-                    throw syntaxError("Value for a parameter of type 'text' must be a text block ()");
-                case VARIABLE:
-                    return null; // Should not be reached
+                case STRING -> { return valueStr; }
+                case INT -> { return Integer.parseInt(valueStr); }
+                case LONG -> { return Long.parseLong(valueStr); }
+                case FLOAT -> { return Float.parseFloat(valueStr); }
+                case DOUBLE -> { return Double.parseDouble(valueStr); }
+                case BOOLEAN -> { return Boolean.parseBoolean(valueStr); }
+                default -> { return valueStr; }
             }
         } catch (NumberFormatException e) {
             throw syntaxError("Invalid value '" + valueStr + "' for type '" + valueType + "'", e);
         }
-        return null; // Should not be reached
     }
 
-    /**
-     * Parses a multi-line text block.
-     * @return the parsed text block as a single string
-     * @throws IOException if an I/O error occurs
-     */
     @NonNull
     private String parseTextBlock() throws IOException {
         StringBuilder sb = null;
-        while (nextLine() != null) {
-            if (currentLine.length() == 1 && currentLine.charAt(0) == TEXT_CLOSE) {
-                return (sb != null ? sb.toString() : "");
-            }
-            if (!currentLine.isEmpty() && currentLine.charAt(0) == TEXT_LINE_START) {
-                if (sb == null) {
-                    sb = new StringBuilder();
-                } else {
-                    sb.append(SYSTEM_NEW_LINE);
+        if (peekChar() == NEW_LINE_CHAR) {
+            readChar();
+        } else {
+            throw syntaxError("Multi-line text block must start on a new line after '('");
+        }
+
+        while (true) {
+            String line = reader.readLine();
+            if (line == null) break;
+            lineNumber++;
+            originalLine = line;
+            currentLine = line;
+            linePos = 0;
+            
+            skipWhitespaceOnlyOnLine();
+            if (linePos < currentLine.length()) {
+                char c = currentLine.charAt(linePos);
+                if (c == TEXT_CLOSE) {
+                    linePos++;
+                    return (sb != null ? sb.toString() : "");
                 }
-                String line = originalLine.substring(originalLine.indexOf(TEXT_LINE_START) + 1);
-                if (!line.isEmpty()) {
-                    sb.append(line);
+                if (c == TEXT_LINE_START) {
+                    if (sb == null) sb = new StringBuilder();
+                    else sb.append(SYSTEM_NEW_LINE);
+                    sb.append(currentLine.substring(linePos + 1));
+                    linePos = currentLine.length();
+                    continue;
                 }
             } else {
-                throw syntaxError("Text block lines must start with a '|' character");
+                continue;
             }
+            throw syntaxError("Text block lines must start with a '|' character or end with ')'");
         }
-        throw syntaxError("Unclosed text block");
+        throw syntaxError("Unclosed text block; no closing round bracket ')' was found");
     }
 
-    /**
-     * Reads the next meaningful line, skipping empty lines and comments.
-     * @return the next non-empty, non-comment line, or null if end of stream
-     * @throws IOException if an I/O error occurs
-     */
-    @Nullable
+    private char peekChar() throws IOException {
+        if (currentLine == null || linePos > currentLine.length()) {
+            if (nextLine() == null) return NO_CONTROL_CHAR;
+        }
+        if (linePos == currentLine.length()) {
+            return NEW_LINE_CHAR;
+        }
+        return currentLine.charAt(linePos);
+    }
+
+    private char readChar() throws IOException {
+        char c = peekChar();
+        if (c != NO_CONTROL_CHAR) {
+            linePos++;
+        }
+        return c;
+    }
+
+    private char readRawChar() throws IOException {
+        if (currentLine == null || linePos >= currentLine.length()) {
+            return NO_CONTROL_CHAR;
+        }
+        return currentLine.charAt(linePos++);
+    }
+
     private String nextLine() throws IOException {
         while ((originalLine = reader.readLine()) != null) {
             lineNumber++;
-            currentLine = originalLine.trim();
-            if (!currentLine.isEmpty() && currentLine.charAt(0) != COMMENT_LINE_START) {
-                return currentLine;
+            currentLine = originalLine;
+            linePos = 0;
+            skipWhitespaceOnlyOnLine();
+            if (linePos < currentLine.length() && currentLine.charAt(linePos) == COMMENT_LINE_START) {
+                continue;
             }
+            return currentLine;
         }
+        currentLine = null;
         return null;
     }
 
-    private String unescape(String str) throws AponParseException {
-        try {
-            return AponFormat.unescape(str);
-        } catch (IllegalArgumentException e) {
-            throw syntaxError(e.getMessage(), e);
+    private void skipWhitespace() throws IOException {
+        while (true) {
+            char c = peekChar();
+            if (c != NO_CONTROL_CHAR && Character.isWhitespace(c) && c != NEW_LINE_CHAR) {
+                readChar();
+            } else {
+                break;
+            }
         }
     }
 
-    @NonNull
-    private MalformedAponException syntaxError(String message) {
+    private void skipWhitespaceOnlyOnLine() {
+        if (currentLine != null) {
+            while (linePos < currentLine.length() && Character.isWhitespace(currentLine.charAt(linePos))) {
+                linePos++;
+            }
+        }
+    }
+
+    private void skipWhitespaceAndCommas() throws IOException {
+        while (true) {
+            char c = peekChar();
+            if (c == NO_CONTROL_CHAR) break;
+            if (Character.isWhitespace(c) || c == COMMA_CHAR) {
+                readChar();
+            } else {
+                break;
+            }
+        }
+    }
+
+    private AponParseException syntaxError(String message) {
         return new MalformedAponException(lineNumber, originalLine, currentLine, message);
     }
 
-    @NonNull
-    private MalformedAponException syntaxError(String message, Throwable cause) {
+    private AponParseException syntaxError(String message, Throwable cause) {
         MalformedAponException e = new MalformedAponException(lineNumber, originalLine, currentLine, message);
         e.initCause(cause);
         return e;
     }
 
-    /**
-     * A static utility method that parses an APON-formatted string into a new {@link VariableParameters} object.
-     * @param apon the APON-formatted string
-     * @return a new {@code Parameters} object containing the parsed data
-     * @throws AponParseException if an error occurs during parsing
-     */
     public static Parameters parse(String apon) throws AponParseException {
-        if (StringUtils.isEmpty(apon)) {
-            return new VariableParameters();
-        }
-        return new AponParser(apon).parse(new VariableParameters());
+        return parse(apon, new VariableParameters());
     }
 
-    /**
-     * A static utility method that parses an APON-formatted string into a new container of the given type.
-     * @param <T> the type of the new container
-     * @param apon the APON-formatted string
-     * @param requiredType the concrete {@link Parameters} implementation to instantiate
-     * @return a new, populated container instance
-     * @throws AponParseException if parsing fails or the type cannot be instantiated
-     */
     public static <T extends Parameters> T parse(String apon, Class<T> requiredType) throws AponParseException {
-        T parameters = ClassUtils.createInstance(requiredType);
-        if (StringUtils.isEmpty(apon)) {
-            return parameters;
-        }
+        return parse(apon, ClassUtils.createInstance(requiredType));
+    }
+
+    public static <T extends Parameters> T parse(String apon, T parameters) throws AponParseException {
+        if (StringUtils.isEmpty(apon)) return parameters;
         return new AponParser(apon).parse(parameters);
     }
 

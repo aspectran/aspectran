@@ -65,6 +65,7 @@ public class ArrayParameters extends DefaultParameters implements Iterable<Objec
      */
     public ArrayParameters() {
         super(null);
+        setBraceless(false);
         attachParameterValue(NONAME, ValueType.VARIABLE, true);
     }
 

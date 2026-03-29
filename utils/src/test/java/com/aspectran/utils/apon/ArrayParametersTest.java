@@ -135,7 +135,7 @@ class ArrayParametersTest {
 
         ArrayParameters programmatically = new ArrayParameters();
         assertNotNull(programmatically.iterator());
-        assertEquals("[\n]", programmatically.toString().trim().replace("\r\n", "\n"));
+        assertEquals("[]", programmatically.toString().trim());
     }
 
     @Test
@@ -347,13 +347,13 @@ class ArrayParametersTest {
                     dotall: true
                 }
                 {
-                    pattern: javascript:
+                    pattern: "javascript:"
                     caseInsensitive: true
                     multiline: false
                     dotall: false
                 }
                 {
-                    pattern: vbscript:
+                    pattern: "vbscript:"
                     caseInsensitive: true
                     multiline: false
                     dotall: false

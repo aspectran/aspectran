@@ -59,7 +59,9 @@ public abstract class AbstractParameters implements Parameters {
 
     private String actualName;
 
-    private boolean compactStyle = true;
+    private boolean braceless = true;
+
+    private AponRenderStyle renderStyle = AponRenderStyle.PRETTY;
 
     /**
      * Instantiates a new abstract parameters.
@@ -100,13 +102,23 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean isCompactStyle() {
-        return compactStyle;
+    public boolean isBraceless() {
+        return braceless;
     }
 
     @Override
-    public void setCompactStyle(boolean compactStyle) {
-        this.compactStyle = compactStyle;
+    public void setBraceless(boolean braceless) {
+        this.braceless = braceless;
+    }
+
+    @Override
+    public AponRenderStyle getRenderStyle() {
+        return renderStyle;
+    }
+
+    @Override
+    public void setRenderStyle(AponRenderStyle renderStyle) {
+        this.renderStyle = (renderStyle != null ? renderStyle : AponRenderStyle.PRETTY);
     }
 
     @Override

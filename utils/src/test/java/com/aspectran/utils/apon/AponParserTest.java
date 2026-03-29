@@ -51,7 +51,7 @@ class AponParserTest {
             """;
         Parameters params = AponParser.parse(apon);
 
-        assertTrue(params.isCompactStyle());
+        assertTrue(params.isBraceless());
         assertEquals("John Doe", params.getString("name"));
         assertEquals(30, params.getInt("age"));
         assertTrue(params.getBoolean("isActive"));
@@ -378,7 +378,7 @@ class AponParserTest {
             """;
         Parameters params = AponParser.parse(apon, VariableParameters.class);
 
-        assertFalse(params.isCompactStyle());
+        assertFalse(params.isBraceless());
         assertEquals("John Doe", params.getString("name"));
         assertEquals(30, params.getInt("age"));
     }

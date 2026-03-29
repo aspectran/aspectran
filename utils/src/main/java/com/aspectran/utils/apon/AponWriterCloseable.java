@@ -21,25 +21,24 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A {@link AponWriter} variant that implements {@link Closeable} for use with
+ * An {@link AponWriter} variant that implements {@link Closeable} for use with
  * try-with-resources blocks.
- * <p>
- * Example:
+ * <p>This class enables automatic resource management of the underlying output
+ * stream or file while serializing {@link Parameters} objects into APON format.</p>
+ *
+ * <p>Example usage:</p>
  * <pre>{@code
- * try (AponWriterCloseable writer = new AponWriterCloseable(myWriter)) {
- *     writer.write(parameters);
+ * try (AponWriterCloseable writer = new AponWriterCloseable(new File("output.apon"))) {
+ *     writer.write(params);
  * }
- * }
- * </pre>
- * </p>
+ * }</pre>
  */
 public class AponWriterCloseable extends AponWriter implements Closeable {
 
     /**
-     * Instantiates a new AponWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
-     * @param file a File object to write to
+     * Instantiates a new AponWriterCloseable that writes to the specified file.
+     * <p>Pretty printing is enabled by default with two-space indentation.</p>
+     * @param file the file to write to
      * @throws IOException if an I/O error occurs
      */
     public AponWriterCloseable(File file) throws IOException {
@@ -47,10 +46,9 @@ public class AponWriterCloseable extends AponWriter implements Closeable {
     }
 
     /**
-     * Instantiates a new AponWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
-     * @param writer the character-output stream
+     * Instantiates a new AponWriterCloseable that wraps the given {@link Writer}.
+     * <p>Pretty printing is enabled by default with two-space indentation.</p>
+     * @param writer the character-output stream to wrap
      */
     public AponWriterCloseable(Writer writer) {
         super(writer);
