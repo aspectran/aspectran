@@ -102,6 +102,7 @@ public abstract class AponFormat {
      * <ul>
      *   <li>Is an empty string.</li>
      *   <li>Starts with whitespace or structural characters like '{', '[', '(', '#', etc.</li>
+     *   <li>Contains structural characters anywhere within the string.</li>
      *   <li>Contains quotes, commas, colons, or control characters.</li>
      *   <li>Ends with whitespace.</li>
      * </ul>
@@ -109,20 +110,14 @@ public abstract class AponFormat {
      * @return true if the string needs quoting, false otherwise
      */
     public static boolean needsQuoting(String str) {
-        if (str == null) {
-            return false;
-        }
-        if (str.isEmpty()) {
-            return true;
+        if (str == null || str.isEmpty()) {
+            return (str != null);
         }
         char firstChar = str.charAt(0);
         if (Character.isWhitespace(firstChar) ||
                 firstChar == BLOCK_OPEN ||
-                firstChar == BLOCK_CLOSE ||
                 firstChar == ARRAY_OPEN ||
-                firstChar == ARRAY_CLOSE ||
                 firstChar == TEXT_OPEN ||
-                firstChar == TEXT_CLOSE ||
                 firstChar == COMMENT_LINE_START) {
             return true;
         }
@@ -132,6 +127,10 @@ public abstract class AponFormat {
                     c == SINGLE_QUOTE_CHAR ||
                     c == COMMA_CHAR ||
                     c == NAME_VALUE_SEPARATOR ||
+                    c == BLOCK_OPEN ||
+                    c == BLOCK_CLOSE ||
+                    c == ARRAY_OPEN ||
+                    c == ARRAY_CLOSE ||
                     c == NEW_LINE_CHAR ||
                     c == '\r') {
                 return true;

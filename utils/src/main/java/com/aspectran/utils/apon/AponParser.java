@@ -179,7 +179,8 @@ public class AponParser {
         }
     }
 
-    private @NonNull String readQuotedString(char quoteChar) throws IOException {
+    @NonNull
+    private String readQuotedString(char quoteChar) throws IOException {
         StringBuilder sb = new StringBuilder();
         while (true) {
             char c = readRawChar();
@@ -229,10 +230,15 @@ public class AponParser {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 char c = peekChar();
-                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR || c == NAME_VALUE_SEPARATOR ||
-                        c == COMMA_CHAR || c == BLOCK_OPEN || c == BLOCK_CLOSE ||
-                        c == ARRAY_OPEN || c == ARRAY_CLOSE) {
+                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR || c == NAME_VALUE_SEPARATOR) {
                     break;
+                }
+                // Structural characters only break token if they are the FIRST character
+                if (sb.isEmpty()) {
+                    if (c == COMMA_CHAR || c == BLOCK_OPEN || c == BLOCK_CLOSE ||
+                            c == ARRAY_OPEN || c == ARRAY_CLOSE) {
+                        break;
+                    }
                 }
                 if (Character.isWhitespace(c)) {
                     int savedPos = linePos;
@@ -268,7 +274,9 @@ public class AponParser {
         while (true) {
             skipWhitespaceAndCommas();
             char firstChar = peekChar();
-            if (firstChar == NO_CONTROL_CHAR) break;
+            if (firstChar == NO_CONTROL_CHAR) {
+                throw syntaxError("Unclosed array bracket; no closing square bracket ']' was found");
+            }
             if (firstChar == ARRAY_CLOSE) {
                 readChar();
                 return list;
@@ -276,7 +284,6 @@ public class AponParser {
             Object value = parseValue(container, name, true);
             list.add(value);
         }
-        throw syntaxError("Unclosed array bracket; no closing square bracket ']' was found");
     }
 
     private List<Object> parseHintedArray(Parameters container, String name, ValueType valueType) throws IOException {
@@ -284,7 +291,9 @@ public class AponParser {
         while (true) {
             skipWhitespaceAndCommas();
             char firstChar = peekChar();
-            if (firstChar == NO_CONTROL_CHAR) break;
+            if (firstChar == NO_CONTROL_CHAR) {
+                throw syntaxError("Unclosed array bracket; no closing square bracket ']' was found");
+            }
             if (firstChar == ARRAY_CLOSE) {
                 readChar();
                 return list;
@@ -292,7 +301,6 @@ public class AponParser {
             Object value = parseHintedValue(container, name, valueType);
             list.add(value);
         }
-        throw syntaxError("Unclosed array bracket; no closing square bracket ']' was found");
     }
 
     @Nullable
@@ -371,10 +379,20 @@ public class AponParser {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 char c = peekChar();
-                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR ||
-                        c == BLOCK_OPEN || c == BLOCK_CLOSE ||
-                        c == ARRAY_OPEN || c == ARRAY_CLOSE) {
+                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR) {
                     break;
+                }
+                // Structural characters break token only at the START of value
+                if (sb.isEmpty()) {
+                    if (c == BLOCK_OPEN || c == BLOCK_CLOSE ||
+                            c == ARRAY_OPEN || c == ARRAY_CLOSE) {
+                        break;
+                    }
+                } else {
+                    // But closing braces must ALWAYS break the token to terminate container
+                    if (c == BLOCK_CLOSE || c == ARRAY_CLOSE) {
+                        break;
+                    }
                 }
 
                 if (c == COMMA_CHAR) {
@@ -387,8 +405,7 @@ public class AponParser {
                     int savedPos = linePos;
                     skipWhitespaceOnlyOnLine();
                     char next = peekChar();
-                    if (next == BLOCK_OPEN || next == BLOCK_CLOSE ||
-                            next == ARRAY_OPEN || next == ARRAY_CLOSE || next == COMMA_CHAR) {
+                    if (next == BLOCK_CLOSE || next == ARRAY_CLOSE || next == COMMA_CHAR) {
                         linePos = savedPos;
                         break;
                     }
