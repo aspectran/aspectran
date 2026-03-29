@@ -265,25 +265,34 @@ public class AponWriter implements Flushable {
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T comment(String message) throws IOException {
         if (prettyPrint && (currentStyle == null || currentStyle == AponRenderStyle.PRETTY) && message != null) {
-            if (message.indexOf('\n') != -1 || message.indexOf('\r') != -1) {
-                String line;
-                int start = 0;
-                while ((line = readLine(message, start)) != null) {
-                    indent();
-                    write(COMMENT_LINE_START);
-                    write(SPACE_CHAR);
-                    write(line);
-                    newLine();
-                    start += line.length();
-                    start = skipNewLineChar(message, start);
-                    if (start == -1) break;
+            String line;
+            int start = 0;
+            while ((line = readLine(message, start)) != null) {
+                if (atStartOfLine && indentString != null && !indentString.isEmpty()) {
+                    for (int i = 0; i < indentDepth; i++) {
+                        writer.write(indentString);
+                    }
                 }
-            } else {
-                indent();
-                write(COMMENT_LINE_START);
-                write(SPACE_CHAR);
-                write(message);
-                newLine();
+                writer.write(COMMENT_LINE_START);
+                if (!line.isEmpty()) {
+                    writer.write(SPACE_CHAR);
+                    writer.write(line);
+                }
+                writer.write(SYSTEM_NEW_LINE);
+                atStartOfLine = true;
+                start += line.length();
+                start = skipNewLineChar(message, start);
+                if (start == -1) break;
+            }
+            if (start != -1) {
+                if (atStartOfLine && indentString != null && !indentString.isEmpty()) {
+                    for (int i = 0; i < indentDepth; i++) {
+                        writer.write(indentString);
+                    }
+                }
+                writer.write(COMMENT_LINE_START);
+                writer.write(SYSTEM_NEW_LINE);
+                atStartOfLine = true;
             }
         }
         return (T)this;

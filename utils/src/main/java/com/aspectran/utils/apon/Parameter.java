@@ -89,6 +89,12 @@ public interface Parameter {
     boolean isBracketed();
 
     /**
+     * Sets whether array values are represented with explicit square brackets in APON.
+     * @param bracketed true to use square brackets, false otherwise
+     */
+    void setBracketed(boolean bracketed);
+
+    /**
      * Convert the parameter to array form if not already; preserves existing value as first element.
      */
     void arraylize();

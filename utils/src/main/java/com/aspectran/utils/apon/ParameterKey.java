@@ -56,7 +56,7 @@ public class ParameterKey {
 
     /**
      * When {@link #array} is {@code true}, whether to omit square brackets in APON output
-     * for this parameter (supported for parameters of type {@link ValueType#PARAMETERS}).
+     * for this parameter.
      */
     private final boolean noBrackets;
 
@@ -105,7 +105,7 @@ public class ParameterKey {
      * @param name the parameter name
      * @param valueType the declared value type
      * @param array whether the parameter accepts multiple values
-     * @param noBrackets when {@code true} and the value is PARAMETERS, omit brackets in APON output
+     * @param noBrackets when {@code true}, omit brackets in APON output
      */
     public ParameterKey(String name, ValueType valueType, boolean array, boolean noBrackets) {
         this(name, null, valueType, array, noBrackets);
@@ -117,7 +117,7 @@ public class ParameterKey {
      * @param altNames alternative names (may be {@code null})
      * @param valueType the declared value type
      * @param array whether the parameter accepts multiple values
-     * @param noBrackets when {@code true} and the value is PARAMETERS, omit brackets in APON output
+     * @param noBrackets when {@code true}, omit brackets in APON output
      */
     public ParameterKey(String name, String[] altNames, ValueType valueType, boolean array, boolean noBrackets) {
         Assert.notNull(name, "Parameter name must not be null");
@@ -127,7 +127,7 @@ public class ParameterKey {
         this.valueType = valueType;
         this.parametersClass = null;
         this.array = array;
-        this.noBrackets = (array && valueType == ValueType.PARAMETERS && noBrackets);
+        this.noBrackets = (array && noBrackets);
     }
 
     /**
@@ -184,7 +184,7 @@ public class ParameterKey {
     }
 
     /**
-     * Construct a key for nested parameters with aliases, array flag, and bracket-format control.
+     * Construct a key with aliases, array flag, and bracket-format control.
      * @param name the primary parameter name
      * @param altNames alternative names (may be {@code null})
      * @param parametersClass concrete {@code Parameters} implementation for nested blocks

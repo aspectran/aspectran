@@ -100,6 +100,7 @@ public abstract class AponFormat {
      * Determines whether the given string needs to be wrapped in quotes.
      * <p>A string needs quoting if it:</p>
      * <ul>
+     *   <li>Is an empty string.</li>
      *   <li>Starts with whitespace or structural characters like '{', '[', '(', '#', etc.</li>
      *   <li>Contains quotes, commas, colons, or control characters.</li>
      *   <li>Ends with whitespace.</li>
@@ -108,8 +109,11 @@ public abstract class AponFormat {
      * @return true if the string needs quoting, false otherwise
      */
     public static boolean needsQuoting(String str) {
-        if (str == null || str.isEmpty()) {
+        if (str == null) {
             return false;
+        }
+        if (str.isEmpty()) {
+            return true;
         }
         char firstChar = str.charAt(0);
         if (Character.isWhitespace(firstChar) ||

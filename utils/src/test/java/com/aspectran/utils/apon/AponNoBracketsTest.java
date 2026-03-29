@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.utils.apon;
+
+import com.aspectran.utils.wildcard.IncludeExcludeParameters;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Test cases for verifying the noBrackets option in ParameterKey.
+ */
+class AponNoBracketsTest {
+
+    @Test
+    void testNoBracketsForStringArray() throws IOException {
+        IncludeExcludeParameters params = new IncludeExcludeParameters();
+        params.addIncludePattern("/**");
+        params.addExcludePattern("/assets/**");
+        params.addExcludePattern("/favicon.ico");
+
+        String result = params.toString();
+
+        // Expected output with repeated keys instead of [ ]
+        String expected = """
+                +: /**
+                -: /assets/**
+                -: /favicon.ico
+                """;
+
+        assertEquals(expected.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
+    }
+
+    @Test
+    void testNoBracketsInNestedStructure() throws IOException {
+        // Simulating WebConfig structure
+        Parameters webConfig = new VariableParameters();
+        
+        // Simulating AcceptableConfig (which inherits IncludeExcludeParameters)
+        IncludeExcludeParameters acceptable = new IncludeExcludeParameters();
+        acceptable.addIncludePattern("/**");
+        acceptable.addExcludePattern("/assets/**");
+        acceptable.addExcludePattern("/favicon.ico");
+        
+        webConfig.putValue("acceptable", acceptable);
+
+        String result = webConfig.toString();
+
+        String expected = """
+                acceptable: {
+                  +: /**
+                  -: /assets/**
+                  -: /favicon.ico
+                }
+                """;
+
+        assertEquals(expected.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
+    }
+
+    @Test
+    void testNoBracketsForNestedParameters() throws IOException {
+        Parameters root = new VariableParameters();
+        
+        // Let's construct the parameters and set bracketed manually
+        Parameters p1 = new VariableParameters();
+        p1.putValue("id", 1);
+        Parameters p2 = new VariableParameters();
+        p2.putValue("id", 2);
+        
+        List<Parameters> list = new ArrayList<>();
+        list.add(p1);
+        list.add(p2);
+        
+        root.putValue("item", list);
+        root.getParameter("item").setBracketed(false); // Force no brackets
+
+        String result = root.toString();
+
+        String expected = """
+                item: {
+                  id: 1
+                }
+                item: {
+                  id: 2
+                }
+                """;
+
+        assertEquals(expected.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
+    }
+
+}
