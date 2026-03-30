@@ -16,10 +16,12 @@
 package com.aspectran.utils.apon;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -409,6 +411,56 @@ class AponParserTest {
             """;
         AponParseException e = assertThrows(AponParseException.class, () -> AponParser.parse(apon));
         assertTrue(e.getMessage().contains("Unexpected content after closing brace"));
+    }
+
+    /**
+     * Tests parsing of various edge cases and potential infinite loop scenarios.
+     */
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void testEdgeCases() throws AponParseException {
+        // Empty/whitespace/comments
+        AponParser.parse("");
+        AponParser.parse("   ");
+        AponParser.parse("\n\n\n");
+        AponParser.parse("# comment");
+        AponParser.parse(" , , , ");
+
+        // Unclosed structures
+        assertThrows(AponParseException.class, () -> AponParser.parse("key: \"unclosed"));
+        assertThrows(AponParseException.class, () -> AponParser.parse("key: { "));
+        assertThrows(AponParseException.class, () -> AponParser.parse("key: [ "));
+        assertThrows(AponParseException.class, () -> AponParser.parse("key: (\n|line1\n"));
+
+        // Trailing escape
+        Parameters p1 = AponParser.parse("key: value\\");
+        assertEquals("value", p1.getString("key"));
+
+        // Incomplete hint (treated as part of the name)
+        Parameters p2 = AponParser.parse("key(: value");
+        assertEquals("value", p2.getString("key("));
+
+        // Invalid top-level characters
+        assertThrows(AponParseException.class, () -> AponParser.parse("key: value}"));
+        assertThrows(AponParseException.class, () -> AponParser.parse("key: value]"));
+
+        // Multiple items on one line
+        Parameters p3 = AponParser.parse("key1: val1, key2: val2, key3: val3");
+        assertEquals("val1", p3.getString("key1"));
+        assertEquals("val2", p3.getString("key2"));
+        assertEquals("val3", p3.getString("key3"));
+
+        // Complex unquoted values
+        Parameters p4 = AponParser.parse("key: value with {curly and [square open");
+        assertEquals("value with {curly and [square open", p4.getString("key"));
+
+        // Deeply nested but broken
+        String apon = "{ { { { { { { { { { { { { { { { { { { { ";
+        assertThrows(AponParseException.class, () -> AponParser.parse(apon));
+
+        // Long whitespace
+        Parameters p5 = AponParser.parse("key:                 value                ");
+        assertEquals("value", p5.getString("key"));
     }
 
 }

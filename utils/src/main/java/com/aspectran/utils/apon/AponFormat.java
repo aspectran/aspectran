@@ -45,8 +45,8 @@ public abstract class AponFormat {
     /** The character used to separate multiple entries in a single line. */
     public static final char COMMA_CHAR = ',';
 
-    /** The character used to start a comment line. */
-    public static final char COMMENT_LINE_START = '#';
+    /** The character used to start a comment. */
+    public static final char COMMENT_CHAR = '#';
 
     /** The character used at the beginning of each line in a multi-line text block. */
     public static final char TEXT_LINE_START = '|';
@@ -118,7 +118,7 @@ public abstract class AponFormat {
                 firstChar == BLOCK_OPEN ||
                 firstChar == ARRAY_OPEN ||
                 firstChar == TEXT_OPEN ||
-                firstChar == COMMENT_LINE_START) {
+                firstChar == COMMENT_CHAR) {
             return true;
         }
         for (int i = 0; i < str.length(); i++) {
@@ -131,6 +131,7 @@ public abstract class AponFormat {
                     c == BLOCK_CLOSE ||
                     c == ARRAY_OPEN ||
                     c == ARRAY_CLOSE ||
+                    c == COMMENT_CHAR ||
                     c == NEW_LINE_CHAR ||
                     c == '\r') {
                 return true;

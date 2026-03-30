@@ -39,7 +39,7 @@ import static com.aspectran.utils.apon.AponFormat.ARRAY_OPEN;
 import static com.aspectran.utils.apon.AponFormat.BLOCK_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.BLOCK_OPEN;
 import static com.aspectran.utils.apon.AponFormat.COMMA_CHAR;
-import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
+import static com.aspectran.utils.apon.AponFormat.COMMENT_CHAR;
 import static com.aspectran.utils.apon.AponFormat.DEFAULT_INDENT_STRING;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
@@ -272,7 +272,7 @@ public class AponWriter implements Flushable {
                         writer.write(indentString);
                     }
                 }
-                writer.write(COMMENT_LINE_START);
+                writer.write(COMMENT_CHAR);
                 if (!line.isEmpty()) {
                     writer.write(SPACE_CHAR);
                     writer.write(line);
@@ -289,7 +289,7 @@ public class AponWriter implements Flushable {
                         writer.write(indentString);
                     }
                 }
-                writer.write(COMMENT_LINE_START);
+                writer.write(COMMENT_CHAR);
                 writer.write(SYSTEM_NEW_LINE);
                 atStartOfLine = true;
             }
@@ -404,9 +404,13 @@ public class AponWriter implements Flushable {
                                 beginArray();
                                 for (String text : list) {
                                     if (nullWritable || text != null) {
-                                        beginText();
-                                        writeText(text);
-                                        endText();
+                                        if (currentStyle == AponRenderStyle.PRETTY) {
+                                            beginText();
+                                            writeText(text);
+                                            endText();
+                                        } else {
+                                            writeString(text);
+                                        }
                                     }
                                 }
                                 endArray();
@@ -415,9 +419,13 @@ public class AponWriter implements Flushable {
                             for (String text : list) {
                                 if (nullWritable || text != null) {
                                     writeName(parameter);
-                                    beginText();
-                                    writeText(text);
-                                    endText();
+                                    if (currentStyle == AponRenderStyle.PRETTY) {
+                                        beginText();
+                                        writeText(text);
+                                        endText();
+                                    } else {
+                                        writeString(text);
+                                    }
                                 }
                             }
                         }
@@ -426,9 +434,13 @@ public class AponWriter implements Flushable {
                     String text = parameter.getValueAsString();
                     if (text != null) {
                         writeName(parameter);
-                        beginText();
-                        writeText(text);
-                        endText();
+                        if (currentStyle == AponRenderStyle.PRETTY) {
+                            beginText();
+                            writeText(text);
+                            endText();
+                        } else {
+                            writeString(text);
+                        }
                     } else if (nullWritable) {
                         writeName(parameter);
                         writeNull();

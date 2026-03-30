@@ -33,10 +33,11 @@ import static com.aspectran.utils.apon.AponFormat.ARRAY_OPEN;
 import static com.aspectran.utils.apon.AponFormat.BLOCK_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.BLOCK_OPEN;
 import static com.aspectran.utils.apon.AponFormat.COMMA_CHAR;
-import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
+import static com.aspectran.utils.apon.AponFormat.COMMENT_CHAR;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
+import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.FALSE;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
 import static com.aspectran.utils.apon.AponFormat.NEW_LINE_CHAR;
@@ -63,8 +64,6 @@ public class AponParser {
     private String originalLine;
 
     private String currentLine;
-
-    private static final char ESCAPE_CHAR = AponFormat.ESCAPE_CHAR;
 
     public AponParser(String apon) {
         this(new StringReader(apon));
@@ -233,7 +232,8 @@ public class AponParser {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 char c = peekChar();
-                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR || c == NAME_VALUE_SEPARATOR) {
+                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR || c == NAME_VALUE_SEPARATOR ||
+                        c == COMMENT_CHAR) {
                     break;
                 }
                 // Structural characters only break token if they are the FIRST character
@@ -382,7 +382,7 @@ public class AponParser {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 char c = peekChar();
-                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR) {
+                if (c == NO_CONTROL_CHAR || c == NEW_LINE_CHAR || c == COMMENT_CHAR) {
                     break;
                 }
                 // Structural characters break token only at the START of value
@@ -408,7 +408,8 @@ public class AponParser {
                     int savedPos = linePos;
                     skipWhitespaceOnlyOnLine();
                     char next = peekChar();
-                    if (next == BLOCK_CLOSE || next == ARRAY_CLOSE || next == COMMA_CHAR) {
+                    if (next == BLOCK_CLOSE || next == ARRAY_CLOSE || next == COMMA_CHAR ||
+                            next == COMMENT_CHAR) {
                         linePos = savedPos;
                         break;
                     }
@@ -438,7 +439,8 @@ public class AponParser {
         for (int i = linePos + 1; i < currentLine.length(); i++) {
             char next = currentLine.charAt(i);
             if (next == NAME_VALUE_SEPARATOR) return true;
-            if (next == BLOCK_OPEN || next == BLOCK_CLOSE || next == ARRAY_OPEN || next == ARRAY_CLOSE) break;
+            if (next == BLOCK_OPEN || next == BLOCK_CLOSE || next == ARRAY_OPEN || next == ARRAY_CLOSE ||
+                    next == COMMENT_CHAR) break;
         }
         return false;
     }
@@ -572,7 +574,10 @@ public class AponParser {
             currentLine = originalLine;
             linePos = 0;
             skipWhitespaceOnlyOnLine();
-            if (linePos < currentLine.length() && currentLine.charAt(linePos) == COMMENT_LINE_START) {
+            if (linePos < currentLine.length() && currentLine.charAt(linePos) == COMMENT_CHAR) {
+                continue;
+            }
+            if (linePos == currentLine.length()) {
                 continue;
             }
             return currentLine;
@@ -584,7 +589,12 @@ public class AponParser {
     private void skipWhitespace() throws IOException {
         while (true) {
             char c = peekChar();
-            if (c != NO_CONTROL_CHAR && Character.isWhitespace(c) && c != NEW_LINE_CHAR) {
+            if (c == NO_CONTROL_CHAR) break;
+            if (c == COMMENT_CHAR) {
+                linePos = (currentLine != null ? currentLine.length() : 0);
+                continue;
+            }
+            if (Character.isWhitespace(c) && c != NEW_LINE_CHAR) {
                 readChar();
             } else {
                 break;
@@ -604,6 +614,10 @@ public class AponParser {
         while (true) {
             char c = peekChar();
             if (c == NO_CONTROL_CHAR) break;
+            if (c == COMMENT_CHAR) {
+                linePos = (currentLine != null ? currentLine.length() : 0);
+                continue;
+            }
             if (Character.isWhitespace(c) || c == COMMA_CHAR) {
                 readChar();
             } else {

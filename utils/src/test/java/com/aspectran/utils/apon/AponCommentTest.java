@@ -17,34 +17,65 @@ package com.aspectran.utils.apon;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test cases for verifying comment formatting in AponWriter.
+ * Test cases for APON comments.
  */
 class AponCommentTest {
 
     @Test
-    void testCommentFormatting() throws IOException {
-        Parameters params = new VariableParameters();
-        params.putValue("system", null);
+    void testInlineComments() throws AponParseException {
+        String apon = """
+            # This is a comment
+            key1: val1 # This is an inline comment
+            key2: val2 # Another one
+            # Full line comment
+            obj: {
+                inner: value # Comment inside object
+            } # Comment after object
+            array: [
+                item1 # Comment inside array
+                item2
+            ] # Comment after array
+            """;
+        Parameters params = AponParser.parse(apon);
+        assertEquals("val1", params.getString("key1"));
+        assertEquals("val2", params.getString("key2"));
+        assertEquals("value", params.getParameters("obj").getString("inner"));
+        assertEquals("item1", params.getStringList("array").get(0));
+        assertEquals("item2", params.getStringList("array").get(1));
+    }
 
-        AponWriter writer = new AponWriter();
-        writer.comment("\ncomment line-1\ncomment line-2\ncomment line-3\n");
-        writer.write(params);
+    @Test
+    void testQuotedHash() throws AponParseException {
+        String apon = """
+            key1: "val1 # not a comment"
+            "key2 # not a comment": val2
+            """;
+        Parameters params = AponParser.parse(apon);
+        assertEquals("val1 # not a comment", params.getString("key1"));
+        assertEquals("val2", params.getString("key2 # not a comment"));
+    }
 
-        String expected = """
-                #
-                # comment line-1
-                # comment line-2
-                # comment line-3
-                #
-                system: null
-                """;
+    @Test
+    void testNestedInlineComments() throws AponParseException {
+        // In APON, # is a line-end comment.
+        // If multiple items are on the same line, everything after # is ignored.
+        String apon = "key1: val1 # comment, key2: val2";
+        Parameters params = AponParser.parse(apon);
+        assertEquals("val1", params.getString("key1"));
+        // key2 should be null because it's part of the comment
+        org.junit.jupiter.api.Assertions.assertNull(params.getString("key2"));
 
-        assertEquals(expected.replace("\r\n", "\n"), writer.toString().replace("\r\n", "\n"));
+        // If they are on different lines, it works as expected
+        String apon2 = """
+            key1: val1 # comment
+            key2: val2 # comment
+            """;
+        Parameters params2 = AponParser.parse(apon2);
+        assertEquals("val1", params2.getString("key1"));
+        assertEquals("val2", params2.getString("key2"));
     }
 
 }
