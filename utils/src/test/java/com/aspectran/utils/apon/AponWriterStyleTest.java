@@ -63,7 +63,7 @@ class AponWriterStyleTest {
                 "  |line1" + SYSTEM_NEW_LINE +
                 "  |line2" + SYSTEM_NEW_LINE +
                 ")" + SYSTEM_NEW_LINE;
-        Parameters params = AponParser.parse(apon);
+        Parameters params = AponReader.read(apon);
 
         // Convert to COMPACT
         params.setRenderStyle(AponRenderStyle.COMPACT);
@@ -71,7 +71,7 @@ class AponWriterStyleTest {
         System.out.println("Compact:\n" + compact);
 
         // Parse compact back
-        Parameters params2 = AponParser.parse(compact);
+        Parameters params2 = AponReader.read(compact);
         assertEquals("val1", params2.getString("key1"));
         assertEquals("line1" + SYSTEM_NEW_LINE + "line2", params2.getString("text"));
 
@@ -81,7 +81,7 @@ class AponWriterStyleTest {
         System.out.println("Single Line:\n" + singleLine);
 
         // Parse singleLine back
-        Parameters params3 = AponParser.parse(singleLine);
+        Parameters params3 = AponReader.read(singleLine);
         assertEquals("val1", params3.getString("key1"));
         assertEquals("line1" + SYSTEM_NEW_LINE + "line2", params3.getString("text"));
     }

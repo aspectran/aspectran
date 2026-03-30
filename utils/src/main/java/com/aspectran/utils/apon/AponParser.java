@@ -638,17 +638,4 @@ public class AponParser {
         return e;
     }
 
-    public static Parameters parse(String apon) throws AponParseException {
-        return parse(apon, new VariableParameters());
-    }
-
-    public static <T extends Parameters> T parse(String apon, Class<T> requiredType) throws AponParseException {
-        return parse(apon, ClassUtils.createInstance(requiredType));
-    }
-
-    public static <T extends Parameters> T parse(String apon, T parameters) throws AponParseException {
-        if (StringUtils.isEmpty(apon)) return parameters;
-        return new AponParser(apon).parse(parameters);
-    }
-
 }

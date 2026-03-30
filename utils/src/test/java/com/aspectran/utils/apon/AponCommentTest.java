@@ -39,7 +39,7 @@ class AponCommentTest {
                 item2
             ] # Comment after array
             """;
-        Parameters params = AponParser.parse(apon);
+        Parameters params = AponReader.read(apon);
         assertEquals("val1", params.getString("key1"));
         assertEquals("val2", params.getString("key2"));
         assertEquals("value", params.getParameters("obj").getString("inner"));
@@ -53,7 +53,7 @@ class AponCommentTest {
             key1: "val1 # not a comment"
             "key2 # not a comment": val2
             """;
-        Parameters params = AponParser.parse(apon);
+        Parameters params = AponReader.read(apon);
         assertEquals("val1 # not a comment", params.getString("key1"));
         assertEquals("val2", params.getString("key2 # not a comment"));
     }
@@ -63,7 +63,7 @@ class AponCommentTest {
         // In APON, # is a line-end comment.
         // If multiple items are on the same line, everything after # is ignored.
         String apon = "key1: val1 # comment, key2: val2";
-        Parameters params = AponParser.parse(apon);
+        Parameters params = AponReader.read(apon);
         assertEquals("val1", params.getString("key1"));
         // key2 should be null because it's part of the comment
         org.junit.jupiter.api.Assertions.assertNull(params.getString("key2"));
@@ -73,7 +73,7 @@ class AponCommentTest {
             key1: val1 # comment
             key2: val2 # comment
             """;
-        Parameters params2 = AponParser.parse(apon2);
+        Parameters params2 = AponReader.read(apon2);
         assertEquals("val1", params2.getString("key1"));
         assertEquals("val2", params2.getString("key2"));
     }
