@@ -25,11 +25,11 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A {@link Response} implementation that dispatches the request to a view technology
@@ -47,8 +47,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DispatchResponse implements Response {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatchResponse.class);
-
-    private static final Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
 
     private final DispatchRule dispatchRule;
 
@@ -124,18 +122,19 @@ public class DispatchResponse implements Response {
      *   <li>If a dispatcher is already configured in the {@code DispatchRule}, it is returned.</li>
      *   <li>Otherwise, the dispatcher name is retrieved from the rule or from the activity's
      *       settings ({@link ViewDispatcher#VIEW_DISPATCHER_SETTING_NAME}).</li>
-     *   <li>The internal cache is checked for a singleton instance of the dispatcher.</li>
-     *   <li>If not found, the dispatcher bean is resolved from the activity context by its name
-     *       or class.</li>
-     *   <li>If the resolved dispatcher is a singleton, it is stored in the cache for future use.</li>
+     *   <li>The dispatcher bean is resolved from the activity context by its name or class.</li>
+     *   <li>If the resolved dispatcher is a singleton, it is stored in the {@code DispatchRule}
+     *       for future use within the same context.</li>
      * </ol>
      * @param activity the current Activity
      * @return the resolved view dispatcher
      * @throws ViewDispatcherException if the ViewDispatcher cannot be determined
      */
+    @NonNull
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
-        if (dispatchRule.getViewDispatcher() != null) {
-            return dispatchRule.getViewDispatcher();
+        ViewDispatcher viewDispatcher = dispatchRule.getViewDispatcher();
+        if (viewDispatcher != null) {
+            return viewDispatcher;
         }
 
         try {
@@ -149,24 +148,15 @@ public class DispatchResponse implements Response {
                 }
             }
 
-            ViewDispatcher viewDispatcher = cache.get(dispatcherName);
-            if (viewDispatcher == null) {
-                if (dispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-                    String dispatcherClassName = dispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                    Class<?> dispatcherClass = activity.getClassLoader().loadClass(dispatcherClassName);
-                    viewDispatcher = (ViewDispatcher)activity.getBean(dispatcherClass);
-                } else {
-                    viewDispatcher = activity.getBean(dispatcherName);
-                }
-                if (viewDispatcher == null) {
-                    throw new IllegalArgumentException("No bean named '" + dispatcherName + "' is defined");
-                }
-                if (viewDispatcher.isSingleton()) {
-                    ViewDispatcher existing = cache.putIfAbsent(dispatcherName, viewDispatcher);
-                    if (existing != null) {
-                        viewDispatcher = existing;
-                    }
-                }
+            if (dispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+                String dispatcherClassName = dispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+                Class<?> dispatcherClass = activity.getClassLoader().loadClass(dispatcherClassName);
+                viewDispatcher = (ViewDispatcher)activity.getBean(dispatcherClass);
+            } else {
+                viewDispatcher = activity.getBean(ViewDispatcher.class, dispatcherName);
+            }
+            if (viewDispatcher.isSingleton()) {
+                dispatchRule.setViewDispatcher(viewDispatcher);
             }
             return viewDispatcher;
         } catch (Exception e) {

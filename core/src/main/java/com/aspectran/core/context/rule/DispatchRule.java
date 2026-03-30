@@ -240,16 +240,16 @@ public class DispatchRule implements Replicable<DispatchRule> {
     /**
      * Creates a new instance of DispatchRule.
      * @param name the dispatch name
-     * @param dispatcher the name of the view dispatcher bean
+     * @param dispatcherName the name of the view dispatcher bean
      * @param contentType the content type
      * @param encoding the character encoding
      * @return the dispatch rule
      * @throws IllegalRuleException if an illegal rule is found
      */
     @NonNull
-    public static DispatchRule newInstance(String name, String dispatcher, String contentType, String encoding)
+    public static DispatchRule newInstance(String name, String dispatcherName, String contentType, String encoding)
             throws IllegalRuleException {
-        return newInstance(name, dispatcher, contentType, encoding, null);
+        return newInstance(name, dispatcherName, contentType, encoding, null);
     }
 
     /**
