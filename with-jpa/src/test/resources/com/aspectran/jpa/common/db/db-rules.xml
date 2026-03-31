@@ -8,11 +8,13 @@
     </description>
 
     <environment>
+        <property name="db.name.uuid">#{method:java.util.UUID^randomUUID}</property>
+        <property name="db.name.suffix">%{uuid_random}</property>
         <properties profile="hibernate">
-            <item name="petclinic.database.name">hibernate_test</item>
+            <item name="petclinic.database.name">hibernate_test_%{db.name.suffix}</item>
         </properties>
         <properties profile="eclipselink">
-            <item name="petclinic.database.name">eclipselink_test</item>
+            <item name="petclinic.database.name">eclipselink_test_%{db.name.suffix}</item>
         </properties>
     </environment>
 
