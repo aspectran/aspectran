@@ -21,15 +21,17 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * An {@link Environment} implementation specific to the {@link ActivityContext}.
  *
  * <p>This class manages profiles via {@link EnvironmentProfiles} and provides a
  * unique approach to properties. Instead of holding static property values,
- * it stores {@link ItemRule} instances. Property values are resolved dynamically
- * at runtime by evaluating these rules within the context of the current
- * {@link Activity}. This allows for powerful, context-aware configuration.</p>
+ * it stores {@link ItemRule} instances. Property values are resolved at runtime
+ * by evaluating these rules within the context of the current {@link Activity}.
+ * Resolved values are cached for subsequent access to ensure consistency.</p>
  */
 public class ActivityEnvironment implements Environment {
 
@@ -38,6 +40,8 @@ public class ActivityEnvironment implements Environment {
     private final EnvironmentProfiles environmentProfiles;
 
     private final ItemRuleMap propertyItemRuleMap = new ItemRuleMap();
+
+    private final Map<String, Object> propertyCache = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new activity environment.
@@ -100,13 +104,22 @@ public class ActivityEnvironment implements Environment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getProperty(String name, Activity activity) {
-        ItemRule itemRule = propertyItemRuleMap.get(name);
-        if (itemRule != null) {
-            return activity.getItemEvaluator().evaluate(itemRule);
-        } else {
-            return null;
+        Object value = propertyCache.get(name);
+        if (value == null) {
+            ItemRule itemRule = propertyItemRuleMap.get(name);
+            if (itemRule != null && activity != null) {
+                value = activity.getItemEvaluator().evaluate(itemRule);
+                if (value != null) {
+                    Object existing = propertyCache.putIfAbsent(name, value);
+                    if (existing != null) {
+                        value = existing;
+                    }
+                }
+            }
         }
+        return (T)value;
     }
 
     @Override
