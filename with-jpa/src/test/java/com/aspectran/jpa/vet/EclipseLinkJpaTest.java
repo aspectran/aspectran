@@ -24,7 +24,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import javax.sql.DataSource;
 import java.io.File;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
@@ -45,13 +44,6 @@ class EclipseLinkJpaTest {
         aspectranConfig.touchContextConfig().setBasePath(basePath);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
-
-        // Manually initialize the database once
-        DataSource ds = aspectran.getBean("dataSource");
-        try (java.sql.Connection conn = ds.getConnection();
-             java.sql.Statement stmt = conn.createStatement()) {
-            stmt.execute("RUNSCRIPT FROM 'classpath:com/aspectran/jpa/common/db/h2/petclinic-creation.sql'");
-        }
     }
 
     @AfterAll

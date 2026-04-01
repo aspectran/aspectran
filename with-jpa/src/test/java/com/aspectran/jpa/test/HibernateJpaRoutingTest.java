@@ -20,12 +20,7 @@ import com.aspectran.jpa.common.model.Vet;
 import com.aspectran.test.ActivityTester;
 import com.aspectran.test.AspectranTest;
 import org.jspecify.annotations.NonNull;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,22 +35,6 @@ import static org.junit.jupiter.api.Assertions.fail;
     }
 )
 class HibernateJpaRoutingTest {
-
-    @BeforeAll
-    static void initializeDatabase(@NonNull ActivityTester tester) throws ActivityPerformException {
-        tester.perform(activity -> {
-            DataSource ds = activity.getBean("dataSource");
-            try (Connection conn = ds.getConnection();
-                 Statement stmt = conn.createStatement()) {
-                // Manually run the creation script once
-                stmt.execute("RUNSCRIPT FROM 'classpath:com/aspectran/jpa/common/db/h2/petclinic-creation.sql'");
-                System.out.println("Database initialized successfully.");
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to initialize database", e);
-            }
-            return null;
-        });
-    }
 
     @Test
     void testIntelligentRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
