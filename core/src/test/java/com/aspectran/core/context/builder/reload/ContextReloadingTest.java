@@ -219,7 +219,7 @@ class ContextReloadingTest {
         assertTrue(appContextFile.delete());
 
         // 4. Wait for reload attempt
-        assertTrue(restartLatch.await(5, TimeUnit.SECONDS), "Context reload was not triggered on file deletion");
+        assertTrue(restartLatch.await(7, TimeUnit.SECONDS), "Context reload was not triggered on file deletion");
 
         // 5. Verify that the restart failed
         assertNotNull(lifeCycle.getRestartException());

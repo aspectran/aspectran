@@ -20,7 +20,10 @@ import com.aspectran.jpa.common.model.Vet;
 import com.aspectran.test.ActivityTester;
 import com.aspectran.test.AspectranTest;
 import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,6 +38,36 @@ import static org.junit.jupiter.api.Assertions.fail;
     }
 )
 class HibernateJpaRoutingTest {
+
+    @BeforeAll
+    static void delay() throws InterruptedException {
+        System.out.println("Waiting for the database to be ready...");
+        TimeUnit.MILLISECONDS.sleep(1100);
+    }
+
+    @Test
+    void testIntelligentRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
+        tester.perform(activity -> {
+            JpaTestDao intelligentDao = activity.getBean("intelligentDao");
+
+            // 1. Insert a vet (Triggers intelligentTxAspect - Writable)
+            Vet vet = new Vet();
+            vet.setFirstName("Intelligent");
+            vet.setLastName("User");
+            intelligentDao.insertVet(vet);
+            assertNotNull(vet.getId());
+
+            // 2. Get the vet (Triggers intelligentReadOnlyTxAspect - ReadOnly)
+            // It reuses the open writable session (Intelligent Routing).
+            // Therefore, the uncommitted record should be visible.
+            Vet foundVet = intelligentDao.getVet(vet.getId());
+            System.out.println("Found vet in Intelligent session (reused): " + (foundVet != null));
+            assertNotNull(foundVet, "Record should be visible as it reuses the same transaction session");
+            assertEquals("Intelligent", foundVet.getFirstName());
+
+            return null;
+        });
+    }
 
     @Test
     void testReadOnlySession(@NonNull ActivityTester tester) throws ActivityPerformException {
@@ -71,30 +104,6 @@ class HibernateJpaRoutingTest {
             }
             return null;
 
-        });
-    }
-
-    @Test
-    void testIntelligentRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
-        tester.perform(activity -> {
-            JpaTestDao intelligentDao = activity.getBean("intelligentDao");
-
-            // 1. Insert a vet (Triggers intelligentTxAspect - Writable)
-            Vet vet = new Vet();
-            vet.setFirstName("Intelligent");
-            vet.setLastName("User");
-            intelligentDao.insertVet(vet);
-            assertNotNull(vet.getId());
-
-            // 2. Get the vet (Triggers intelligentReadOnlyTxAspect - ReadOnly)
-            // It reuses the open writable session (Intelligent Routing).
-            // Therefore, the uncommitted record should be visible.
-            Vet foundVet = intelligentDao.getVet(vet.getId());
-            System.out.println("Found vet in Intelligent session (reused): " + (foundVet != null));
-            assertNotNull(foundVet, "Record should be visible as it reuses the same transaction session");
-            assertEquals("Intelligent", foundVet.getFirstName());
-
-            return null;
         });
     }
 
