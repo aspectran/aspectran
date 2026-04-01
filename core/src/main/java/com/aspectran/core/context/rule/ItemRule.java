@@ -595,6 +595,23 @@ public class ItemRule {
     }
 
     /**
+     * Returns whether the item's value contains at least one token of the specified type.
+     * @param tokenType the token type to check for
+     * @return true if the item has at least one token of the specified type, false otherwise
+     */
+    public boolean hasToken(TokenType tokenType) {
+        Token[] allTokens = getAllTokens();
+        if (allTokens != null) {
+            for (Token t : allTokens) {
+                if (t.getType() == tokenType) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns whether the item has a value that can be evaluated at runtime.
      * @return true if the item has an evaluatable value
      */
@@ -605,12 +622,12 @@ public class ItemRule {
 
     /**
      * Returns whether the item's value consists only of fixed text (no dynamic tokens).
-     * @return true if the value is fixed, false otherwise
+     * @return true if the value is literal, false otherwise
      */
-    public boolean hasOnlyFixedValue() {
+    public boolean isLiteral() {
         Token[] allTokens = getAllTokens();
         if (allTokens != null) {
-            for (Token t : getAllTokens()) {
+            for (Token t : allTokens) {
                 if (t.getType() != TokenType.TEXT) {
                     return false;
                 }

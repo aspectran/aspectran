@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.TokenType;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * unique approach to properties. Instead of holding static property values,
  * it stores {@link ItemRule} instances. Property values are resolved at runtime
  * by evaluating these rules within the context of the current {@link Activity}.
- * Resolved values are cached for subsequent access to ensure consistency.</p>
+ * Resolved values are cached for subsequent access if they contain property
+ * references, ensuring consistency when one property depends on another.</p>
  */
 public class ActivityEnvironment implements Environment {
 
@@ -111,7 +113,7 @@ public class ActivityEnvironment implements Environment {
             ItemRule itemRule = propertyItemRuleMap.get(name);
             if (itemRule != null && activity != null) {
                 value = activity.getItemEvaluator().evaluate(itemRule);
-                if (value != null) {
+                if (value != null && itemRule.hasToken(TokenType.PROPERTY)) {
                     Object existing = propertyCache.putIfAbsent(name, value);
                     if (existing != null) {
                         value = existing;

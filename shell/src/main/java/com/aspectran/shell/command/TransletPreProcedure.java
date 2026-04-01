@@ -276,7 +276,7 @@ public class TransletPreProcedure {
     private Collection<ItemRule> readEachParameter(@NonNull Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         for (ItemRule ir : itemRules) {
-            if (!ir.hasOnlyFixedValue()) {
+            if (!ir.isLiteral()) {
                 String value = readParameter(ir);
                 if (StringUtils.hasLength(value)) {
                     parameterMap.setParameter(ir.getName(), value);
@@ -334,7 +334,7 @@ public class TransletPreProcedure {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         Map<Token, Set<ItemRule>> valueTokens = new LinkedHashMap<>();
         for (ItemRule itemRule : itemRules) {
-            if (!itemRule.hasOnlyFixedValue()) {
+            if (!itemRule.isLiteral()) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
                     Token t = new Token(TokenType.PARAMETER, itemRule.getName());
