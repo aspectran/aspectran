@@ -25,10 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,40 +41,20 @@ import static org.junit.jupiter.api.Assertions.fail;
 )
 class HibernateJpaRoutingTest {
 
-    private static final AtomicBoolean initialized = new AtomicBoolean(false);
-
     @BeforeAll
-    static void ensureInitialized(@NonNull ActivityTester tester) throws ActivityPerformException {
-        if (initialized.compareAndSet(false, true)) {
-            tester.perform(activity -> {
-                DataSource ds = activity.getBean("dataSource");
-                waitForDataLoad(ds, activity.getEnvironment().getProperty("petclinic.database.name"));
-                return null;
-            });
-        }
-    }
-
-    static void waitForDataLoad(DataSource ds, String name) {
-        long timeout = 5000; // Wait up to 5 seconds
-        long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() - start < timeout) {
+    static void initializeDatabase(@NonNull ActivityTester tester) throws ActivityPerformException {
+        tester.perform(activity -> {
+            DataSource ds = activity.getBean("dataSource");
             try (Connection conn = ds.getConnection();
-                Statement stmt = conn.createStatement()) {
-                ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM vets");
-                if (rs.next() && rs.getInt(1) >= 6) {
-                    return;
-                }
+                 Statement stmt = conn.createStatement()) {
+                // Manually run the creation script once
+                stmt.execute("RUNSCRIPT FROM 'classpath:com/aspectran/jpa/common/db/h2/petclinic-creation.sql'");
+                System.out.println("Database initialized successfully.");
             } catch (Exception e) {
-                // When the table does not exist yet or is loading
+                throw new RuntimeException("Failed to initialize database", e);
             }
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
-        }
-        System.err.println("Warning: Initialization timeout for " + name);
+            return null;
+        });
     }
 
     @Test
