@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean.proxy;
 
+import com.aspectran.core.activity.HintParameters;
 import com.aspectran.core.component.bean.BeanFactoryUtils;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
@@ -25,6 +26,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JDK dynamic-proxy implementation that applies Aspectran AOP advice
@@ -46,7 +49,6 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         super(context);
         this.beanRule = beanRule;
         this.bean = bean;
-        scanHints(bean.getClass());
     }
 
     @Override
@@ -83,9 +85,11 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         } else {
             bean = BeanFactoryUtils.newInstance(beanRule);
         }
-        JdkBeanProxy proxy = new JdkBeanProxy(context, beanRule, bean);
+        JdkBeanProxy invocationHandler = new JdkBeanProxy(context, beanRule, bean);
+        Map<Method, List<HintParameters>> methodHints = ProxyHintScanner.scan(beanRule);
+        invocationHandler.setMethodHints(methodHints);
         return Proxy.newProxyInstance(context.getAvailableActivity().getClassLoader(),
-                beanRule.getBeanClass().getInterfaces(), proxy);
+                beanRule.getBeanClass().getInterfaces(), invocationHandler);
     }
 
 }

@@ -31,12 +31,11 @@ import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
+import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +113,7 @@ public abstract class AbstractActivity implements Activity {
     /**
      * The stack of hints pushed onto the activity.
      */
-    private Deque<HintParameters> hintStack;
+    private ArrayStack<HintParameters> hintStack;
 
     /**
      * Creates a new AbstractActivity.
@@ -339,11 +338,12 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public HintParameters peekHint(String type) {
-        if (hintStack != null) {
+        if (hintStack != null && !hintStack.isEmpty()) {
             boolean barrier = false;
             // Search from top to bottom (most recently pushed to least recently pushed)
-            for (HintParameters hint : hintStack) {
-                if (hint.isMarker()) {
+            for (int i = hintStack.size() - 1; i >= 0; i--) {
+                HintParameters hint = hintStack.get(i);
+                if (hint == null) {
                     barrier = true;
                     continue;
                 }
@@ -366,7 +366,7 @@ public abstract class AbstractActivity implements Activity {
             return 0;
         }
         if (hintStack == null) {
-            hintStack = new ArrayDeque<>();
+            hintStack = new ArrayStack<>();
         }
         hintStack.push(hint);
         return 1;
@@ -374,19 +374,19 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public int pushHint(List<HintParameters> hints) {
-        if (hints == null || hints.isEmpty()) {
-            return 0;
-        }
         if (hintStack == null) {
-            hintStack = new ArrayDeque<>();
+            hintStack = new ArrayStack<>();
         }
-        hintStack.push(new HintParameters());
+        hintStack.push(null);
         int pushedCount = 1;
-        for (HintParameters hint : hints) {
-            pushedCount += pushHint(hint);
+        if (hints != null && !hints.isEmpty()) {
+            for (HintParameters hint : hints) {
+                pushedCount += pushHint(hint);
+            }
         }
         return pushedCount;
     }
+
 
     @Override
     public void popHint() {

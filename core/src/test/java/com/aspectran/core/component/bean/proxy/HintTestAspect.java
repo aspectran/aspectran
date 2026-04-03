@@ -34,12 +34,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         order = 1
 )
 @Joinpoint(
-        pointcut = "+: @class:com.aspectran.core.component.bean.proxy.HintTestService"
+        pointcut = {
+                "+: @class:com.aspectran.core.component.bean.proxy.HintTestService^testHint",
+                "+: @class:com.aspectran.core.component.bean.proxy.HintTestService^inner"
+        }
 )
 public class HintTestAspect {
 
     @Before
-    public void testHint(@NonNull Translet translet) {
+    public void checkHint(@NonNull Translet translet) {
         String testCase = translet.getAttribute("testCase");
         if ("testHint".equals(testCase)) {
             HintParameters layoutHint = translet.peekHint("layout");

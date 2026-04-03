@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean.proxy;
 
+import com.aspectran.core.activity.HintParameters;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
@@ -24,6 +25,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Javassist-based proxy that applies Aspectran AOP advice to concrete classes.
@@ -40,7 +43,6 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
     private JavassistBeanProxy(@NonNull ActivityContext context, @NonNull BeanRule beanRule) {
         super(context);
         this.beanRule = beanRule;
-        scanHints(beanRule.getBeanClass());
     }
 
     @Override
@@ -73,7 +75,9 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
         try {
             ProxyFactory proxyFactory = new ProxyFactory();
             proxyFactory.setSuperclass(beanRule.getBeanClass());
-            MethodHandler methodHandler = new JavassistBeanProxy(context, beanRule);
+            JavassistBeanProxy methodHandler = new JavassistBeanProxy(context, beanRule);
+            Map<Method, List<HintParameters>> methodHints = ProxyHintScanner.scan(beanRule);
+            methodHandler.setMethodHints(methodHints);
             return proxyFactory.create(argTypes, args, methodHandler);
         } catch (Exception e) {
             if (e instanceof NoSuchMethodException) {

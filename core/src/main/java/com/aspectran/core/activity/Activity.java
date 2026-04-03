@@ -324,31 +324,33 @@ public interface Activity {
     HintParameters peekHint(String type);
 
     /**
-     * Pushes a hint onto the activity's hint stack.
+     * Pushes a single hint onto the current frame of the activity's hint stack.
+     * <p>Note that this method does not create a new frame boundary. To start a
+     * new frame with isolation, use {@link #pushHint(List)}.</p>
      * @param hint the hint parameters to push
-     * @return 1 if the hint was successfully pushed; 0 otherwise
+     * @return 1 if the hint was successfully pushed; 0 otherwise (e.g., if the hint is null or empty)
      */
     int pushHint(HintParameters hint);
 
     /**
-     * Pushes a list of hints onto the activity's hint stack, preceded by a
-     * frame boundary marker.
-     * <p>The marker ensures that non-propagated hints from the parent frame
-     * do not leak into the current call frame. The return value includes the
-     * total number of items added to the stack, including the boundary marker.</p>
-     * @param hints the list of hint parameters to push
-     * @return the total number of items successfully pushed, including the marker
+     * Pushes a list of hints onto the activity's hint stack, starting a new call frame
+     * by first pushing a frame boundary marker.
+     * <p>The marker ensures that non-propagated hints from parent frames are isolated
+     * from the current call frame. Even if the provided list is null or empty, a
+     * boundary marker is still pushed to ensure isolation for the new frame.</p>
+     * @param hints the list of hint parameters to push; may be {@code null} or empty
+     * @return the total number of items pushed onto the stack, including the boundary marker
      */
     int pushHint(List<HintParameters> hints);
 
     /**
-     * Pops the most recently pushed hint from the activity's hint stack.
+     * Pops the most recently pushed hint or marker from the activity's hint stack.
      */
     void popHint();
 
     /**
-     * Pops a specified number of hints from the activity's hint stack.
-     * @param count the number of hints to pop
+     * Pops a specified number of hints and markers from the activity's hint stack.
+     * @param count the number of items to pop
      */
     void popHint(int count);
 

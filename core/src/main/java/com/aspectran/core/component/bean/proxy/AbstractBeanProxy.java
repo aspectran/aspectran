@@ -28,8 +28,6 @@ import com.aspectran.core.component.aspect.RelevantAspectRuleHolder;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.annotation.Advisable;
 import com.aspectran.core.component.bean.annotation.Async;
-import com.aspectran.core.component.bean.annotation.Hint;
-import com.aspectran.core.component.bean.annotation.Hints;
 import com.aspectran.core.component.bean.async.AsyncExecutionException;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.context.ActivityContext;
@@ -45,9 +43,6 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionException;
@@ -76,6 +71,14 @@ public abstract class AbstractBeanProxy {
     public AbstractBeanProxy(@NonNull ActivityContext context) {
         this.context = context;
         this.aspectRuleRegistry = context.getAspectRuleRegistry();
+    }
+
+    /**
+     * Sets the collected hints for methods.
+     * @param methodHints the map of method hints
+     */
+    protected void setMethodHints(Map<Method, List<HintParameters>> methodHints) {
+        this.methodHints = methodHints;
     }
 
     /**
@@ -108,9 +111,19 @@ public abstract class AbstractBeanProxy {
                 }
             }
             return invoke(method, args, superInvoker, activity);
-        } else {
-            return superInvoker.invoke();
+        } else if (isHintableMethod(method)) {
+            Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
+            if (activity != null) {
+                List<HintParameters> hints = methodHints.get(method);
+                int pushedCount = activity.pushHint(hints);
+                try {
+                    return superInvoker.invoke();
+                } finally {
+                    activity.popHint(pushedCount);
+                }
+            }
         }
+        return superInvoker.invoke();
     }
 
     /**
@@ -240,11 +253,8 @@ public abstract class AbstractBeanProxy {
         }
 
         List<HintParameters> hints = (methodHints != null ? methodHints.get(method) : null);
-        int pushedCount = 0;
-        if (hints != null) {
-            Activity activityToUse = (proxyActivity != null ? proxyActivity : activity);
-            pushedCount = activityToUse.pushHint(hints);
-        }
+        Activity activityToUse = (proxyActivity != null ? proxyActivity : activity);
+        int pushedCount = activityToUse.pushHint(hints);
 
         try {
             String beanId = getBeanRule().getId();
@@ -276,10 +286,7 @@ public abstract class AbstractBeanProxy {
                 throw e;
             }
         } finally {
-            if (pushedCount > 0) {
-                Activity activityToUse = (proxyActivity != null ? proxyActivity : activity);
-                activityToUse.popHint(pushedCount);
-            }
+            activityToUse.popHint(pushedCount);
         }
     }
 
@@ -373,9 +380,7 @@ public abstract class AbstractBeanProxy {
       * @return true if the method is advisable, false otherwise
       */
      private boolean isAdvisableMethod(@NonNull Method method) {
-         return (method.isAnnotationPresent(Advisable.class) ||
-                 method.isAnnotationPresent(Async.class) ||
-                 isHintableMethod(method));
+         return (method.isAnnotationPresent(Advisable.class) || method.isAnnotationPresent(Async.class));
      }
 
      /**
@@ -429,152 +434,6 @@ public abstract class AbstractBeanProxy {
             }
         }
         return executor;
-    }
-
-    /**
-     * Scans the given bean class and its interfaces for {@link Hint} annotations
-     * and caches them for later use during method invocation.
-     * @param beanClass the bean class to scan
-     */
-    protected void scanHints(Class<?> beanClass) {
-        if (beanClass == null) {
-            return;
-        }
-        // Scan the class itself
-        for (Method method : beanClass.getMethods()) {
-            List<HintParameters> hints = scanMethodHints(method);
-            if (!hints.isEmpty()) {
-                addMethodHints(method, hints);
-                // If it's an implementation of an interface method, also register for that interface method
-                registerInterfaceMethods(beanClass, method, hints);
-            }
-        }
-        // Scan all interfaces
-        for (Class<?> iface : getAllInterfaces(beanClass)) {
-            for (Method method : iface.getMethods()) {
-                List<HintParameters> hints = scanMethodHints(method);
-                if (!hints.isEmpty()) {
-                    addMethodHints(method, hints);
-                }
-            }
-        }
-    }
-
-    /**
-     * Scans a specific method for {@link Hint} or {@link Hints} annotations.
-     * @param method the method to scan
-     * @return a list of hints found on the method
-     */
-    @NonNull
-    private List<HintParameters> scanMethodHints(@NonNull Method method) {
-        Hints hintsAnnotation = method.getAnnotation(Hints.class);
-        if (hintsAnnotation != null) {
-            Hint[] values = hintsAnnotation.value();
-            List<HintParameters> hints = new ArrayList<>(values.length);
-            for (Hint hint : values) {
-                hints.add(parseHint(hint));
-            }
-            return hints;
-        }
-        Hint hintAnnotation = method.getAnnotation(Hint.class);
-        if (hintAnnotation != null) {
-            return Collections.singletonList(parseHint(hintAnnotation));
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * Adds the collected hints for a method to the cache.
-     * @param method the method to which the hints apply
-     * @param hints the list of hints to add
-     */
-    private void addMethodHints(Method method, List<HintParameters> hints) {
-        if (methodHints == null) {
-            methodHints = new HashMap<>();
-        }
-        methodHints.computeIfAbsent(method, k -> new ArrayList<>()).addAll(hints);
-    }
-
-    /**
-     * Registers implementation-level hints for all corresponding interface methods.
-     * @param beanClass the bean class
-     * @param implMethod the implementation method
-     * @param hints the hints to register
-     */
-    private void registerInterfaceMethods(Class<?> beanClass, Method implMethod, List<HintParameters> hints) {
-        for (Class<?> iface : getAllInterfaces(beanClass)) {
-            try {
-                Method ifaceMethod = iface.getMethod(implMethod.getName(), implMethod.getParameterTypes());
-                addMethodHints(ifaceMethod, hints);
-            } catch (NoSuchMethodException e) {
-                // ignore
-            }
-        }
-    }
-
-    /**
-     * Returns all interfaces implemented by the given class and its superclasses.
-     * @param clazz the class to inspect
-     * @return a list of all implemented interfaces
-     */
-    @NonNull
-    private List<Class<?>> getAllInterfaces(Class<?> clazz) {
-        List<Class<?>> interfaces = new ArrayList<>();
-        while (clazz != null) {
-            for (Class<?> iface : clazz.getInterfaces()) {
-                if (!interfaces.contains(iface)) {
-                    interfaces.add(iface);
-                    getAllInterfaces(iface, interfaces);
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return interfaces;
-    }
-
-    /**
-     * Recursively collects all super-interfaces of the given interface.
-     * @param iface the interface to inspect
-     * @param allInterfaces the list to populate with discovered interfaces
-     */
-    private void getAllInterfaces(@NonNull Class<?> iface, List<Class<?>> allInterfaces) {
-        for (Class<?> superIface : iface.getInterfaces()) {
-            if (!allInterfaces.contains(superIface)) {
-                allInterfaces.add(superIface);
-                getAllInterfaces(superIface, allInterfaces);
-            }
-        }
-    }
-
-    /**
-     * Parses a {@link Hint} annotation's value into a {@link HintParameters} object.
-     * @param hintAnnotation the hint annotation to parse
-     * @return the parsed hint parameters
-     * @throws BeanProxyException if parsing the hint value fails
-     */
-    @NonNull
-    private HintParameters parseHint(@NonNull Hint hintAnnotation) {
-        try {
-            return new HintParameters(hintAnnotation.type(), hintAnnotation.value(), hintAnnotation.propagated());
-        } catch (Exception e) {
-            throw new BeanProxyException(getBeanRule(), "Failed to parse @Hint(type=\"" +
-                hintAnnotation.type() + "\", value=\"" + hintAnnotation.value() + "\")", e);
-        }
-    }
-
-    /**
-     * A functional interface for invoking the original (super) method of a proxied bean.
-     */
-    @FunctionalInterface
-    protected interface SuperInvoker {
-
-        /**
-         * Invokes the original method.
-         * @return the result of the invocation
-         * @throws Exception if the invocation fails
-         */
-        Object invoke() throws Exception;
-
     }
 
 }

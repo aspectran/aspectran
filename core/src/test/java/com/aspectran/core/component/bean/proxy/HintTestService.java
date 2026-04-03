@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean.proxy;
 
+import com.aspectran.core.component.bean.annotation.Advisable;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Hint;
@@ -23,6 +24,7 @@ import com.aspectran.core.component.bean.annotation.Hint;
 @Bean
 public class HintTestService {
 
+    @Advisable
     @Hint(type = "layout", value = "name: popup, width: 800")
     @Hint(type = "transactional", value = "readOnly: true")
     public void testHint() {
@@ -39,6 +41,7 @@ public class HintTestService {
         inner();
     }
 
+    @Advisable
     public void inner() {
         // The aspect will verify the visibility of hints for this call
     }

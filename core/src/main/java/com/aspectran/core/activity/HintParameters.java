@@ -44,15 +44,6 @@ public class HintParameters extends DefaultParameters implements Serializable {
     private final boolean propagated;
 
     /**
-     * Constructs a new HintParameters as a frame boundary marker.
-     */
-    public HintParameters() {
-        super();
-        this.type = null;
-        this.propagated = true;
-    }
-
-    /**
      * Constructs a new HintParameters with the specified type.
      * @param type the category or type of the hint (e.g., "transactional", "cache")
      */
@@ -96,7 +87,7 @@ public class HintParameters extends DefaultParameters implements Serializable {
 
     /**
      * Returns the type of this hint, which identifies its intended consumer or category.
-     * @return the hint type, or {@code null} if this is a marker
+     * @return the hint type
      */
     public String getType() {
         return type;
@@ -108,14 +99,6 @@ public class HintParameters extends DefaultParameters implements Serializable {
      */
     public boolean isPropagated() {
         return propagated;
-    }
-
-    /**
-     * Returns whether this instance represents a frame boundary marker.
-     * @return {@code true} if this is a marker; {@code false} otherwise
-     */
-    public boolean isMarker() {
-        return (type == null);
     }
 
 }
