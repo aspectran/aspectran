@@ -46,6 +46,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -466,19 +467,20 @@ public abstract class AbstractBeanProxy {
      */
     @NonNull
     private List<HintParameters> scanMethodHints(@NonNull Method method) {
-        List<HintParameters> hints = new ArrayList<>();
         Hints hintsAnnotation = method.getAnnotation(Hints.class);
         if (hintsAnnotation != null) {
-            for (Hint hint : hintsAnnotation.value()) {
+            Hint[] values = hintsAnnotation.value();
+            List<HintParameters> hints = new ArrayList<>(values.length);
+            for (Hint hint : values) {
                 hints.add(parseHint(hint));
             }
-        } else {
-            Hint hintAnnotation = method.getAnnotation(Hint.class);
-            if (hintAnnotation != null) {
-                hints.add(parseHint(hintAnnotation));
-            }
+            return hints;
         }
-        return hints;
+        Hint hintAnnotation = method.getAnnotation(Hint.class);
+        if (hintAnnotation != null) {
+            return Collections.singletonList(parseHint(hintAnnotation));
+        }
+        return Collections.emptyList();
     }
 
     /**
