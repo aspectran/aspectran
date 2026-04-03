@@ -107,23 +107,9 @@ public abstract class AbstractBeanProxy {
                 }
             }
             return invoke(method, args, superInvoker, activity);
-        } else if (isHintableMethod(method)) {
-            Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
-            if (activity != null) {
-                List<HintParameters> hints = methodHints.get(method);
-                if (hints != null) {
-                    int pushedCount = activity.pushHint(hints);
-                    if (pushedCount > 0) {
-                        try {
-                            return superInvoker.invoke();
-                        } finally {
-                            activity.popHint(pushedCount);
-                        }
-                    }
-                }
-            }
+        } else {
+            return superInvoker.invoke();
         }
-        return superInvoker.invoke();
     }
 
     /**
@@ -386,7 +372,9 @@ public abstract class AbstractBeanProxy {
       * @return true if the method is advisable, false otherwise
       */
      private boolean isAdvisableMethod(@NonNull Method method) {
-         return (method.isAnnotationPresent(Advisable.class) || method.isAnnotationPresent(Async.class));
+         return (method.isAnnotationPresent(Advisable.class) ||
+                 method.isAnnotationPresent(Async.class) ||
+                 isHintableMethod(method));
      }
 
      /**
