@@ -312,25 +312,32 @@ public interface Activity {
     void putSetting(String name, Object value);
 
     /**
-     * Returns a hint of the specified type from the activity's hint stack.
-     * The stack is searched from top to bottom (most recently pushed to least recently pushed).
+     * Returns a hint of the specified type from the activity's hint stack,
+     * respecting call frame boundaries.
+     * <p>The stack is searched from top to bottom. If a frame boundary (marker)
+     * is encountered during the search, only hints from upper frames that are
+     * explicitly marked as propagated will be considered.</p>
      * @param type the hint type to look for
-     * @return the hint parameters, or {@code null} if no hint of the specified type is found
+     * @return the hint parameters, or {@code null} if no matching hint is found
+     *         within the current frame or allowed by propagation rules
      */
     HintParameters peekHint(String type);
 
     /**
      * Pushes a hint onto the activity's hint stack.
-     * Pushed hints will be available for subsequent processing until they are popped.
      * @param hint the hint parameters to push
      * @return 1 if the hint was successfully pushed; 0 otherwise
      */
     int pushHint(HintParameters hint);
 
     /**
-     * Pushes a list of hints onto the activity's hint stack.
+     * Pushes a list of hints onto the activity's hint stack, preceded by a
+     * frame boundary marker.
+     * <p>The marker ensures that non-propagated hints from the parent frame
+     * do not leak into the current call frame. The return value includes the
+     * total number of items added to the stack, including the boundary marker.</p>
      * @param hints the list of hint parameters to push
-     * @return the number of hints successfully pushed
+     * @return the total number of items successfully pushed, including the marker
      */
     int pushHint(List<HintParameters> hints);
 

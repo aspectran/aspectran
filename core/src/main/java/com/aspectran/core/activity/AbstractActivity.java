@@ -34,7 +34,6 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.apon.Parameters;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -341,21 +340,26 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public HintParameters peekHint(String type) {
         if (hintStack != null) {
+            boolean barrier = false;
             // Search from top to bottom (most recently pushed to least recently pushed)
             for (HintParameters hint : hintStack) {
+                if (hint.isMarker()) {
+                    barrier = true;
+                    continue;
+                }
                 if (type.equals(hint.getType())) {
-                    return hint;
+                    // If a frame boundary (barrier) has been encountered, only hints marked
+                    // for propagation are allowed to pass through from upper frames.
+                    // Hints within the current frame (before any barrier) are always returned.
+                    if (!barrier || hint.isPropagated()) {
+                        return hint;
+                    }
                 }
             }
         }
         return null;
     }
 
-    /**
-     * Pushes a hint onto the activity's hint stack.
-     * @param hint the hint parameters to push
-     * @return 1 if the hint was successfully pushed; 0 otherwise
-     */
     @Override
     public int pushHint(HintParameters hint) {
         if (hint == null || hint.isEmpty()) {
@@ -373,7 +377,11 @@ public abstract class AbstractActivity implements Activity {
         if (hints == null || hints.isEmpty()) {
             return 0;
         }
-        int pushedCount = 0;
+        if (hintStack == null) {
+            hintStack = new ArrayDeque<>();
+        }
+        hintStack.push(new HintParameters());
+        int pushedCount = 1;
         for (HintParameters hint : hints) {
             pushedCount += pushHint(hint);
         }

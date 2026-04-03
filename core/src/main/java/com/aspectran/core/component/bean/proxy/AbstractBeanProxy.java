@@ -40,8 +40,6 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.apon.VariableParameters;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -113,18 +111,19 @@ public abstract class AbstractBeanProxy {
             Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
             if (activity != null) {
                 List<HintParameters> hints = methodHints.get(method);
-                int pushedCount = activity.pushHint(hints);
-                try {
-                    return superInvoker.invoke();
-                } finally {
-                    activity.popHint(pushedCount);
+                if (hints != null) {
+                    int pushedCount = activity.pushHint(hints);
+                    if (pushedCount > 0) {
+                        try {
+                            return superInvoker.invoke();
+                        } finally {
+                            activity.popHint(pushedCount);
+                        }
+                    }
                 }
-            } else {
-                return superInvoker.invoke();
             }
-        } else {
-            return superInvoker.invoke();
         }
+        return superInvoker.invoke();
     }
 
     /**
@@ -566,7 +565,7 @@ public abstract class AbstractBeanProxy {
     @NonNull
     private HintParameters parseHint(@NonNull Hint hintAnnotation) {
         try {
-            return new HintParameters(hintAnnotation.type(), hintAnnotation.value());
+            return new HintParameters(hintAnnotation.type(), hintAnnotation.value(), hintAnnotation.propagated());
         } catch (Exception e) {
             throw new BeanProxyException(getBeanRule(), "Failed to parse @Hint(type=\"" +
                 hintAnnotation.type() + "\", value=\"" + hintAnnotation.value() + "\")", e);

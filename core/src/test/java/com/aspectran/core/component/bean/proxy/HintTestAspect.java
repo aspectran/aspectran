@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.component.bean.proxy;
 
+import com.aspectran.core.activity.HintParameters;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Aspect;
 import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
-import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,12 +39,12 @@ public class HintTestAspect {
 
     @Before
     public void testHint(@NonNull Translet translet) {
-        Parameters layoutHint = translet.peekHint("layout");
+        HintParameters layoutHint = translet.peekHint("layout");
         assertNotNull(layoutHint, "layoutHint should not be null");
         assertEquals("popup", layoutHint.getString("name"));
         assertEquals(800, (int)layoutHint.getInt("width"));
 
-        Parameters txHint = translet.peekHint("transactional");
+        HintParameters txHint = translet.peekHint("transactional");
         assertNotNull(txHint, "txHint should not be null");
         assertTrue(txHint.getBoolean("readOnly"));
     }

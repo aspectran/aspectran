@@ -51,4 +51,14 @@ public @interface Hint {
      */
     String value() default "";
 
+    /**
+     * Returns whether the hint should be propagated to child method calls.
+     * <p>If {@code true} (default), the hint will be available for all subsequent
+     * method calls until it is popped from the stack. If {@code false}, the
+     * hint will only be available to the current method (and its aspects) and
+     * will be hidden from inner calls.</p>
+     * @return {@code true} if the hint should be propagated; {@code false} otherwise
+     */
+    boolean propagated() default true;
+
 }

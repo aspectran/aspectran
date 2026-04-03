@@ -41,13 +41,34 @@ public class HintParameters extends DefaultParameters implements Serializable {
 
     private final String type;
 
+    private final boolean propagated;
+
+    /**
+     * Constructs a new HintParameters as a frame boundary marker.
+     */
+    public HintParameters() {
+        super();
+        this.type = null;
+        this.propagated = true;
+    }
+
     /**
      * Constructs a new HintParameters with the specified type.
      * @param type the category or type of the hint (e.g., "transactional", "cache")
      */
     public HintParameters(String type) {
+        this(type, true);
+    }
+
+    /**
+     * Constructs a new HintParameters with the specified type and propagation control.
+     * @param type the category or type of the hint
+     * @param propagated whether the hint should be propagated to child calls
+     */
+    public HintParameters(String type, boolean propagated) {
         super();
         this.type = type;
+        this.propagated = propagated;
     }
 
     /**
@@ -57,16 +78,44 @@ public class HintParameters extends DefaultParameters implements Serializable {
      * @throws IOException if the APON string is malformed or cannot be parsed
      */
     public HintParameters(String type, String apon) throws IOException {
-        this(type);
+        this(type, apon, true);
+    }
+
+    /**
+     * Constructs a new HintParameters with the specified type, initial metadata,
+     * and propagation control.
+     * @param type the category or type of the hint
+     * @param apon the APON-formatted string containing the hint metadata
+     * @param propagated whether the hint should be propagated to child calls
+     * @throws IOException if the APON string is malformed or cannot be parsed
+     */
+    public HintParameters(String type, String apon, boolean propagated) throws IOException {
+        this(type, propagated);
         readFrom(apon);
     }
 
     /**
      * Returns the type of this hint, which identifies its intended consumer or category.
-     * @return the hint type
+     * @return the hint type, or {@code null} if this is a marker
      */
     public String getType() {
         return type;
+    }
+
+    /**
+     * Returns whether the hint should be propagated to child method calls.
+     * @return {@code true} if the hint should be propagated; {@code false} otherwise
+     */
+    public boolean isPropagated() {
+        return propagated;
+    }
+
+    /**
+     * Returns whether this instance represents a frame boundary marker.
+     * @return {@code true} if this is a marker; {@code false} otherwise
+     */
+    public boolean isMarker() {
+        return (type == null);
     }
 
 }

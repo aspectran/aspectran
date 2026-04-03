@@ -306,10 +306,14 @@ public interface Translet {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns a hint of the specified type from the activity's hint stack.
-     * The stack is searched from top to bottom (most recently pushed to least recently pushed).
+     * Returns a hint of the specified type from the activity's hint stack,
+     * respecting call frame boundaries.
+     * <p>The stack is searched from top to bottom. If a frame boundary (marker)
+     * is encountered during the search, only hints from upper frames that are
+     * explicitly marked as propagated will be considered.</p>
      * @param type the hint type to look for
-     * @return the hint parameters, or {@code null} if no hint of the specified type is found
+     * @return the hint parameters, or {@code null} if no matching hint is found
+     *         within the current frame or allowed by propagation rules
      */
     HintParameters peekHint(String type);
 
