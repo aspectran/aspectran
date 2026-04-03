@@ -34,7 +34,10 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.apon.Parameters;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -107,6 +110,11 @@ public abstract class AbstractActivity implements Activity {
      * Resolver for determining the current locale, optional.
      */
     private LocaleResolver localeResolver;
+
+    /**
+     * The stack of hints pushed onto the activity.
+     */
+    private Deque<Map<String, Parameters>> hintStack;
 
     /**
      * Creates a new AbstractActivity.
@@ -327,6 +335,38 @@ public abstract class AbstractActivity implements Activity {
             settings = new LinkedHashMap<>();
         }
         settings.put(name, value);
+    }
+
+    @Override
+    public Parameters peekHint(String type) {
+        if (hintStack != null) {
+            // Search from top to bottom (most recently pushed to least recently pushed)
+            for (Map<String, Parameters> hints : hintStack) {
+                Parameters hint = hints.get(type);
+                if (hint != null) {
+                    return hint;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void pushHints(Map<String, Parameters> hints) {
+        if (hints == null || hints.isEmpty()) {
+            return;
+        }
+        if (hintStack == null) {
+            hintStack = new ArrayDeque<>();
+        }
+        hintStack.push(hints);
+    }
+
+    @Override
+    public void popHints() {
+        if (hintStack != null && !hintStack.isEmpty()) {
+            hintStack.pop();
+        }
     }
 
     @Override

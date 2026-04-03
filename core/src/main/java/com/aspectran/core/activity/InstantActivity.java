@@ -141,9 +141,9 @@ public class InstantActivity extends CoreActivity {
 
     /**
      * Prepares this instant activity by ensuring adapters are initialized and by
-     * applying any configured attributes and parameters. If no response adapter is
-     * present, a new {@link DefaultResponseAdapter} backed by an
-     * {@link OutputStringWriter} will be created to capture output.
+     * applying any configured attributes and parameters.
+     * <p>If no translet is present, it also prepares the AOP advice rules to ensure
+     * that aspects can be applied to bean methods executed within this activity.</p>
      * @throws AdapterException if adapter initialization fails
      */
     @Override

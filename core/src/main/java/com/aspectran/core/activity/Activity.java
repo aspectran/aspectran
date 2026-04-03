@@ -36,8 +36,10 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.apon.Parameters;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the central execution object for a single request-response lifecycle.
@@ -310,6 +312,26 @@ public interface Activity {
      * @param value the value to set for the setting
      */
     void putSetting(String name, Object value);
+
+    /**
+     * Returns a hint of the specified type from the activity's hint stack.
+     * The stack is searched from top to bottom (most recently pushed to least recently pushed).
+     * @param type the hint type to look for
+     * @return the hint parameters, or {@code null} if no hint of the specified type is found
+     */
+    Parameters peekHint(String type);
+
+    /**
+     * Pushes a map of hints onto the activity's hint stack.
+     * Pushed hints will be available for subsequent processing until they are popped.
+     * @param hints the map of hints to push, where the key is the hint type
+     */
+    void pushHints(Map<String, Parameters> hints);
+
+    /**
+     * Pops the most recently pushed hints from the activity's hint stack.
+     */
+    void popHints();
 
     /**
      * Returns whether a {@link StringifyContext} is available for this activity.

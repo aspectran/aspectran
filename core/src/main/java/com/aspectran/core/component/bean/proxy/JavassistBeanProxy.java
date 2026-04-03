@@ -40,6 +40,7 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
     private JavassistBeanProxy(@NonNull ActivityContext context, @NonNull BeanRule beanRule) {
         super(context);
         this.beanRule = beanRule;
+        scanHints(beanRule.getBeanClass());
     }
 
     @Override

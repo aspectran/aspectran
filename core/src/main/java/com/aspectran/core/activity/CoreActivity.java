@@ -333,7 +333,9 @@ public class CoreActivity extends AdviceActivity {
                 saveCurrentActivity();
             }
 
-            if (translet != null && !requestParsed) {
+            if (translet == null) {
+                prepareAdviceRules();
+            } else if (!requestParsed) {
                 parseRequest();
             }
 
@@ -585,7 +587,7 @@ public class CoreActivity extends AdviceActivity {
         } else if (instantAction != null) {
             contextDesc = " for instant action " + instantAction;
         }
-        String message = "Failed to perform activity" + (contextDesc != null ? "" : contextDesc);
+        String message = "Failed to perform activity" + StringUtils.nullToEmpty(contextDesc);
         return new ActivityPerformException(message, cause);
     }
 

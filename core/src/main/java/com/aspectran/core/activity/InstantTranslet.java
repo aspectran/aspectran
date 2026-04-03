@@ -17,13 +17,8 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.core.activity.response.ForwardResponse;
-import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
-import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -31,51 +26,34 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
 
-import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
 /**
- * The default, concrete implementation of the {@link Translet} interface.
- * <p>This class is the primary context for a single request-response cycle. It is tightly
- * coupled with a {@link CoreActivity} and delegates most of its data access and state
- * management responsibilities to it. It serves as the main API for actions and other
- * components to interact with the current request and control the execution flow.</p>
+ * A stateless {@link Translet} implementation for use in non-translet environments,
+ * such as when executing an {@link InstantAction} or within a {@link ProxyActivity}.
+ * <p>This implementation delegates most of its operations to the underlying {@link Activity}
+ * and is intended to provide a compatible interface for components (like AOP advice)
+ * that expect a {@code Translet} instance even when one is not naturally available.</p>
  *
- * <p>This class is not thread-safe and is intended for use within a single thread
- * for the duration of a single request.</p>
- *
- * @since 2008. 03. 22.
+ * <p>Created: 2026. 04. 03.</p>
  */
-public class CoreTranslet extends AbstractTranslet {
+public class InstantTranslet implements Translet {
 
-    private final CoreActivity activity;
+    private final Activity activity;
 
-    private ProcessResult processResult;
-
-    private Map<String, ?> inputFlashMap;
-
-    private FlashMap outputFlashMap;
-
-    /**
-     * Instantiates a new CoreTranslet.
-     * @param transletRule the rule that defines this translet
-     * @param activity the parent activity that owns this translet instance
-     */
-    public CoreTranslet(@NonNull TransletRule transletRule, @NonNull CoreActivity activity) {
-        super(transletRule);
+    public InstantTranslet(@NonNull Activity activity) {
         this.activity = activity;
     }
 
@@ -85,39 +63,43 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    @NonNull
     public String getContextPath() {
-        return StringUtils.nullToEmpty(activity.getContextPath());
+        return activity.getContextPath();
+    }
+
+    @Override
+    public String getRequestName() {
+        return null;
     }
 
     @Override
     public String getActualRequestName() {
-        String contextPath = activity.getReverseContextPath();
-        if (StringUtils.hasLength(contextPath)) {
-            return contextPath + getRequestName();
-        } else {
-            return getRequestName();
-        }
+        return null;
+    }
+
+    @Override
+    public MethodType getRequestMethod() {
+        return null;
+    }
+
+    @Override
+    public String getTransletName() {
+        return null;
     }
 
     @Override
     public String getDescription() {
-        DescriptionRule descriptionRule = getDescriptionRule();
-        if (descriptionRule != null) {
-            return DescriptionRule.render(descriptionRule, activity);
-        } else {
-            return null;
-        }
+        return null;
     }
 
     @Override
     public Environment getEnvironment() {
-        return activity.getEnvironment();
+        return activity.getActivityContext().getEnvironment();
     }
 
     @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return activity.getApplicationAdapter();
+        return activity.getActivityContext().getApplicationAdapter();
     }
 
     @Override
@@ -141,44 +123,46 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> V getSessionAdaptee() {
-        SessionAdapter sessionAdapter = getSessionAdapter();
-        return (sessionAdapter != null ? sessionAdapter.getAdaptee() : null);
+        return (hasSessionAdapter() ? (V)activity.getSessionAdapter().getAdaptee() : null);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> V getRequestAdaptee() {
-        return getRequestAdapter().getAdaptee();
+        return (V)activity.getRequestAdapter().getAdaptee();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> V getResponseAdaptee() {
-        return getResponseAdapter().getAdaptee();
+        return (V)activity.getResponseAdapter().getAdaptee();
     }
 
     @Override
     public String getDefinitiveRequestEncoding() {
-        return activity.getDefinitiveRequestEncoding();
+        return null;
     }
 
     @Override
     public String getDefinitiveResponseEncoding() {
-        return activity.getDefinitiveResponseEncoding();
+        return null;
     }
 
     @Override
     public ProcessResult getProcessResult() {
-        return processResult;
+        return null;
     }
 
     @Override
     public Object getProcessResult(String actionId) {
-        return (processResult != null ? processResult.getResultValue(actionId) : null);
+        return null;
     }
 
     @Override
     public void setProcessResult(ProcessResult processResult) {
-        this.processResult = processResult;
+        // do nothing
     }
 
     @Override
@@ -193,126 +177,83 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public <V> V getProperty(String name) {
-        return getEnvironment().getProperty(name, activity);
+        return activity.getActivityContext().getEnvironment().getProperty(name);
     }
 
     @Override
     public String getParameter(String name) {
-        return getRequestAdapter().getParameter(name);
+        return activity.getRequestAdapter().getParameter(name);
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        return getRequestAdapter().getParameterValues(name);
+        return activity.getRequestAdapter().getParameterValues(name);
     }
 
     @Override
     public Collection<String> getParameterNames() {
-        return getRequestAdapter().getParameterNames();
+        return activity.getRequestAdapter().getParameterNames();
     }
 
     @Override
     public void setParameter(String name, String value) {
-        getRequestAdapter().setParameter(name, value);
+        activity.getRequestAdapter().setParameter(name, value);
     }
 
     @Override
     public void setParameter(String name, String[] values) {
-        getRequestAdapter().setParameter(name, values);
+        activity.getRequestAdapter().setParameter(name, values);
     }
 
     @Override
     public Map<String, Object> getAllParameters() {
-        return getRequestAdapter().getAllParameters();
+        return activity.getRequestAdapter().getAllParameters();
     }
 
     @Override
     public void extractParameters(Map<String, Object> targetParameters) {
-        getRequestAdapter().extractParameters(targetParameters);
+        targetParameters.putAll(activity.getRequestAdapter().getParameterMap());
     }
 
     @Override
     public FileParameter getFileParameter(String name) {
-        return getRequestAdapter().getFileParameter(name);
+        return activity.getRequestAdapter().getFileParameter(name);
     }
 
     @Override
     public FileParameter[] getFileParameterValues(String name) {
-        return getRequestAdapter().getFileParameterValues(name);
+        return activity.getRequestAdapter().getFileParameterValues(name);
     }
 
     @Override
     public Collection<String> getFileParameterNames() {
-        return getRequestAdapter().getFileParameterNames();
+        return activity.getRequestAdapter().getFileParameterNames();
     }
 
     @Override
     public void setFileParameter(String name, FileParameter fileParameter) {
-        getRequestAdapter().setFileParameter(name, fileParameter);
+        activity.getRequestAdapter().setFileParameter(name, fileParameter);
     }
 
     @Override
     public void setFileParameter(String name, FileParameter[] fileParameters) {
-        getRequestAdapter().setFileParameter(name, fileParameters);
+        activity.getRequestAdapter().setFileParameter(name, fileParameters);
     }
 
     @Override
     public void removeFileParameter(String name) {
-        getRequestAdapter().removeFileParameter(name);
+        activity.getRequestAdapter().removeFileParameter(name);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> V getAttribute(String name) {
-        return getRequestAdapter().getAttribute(name);
+        return (V)activity.getRequestAdapter().getAttribute(name);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        getRequestAdapter().setAttribute(name, value);
-    }
-
-    @Override
-    public Collection<String> getAttributeNames() {
-        return getRequestAdapter().getAttributeNames();
-    }
-
-    @Override
-    public void removeAttribute(String name) {
-        getRequestAdapter().removeAttribute(name);
-    }
-
-    @Override
-    public boolean hasInputFlashMap() {
-        return (inputFlashMap != null && !inputFlashMap.isEmpty());
-    }
-
-    @Override
-    public Map<String, ?> getInputFlashMap() {
-        if (inputFlashMap == null) {
-            inputFlashMap = new FlashMap();
-        }
-        return inputFlashMap;
-    }
-
-    /**
-     * Sets the flash map from a previous request.
-     * @param inputFlashMap the flash map from a previous request
-     */
-    protected void setInputFlashMap(Map<String, ?> inputFlashMap) {
-        this.inputFlashMap = inputFlashMap;
-    }
-
-    @Override
-    public boolean hasOutputFlashMap() {
-        return (outputFlashMap != null && !outputFlashMap.isEmpty());
-    }
-
-    @Override
-    public FlashMap getOutputFlashMap() {
-        if (outputFlashMap == null) {
-            outputFlashMap = new FlashMap();
-        }
-        return outputFlashMap;
+        activity.getRequestAdapter().setAttribute(name, value);
     }
 
     @Override
@@ -321,106 +262,103 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public Collection<String> getAttributeNames() {
+        return activity.getRequestAdapter().getAttributeNames();
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        activity.getRequestAdapter().removeAttribute(name);
+    }
+
+    @Override
+    public boolean hasInputFlashMap() {
+        return false;
+    }
+
+    @Override
+    public Map<String, ?> getInputFlashMap() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public boolean hasOutputFlashMap() {
+        return false;
+    }
+
+    @Override
+    public FlashMap getOutputFlashMap() {
+        return null;
+    }
+
+    @Override
     public void transform(TransformRule transformRule) {
-        if (transformRule == null) {
-            throw new IllegalArgumentException("transformRule must not be null");
-        }
-        Response resp = TransformResponseFactory.create(transformRule);
-        response(resp);
+        // do nothing
     }
 
     @Override
     public void transform(CustomTransformer transformer) {
-        if (transformer == null) {
-            throw new IllegalArgumentException("transformer must not be null");
-        }
-        Response resp = new CustomTransformResponse(transformer);
-        response(resp);
+        // do nothing
     }
 
     @Override
     public void dispatch(String name) {
-        dispatch(name, null);
+        // do nothing
     }
 
     @Override
     public void dispatch(String name, String dispatcherName) {
-        DispatchRule dispatchRule = new DispatchRule();
-        dispatchRule.setName(name);
-        dispatchRule.setDispatcherName(dispatcherName);
-        dispatch(dispatchRule);
+        // do nothing
     }
 
     @Override
     public void dispatch(DispatchRule dispatchRule) {
-        if (dispatchRule == null) {
-            throw new IllegalArgumentException("transformRule must not be null");
-        }
-        Response resp = new DispatchResponse(dispatchRule);
-        response(resp);
+        // do nothing
     }
 
     @Override
     public void forward(String transletName) {
-        ForwardRule forwardRule = new ForwardRule();
-        forwardRule.setTransletName(transletName);
-        forward(forwardRule);
+        // do nothing
     }
 
     @Override
     public void forward(ForwardRule forwardRule) {
-        if (forwardRule == null) {
-            throw new IllegalArgumentException("forwardRule must not be null");
-        }
-        if (forwardRule.getTransletName() == null) {
-            forwardRule.setTransletName(StringUtils.EMPTY);
-        }
-        Response resp = new ForwardResponse(forwardRule);
-        response(resp);
+        // do nothing
     }
 
     @Override
     public void redirect(String path) {
-        redirect(path, null);
+        // do nothing
     }
 
     @Override
     public void redirect(String path, Map<String, String> parameters) {
-        RedirectRule redirectRule = new RedirectRule();
-        redirectRule.setPath(path);
-        if (parameters != null) {
-            redirectRule.setParameters(parameters);
-        }
-        redirect(redirectRule);
+        // do nothing
     }
 
     @Override
     public void redirect(RedirectRule redirectRule) {
-        if (redirectRule == null) {
-            throw new IllegalArgumentException("redirectRule must not be null");
-        }
-        Response resp = new RedirectResponse(redirectRule);
-        response(resp);
+        // do nothing
     }
 
     @Override
     public void response(Response response) {
-        activity.reserveResponse(response);
+        // do nothing
     }
 
     @Override
     public void response() {
-        activity.reserveResponse();
+        // do nothing
     }
 
     @Override
     public Response getDeclaredResponse() {
-        return activity.getDeclaredResponse();
+        return null;
     }
 
     @Override
     public boolean isResponseReserved() {
-        return activity.isResponseReserved();
+        return false;
     }
 
     @Override
@@ -434,13 +372,13 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public void removeRaisedException() {
-        activity.clearRaisedException();
+    public Throwable getRootCauseOfRaisedException() {
+        return activity.getRootCauseOfRaisedException();
     }
 
     @Override
-    public Throwable getRootCauseOfRaisedException() {
-        return activity.getRootCauseOfRaisedException();
+    public void removeRaisedException() {
+        activity.clearRaisedException();
     }
 
     @Override
@@ -470,28 +408,12 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public boolean hasPathVariables() {
-        return activity.getTransletRule().hasPathVariables();
+        return false;
     }
 
     @Override
     public String getWrittenResponse() {
-        if (getResponseAdapter() != null && getResponseAdapter().getAdaptee() == null) {
-            try {
-                return getResponseAdapter().getWriter().toString();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-        return StringUtils.EMPTY;
-    }
-
-    @Override
-    public String toString() {
-        if (getTransletRule() != null) {
-            return getTransletRule().toString();
-        } else {
-            return super.toString();
-        }
+        return null;
     }
 
     //---------------------------------------------------------------------

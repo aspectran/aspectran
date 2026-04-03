@@ -19,6 +19,8 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.Advisable;
 import com.aspectran.core.component.bean.annotation.Async;
+import com.aspectran.core.component.bean.annotation.Hint;
+import com.aspectran.core.component.bean.annotation.Hints;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.MethodUtils;
@@ -223,7 +225,9 @@ public class BeanRuleAnalyzer {
                 return;
             }
             for (Method method : beanRule.getTargetBeanClass().getMethods()) {
-                if (method.isAnnotationPresent(Async.class)) {
+                if (method.isAnnotationPresent(Async.class) ||
+                        method.isAnnotationPresent(Hint.class) ||
+                        method.isAnnotationPresent(Hints.class)) {
                     beanRule.setProxied(true);
                     return;
                 }

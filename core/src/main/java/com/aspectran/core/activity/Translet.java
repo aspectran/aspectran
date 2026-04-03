@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
+import com.aspectran.utils.apon.Parameters;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -304,6 +305,14 @@ public interface Translet {
      * @param value the value to store
      */
     void setAttribute(String name, Object value);
+
+    /**
+     * Returns a hint of the specified type from the activity's hint stack.
+     * The stack is searched from top to bottom (most recently pushed to least recently pushed).
+     * @param type the hint type to look for
+     * @return the hint parameters, or {@code null} if no hint of the specified type is found
+     */
+    Parameters peekHint(String type);
 
     /**
      * Returns a collection of all attribute names in the current request scope.

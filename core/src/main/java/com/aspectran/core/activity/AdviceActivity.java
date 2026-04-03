@@ -147,6 +147,32 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
+     * Prepares the {@link AdviceRuleRegistry} for the current execution context.
+     * This method identifies and registers aspect rules that are relevant to the current
+     * activity, even when no translet rule is defined (e.g., in {@link InstantActivity}).
+     * It typically collects global aspects that do not have specific pointcut patterns.
+     */
+    protected void prepareAdviceRules() {
+        AdviceRulePostRegister postRegister = new AdviceRulePostRegister();
+        for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
+            if (!aspectRule.isBeanRelevant()) {
+                Pointcut pointcut = aspectRule.getPointcut();
+                if (pointcut == null) {
+                    postRegister.register(aspectRule);
+                }
+            }
+        }
+        AdviceRuleRegistry adviceRuleRegistryToUse = postRegister.getAdviceRuleRegistry();
+        if (adviceRuleRegistryToUse != null) {
+            if (this.adviceRuleRegistry != null) {
+                this.adviceRuleRegistry.merge(adviceRuleRegistryToUse);
+            } else {
+                this.adviceRuleRegistry = adviceRuleRegistryToUse;
+            }
+        }
+    }
+
+    /**
      * Sets the current type of advice being processed (e.g., BEFORE, AFTER, FINALLY).
      * This is used for validation during advice registration.
      * @param adviceType the current advice type

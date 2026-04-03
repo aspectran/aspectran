@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
@@ -83,6 +84,9 @@ public abstract class AnnotatedMethodInvoker {
             Object[] args = new Object[parameterBindingRules.length];
             for (int i = 0; i < parameterBindingRules.length; i++) {
                 pbr = parameterBindingRules[i];
+                if (pbr == null) {
+                    throw new IllegalArgumentException("Parameter binding rule cannot be null");
+                }
                 Exception thrown = null;
                 try {
                     if (activity.hasTranslet()) {
@@ -240,9 +244,9 @@ public abstract class AnnotatedMethodInvoker {
 
         Object result;
         if (type == Translet.class) {
-            result = null;
+            result = new InstantTranslet(activity);
         } else if (type.isArray() && type.getComponentType() == Translet.class) {
-            result = new Translet[] { };
+            result = new Translet[] { new InstantTranslet(activity) };
         } else {
             try {
                 result = activity.getBean(type);

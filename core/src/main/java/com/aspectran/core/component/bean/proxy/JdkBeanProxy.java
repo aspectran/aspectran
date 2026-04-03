@@ -46,6 +46,7 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         super(context);
         this.beanRule = beanRule;
         this.bean = bean;
+        scanHints(bean.getClass());
     }
 
     @Override
