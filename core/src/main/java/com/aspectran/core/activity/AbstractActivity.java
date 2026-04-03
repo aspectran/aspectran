@@ -39,6 +39,7 @@ import com.aspectran.utils.apon.Parameters;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,12 +68,12 @@ public abstract class AbstractActivity implements Activity {
     private SessionAdapter sessionAdapter;
 
     /**
-     * The request adapter associated with this activity (may be initialized lazily).
+     * The request adapter associated with this activity (maybe initialized lazily).
      */
     private RequestAdapter requestAdapter;
 
     /**
-     * The response adapter associated with this activity (may be initialized lazily).
+     * The response adapter associated with this activity (maybe initialized lazily).
      */
     private ResponseAdapter responseAdapter;
 
@@ -114,7 +115,7 @@ public abstract class AbstractActivity implements Activity {
     /**
      * The stack of hints pushed onto the activity.
      */
-    private Deque<Map<String, Parameters>> hintStack;
+    private Deque<HintParameters> hintStack;
 
     /**
      * Creates a new AbstractActivity.
@@ -338,12 +339,11 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public Parameters peekHint(String type) {
+    public HintParameters peekHint(String type) {
         if (hintStack != null) {
             // Search from top to bottom (most recently pushed to least recently pushed)
-            for (Map<String, Parameters> hints : hintStack) {
-                Parameters hint = hints.get(type);
-                if (hint != null) {
+            for (HintParameters hint : hintStack) {
+                if (type.equals(hint.getType())) {
                     return hint;
                 }
             }
@@ -351,21 +351,51 @@ public abstract class AbstractActivity implements Activity {
         return null;
     }
 
+    /**
+     * Pushes a hint onto the activity's hint stack.
+     * @param hint the hint parameters to push
+     * @return 1 if the hint was successfully pushed; 0 otherwise
+     */
     @Override
-    public void pushHints(Map<String, Parameters> hints) {
-        if (hints == null || hints.isEmpty()) {
-            return;
+    public int pushHint(HintParameters hint) {
+        if (hint == null || hint.isEmpty()) {
+            return 0;
         }
         if (hintStack == null) {
             hintStack = new ArrayDeque<>();
         }
-        hintStack.push(hints);
+        hintStack.push(hint);
+        return 1;
     }
 
     @Override
-    public void popHints() {
+    public int pushHint(List<HintParameters> hints) {
+        if (hints == null || hints.isEmpty()) {
+            return 0;
+        }
+        int pushedCount = 0;
+        for (HintParameters hint : hints) {
+            pushedCount += pushHint(hint);
+        }
+        return pushedCount;
+    }
+
+    @Override
+    public void popHint() {
         if (hintStack != null && !hintStack.isEmpty()) {
             hintStack.pop();
+        }
+    }
+
+    @Override
+    public void popHint(int count) {
+        if (hintStack != null && !hintStack.isEmpty()) {
+            for (int i = 0; i < count; i++) {
+                hintStack.pop();
+                if (hintStack.isEmpty()) {
+                    break;
+                }
+            }
         }
     }
 

@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.core.activity.HintParameters;
 import com.aspectran.core.activity.ProxyActivity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
@@ -67,7 +68,7 @@ public abstract class AbstractBeanProxy {
 
     private final AspectRuleRegistry aspectRuleRegistry;
 
-    private Map<Method, Map<String, Parameters>> methodHints;
+    private Map<Method, List<HintParameters>> methodHints;
 
     /**
      * Creates a new AbstractBeanProxy.
@@ -111,12 +112,12 @@ public abstract class AbstractBeanProxy {
         } else if (isHintableMethod(method)) {
             Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
             if (activity != null) {
-                Map<String, Parameters> hints = methodHints.get(method);
-                activity.pushHints(hints);
+                List<HintParameters> hints = methodHints.get(method);
+                int pushedCount = activity.pushHint(hints);
                 try {
                     return superInvoker.invoke();
                 } finally {
-                    activity.popHints();
+                    activity.popHint(pushedCount);
                 }
             } else {
                 return superInvoker.invoke();
@@ -252,10 +253,11 @@ public abstract class AbstractBeanProxy {
             return superInvoker.invoke();
         }
 
-        Map<String, Parameters> hints = (methodHints != null ? methodHints.get(method) : null);
+        List<HintParameters> hints = (methodHints != null ? methodHints.get(method) : null);
+        int pushedCount = 0;
         if (hints != null) {
             Activity activityToUse = (proxyActivity != null ? proxyActivity : activity);
-            activityToUse.pushHints(hints);
+            pushedCount = activityToUse.pushHint(hints);
         }
 
         try {
@@ -288,9 +290,9 @@ public abstract class AbstractBeanProxy {
                 throw e;
             }
         } finally {
-            if (hints != null) {
+            if (pushedCount > 0) {
                 Activity activityToUse = (proxyActivity != null ? proxyActivity : activity);
-                activityToUse.popHints();
+                activityToUse.popHint(pushedCount);
             }
         }
     }
@@ -452,7 +454,7 @@ public abstract class AbstractBeanProxy {
         }
         // Scan the class itself
         for (Method method : beanClass.getMethods()) {
-            Map<String, Parameters> hints = scanMethodHints(method);
+            List<HintParameters> hints = scanMethodHints(method);
             if (!hints.isEmpty()) {
                 addMethodHints(method, hints);
                 // If it's an implementation of an interface method, also register for that interface method
@@ -462,7 +464,7 @@ public abstract class AbstractBeanProxy {
         // Scan all interfaces
         for (Class<?> iface : getAllInterfaces(beanClass)) {
             for (Method method : iface.getMethods()) {
-                Map<String, Parameters> hints = scanMethodHints(method);
+                List<HintParameters> hints = scanMethodHints(method);
                 if (!hints.isEmpty()) {
                     addMethodHints(method, hints);
                 }
@@ -473,20 +475,20 @@ public abstract class AbstractBeanProxy {
     /**
      * Scans a specific method for {@link Hint} or {@link Hints} annotations.
      * @param method the method to scan
-     * @return a map of hints found on the method
+     * @return a list of hints found on the method
      */
     @NonNull
-    private Map<String, Parameters> scanMethodHints(@NonNull Method method) {
-        Map<String, Parameters> hints = new HashMap<>();
+    private List<HintParameters> scanMethodHints(@NonNull Method method) {
+        List<HintParameters> hints = new ArrayList<>();
         Hints hintsAnnotation = method.getAnnotation(Hints.class);
         if (hintsAnnotation != null) {
             for (Hint hint : hintsAnnotation.value()) {
-                hints.put(hint.type(), parseHint(hint));
+                hints.add(parseHint(hint));
             }
         } else {
             Hint hintAnnotation = method.getAnnotation(Hint.class);
             if (hintAnnotation != null) {
-                hints.put(hintAnnotation.type(), parseHint(hintAnnotation));
+                hints.add(parseHint(hintAnnotation));
             }
         }
         return hints;
@@ -495,13 +497,13 @@ public abstract class AbstractBeanProxy {
     /**
      * Adds the collected hints for a method to the cache.
      * @param method the method to which the hints apply
-     * @param hints the map of hints to add
+     * @param hints the list of hints to add
      */
-    private void addMethodHints(Method method, Map<String, Parameters> hints) {
+    private void addMethodHints(Method method, List<HintParameters> hints) {
         if (methodHints == null) {
             methodHints = new HashMap<>();
         }
-        methodHints.computeIfAbsent(method, k -> new HashMap<>()).putAll(hints);
+        methodHints.computeIfAbsent(method, k -> new ArrayList<>()).addAll(hints);
     }
 
     /**
@@ -510,7 +512,7 @@ public abstract class AbstractBeanProxy {
      * @param implMethod the implementation method
      * @param hints the hints to register
      */
-    private void registerInterfaceMethods(Class<?> beanClass, Method implMethod, Map<String, Parameters> hints) {
+    private void registerInterfaceMethods(Class<?> beanClass, Method implMethod, List<HintParameters> hints) {
         for (Class<?> iface : getAllInterfaces(beanClass)) {
             try {
                 Method ifaceMethod = iface.getMethod(implMethod.getName(), implMethod.getParameterTypes());
@@ -556,23 +558,19 @@ public abstract class AbstractBeanProxy {
     }
 
     /**
-     * Parses a {@link Hint} annotation's value into a {@link Parameters} object.
+     * Parses a {@link Hint} annotation's value into a {@link HintParameters} object.
      * @param hintAnnotation the hint annotation to parse
-     * @return the parsed parameters
+     * @return the parsed hint parameters
      * @throws BeanProxyException if parsing the hint value fails
      */
     @NonNull
-    private Parameters parseHint(@NonNull Hint hintAnnotation) {
-        Parameters parameters = new VariableParameters();
-        if (StringUtils.hasLength(hintAnnotation.value())) {
-            try {
-                parameters.readFrom(hintAnnotation.value());
-            } catch (Exception e) {
-                throw new BeanProxyException(getBeanRule(), "Failed to parse @Hint(value=\"" +
-                        hintAnnotation.value() + "\")", e);
-            }
+    private HintParameters parseHint(@NonNull Hint hintAnnotation) {
+        try {
+            return new HintParameters(hintAnnotation.type(), hintAnnotation.value());
+        } catch (Exception e) {
+            throw new BeanProxyException(getBeanRule(), "Failed to parse @Hint(type=\"" +
+                hintAnnotation.type() + "\", value=\"" + hintAnnotation.value() + "\")", e);
         }
-        return parameters;
     }
 
     /**

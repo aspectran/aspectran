@@ -39,7 +39,6 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
@@ -316,7 +315,7 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public Parameters peekHint(String type) {
+    public HintParameters peekHint(String type) {
         return activity.peekHint(type);
     }
 

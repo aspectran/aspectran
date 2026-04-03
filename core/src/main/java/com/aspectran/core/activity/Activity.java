@@ -36,10 +36,8 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.apon.Parameters;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents the central execution object for a single request-response lifecycle.
@@ -319,19 +317,33 @@ public interface Activity {
      * @param type the hint type to look for
      * @return the hint parameters, or {@code null} if no hint of the specified type is found
      */
-    Parameters peekHint(String type);
+    HintParameters peekHint(String type);
 
     /**
-     * Pushes a map of hints onto the activity's hint stack.
+     * Pushes a hint onto the activity's hint stack.
      * Pushed hints will be available for subsequent processing until they are popped.
-     * @param hints the map of hints to push, where the key is the hint type
+     * @param hint the hint parameters to push
+     * @return 1 if the hint was successfully pushed; 0 otherwise
      */
-    void pushHints(Map<String, Parameters> hints);
+    int pushHint(HintParameters hint);
 
     /**
-     * Pops the most recently pushed hints from the activity's hint stack.
+     * Pushes a list of hints onto the activity's hint stack.
+     * @param hints the list of hint parameters to push
+     * @return the number of hints successfully pushed
      */
-    void popHints();
+    int pushHint(List<HintParameters> hints);
+
+    /**
+     * Pops the most recently pushed hint from the activity's hint stack.
+     */
+    void popHint();
+
+    /**
+     * Pops a specified number of hints from the activity's hint stack.
+     * @param count the number of hints to pop
+     */
+    void popHint(int count);
 
     /**
      * Returns whether a {@link StringifyContext} is available for this activity.
