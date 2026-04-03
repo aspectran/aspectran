@@ -30,7 +30,30 @@ class HintTest {
     void testHint(@NonNull ActivityTester tester) throws ActivityPerformException {
         tester.perform(activity -> {
             HintTestService testService = activity.getBean(HintTestService.class);
+            activity.getRequestAdapter().setAttribute("testCase", "testHint");
             testService.testHint();
+            return null;
+        });
+    }
+
+    @Test
+    void testHintPropagated(@NonNull ActivityTester tester) throws ActivityPerformException {
+        tester.perform(activity -> {
+            HintTestService testService = activity.getBean(HintTestService.class);
+            activity.getRequestAdapter().setAttribute("testCase", "inner");
+            activity.getRequestAdapter().setAttribute("isolated", false);
+            testService.outerPropagated();
+            return null;
+        });
+    }
+
+    @Test
+    void testHintIsolated(@NonNull ActivityTester tester) throws ActivityPerformException {
+        tester.perform(activity -> {
+            HintTestService testService = activity.getBean(HintTestService.class);
+            activity.getRequestAdapter().setAttribute("testCase", "inner");
+            activity.getRequestAdapter().setAttribute("isolated", true);
+            testService.outerIsolated();
             return null;
         });
     }

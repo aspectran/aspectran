@@ -25,6 +25,7 @@ import org.jspecify.annotations.NonNull;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Component
@@ -39,14 +40,26 @@ public class HintTestAspect {
 
     @Before
     public void testHint(@NonNull Translet translet) {
-        HintParameters layoutHint = translet.peekHint("layout");
-        assertNotNull(layoutHint, "layoutHint should not be null");
-        assertEquals("popup", layoutHint.getString("name"));
-        assertEquals(800, (int)layoutHint.getInt("width"));
+        String testCase = translet.getAttribute("testCase");
+        if ("testHint".equals(testCase)) {
+            HintParameters layoutHint = translet.peekHint("layout");
+            assertNotNull(layoutHint, "layoutHint should not be null");
+            assertEquals("popup", layoutHint.getString("name"));
+            assertEquals(800, (int)layoutHint.getInt("width"));
 
-        HintParameters txHint = translet.peekHint("transactional");
-        assertNotNull(txHint, "txHint should not be null");
-        assertTrue(txHint.getBoolean("readOnly"));
+            HintParameters txHint = translet.peekHint("transactional");
+            assertNotNull(txHint, "txHint should not be null");
+            assertTrue(txHint.getBoolean("readOnly"));
+        } else if ("inner".equals(testCase)) {
+            boolean isolated = Boolean.TRUE.equals(translet.getAttribute("isolated"));
+            HintParameters testHint = translet.peekHint("test");
+            if (isolated) {
+                assertNull(testHint, "Non-propagated hint should be hidden from inner calls");
+            } else {
+                assertNotNull(testHint, "Propagated hint should be visible to inner calls");
+                assertEquals("outer", testHint.getString("val"));
+            }
+        }
     }
 
 }

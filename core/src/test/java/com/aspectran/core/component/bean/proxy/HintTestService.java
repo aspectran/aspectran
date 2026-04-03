@@ -23,10 +23,24 @@ import com.aspectran.core.component.bean.annotation.Hint;
 @Bean
 public class HintTestService {
 
-        @Hint(type = "layout", value = "name: popup, width: 800")
-        @Hint(type = "transactional", value = "readOnly: true")
-        public void testHint() {
-            // Do something
-        }
+    @Hint(type = "layout", value = "name: popup, width: 800")
+    @Hint(type = "transactional", value = "readOnly: true")
+    public void testHint() {
+        // Basic functionality check
+    }
+
+    @Hint(type = "test", value = "val: outer", propagated = true)
+    public void outerPropagated() {
+        inner();
+    }
+
+    @Hint(type = "test", value = "val: outer", propagated = false)
+    public void outerIsolated() {
+        inner();
+    }
+
+    public void inner() {
+        // The aspect will verify the visibility of hints for this call
+    }
 
 }
