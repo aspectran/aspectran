@@ -23,6 +23,10 @@ import org.jspecify.annotations.NonNull;
  * Simple {@link jakarta.persistence.EntityManager} agent that uses a single
  * transaction aspect for all intercepted operations.
  *
+ * <p>This implementation is suitable for applications with simple transactional
+ * requirements that don't need complex routing between primary and replica
+ * sessions.</p>
+ *
  * <p>Created: 2025-04-24</p>
  */
 public class DefaultEntityManagerAgent extends AbstractEntityManagerProvider implements InitializableBean {

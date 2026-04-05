@@ -28,7 +28,7 @@
  *       declarative transaction management for {@code EntityManager} operations,
  *       handling commit, rollback, and closing automatically via AOP.</li>
  *   <li>{@link com.aspectran.jpa.EntityManagerProvider}: Interface that provides access
- *       to a MyBatis {@code SqlSession} and the corresponding {@code SqlSessionAdvice}.</li>
+ *       to a context-bound JPA {@code EntityManager} and its associated {@code EntityManagerAdvice}.</li>
  *   <li>{@link com.aspectran.jpa.AbstractEntityManagerProvider}: Base support class
  *       that manages access to a JPA {@code EntityManager} and the
  *       corresponding {@code EntityManagerAdvice} registered via AOP.</li>

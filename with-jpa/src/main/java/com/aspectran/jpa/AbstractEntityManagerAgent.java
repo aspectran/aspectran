@@ -24,7 +24,6 @@ import jakarta.persistence.ConnectionConsumer;
 import jakarta.persistence.ConnectionFunction;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.FindOption;
 import jakarta.persistence.FlushModeType;
@@ -426,12 +425,6 @@ public abstract class AbstractEntityManagerAgent extends InstantActivitySupport 
 
     @Advisable
     @Override
-    public EntityManagerFactory getEntityManagerFactory() {
-        return getEntityManager().getEntityManagerFactory();
-    }
-
-    @Advisable
-    @Override
     public CriteriaBuilder getCriteriaBuilder() {
         return getEntityManager().getCriteriaBuilder();
     }
@@ -480,6 +473,9 @@ public abstract class AbstractEntityManagerAgent extends InstantActivitySupport 
 
     /**
      * Asserts that the current transactional context is not read-only.
+     * <p>If a {@code @Hint(type = "transactional", value = "readOnly: true")} is present
+     * in the current activity, throws an {@link IllegalStateException} to prevent
+     * data modification operations from executing.</p>
      * @throws IllegalStateException if the context is read-only
      */
     public void assertNotReadOnly() {

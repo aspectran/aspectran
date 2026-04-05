@@ -20,11 +20,17 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.jpa.EntityManagerAdvice;
 import com.aspectran.jpa.EntityManagerAdviceRegister;
 import com.aspectran.jpa.querydsl.EntityQuery;
+import com.querydsl.jpa.JPQLQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.jspecify.annotations.NonNull;
 
 /**
- * Advanced {@link jakarta.persistence.EntityManager} agent that routes operations
- * between primary and replica aspects based on the method name patterns.
+ * Advanced {@link EntityManager} and {@link JPQLQueryFactory} (Querydsl) agent
+ * that routes operations between primary and replica aspects based on the
+ * method name patterns.
+ *
+ * <p>This implementation includes Querydsl-specific method patterns (select*, from*, query*)
+ * in its default read-only routing configuration.</p>
  *
  * <p>Created: 2026. 4. 5.</p>
  */
@@ -42,7 +48,6 @@ public class RoutingEntityQuery extends EntityQuery implements InitializableBean
     /** Method name patterns for management that do not require transactional advice. */
     private static final String[] MANAGEMENT_METHOD_PATTERNS = {
             "getCriteria*",
-            "getEntityManager*",
             "getCache*Mode",
             "getEntityGraph*",
             "getMetamodel",
@@ -67,7 +72,7 @@ public class RoutingEntityQuery extends EntityQuery implements InitializableBean
     private final String replicaAspectId;
 
     /**
-     * Instantiates a new RoutingEntityManagerAgent.
+     * Instantiates a new RoutingEntityQuery.
      * @param primaryAspectId the ID for the primary aspect rule
      * @param replicaAspectId the ID for the replica aspect rule
      */

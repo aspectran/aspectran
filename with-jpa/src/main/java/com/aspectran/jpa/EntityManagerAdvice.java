@@ -15,7 +15,6 @@
  */
 package com.aspectran.jpa;
 
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -231,14 +230,6 @@ public class EntityManagerAdvice {
      */
     private boolean isEntityManagerUnavailable() {
         return (entityManager == null || arbitrarilyClosed);
-    }
-
-    /**
-     * Ensures that the SqlSession is not already open.
-     * @throws IllegalStateException if the session is already open
-     */
-    private void ensureNotOpen() {
-        Assert.state(entityManager == null, "EntityManager is already open");
     }
 
 }

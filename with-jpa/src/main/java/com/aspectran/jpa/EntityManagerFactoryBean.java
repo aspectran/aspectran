@@ -21,7 +21,6 @@ import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceConfiguration;
 
 import java.util.HashMap;
@@ -29,17 +28,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An Aspectran {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates
- * a Jakarta Persistence {@link EntityManagerFactory}. This class provides a convenient way to
- * configure and instantiate an {@code EntityManagerFactory} as an Aspectran bean.
- * <p>
- * The factory is configured using properties set on this bean, and it automatically scans
- * for classes annotated with {@link jakarta.persistence.Entity} within the application's
- * base packages, adding them to the persistence unit.
- * </p>
- * <p>
- * For advanced customization, subclasses can override the following methods:
- * </p>
+ * {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates
+ * a Jakarta Persistence {@link EntityManagerFactory}.
+ *
+ * <p>This is the standard way to configure a shared JPA {@code EntityManagerFactory}
+ * within an Aspectran application context. It automatically scans for entity
+ * classes annotated with {@link Entity} within the application's base packages.</p>
+ *
+ * <p>For advanced customization, subclasses can override the following methods:</p>
  * <ul>
  *   <li>{@link #configuration()}: Provide a custom {@link PersistenceConfiguration} instance.</li>
  *   <li>{@link #preConfigure(Map)}: Modify persistence properties before they are applied.</li>
@@ -48,8 +44,6 @@ import java.util.Set;
  * </ul>
  *
  * <p>Created: 2025-04-24</p>
- * @see Persistence#createEntityManagerFactory(String, Map)
- * @see PersistenceConfiguration
  */
 public class EntityManagerFactoryBean extends InstantActivitySupport
         implements InitializableFactoryBean<EntityManagerFactory>, DisposableBean {

@@ -23,6 +23,14 @@ import jakarta.persistence.EntityManagerFactory;
 /**
  * Base support class for JPA {@link EntityManager} agents.
  *
+ * <p>This class manages the configuration for and access to a JPA
+ * {@link EntityManager} and its corresponding {@link EntityManagerAdvice}
+ * registered via Aspectran's AOP framework.</p>
+ *
+ * <p>Subclasses provide concrete logic for resolving the appropriate
+ * transactional context, allowing for single-aspect transactions or
+ * multi-aspect routing (e.g., primary and replica aspects).</p>
+ *
  * <p>Created: 2025-04-24</p>
  */
 public abstract class AbstractEntityManagerProvider extends AbstractEntityManagerAgent {

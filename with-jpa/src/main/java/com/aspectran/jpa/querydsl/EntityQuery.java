@@ -27,9 +27,15 @@ import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAInsertClause;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
+import jakarta.persistence.EntityManager;
 
 /**
- * Base class for integrated EntityManager and JPQLQueryFactory.
+ * Base class for integrated {@link EntityManager} and {@link JPQLQueryFactory} (Querydsl).
+ *
+ * <p>This class provides Querydsl's fluent API for building JPQL queries
+ * while maintaining the capabilities of a context-bound JPA EntityManager.</p>
+ *
+ * <p>Created: 2025-04-24</p>
  */
 public abstract class EntityQuery extends AbstractEntityManagerProvider implements JPQLQueryFactory {
 

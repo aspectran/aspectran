@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using Querydsl based on JPA (Jakarta Persistence API) as an ORM framework.
+ * Add-on package for using Querydsl with JPA.
+ *
+ * <p>This package provides a seamless integration of Querydsl's type-safe queries
+ * with Aspectran's AOP-based JPA transaction management.</p>
+ *
+ * <h3>Key Classes:</h3>
+ * <ul>
+ *   <li>{@link com.aspectran.jpa.querydsl.EntityQuery}: Base class for integrated
+ *       {@code EntityManager} and {@code JPQLQueryFactory}.</li>
+ *   <li>{@link com.aspectran.jpa.querydsl.DefaultEntityQuery}: An integrated agent
+ *       that uses a single transaction aspect for all operations.</li>
+ *   <li>{@link com.aspectran.jpa.querydsl.routing.RoutingEntityQuery}: An advanced
+ *       integrated agent that routes operations between primary and replica
+ *       transaction aspects.</li>
+ * </ul>
  */
 package com.aspectran.jpa.querydsl;

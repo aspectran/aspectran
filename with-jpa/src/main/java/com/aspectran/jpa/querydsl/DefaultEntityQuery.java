@@ -19,14 +19,22 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.jpa.EntityManagerAdvice;
 import com.aspectran.jpa.EntityManagerAdviceRegister;
+import com.querydsl.jpa.JPQLQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.jspecify.annotations.NonNull;
 
+/**
+ * Integrated {@link EntityManager} and {@link JPQLQueryFactory} (Querydsl) agent
+ * that uses a single transaction aspect for all intercepted operations.
+ *
+ * <p>Created: 2025-04-24</p>
+ */
 public class DefaultEntityQuery extends EntityQuery implements InitializableBean {
 
     private final String txAspectId;
 
     /**
-     * Instantiates a new DefaultEntityManagerAgent.
+     * Instantiates a new DefaultEntityQuery.
      * @param txAspectId the ID of the aspect that provides the EntityManagerAdvice
      */
     public DefaultEntityQuery(String txAspectId) {

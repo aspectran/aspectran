@@ -26,6 +26,10 @@ import org.jspecify.annotations.NonNull;
  * Advanced {@link jakarta.persistence.EntityManager} agent that routes operations
  * between primary and replica aspects based on the method name patterns.
  *
+ * <p>This implementation allows for optimized database access by directing
+ * read-only operations to a separate transactional context, which can be
+ * configured differently (e.g., directed to a read-replica database).</p>
+ *
  * <p>Created: 2026. 4. 5.</p>
  */
 public class RoutingEntityManagerAgent extends AbstractEntityManagerProvider implements InitializableBean {
@@ -33,16 +37,12 @@ public class RoutingEntityManagerAgent extends AbstractEntityManagerProvider imp
     /** Method name patterns that are treated as read-only by default. */
     private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = {
             "find*",
-            "getReference*",
-            "select*",
-            "from*",
-            "query*"
+            "getReference*"
     };
 
     /** Method name patterns for management that do not require transactional advice. */
-    private static final String[] MANAGEMENT_METHOD_PATTERNS = {
+    public static final String[] MANAGEMENT_METHOD_PATTERNS = {
             "getCriteria*",
-            "getEntityManager*",
             "getCache*Mode",
             "getEntityGraph*",
             "getMetamodel",
