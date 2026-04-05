@@ -49,29 +49,29 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
             "clearCache"
     };
 
-    private final String txAspectId;
+    private final String primaryAspectId;
 
-    private final String readOnlyAspectId;
+    private final String replicaAspectId;
 
     /**
      * Instantiates a new RoutingSqlSessionAgent.
-     * @param txAspectId the ID for the read-write aspect rule
-     * @param readOnlyAspectId the ID for the read-only aspect rule
+     * @param primaryAspectId the ID for the primary aspect rule
+     * @param replicaAspectId the ID for the replica aspect rule
      */
-    public RoutingSqlSessionAgent(String txAspectId, String readOnlyAspectId) {
-        if (txAspectId == null) {
-            throw new IllegalArgumentException("txAspectId must not be null");
+    public RoutingSqlSessionAgent(String primaryAspectId, String replicaAspectId) {
+        if (primaryAspectId == null) {
+            throw new IllegalArgumentException("primaryAspectId must not be null");
         }
-        if (readOnlyAspectId == null) {
-            throw new IllegalArgumentException("readOnlyAspectId must not be null");
+        if (replicaAspectId == null) {
+            throw new IllegalArgumentException("replicaAspectId must not be null");
         }
-        this.txAspectId = txAspectId;
-        this.readOnlyAspectId = readOnlyAspectId;
+        this.primaryAspectId = primaryAspectId;
+        this.replicaAspectId = replicaAspectId;
     }
 
     /**
      * Retrieves the {@link SqlSessionAdvice} from the current activity context
-     * by checking for a writable advice first, then falling back to a read-only advice.
+     * by checking for a primary advice first, then falling back to a replica advice.
      * @return the SqlSessionAdvice found in the current activity
      */
     @Override
@@ -79,35 +79,35 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
         Activity currentActivity = getAvailableActivity();
         checkTransactional(currentActivity.getMode());
 
-        SqlSessionAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
-        if (writableAdvice != null && writableAdvice.isOpen()) {
-            return writableAdvice;
+        SqlSessionAdvice primaryAdvice = currentActivity.getAvailableAdvice(primaryAspectId);
+        if (primaryAdvice != null && primaryAdvice.isOpen()) {
+            return primaryAdvice;
         }
 
-        SqlSessionAdvice readOnlyAdvice = currentActivity.getAvailableAdvice(readOnlyAspectId);
-        if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
-            return readOnlyAdvice;
+        SqlSessionAdvice replicaAdvice = currentActivity.getAvailableAdvice(replicaAspectId);
+        if (replicaAdvice != null && replicaAdvice.isOpen()) {
+            return replicaAdvice;
         }
 
-        SqlSessionAdvice sqlSessionAdvice = (writableAdvice != null ? writableAdvice : readOnlyAdvice);
+        SqlSessionAdvice sqlSessionAdvice = (primaryAdvice != null ? primaryAdvice : replicaAdvice);
         if (sqlSessionAdvice == null) {
             throw new IllegalStateException("No transactional context found for the current activity; " +
-                    "ensure the activity is advised by aspect '" + txAspectId + "' or '" + readOnlyAspectId + "'");
+                    "ensure the activity is advised by aspect '" + primaryAspectId + "' or '" + replicaAspectId + "'");
         }
         return sqlSessionAdvice;
     }
 
     /**
-     * Initializes the provider. If the aspect specified by {@code txAspectId}
+     * Initializes the provider. If the aspect specified by {@code primaryAspectId}
      * is not already registered in the aspect rule registry, this method
      * automatically creates and registers a new {@link SqlSessionAdvice} aspect
      * using the current configuration.
      */
     @Override
     public void initialize() {
-        if (!getAspectRuleRegistry().contains(txAspectId)) {
+        if (!getAspectRuleRegistry().contains(primaryAspectId)) {
             SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
-            register.setTxAspectId(txAspectId);
+            register.setTxAspectId(primaryAspectId);
             register.setSqlSessionFactoryBeanId(getSqlSessionFactoryBeanId());
             register.setTargetBeanId(getTargetBeanId());
             register.setTargetBeanClass(getTargetBeanClass());
@@ -124,9 +124,9 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
             register.setReadOnlyRollbackOnClose(isReadOnlyRollbackOnClose());
             register.register();
         }
-        if (!getAspectRuleRegistry().contains(readOnlyAspectId)) {
+        if (!getAspectRuleRegistry().contains(replicaAspectId)) {
             SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
-            register.setTxAspectId(readOnlyAspectId);
+            register.setTxAspectId(replicaAspectId);
             register.setSqlSessionFactoryBeanId(getSqlSessionFactoryBeanId());
             register.setTargetBeanId(getTargetBeanId());
             register.setTargetBeanClass(getTargetBeanClass());
