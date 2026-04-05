@@ -28,21 +28,18 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 
 /**
- * Manages the lifecycle of a MyBatis {@link SqlSession}, including creation,
- * commit, rollback, and closing. It also handles transactional boundaries.
+ * Advice bean that manages the lifecycle of a MyBatis {@link SqlSession}.
  *
- * <p>This class is intended to be used as an advice bean within Aspectran's
- * AOP framework to provide declarative transaction management for MyBatis
- * operations.</p>
+ * <p>This advice handles the lazy creation, commitment, rollback, and closing
+ * of a {@code SqlSession}, typically within the context of an Aspectran AOP
+ * aspect. It provides declarative transaction management for MyBatis operations.</p>
  *
- * <p>
- * Typical usage pattern:
- * </p>
+ * <p>Key features:</p>
  * <ul>
- *   <li>open(): lazily create and hold a SqlSession</li>
- *   <li>commit(): commit pending updates if auto-commit is disabled</li>
- *   <li>rollback(): rollback on error if auto-commit is disabled</li>
- *   <li>close(): close the session; optionally mark as arbitrarily closed</li>
+ *   <li>Lazy session initialization via {@link #getSqlSession()}</li>
+ *   <li>Support for read-only mode and associated connection settings</li>
+ *   <li>Configurable executor type and isolation level</li>
+ *   <li>Automatic commit and rollback based on method execution outcomes</li>
  * </ul>
  *
  * @author Juho Jeong

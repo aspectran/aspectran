@@ -20,7 +20,18 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.mybatis.AbstractSqlSessionProvider;
 import com.aspectran.mybatis.SqlSessionAdvice;
 import com.aspectran.mybatis.SqlSessionAdviceRegister;
+import org.apache.ibatis.session.SqlSession;
 
+/**
+ * Advanced {@link SqlSession} agent that routes operations between read-write
+ * and read-only aspects based on the method name patterns.
+ *
+ * <p>This implementation allows for optimized database access by directing
+ * read-only operations to a separate transactional context, which can be
+ * configured differently (e.g., directed to a read-replica database).</p>
+ *
+ * <p>Created: 2026. 4. 5.</p>
+ */
 public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implements InitializableBean {
 
     /** Method name patterns that are treated as read-only by default. */
@@ -43,7 +54,7 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
     private final String readOnlyAspectId;
 
     /**
-     * Instantiates a new SqlSessionProvider.
+     * Instantiates a new RoutingSqlSessionAgent.
      * @param txAspectId the ID for the read-write aspect rule
      * @param readOnlyAspectId the ID for the read-only aspect rule
      */
@@ -58,6 +69,11 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
         this.readOnlyAspectId = readOnlyAspectId;
     }
 
+    /**
+     * Retrieves the {@link SqlSessionAdvice} from the current activity context
+     * by checking for a writable advice first, then falling back to a read-only advice.
+     * @return the SqlSessionAdvice found in the current activity
+     */
     @Override
     public SqlSessionAdvice getSqlSessionAdvice() {
         Activity currentActivity = getAvailableActivity();
@@ -68,7 +84,7 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
             return writableAdvice;
         }
 
-        SqlSessionAdvice readOnlyAdvice =  currentActivity.getAvailableAdvice(readOnlyAspectId);
+        SqlSessionAdvice readOnlyAdvice = currentActivity.getAvailableAdvice(readOnlyAspectId);
         if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
             return readOnlyAdvice;
         }
@@ -76,7 +92,7 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
         SqlSessionAdvice sqlSessionAdvice = (writableAdvice != null ? writableAdvice : readOnlyAdvice);
         if (sqlSessionAdvice == null) {
             throw new IllegalStateException("No transactional context found for the current activity; " +
-                    "ensure the activity is advised by aspect '" + txAspectId + "' and '" + readOnlyAspectId + "'");
+                    "ensure the activity is advised by aspect '" + txAspectId + "' or '" + readOnlyAspectId + "'");
         }
         return sqlSessionAdvice;
     }

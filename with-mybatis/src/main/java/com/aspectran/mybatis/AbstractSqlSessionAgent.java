@@ -33,10 +33,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * An {@link SqlSession} facade that delegates to a context-bound SqlSession
- * while applying {@link Advisable} semantics. It forwards calls to the
- * underlying session obtained via {@link SqlSessionProvider#getSqlSession()} and
- * optionally injects {@link ActivityData} as parameters when autoParameters is enabled.
+ * Base class for {@link SqlSession} agents that delegate calls to a context-bound
+ * SqlSession while applying Aspectran AOP semantics.
+ *
+ * <p>This class implements the {@link SqlSession} interface, acting as a facade
+ * that forwards calls to the underlying session obtained via {@code getSqlSession()}.
+ * By applying the {@link Advisable} annotation to its methods, it allows
+ * Aspectran's AOP framework to intercept and manage transactional boundaries.</p>
+ *
+ * <p>Additionally, it supports {@code autoParameters}, which automatically
+ * injects {@link ActivityData} as a parameter when no other parameter is provided
+ * to statement methods.</p>
  */
 public abstract class AbstractSqlSessionAgent extends InstantActivitySupport implements SqlSession, SqlSessionProvider {
 

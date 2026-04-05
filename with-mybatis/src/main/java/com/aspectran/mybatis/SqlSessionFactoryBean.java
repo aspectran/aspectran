@@ -38,12 +38,15 @@ import java.util.Properties;
 import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
- * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates a
- * MyBatis {@link SqlSessionFactory}. This is the usual way to set up a shared
- * MyBatis SqlSessionFactory in an Aspectran application context.
+ * {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates
+ * a MyBatis {@link SqlSessionFactory}.
  *
- * <p>Either {@code configLocation} or {@code configuration} must be specified.
- * If both are specified, the {@code configuration} property will be used.</p>
+ * <p>This is the standard way to configure a shared MyBatis {@code SqlSessionFactory}
+ * within an Aspectran application context. It supports configuration via an
+ * XML config file or a direct {@link Configuration} object.</p>
+ *
+ * <p>Additionally, it provides support for injecting properties, database ID
+ * providers, and custom environment settings.</p>
  */
 public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableFactoryBean<SqlSessionFactory> {
 

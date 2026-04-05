@@ -17,13 +17,24 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import org.apache.ibatis.session.SqlSession;
 
+/**
+ * Simple {@link SqlSession} agent that uses a single transaction aspect for
+ * all intercepted operations.
+ *
+ * <p>This implementation is suitable for applications with simple transactional
+ * requirements that don't need complex routing between read-write and read-only
+ * sessions.</p>
+ *
+ * <p>Created: 2025. 4. 23.</p>
+ */
 public class DefaultSqlSessionAgent extends AbstractSqlSessionProvider implements InitializableBean {
 
     private final String txAspectId;
 
     /**
-     * Instantiates a new SqlSessionAgent.
+     * Instantiates a new DefaultSqlSessionAgent.
      * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
      */
     public DefaultSqlSessionAgent(String txAspectId) {
@@ -33,6 +44,11 @@ public class DefaultSqlSessionAgent extends AbstractSqlSessionProvider implement
         this.txAspectId = txAspectId;
     }
 
+    /**
+     * Retrieves the {@link SqlSessionAdvice} from the current activity context
+     * using the registered {@code txAspectId}.
+     * @return the SqlSessionAdvice found in the current activity
+     */
     @Override
     public SqlSessionAdvice getSqlSessionAdvice() {
         Activity currentActivity = getAvailableActivity();

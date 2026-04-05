@@ -15,8 +15,9 @@
  */
 /**
  * Provides integration with the MyBatis persistence framework.
- * <p>This package includes key components to seamlessly use MyBatis within an
- * Aspectran application, featuring AOP-based transaction management and
+ *
+ * <p>This package includes key components to seamlessly use MyBatis within
+ * an Aspectran application, featuring AOP-based transaction management and
  * simplified session access.</p>
  *
  * <h3>Key Classes:</h3>
@@ -26,18 +27,17 @@
  *   <li>{@link com.aspectran.mybatis.SqlSessionAdvice}: An advice bean that provides
  *       declarative transaction management for {@code SqlSession} operations,
  *       handling commit, rollback, and closing automatically via AOP.</li>
- *   <li>{@link com.aspectran.mybatis.DefaultSqlSessionProvider}: Base support class that
- *       locates and manages access to a MyBatis {@code SqlSession} and the
+ *   <li>{@link com.aspectran.mybatis.AbstractSqlSessionProvider}: Base support class
+ *       that manages access to a MyBatis {@code SqlSession} and the
  *       corresponding {@code SqlSessionAdvice} registered via AOP.</li>
  *   <li>{@link com.aspectran.mybatis.DefaultSqlSessionAgent}: A proxy for
- *       {@code SqlSession} that simplifies data access and automatically
- *       participates in transactions managed by {@code SqlSessionAdvice}.</li>
+ *       {@code SqlSession} that uses a single transaction aspect for all operations.</li>
+ *   <li>{@link com.aspectran.mybatis.routing.RoutingSqlSessionAgent}: An advanced
+ *       {@code SqlSession} proxy that routes operations between read-write and
+ *       read-only transaction aspects based on method name patterns.</li>
  *   <li>{@link com.aspectran.mybatis.SqlMapperProvider}: Strategy interface that
  *       supplies {@code SqlSession} instances for different executor behaviors
  *       (SIMPLE, BATCH, REUSE) and provides helper methods to obtain mappers.</li>
- *   <li>{@link com.aspectran.mybatis.SqlMapperAccess}: A convenience base class for
- *       accessing typed mapper interfaces with different executor types by
- *       delegating to a {@link com.aspectran.mybatis.SqlMapperProvider}.</li>
  * </ul>
  */
 package com.aspectran.mybatis;

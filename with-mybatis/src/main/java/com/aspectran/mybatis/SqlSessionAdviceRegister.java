@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.mybatis.routing.RoutingSqlSessionAgent;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
@@ -39,10 +40,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A helper class that dynamically registers a {@link SqlSessionAdvice} aspect.
- * <p>This class is used internally by {@link DefaultSqlSessionAgent} to encapsulate
- * the logic for creating and registering the AOP aspect that manages the
- * lifecycle of a MyBatis {@link org.apache.ibatis.session.SqlSession}.</p>
+ * Helper class that dynamically registers an Aspectran {@link AspectRule} for
+ * {@link SqlSessionAdvice}.
+ *
+ * <p>This class encapsulates the complex logic of configuring pointcuts,
+ * joinpoints, and advice actions to manage the lifecycle of a MyBatis
+ * {@link org.apache.ibatis.session.SqlSession} automatically via AOP.</p>
+ *
+ * <p>It is used by {@link DefaultSqlSessionAgent} and {@link RoutingSqlSessionAgent}
+ * to ensure that the required transaction aspects are present in the
+ * activity context.</p>
  *
  * <p>Created: 2025/10/22</p>
  */

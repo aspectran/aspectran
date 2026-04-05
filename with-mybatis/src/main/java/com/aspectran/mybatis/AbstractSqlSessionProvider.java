@@ -25,13 +25,15 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 
 /**
- * Base support class that locates and manages access to a MyBatis {@link SqlSession}
- * and the corresponding {@link SqlSessionAdvice} registered via Aspectran AOP.
- * <p>
- * Subclasses can call {@link #getSqlSession()} to obtain a context-bound
- * SqlSession and rely on {@link #getSqlSessionAdvice()} for transactional
- * control (begin/commit/close) as configured by the registered aspect.
- * </p>
+ * Base support class for MyBatis {@link SqlSession} agents.
+ *
+ * <p>This class manages the configuration for and access to a MyBatis
+ * {@link SqlSession} and its corresponding {@link SqlSessionAdvice}
+ * registered via Aspectran's AOP framework.</p>
+ *
+ * <p>Subclasses provide concrete logic for resolving the appropriate
+ * transactional context, allowing for single-aspect transactions or
+ * multi-aspect routing (e.g., read-write and read-only aspects).</p>
  *
  * <p>Created: 2025-04-23</p>
  */
