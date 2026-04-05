@@ -343,7 +343,6 @@ public class BeanRuleRegistry {
      */
     public void addBeanRule(BeanRule beanRule) throws IllegalRuleException {
         Assert.notNull(beanRule, "beanRule must not be null");
-        Assert.hasLength(beanRule.getId(), "Bean ID must not be null or empty");
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
             PrefixSuffixPattern prefixSuffixPattern;
