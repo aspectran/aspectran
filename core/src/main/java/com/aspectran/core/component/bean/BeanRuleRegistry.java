@@ -35,6 +35,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.ToStringBuilder;
@@ -234,7 +235,7 @@ public class BeanRuleRegistry {
      * @param id the bean id
      * @return {@code true} if a bean rule with the given id is registered, {@code false} otherwise
      */
-    public boolean containsBeanRule(String id) {
+    public boolean contains(String id) {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
         }
@@ -246,7 +247,7 @@ public class BeanRuleRegistry {
      * @param type the bean type
      * @return {@code true} if a bean rule with the given type is registered, {@code false} otherwise
      */
-    public boolean containsBeanRule(Class<?> type) {
+    public boolean contains(Class<?> type) {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
         }
@@ -341,9 +342,8 @@ public class BeanRuleRegistry {
      * @throws IllegalRuleException if the bean rule is invalid
      */
     public void addBeanRule(BeanRule beanRule) throws IllegalRuleException {
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
+        Assert.notNull(beanRule, "beanRule must not be null");
+        Assert.hasLength(beanRule.getId(), "Bean ID must not be null or empty");
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
             PrefixSuffixPattern prefixSuffixPattern;

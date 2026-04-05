@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.event.EventPublisher;
@@ -116,6 +117,14 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     }
 
     /**
+     * Shortcut to the {@link AspectRuleRegistry} from the context.
+     * @return the aspect rule registry
+     */
+    protected AspectRuleRegistry getAspectRuleRegistry() {
+        return getActivityContext().getAspectRuleRegistry();
+    }
+
+    /**
      * Shortcut to the {@link TemplateRenderer} from the context.
      * @return the template renderer
      */
@@ -183,6 +192,8 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
      * @throws InstantActivityException if any error occurs while preparing or performing the activity
      */
     protected void instantActivity(String requestName, MethodType requestMethod) {
+        Assert.hasLength(requestName, "requestName must not be null or empty");
+
         if (StringUtils.isEmpty(requestName)) {
             throw new IllegalArgumentException("requestName must not be null or empty");
         }

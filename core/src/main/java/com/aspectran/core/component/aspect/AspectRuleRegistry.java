@@ -102,9 +102,9 @@ public class AspectRuleRegistry extends AbstractComponent {
      * @param aspectRule the aspect rule to add
      * @throws IllegalRuleException if an aspect rule with the same ID already exists
      */
-    public void addAspectRule(@NonNull AspectRule aspectRule) throws IllegalRuleException {
+    public void addAspectRule(AspectRule aspectRule) throws IllegalRuleException {
         Assert.notNull(aspectRule, "aspectRule must not be null");
-        Assert.notNull(aspectRule.getId(), "Aspect ID must not be null");
+        Assert.hasLength(aspectRule.getId(), "Aspect ID must not be null or empty");
 
         if (logger.isTraceEnabled()) {
             logger.trace("add AspectRule {}", aspectRule);
@@ -130,6 +130,7 @@ public class AspectRuleRegistry extends AbstractComponent {
      * @param aspectId the ID of the aspect to remove
      */
     public void removeAspectRule(String aspectId) {
+        Assert.hasLength(aspectId, "Aspect ID must not be null or empty");
         AspectRule existing = aspectRuleMap.remove(aspectId);
         if (existing != null) {
             if (aspectRules.remove(existing)) {

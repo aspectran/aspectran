@@ -30,6 +30,7 @@ import com.aspectran.core.context.rule.parsing.RuleParsingScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.util.Namespace;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
@@ -270,9 +271,8 @@ public class TransletRuleRegistry extends AbstractComponent {
      * @throws IllegalRuleException if the rule is invalid or scanning fails
      */
     public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
-        if (transletRule == null) {
-            throw new IllegalArgumentException("transletRule must not be null");
-        }
+        Assert.notNull(transletRule, "transletRule must not be null");
+        Assert.hasLength(transletRule.getName(), "Translet name must not be null or empty");
         String scanPath = transletRule.getScanPath();
         if (scanPath != null) {
             TransletScanner scanner = createTransletScanner(transletRule);

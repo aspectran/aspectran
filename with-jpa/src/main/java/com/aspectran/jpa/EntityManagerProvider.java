@@ -170,7 +170,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
      */
     @Override
     public void initialize() {
-        if (!getActivityContext().getAspectRuleRegistry().contains(txAspectId)) {
+        if (!getAspectRuleRegistry().contains(txAspectId)) {
             EntityManagerAdviceRegister register = new EntityManagerAdviceRegister(getActivityContext());
             register.setTxAspectId(txAspectId);
             register.setEntityManagerFactoryBeanId(entityManagerFactoryBeanId);
@@ -186,7 +186,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             }
             register.register();
         }
-        if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
+        if (readOnlyAspectId != null && !getAspectRuleRegistry().contains(readOnlyAspectId)) {
             EntityManagerAdviceRegister register = new EntityManagerAdviceRegister(getActivityContext());
             register.setTxAspectId(readOnlyAspectId);
             register.setEntityManagerFactoryBeanId(entityManagerFactoryBeanId);
@@ -216,8 +216,8 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
      */
     @NonNull
     protected EntityManagerAdvice getEntityManagerAdvice() {
-        checkTransactional();
         Activity currentActivity = getAvailableActivity();
+        checkTransactional(currentActivity.getMode());
 
         EntityManagerAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
         if (writableAdvice != null && writableAdvice.isOpen()) {
@@ -232,7 +232,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
 
         EntityManagerAdvice entityManagerAdvice = (writableAdvice != null ? writableAdvice : readOnlyAdvice);
         if (entityManagerAdvice == null) {
-            if (getActivityContext().getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
+            if (getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + txAspectId +
                         "' handling EntityManagerAdvice is not registered");
             }
@@ -247,8 +247,8 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
      * Ensures that the provider is operating within a transactional context.
      * @throws IllegalStateException if called during a non-transactional proxy-mode activity
      */
-    private void checkTransactional() {
-        if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
+    private void checkTransactional(Activity.Mode activityMode) {
+        if (activityMode == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
                     " needs to be wrapped in an instant activity.");
         }

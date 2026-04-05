@@ -158,7 +158,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
      */
     @Override
     public boolean containsBean(String id) {
-        if (getBeanRuleRegistry().containsBeanRule(id)) {
+        if (getBeanRuleRegistry().contains(id)) {
             return true;
         }
         BeanRegistry parent = getParentBeanRegistry();
@@ -174,7 +174,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
      */
     @Override
     public boolean containsBean(Class<?> type) {
-        if (getBeanRuleRegistry().containsBeanRule(type)) {
+        if (getBeanRuleRegistry().contains(type)) {
             return true;
         }
         BeanRegistry parent = getParentBeanRegistry();

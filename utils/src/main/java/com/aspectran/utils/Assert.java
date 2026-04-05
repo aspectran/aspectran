@@ -175,7 +175,7 @@ public class Assert {
      * @see StringUtils#hasLength
      */
     public static void hasLength(@Nullable String text, String message) {
-        if (!StringUtils.hasLength(text)) {
+        if (StringUtils.isEmpty(text)) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -193,7 +193,7 @@ public class Assert {
      * @see StringUtils#hasLength
      */
     public static void hasLength(@Nullable String text, Supplier<String> messageSupplier) {
-        if (!StringUtils.hasLength(text)) {
+        if (StringUtils.isEmpty(text)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
