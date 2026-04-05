@@ -17,6 +17,7 @@ package com.aspectran.jpa;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.utils.Assert;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -38,9 +39,7 @@ public class DefaultEntityManagerAgent extends AbstractEntityManagerProvider imp
      * @param txAspectId the ID of the aspect that provides the EntityManagerAdvice
      */
     public DefaultEntityManagerAgent(String txAspectId) {
-        if (txAspectId == null) {
-            throw new IllegalArgumentException("txAspectId must not be null");
-        }
+        Assert.notNull(txAspectId, "txAspectId must not be null");
         this.txAspectId = txAspectId;
     }
 

@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.mybatis.AbstractSqlSessionProvider;
 import com.aspectran.mybatis.SqlSessionAdvice;
 import com.aspectran.mybatis.SqlSessionAdviceRegister;
+import com.aspectran.utils.Assert;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -59,12 +60,8 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
      * @param replicaAspectId the ID for the replica aspect rule
      */
     public RoutingSqlSessionAgent(String primaryAspectId, String replicaAspectId) {
-        if (primaryAspectId == null) {
-            throw new IllegalArgumentException("primaryAspectId must not be null");
-        }
-        if (replicaAspectId == null) {
-            throw new IllegalArgumentException("replicaAspectId must not be null");
-        }
+        Assert.notNull(primaryAspectId, "primaryAspectId must not be null");
+        Assert.notNull(replicaAspectId, "replicaAspectId must not be null");
         this.primaryAspectId = primaryAspectId;
         this.replicaAspectId = replicaAspectId;
     }

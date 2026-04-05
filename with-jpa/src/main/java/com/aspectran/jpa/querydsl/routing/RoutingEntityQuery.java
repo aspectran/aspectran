@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.jpa.EntityManagerAdvice;
 import com.aspectran.jpa.EntityManagerAdviceRegister;
 import com.aspectran.jpa.querydsl.EntityQuery;
+import com.aspectran.utils.Assert;
 import com.querydsl.jpa.JPQLQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.jspecify.annotations.NonNull;
@@ -77,12 +78,8 @@ public class RoutingEntityQuery extends EntityQuery implements InitializableBean
      * @param replicaAspectId the ID for the replica aspect rule
      */
     public RoutingEntityQuery(String primaryAspectId, String replicaAspectId) {
-        if (primaryAspectId == null) {
-            throw new IllegalArgumentException("primaryAspectId must not be null");
-        }
-        if (replicaAspectId == null) {
-            throw new IllegalArgumentException("replicaAspectId must not be null");
-        }
+        Assert.notNull(primaryAspectId, "primaryAspectId must not be null");
+        Assert.notNull(replicaAspectId, "replicaAspectId must not be null");
         this.primaryAspectId = primaryAspectId;
         this.replicaAspectId = replicaAspectId;
     }

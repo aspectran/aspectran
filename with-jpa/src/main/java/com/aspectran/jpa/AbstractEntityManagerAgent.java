@@ -48,7 +48,8 @@ import java.util.Map;
  * Base class for {@link EntityManager} agents that delegate calls to a context-bound
  * EntityManager while applying Aspectran AOP semantics.
  */
-public abstract class AbstractEntityManagerAgent extends InstantActivitySupport implements EntityManager, EntityManagerProvider {
+public abstract class AbstractEntityManagerAgent extends InstantActivitySupport
+        implements EntityManager, EntityManagerProvider {
 
     @Advisable
     @Override

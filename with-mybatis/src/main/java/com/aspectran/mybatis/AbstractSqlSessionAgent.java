@@ -46,7 +46,8 @@ import java.util.function.Supplier;
  * injects {@link ActivityData} as a parameter when no other parameter is provided
  * to statement methods.</p>
  */
-public abstract class AbstractSqlSessionAgent extends InstantActivitySupport implements SqlSession, SqlSessionProvider {
+public abstract class AbstractSqlSessionAgent extends InstantActivitySupport
+        implements SqlSession, SqlSessionProvider {
 
     private boolean autoParameters;
 
