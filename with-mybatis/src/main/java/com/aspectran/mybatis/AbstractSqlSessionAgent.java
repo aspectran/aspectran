@@ -16,6 +16,7 @@
 package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityData;
+import com.aspectran.core.activity.HintParameters;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Advisable;
 import org.apache.ibatis.cursor.Cursor;
@@ -61,25 +62,10 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
         this.autoParameters = autoParameters;
     }
 
-    /**
-     * Executes one of the two provided functions based on the 'autoParameters' flag.
-     * @param withoutAutoParams function to execute when auto-parameters are disabled
-     * @param withAutoParams function to execute when auto-parameters are enabled
-     * @param <R> the return type
-     * @return the result of the executed function
-     */
-    private <R> R execute(Supplier<R> withoutAutoParams, Function<Object, R> withAutoParams) {
-        if (autoParameters) {
-            return withAutoParams.apply(getActivityData());
-        } else {
-            return withoutAutoParams.get();
-        }
-    }
-
     @Advisable
     @Override
     public <T> T selectOne(String statement) {
-        return execute(() -> getSqlSession().selectOne(statement),
+        return invoke(() -> getSqlSession().selectOne(statement),
                 p -> getSqlSession().selectOne(statement, p));
     }
 
@@ -92,7 +78,7 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
     @Advisable
     @Override
     public <E> List<E> selectList(String statement) {
-        return execute(() -> getSqlSession().selectList(statement),
+        return invoke(() -> getSqlSession().selectList(statement),
                 p -> getSqlSession().selectList(statement, p));
     }
 
@@ -111,7 +97,7 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
     @Advisable
     @Override
     public <K, V> Map<K, V> selectMap(String statement, String mapKey) {
-        return execute(() -> getSqlSession().selectMap(statement, mapKey),
+        return invoke(() -> getSqlSession().selectMap(statement, mapKey),
                 p -> getSqlSession().selectMap(statement, p, mapKey));
     }
 
@@ -130,7 +116,7 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
     @Advisable
     @Override
     public <T> Cursor<T> selectCursor(String statement) {
-        return execute(() -> getSqlSession().selectCursor(statement),
+        return invoke(() -> getSqlSession().selectCursor(statement),
                 p -> getSqlSession().selectCursor(statement, p));
     }
 
@@ -155,11 +141,13 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
     @Advisable
     @Override
     public void select(String statement, ResultHandler handler) {
-        if (autoParameters) {
-            getSqlSession().select(statement, getActivityData(), handler);
-        } else {
+        invoke(() -> {
             getSqlSession().select(statement, handler);
-        }
+            return null;
+        }, p -> {
+            getSqlSession().select(statement, p, handler);
+            return null;
+        });
     }
 
     @Advisable
@@ -171,39 +159,45 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
     @Advisable
     @Override
     public int insert(String statement) {
-        return execute(() -> getSqlSession().insert(statement),
+        assertNotReadOnly();
+        return invoke(() -> getSqlSession().insert(statement),
                 p -> getSqlSession().insert(statement, p));
     }
 
     @Advisable
     @Override
     public int insert(String statement, Object parameter) {
+        assertNotReadOnly();
         return getSqlSession().insert(statement, parameter);
     }
 
     @Advisable
     @Override
     public int update(String statement) {
-        return execute(() -> getSqlSession().update(statement),
+        assertNotReadOnly();
+        return invoke(() -> getSqlSession().update(statement),
                 p -> getSqlSession().update(statement, p));
     }
 
     @Advisable
     @Override
     public int update(String statement, Object parameter) {
+        assertNotReadOnly();
         return getSqlSession().update(statement, parameter);
     }
 
     @Advisable
     @Override
     public int delete(String statement) {
-        return execute(() -> getSqlSession().delete(statement),
+        assertNotReadOnly();
+        return invoke(() -> getSqlSession().delete(statement),
                 p -> getSqlSession().delete(statement, p));
     }
 
     @Advisable
     @Override
     public int delete(String statement, Object parameter) {
+        assertNotReadOnly();
         return getSqlSession().delete(statement, parameter);
     }
 
@@ -270,6 +264,37 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
     @Nullable
     private ActivityData getActivityData() {
         return getAvailableActivity().getActivityData();
+    }
+
+    /**
+     * Invokes one of the two provided functions based on the 'autoParameters' flag.
+     * @param action function to invoke when auto-parameters are disabled
+     * @param autoAction function to invoke when auto-parameters are enabled
+     * @param <R> the return type
+     * @return the result of the invoked function
+     */
+    private <R> R invoke(Supplier<R> action, Function<Object, R> autoAction) {
+        if (autoParameters) {
+            return autoAction.apply(getActivityData());
+        } else {
+            return action.get();
+        }
+    }
+
+
+    /**
+     * Asserts that the current transactional context is not read-only.
+     * If a {@code @Hint(type = "transactional", value = "readOnly: true")} is present,
+     * throws an {@link IllegalStateException} to prevent data modification operations
+     * from executing within a read-only context.
+     * @throws IllegalStateException if the context is read-only
+     */
+    private void assertNotReadOnly() {
+        HintParameters hint = getAvailableActivity().peekHint("transactional");
+        if (hint != null && hint.getBoolean("readOnly", false)) {
+            throw new IllegalStateException("Data modification operations (insert, update, delete) " +
+                    "are not allowed within a read-only transactional hint.");
+        }
     }
 
 }
