@@ -17,7 +17,7 @@ package com.aspectran.jpa.vet;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.jpa.common.DefaultEntityQuery;
+import com.aspectran.jpa.common.TestEntityQuery;
 import com.aspectran.jpa.common.model.QVet;
 import com.aspectran.jpa.common.model.Vet;
 import com.aspectran.jpa.common.pagination.PageInfo;
@@ -33,7 +33,7 @@ public class VetDao {
     private final EntityQuery entityQuery;
 
     @Autowired
-    public VetDao(DefaultEntityQuery entityQuery) {
+    public VetDao(TestEntityQuery entityQuery) {
         this.entityQuery = entityQuery;
     }
 

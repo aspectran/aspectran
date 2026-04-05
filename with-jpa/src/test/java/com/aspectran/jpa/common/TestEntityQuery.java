@@ -15,9 +15,10 @@
  */
 package com.aspectran.jpa.common;
 
+import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.jpa.querydsl.EntityQuery;
+import com.aspectran.jpa.querydsl.DefaultEntityQuery;
 import com.querydsl.jpa.JPQLTemplates;
 
 /**
@@ -25,9 +26,10 @@ import com.querydsl.jpa.JPQLTemplates;
  */
 @Component
 @Bean(lazyDestroy = true)
-public class DefaultEntityQuery extends EntityQuery {
+public class TestEntityQuery extends DefaultEntityQuery {
 
-    public DefaultEntityQuery() {
+    @Autowired
+    public TestEntityQuery() {
         super("jpaTxAspect");
         setTemplates(JPQLTemplates.DEFAULT);
         setEntityManagerFactoryBeanId("entityManagerFactory");

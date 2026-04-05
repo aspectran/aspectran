@@ -6,7 +6,7 @@
     <append resource="com/aspectran/jpa/common/db/db-rules.xml"/>
 
     <!-- Read-Only session: single transaction -->
-    <bean id="readOnlyEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+    <bean id="readOnlyEntityQuery" class="com.aspectran.jpa.querydsl.DefaultEntityQuery">
         <argument>readOnlyTxAspect</argument>
         <property name="targetBeanId">readOnlyEntityQuery</property>
         <property name="entityManagerFactoryBeanId">readOnlyEntityManagerFactory</property>
@@ -17,7 +17,7 @@
     </bean>
 
     <!-- Intelligent Routing: Reuse writable session if open -->
-    <bean id="intelligentRoutingEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+    <bean id="intelligentRoutingEntityQuery" class="com.aspectran.jpa.querydsl.routing.RoutingEntityQuery">
         <argument>intelligentTxAspect</argument>
         <argument>intelligentReadOnlyTxAspect</argument>
         <property name="targetBeanId">intelligentRoutingEntityQuery</property>
@@ -29,7 +29,7 @@
     </bean>
 
     <!-- Test EntityQuery with single transaction (no routing) -->
-    <bean id="singleEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+    <bean id="singleEntityQuery" class="com.aspectran.jpa.querydsl.DefaultEntityQuery">
         <argument>singleTxAspect</argument>
         <property name="targetBeanId">singleEntityQuery</property>
         <property name="entityManagerFactoryBeanId">entityManagerFactory</property>

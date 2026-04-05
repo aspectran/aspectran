@@ -16,7 +16,7 @@
 package com.aspectran.jpa.querydsl;
 
 import com.aspectran.core.component.bean.annotation.Advisable;
-import com.aspectran.jpa.EntityManagerAgent;
+import com.aspectran.jpa.AbstractEntityManagerProvider;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
@@ -29,21 +29,11 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 
 /**
- * A unified implementation of the EntityManager and JPQLQueryFactory interfaces.
- *
- * <p>Created: 2025-04-24</p>
+ * Base class for integrated EntityManager and JPQLQueryFactory.
  */
-public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory {
+public abstract class EntityQuery extends AbstractEntityManagerProvider implements JPQLQueryFactory {
 
     private JPQLTemplates templates;
-
-    public EntityQuery(String txAspectId) {
-        super(txAspectId);
-    }
-
-    public EntityQuery(String txAspectId, String readOnlyAspectId) {
-        super(txAspectId, readOnlyAspectId);
-    }
 
     public void setTemplates(JPQLTemplates templates) {
         this.templates = templates;
@@ -52,6 +42,7 @@ public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory 
     @Advisable
     @Override
     public JPADeleteClause delete(EntityPath<?> path) {
+        assertNotReadOnly();
         getEntityManagerAdvice().transactional();
         if (templates != null) {
             return new JPADeleteClause(getEntityManager(), path, templates);
@@ -117,6 +108,7 @@ public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory 
     @Advisable
     @Override
     public JPAUpdateClause update(EntityPath<?> path) {
+        assertNotReadOnly();
         getEntityManagerAdvice().transactional();
         if (templates != null) {
             return new JPAUpdateClause(getEntityManager(), path, templates);
@@ -128,6 +120,7 @@ public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory 
     @Advisable
     @Override
     public JPAInsertClause insert(EntityPath<?> path) {
+        assertNotReadOnly();
         getEntityManagerAdvice().transactional();
         if (templates != null) {
             return new JPAInsertClause(getEntityManager(), path, templates);

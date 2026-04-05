@@ -24,24 +24,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An advisory helper that manages the lifecycle of an {@link EntityManager} and its
- * transaction boundaries. This class is designed to be used as a bean within an
- * Aspectran aspect to provide programmatic transaction control.
- * <p>
- * It encapsulates a simple, explicit usage pattern for JPA operations:
- * </p>
- * <ul>
- *   <li>open(): lazily create and hold an {@link EntityManager}</li>
- *   <li>transactional(): Begins a new transaction if one is not already active.</li>
- *   <li>commit(): Commits the active transaction.</li>
- *   <li>close(): Rolls back any pending transaction and closes the {@code EntityManager}.</li>
- * </ul>
- * <p>
- * This implementation is minimal and does not integrate with container-managed transactions,
- * offering a lightweight alternative for managing persistence contexts.
- * </p>
+ * Advice bean that manages the lifecycle of a JPA {@link EntityManager}.
  *
- * <p>Created: 2025-04-24</p>
+ * <p>This advice handles the lazy creation, commitment, rollback, and closing
+ * of an {@code EntityManager}, typically within the context of an Aspectran AOP
+ * aspect. It provides declarative transaction management for JPA operations.</p>
+ *
+ * <p>Key features:</p>
+ * <ul>
+ *   <li>Lazy session initialization via {@link #getEntityManager()}</li>
+ *   <li>Automatic transaction management via {@link #transactional()}</li>
+ *   <li>Automatic commit and rollback based on method execution outcomes</li>
+ * </ul>
+ *
+ * @author Juho Jeong
+ * @since 2015. 04. 03.
  */
 public class EntityManagerAdvice {
 

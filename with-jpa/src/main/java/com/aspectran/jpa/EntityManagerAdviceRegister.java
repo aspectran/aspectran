@@ -37,12 +37,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A helper class that dynamically registers an {@link EntityManagerAdvice} aspect.
- * <p>This class is used internally by {@link EntityManagerProvider} to encapsulate
- * the logic for creating and registering the AOP aspect that manages the
- * lifecycle of a JPA {@link jakarta.persistence.EntityManager}.</p>
+ * Helper class that dynamically registers an Aspectran {@link com.aspectran.core.context.rule.AspectRule} for
+ * {@link EntityManagerAdvice}.
+ *
+ * <p>This class encapsulates the complex logic of configuring pointcuts,
+ * joinpoints, and advice actions to manage the lifecycle of a JPA
+ * {@link jakarta.persistence.EntityManager} automatically via AOP.</p>
+ *
+ * <p>It is used by {@link DefaultEntityManagerAgent} and {@link com.aspectran.jpa.routing.RoutingEntityManagerAgent}
+ * to ensure that the required transaction aspects are present in the
+ * activity context.</p>
  */
-class EntityManagerAdviceRegister {
+public class EntityManagerAdviceRegister {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityManagerAdviceRegister.class);
 
@@ -64,7 +70,7 @@ class EntityManagerAdviceRegister {
      * Instantiates a new EntityManagerAdviceRegister.
      * @param activityContext the activity context
      */
-    EntityManagerAdviceRegister(ActivityContext activityContext) {
+    public EntityManagerAdviceRegister(ActivityContext activityContext) {
         this.activityContext = activityContext;
     }
 
@@ -72,7 +78,7 @@ class EntityManagerAdviceRegister {
      * Sets the ID for the aspect rule to be registered.
      * @param txAspectId the aspect ID
      */
-    void setTxAspectId(String txAspectId) {
+    public void setTxAspectId(String txAspectId) {
         this.txAspectId = txAspectId;
     }
 
@@ -80,7 +86,7 @@ class EntityManagerAdviceRegister {
      * Sets the bean ID of the {@link EntityManagerFactory} to be used.
      * @param entityManagerFactoryBeanId the bean ID of the EntityManagerFactory
      */
-    void setEntityManagerFactoryBeanId(String entityManagerFactoryBeanId) {
+    public void setEntityManagerFactoryBeanId(String entityManagerFactoryBeanId) {
         this.entityManagerFactoryBeanId = entityManagerFactoryBeanId;
     }
 
@@ -88,7 +94,7 @@ class EntityManagerAdviceRegister {
      * Sets the ID of the target bean to which the advice will be applied.
      * @param targetBeanId the target bean ID
      */
-    void setTargetBeanId(String targetBeanId) {
+    public void setTargetBeanId(String targetBeanId) {
         this.targetBeanId = targetBeanId;
     }
 
@@ -96,7 +102,7 @@ class EntityManagerAdviceRegister {
      * Sets the target bean class to which the advice will be applied.
      * @param targetBeanClass the target bean class
      */
-    void setTargetBeanClass(Class<?> targetBeanClass) {
+    public void setTargetBeanClass(Class<?> targetBeanClass) {
         this.targetBeanClass = targetBeanClass;
     }
 
@@ -104,7 +110,7 @@ class EntityManagerAdviceRegister {
      * Sets the method name patterns to include.
      * @param includeMethodNamePatterns the include method name patterns
      */
-    void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
+    public void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
         this.includeMethodNamePatterns = includeMethodNamePatterns;
     }
 
@@ -112,11 +118,11 @@ class EntityManagerAdviceRegister {
      * Sets the method name patterns to exclude.
      * @param excludeMethodNamePatterns the exclude method name patterns
      */
-    void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
+    public void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
         this.excludeMethodNamePatterns = excludeMethodNamePatterns;
     }
 
-    void register() {
+    public void register() {
         Assert.notNull(txAspectId, "txAspectId must not be null");
         Assert.notNull(targetBeanClass, "targetBeanClass must not be null");
 
