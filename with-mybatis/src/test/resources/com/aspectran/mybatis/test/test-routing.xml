@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <!-- Intelligent Routing: Reuse writable session if open -->
+    <bean id="intelligentRoutingSqlSession" class="com.aspectran.mybatis.routing.RoutingSqlSessionAgent">
+        <argument>intelligentTxAspect</argument>
+        <argument>intelligentReadOnlyTxAspect</argument>
+        <property name="targetBeanId">intelligentRoutingSqlSession</property>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+        <property name="isolationLevelAsString">READ_COMMITTED</property>
+        <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
+    </bean>
+
+    <bean id="intelligentSqlMapperProvider" class="com.aspectran.mybatis.test.mapper.TestSqlMapperProvider">
+        <argument>#{intelligentRoutingSqlSession}</argument>
+    </bean>
+
+    <bean id="intelligentDao" class="com.aspectran.mybatis.test.dao.TestDao">
+        <argument>#{intelligentSqlMapperProvider}</argument>
+    </bean>
+
+</aspectran>

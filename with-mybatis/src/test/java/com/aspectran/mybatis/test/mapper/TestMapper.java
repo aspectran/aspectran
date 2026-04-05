@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.mybatis;
+package com.aspectran.mybatis.test.mapper;
 
-public class Member {
+import com.aspectran.mybatis.test.model.Member;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
 
-    private Long id;
-    private String name;
-    private String email;
+import java.util.List;
 
-    public Long getId() {
-        return id;
-    }
+public interface TestMapper {
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Select("SELECT * FROM test_member WHERE id = #{id}")
+    Member getMember(Long id);
 
-    public String getName() {
-        return name;
-    }
+    @Select("SELECT * FROM test_member")
+    List<Member> getMemberList();
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Insert("INSERT INTO test_member (name, email) VALUES (#{name}, #{email})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertMember(Member member);
 
 }

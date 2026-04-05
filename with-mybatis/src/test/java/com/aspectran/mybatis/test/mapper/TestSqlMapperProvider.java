@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.mybatis;
+package com.aspectran.mybatis.test.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import com.aspectran.mybatis.SqlMapperProvider;
+import org.apache.ibatis.session.SqlSession;
 
-import java.util.List;
+public class TestSqlMapperProvider implements SqlMapperProvider {
 
-public interface TestMapper {
+    private final SqlSession sqlSession;
 
-    @Select("SELECT * FROM test_member WHERE id = #{id}")
-    Member getMember(Long id);
+    public TestSqlMapperProvider(SqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
 
-    @Select("SELECT * FROM test_member")
-    List<Member> getMemberList();
-
-    @Insert("INSERT INTO test_member (name, email) VALUES (#{name}, #{email})")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insertMember(Member member);
+    @Override
+    public SqlSession getSimpleSqlSession() {
+        return sqlSession;
+    }
 
 }

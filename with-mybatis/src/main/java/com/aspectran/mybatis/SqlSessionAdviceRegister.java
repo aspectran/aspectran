@@ -40,13 +40,13 @@ import java.util.List;
 
 /**
  * A helper class that dynamically registers a {@link SqlSessionAdvice} aspect.
- * <p>This class is used internally by {@link SqlSessionProvider} to encapsulate
+ * <p>This class is used internally by {@link DefaultSqlSessionAgent} to encapsulate
  * the logic for creating and registering the AOP aspect that manages the
  * lifecycle of a MyBatis {@link org.apache.ibatis.session.SqlSession}.</p>
  *
  * <p>Created: 2025/10/22</p>
  */
-class SqlSessionAdviceRegister {
+public class SqlSessionAdviceRegister {
 
     private static final Logger logger = LoggerFactory.getLogger(SqlSessionAdviceRegister.class);
 
@@ -78,16 +78,16 @@ class SqlSessionAdviceRegister {
      * Instantiates a new SqlSessionAdviceRegister.
      * @param activityContext the activity context
      */
-    SqlSessionAdviceRegister(ActivityContext activityContext) {
+    public SqlSessionAdviceRegister(ActivityContext activityContext) {
         this.activityContext = activityContext;
     }
 
     /**
      * Sets the ID for the aspect rule to be registered. This ID is used by
-     * {@link SqlSessionProvider} to look up the advice bean.
+     * {@link DefaultSqlSessionAgent} to look up the advice bean.
      * @param txAspectId the aspect ID
      */
-    void setTxAspectId(String txAspectId) {
+    public void setTxAspectId(String txAspectId) {
         this.txAspectId = txAspectId;
     }
 
@@ -95,7 +95,7 @@ class SqlSessionAdviceRegister {
      * Sets the bean ID of the {@link SqlSessionFactory} to be used.
      * @param sqlSessionFactoryBeanId the bean ID of the SqlSessionFactory
      */
-    void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
+    public void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
         this.sqlSessionFactoryBeanId = sqlSessionFactoryBeanId;
     }
 
@@ -103,16 +103,16 @@ class SqlSessionAdviceRegister {
      * Sets the ID of the target bean to which the SqlSession advice will be applied.
      * @param targetBeanId the target bean ID
      */
-    void setTargetBeanId(String targetBeanId) {
+    public void setTargetBeanId(String targetBeanId) {
         this.targetBeanId = targetBeanId;
     }
 
     /**
      * Sets the target bean class to which the SqlSession advice will be applied.
-     * Typically, this is a subclass of {@link SqlSessionProvider}, like {@link SqlSessionAgent}.
+     * Typically, this is a subclass of {@link DefaultSqlSessionAgent}.
      * @param targetBeanClass the target bean class
      */
-    void setTargetBeanClass(Class<?> targetBeanClass) {
+    public void setTargetBeanClass(Class<?> targetBeanClass) {
         this.targetBeanClass = targetBeanClass;
     }
 
@@ -120,7 +120,7 @@ class SqlSessionAdviceRegister {
      * Sets the method name patterns to include.
      * @param includeMethodNamePatterns the include method name patterns
      */
-    void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
+    public void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
         this.includeMethodNamePatterns = includeMethodNamePatterns;
     }
 
@@ -128,7 +128,7 @@ class SqlSessionAdviceRegister {
      * Sets the method name patterns to exclude.
      * @param excludeMethodNamePatterns the exclude method name patterns
      */
-    void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
+    public void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
         this.excludeMethodNamePatterns = excludeMethodNamePatterns;
     }
 
@@ -136,7 +136,7 @@ class SqlSessionAdviceRegister {
      * Sets the default {@link ExecutorType} for the sessions.
      * @param executorType the executor type
      */
-    void setExecutorType(ExecutorType executorType) {
+    public void setExecutorType(ExecutorType executorType) {
         this.executorType = executorType;
     }
 
@@ -144,7 +144,7 @@ class SqlSessionAdviceRegister {
      * Sets the transaction isolation level for the sessions.
      * @param isolationLevel the transaction isolation level
      */
-    void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
+    public void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
         this.isolationLevel = isolationLevel;
     }
 
@@ -152,7 +152,7 @@ class SqlSessionAdviceRegister {
      * Sets whether to enable auto-commit for the sessions.
      * @param autoCommit true to enable auto-commit, false otherwise
      */
-    void setAutoCommit(boolean autoCommit) {
+    public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
@@ -160,7 +160,7 @@ class SqlSessionAdviceRegister {
      * Sets whether to enable read-only mode for the sessions.
      * @param readOnly true to enable read-only mode, false otherwise
      */
-    void setReadOnly(boolean readOnly) {
+    public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
@@ -168,11 +168,11 @@ class SqlSessionAdviceRegister {
      * Sets whether to force a rollback when closing a read-only session.
      * @param readOnlyRollbackOnClose true to force rollback on close, false otherwise
      */
-    void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
+    public void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
         this.readOnlyRollbackOnClose = readOnlyRollbackOnClose;
     }
 
-    void register() {
+    public void register() {
         Assert.notNull(txAspectId, "txAspectId must not be null");
         Assert.notNull(targetBeanClass, "targetBeanClass must not be null");
 
@@ -242,9 +242,15 @@ class SqlSessionAdviceRegister {
             if (isolationLevel != null) {
                 sqlSessionAdvice.setIsolationLevel(isolationLevel);
             }
-            sqlSessionAdvice.setAutoCommit(autoCommit);
-            sqlSessionAdvice.setReadOnly(readOnly);
-            sqlSessionAdvice.setReadOnlyRollbackOnClose(readOnlyRollbackOnClose);
+            if (autoCommit) {
+                sqlSessionAdvice.setAutoCommit(true);
+            }
+            if (readOnly) {
+                sqlSessionAdvice.setReadOnly(true);
+            }
+            if (readOnlyRollbackOnClose) {
+                sqlSessionAdvice.setReadOnlyRollbackOnClose(true);
+            }
             return sqlSessionAdvice;
         });
 

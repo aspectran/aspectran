@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroyMethod="close">
+        <argument>
+            <bean class="com.zaxxer.hikari.HikariConfig">
+                <property name="driverClassName">org.h2.Driver</property>
+                <property name="jdbcUrl">jdbc:h2:mem:testdb;MODE=MariaDB;AUTOCOMMIT=OFF;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:com/aspectran/mybatis/test/test-schema.sql'</property>
+                <property name="username">sa</property>
+                <property name="password"></property>
+            </bean>
+        </argument>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="com.aspectran.mybatis.SqlSessionFactoryBean">
+        <property name="configLocation">classpath:com/aspectran/mybatis/test/mybatis-config.xml</property>
+        <property name="environment">
+            <bean class="org.apache.ibatis.mapping.Environment">
+                <argument>test</argument>
+                <argument>
+                    <bean class="org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory"/>
+                </argument>
+                <argument>#{dataSource}</argument>
+            </bean>
+        </property>
+    </bean>
+
+</aspectran>

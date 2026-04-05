@@ -13,21 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.mybatis;
+package com.aspectran.mybatis.test.model;
 
-import org.apache.ibatis.session.SqlSession;
+public class Member {
 
-public class TestSqlMapperProvider implements SqlMapperProvider {
+    private Long id;
+    private String name;
+    private String email;
 
-    private final SqlSession sqlSession;
-
-    public TestSqlMapperProvider(SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public SqlSession getSimpleSqlSession() {
-        return sqlSession;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.mybatis;
+package com.aspectran.mybatis.test;
 
 import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.mybatis.test.dao.TestDao;
+import com.aspectran.mybatis.test.model.Member;
 import com.aspectran.test.ActivityTester;
 import com.aspectran.test.AspectranTest;
 import org.jspecify.annotations.NonNull;
@@ -26,15 +28,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @AspectranTest(
-    rules = "com/aspectran/mybatis/test-context.xml"
+        rules = {
+                "com/aspectran/mybatis/test/test-datasource.xml",
+                "com/aspectran/mybatis/test/test-context.xml"
+        }
 )
-class SqlSessionRoutingTest {
+class SqlSessionTest {
 
     @Test
     void testReadOnlySession(@NonNull ActivityTester tester) throws ActivityPerformException {
         // 1. Initial count
         Integer initialCount = tester.perform(activity -> {
-            TestDao intelligentDao = activity.getBean("intelligentDao");
+            TestDao intelligentDao = activity.getBean("singleDao");
             return intelligentDao.getMemberList().size();
         });
 
@@ -57,34 +62,9 @@ class SqlSessionRoutingTest {
 
         // 3. Verify that the member count has not increased
         tester.perform(activity -> {
-            TestDao intelligentDao = activity.getBean("intelligentDao");
+            TestDao intelligentDao = activity.getBean("singleDao");
             assertEquals(initialCount, intelligentDao.getMemberList().size(),
                     "Member count should not have increased after a Read-Only session");
-            return null;
-        });
-    }
-
-    @Test
-    void testIntelligentRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
-        tester.perform(activity -> {
-            TestDao intelligentDao = activity.getBean("intelligentDao");
-
-            // 1. Insert a member (Triggers intelligentTxAspect - Writable)
-            Member member = new Member();
-            member.setName("Intelligent User");
-            member.setEmail("intel@example.com");
-            int result = intelligentDao.insertMember(member);
-            assertEquals(1, result);
-            assertNotNull(member.getId());
-
-            // 2. Get the member (Triggers intelligentReadOnlyTxAspect - ReadOnly)
-            // It reuses the open writable session (Intelligent Routing).
-            // Therefore, the uncommitted record should be visible.
-            Member foundMember = intelligentDao.getMember(member.getId());
-            System.out.println("Found member in Intelligent session (reused): " + (foundMember != null));
-            assertNotNull(foundMember, "Record should be visible as it reuses the same transaction session");
-            assertEquals("Intelligent User", foundMember.getName());
-
             return null;
         });
     }

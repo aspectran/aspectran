@@ -16,6 +16,7 @@
 package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityData;
+import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Advisable;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
@@ -37,27 +38,9 @@ import java.util.function.Supplier;
  * underlying session obtained via {@link SqlSessionProvider#getSqlSession()} and
  * optionally injects {@link ActivityData} as parameters when autoParameters is enabled.
  */
-public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
+public abstract class AbstractSqlSessionAgent extends InstantActivitySupport implements SqlSession, SqlSessionProvider {
 
     private boolean autoParameters;
-
-    /**
-     * Instantiates a new SqlSessionAgent.
-     * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
-     */
-    public SqlSessionAgent(String txAspectId) {
-        super(txAspectId);
-    }
-
-    /**
-     * Instantiates a new SqlSessionAgent.
-     * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
-     * @param readOnlyAspectId the ID of the aspect that provides the read-only SqlSessionAdvice
-     */
-    public SqlSessionAgent(String txAspectId, String readOnlyAspectId) {
-        super(txAspectId);
-        setReadOnlyAspectId(readOnlyAspectId);
-    }
 
     /**
      * Sets whether to automatically pass the current {@link ActivityData} as a parameter

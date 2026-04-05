@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.mybatis;
+package com.aspectran.mybatis.test.dao;
 
+import com.aspectran.mybatis.SqlMapperAccess;
+import com.aspectran.mybatis.test.mapper.TestSqlMapperProvider;
+import com.aspectran.mybatis.test.mapper.TestMapper;
+import com.aspectran.mybatis.test.model.Member;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;

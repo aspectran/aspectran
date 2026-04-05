@@ -8,7 +8,7 @@
     </settings>
 
     <mappers>
-        <mapper class="com.aspectran.mybatis.TestMapper"/>
+        <mapper class="com.aspectran.mybatis.test.mapper.TestMapper"/>
     </mappers>
 
 </configuration>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <!-- Test SqlSessionAgent with single transaction -->
+    <bean id="singleSqlSession" class="com.aspectran.mybatis.DefaultSqlSessionAgent">
+        <argument>singleTxAspect</argument>
+        <property name="targetBeanId">singleSqlSession</property>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+    </bean>
+
+    <bean id="singleSqlMapperProvider" class="com.aspectran.mybatis.test.mapper.TestSqlMapperProvider">
+        <argument>#{singleSqlSession}</argument>
+    </bean>
+
+    <bean id="singleDao" class="com.aspectran.mybatis.test.dao.TestDao">
+        <argument>#{singleSqlMapperProvider}</argument>
+    </bean>
+
+    <!-- Read-Only session: single transaction -->
+    <bean id="readOnlySqlSession" class="com.aspectran.mybatis.DefaultSqlSessionAgent">
+        <argument>readOnlyTxAspect</argument>
+        <property name="targetBeanId">readOnlySqlSession</property>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+        <property name="readOnly" valueType="boolean">true</property>
+        <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
+    </bean>
+
+    <bean id="readOnlySqlMapperProvider" class="com.aspectran.mybatis.test.mapper.TestSqlMapperProvider">
+        <argument>#{readOnlySqlSession}</argument>
+    </bean>
+
+    <bean id="readOnlyDao" class="com.aspectran.mybatis.test.dao.TestDao">
+        <argument>#{readOnlySqlMapperProvider}</argument>
+    </bean>
+
+    <!-- Test SqlSessionAgent with SERIALIZABLE isolation level -->
+    <bean id="serializableSqlSession" class="com.aspectran.mybatis.DefaultSqlSessionAgent">
+        <argument>serializableTxAspect</argument>
+        <property name="targetBeanId" value="serializableSqlSession"/>
+        <property name="sqlSessionFactoryBeanId" value="sqlSessionFactory"/>
+        <property name="isolationLevelAsString" value="SERIALIZABLE"/>
+    </bean>
+
+    <bean id="serializableSqlMapperProvider" class="com.aspectran.mybatis.test.mapper.TestSqlMapperProvider">
+        <argument>#{serializableSqlSession}</argument>
+    </bean>
+
+    <bean id="serializableDao" class="com.aspectran.mybatis.test.dao.TestDao">
+        <argument>#{serializableSqlMapperProvider}</argument>
+    </bean>
+
+</aspectran>

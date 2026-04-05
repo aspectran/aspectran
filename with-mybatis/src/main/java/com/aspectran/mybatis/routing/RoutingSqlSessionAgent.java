@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.mybatis.routing;
+
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.mybatis.AbstractSqlSessionProvider;
+import com.aspectran.mybatis.SqlSessionAdvice;
+import com.aspectran.mybatis.SqlSessionAdviceRegister;
+
+public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implements InitializableBean {
+
+    /** Method name patterns that are treated as read-only by default. */
+    private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = { "select*" };
+
+    /** Method name patterns for management that do not require transactional advice. */
+    private static final String[] MANAGEMENT_METHOD_PATTERNS = {
+            "getMapper",
+            "getConfiguration",
+            "getConnection",
+            "commit",
+            "rollback",
+            "close",
+            "flushStatements",
+            "clearCache"
+    };
+
+    private final String txAspectId;
+
+    private final String readOnlyAspectId;
+
+    /**
+     * Instantiates a new SqlSessionProvider.
+     * @param txAspectId the ID for the read-write aspect rule
+     * @param readOnlyAspectId the ID for the read-only aspect rule
+     */
+    public RoutingSqlSessionAgent(String txAspectId, String readOnlyAspectId) {
+        if (txAspectId == null) {
+            throw new IllegalArgumentException("txAspectId must not be null");
+        }
+        if (readOnlyAspectId == null) {
+            throw new IllegalArgumentException("readOnlyAspectId must not be null");
+        }
+        this.txAspectId = txAspectId;
+        this.readOnlyAspectId = readOnlyAspectId;
+    }
+
+    @Override
+    public SqlSessionAdvice getSqlSessionAdvice() {
+        Activity currentActivity = getAvailableActivity();
+        checkTransactional(currentActivity.getMode());
+
+        SqlSessionAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
+        if (writableAdvice != null && writableAdvice.isOpen()) {
+            return writableAdvice;
+        }
+
+        SqlSessionAdvice readOnlyAdvice =  currentActivity.getAvailableAdvice(readOnlyAspectId);
+        if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
+            return readOnlyAdvice;
+        }
+
+        SqlSessionAdvice sqlSessionAdvice = (writableAdvice != null ? writableAdvice : readOnlyAdvice);
+        if (sqlSessionAdvice == null) {
+            throw new IllegalStateException("No transactional context found for the current activity; " +
+                    "ensure the activity is advised by aspect '" + txAspectId + "' and '" + readOnlyAspectId + "'");
+        }
+        return sqlSessionAdvice;
+    }
+
+    /**
+     * Initializes the provider. If the aspect specified by {@code txAspectId}
+     * is not already registered in the aspect rule registry, this method
+     * automatically creates and registers a new {@link SqlSessionAdvice} aspect
+     * using the current configuration.
+     */
+    @Override
+    public void initialize() {
+        if (!getAspectRuleRegistry().contains(txAspectId)) {
+            SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
+            register.setTxAspectId(txAspectId);
+            register.setSqlSessionFactoryBeanId(getSqlSessionFactoryBeanId());
+            register.setTargetBeanId(getTargetBeanId());
+            register.setTargetBeanClass(getTargetBeanClass());
+
+            String[] excludeMethodNamePatterns = new String[DEFAULT_READONLY_METHOD_PATTERNS.length + MANAGEMENT_METHOD_PATTERNS.length];
+            System.arraycopy(DEFAULT_READONLY_METHOD_PATTERNS, 0, excludeMethodNamePatterns, 0, DEFAULT_READONLY_METHOD_PATTERNS.length);
+            System.arraycopy(MANAGEMENT_METHOD_PATTERNS, 0, excludeMethodNamePatterns, DEFAULT_READONLY_METHOD_PATTERNS.length, MANAGEMENT_METHOD_PATTERNS.length);
+            register.setExcludeMethodNamePatterns(excludeMethodNamePatterns);
+
+            register.setExecutorType(getExecutorType());
+            register.setIsolationLevel(getIsolationLevel());
+            register.setAutoCommit(isAutoCommit());
+            register.setReadOnly(isReadOnly());
+            register.setReadOnlyRollbackOnClose(isReadOnlyRollbackOnClose());
+            register.register();
+        }
+        if (!getAspectRuleRegistry().contains(readOnlyAspectId)) {
+            SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
+            register.setTxAspectId(readOnlyAspectId);
+            register.setSqlSessionFactoryBeanId(getSqlSessionFactoryBeanId());
+            register.setTargetBeanId(getTargetBeanId());
+            register.setTargetBeanClass(getTargetBeanClass());
+
+            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
+
+            register.setExecutorType(getExecutorType());
+            register.setIsolationLevel(getIsolationLevel());
+            register.setAutoCommit(isAutoCommit());
+            register.setReadOnly(true);
+            register.setReadOnlyRollbackOnClose(isReadOnlyRollbackOnClose());
+            register.register();
+        }
+    }
+
+}

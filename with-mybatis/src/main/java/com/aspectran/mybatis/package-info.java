@@ -26,10 +26,10 @@
  *   <li>{@link com.aspectran.mybatis.SqlSessionAdvice}: An advice bean that provides
  *       declarative transaction management for {@code SqlSession} operations,
  *       handling commit, rollback, and closing automatically via AOP.</li>
- *   <li>{@link com.aspectran.mybatis.SqlSessionProvider}: Base support class that
+ *   <li>{@link com.aspectran.mybatis.DefaultSqlSessionProvider}: Base support class that
  *       locates and manages access to a MyBatis {@code SqlSession} and the
  *       corresponding {@code SqlSessionAdvice} registered via AOP.</li>
- *   <li>{@link com.aspectran.mybatis.SqlSessionAgent}: A proxy for
+ *   <li>{@link com.aspectran.mybatis.DefaultSqlSessionAgent}: A proxy for
  *       {@code SqlSession} that simplifies data access and automatically
  *       participates in transactions managed by {@code SqlSessionAdvice}.</li>
  *   <li>{@link com.aspectran.mybatis.SqlMapperProvider}: Strategy interface that
