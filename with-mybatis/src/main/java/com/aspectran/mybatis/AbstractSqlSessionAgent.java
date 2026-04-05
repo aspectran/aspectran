@@ -281,7 +281,6 @@ public abstract class AbstractSqlSessionAgent extends InstantActivitySupport imp
         }
     }
 
-
     /**
      * Asserts that the current transactional context is not read-only.
      * If a {@code @Hint(type = "transactional", value = "readOnly: true")} is present,
