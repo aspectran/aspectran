@@ -44,6 +44,8 @@ public class HintParameters extends DefaultParameters implements Serializable {
 
     private final boolean propagated;
 
+    private Object source;
+
     /**
      * Constructs a new HintParameters with the specified type.
      * @param type the category or type of the hint (e.g., "transactional", "cache")
@@ -102,9 +104,30 @@ public class HintParameters extends DefaultParameters implements Serializable {
         return propagated;
     }
 
+    /**
+     * Returns the source of the hint.
+     * @return the source of the hint
+     */
+    public Object getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the source of the hint.
+     * @param source the source of the hint
+     */
+    public void setSource(Object source) {
+        this.source = source;
+    }
+
     @Override
     public String toString() {
-        return ToStringBuilder.toString("Hint [" + type + "]", this);
+        String s = ToStringBuilder.toString("Hint [" + type + "]", this);
+        if (source != null) {
+            return (s + " defined on " + source);
+        } else {
+            return s;
+        }
     }
 
 }

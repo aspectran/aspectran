@@ -356,9 +356,6 @@ public abstract class AbstractActivity implements Activity {
                     // for propagation are allowed to pass through from upper frames.
                     // Hints within the current frame (before any barrier) are always returned.
                     if (!barrier || hint.isPropagated()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("{}", hint);
-                        }
                         return hint;
                     }
                 }
@@ -376,6 +373,9 @@ public abstract class AbstractActivity implements Activity {
             hintStack = new ArrayStack<>();
         }
         hintStack.push(hint);
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}", hint);
+        }
         return 1;
     }
 
