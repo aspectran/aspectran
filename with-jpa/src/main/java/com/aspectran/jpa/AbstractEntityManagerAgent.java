@@ -479,7 +479,7 @@ public abstract class AbstractEntityManagerAgent extends InstantActivitySupport
      * data modification operations from executing.</p>
      * @throws IllegalStateException if the context is read-only
      */
-    public void assertNotReadOnly() {
+    protected void assertNotReadOnly() {
         HintParameters hint = getAvailableActivity().peekHint("transactional");
         if (hint != null && hint.getBoolean("readOnly", false)) {
             throw new IllegalStateException("Data modification operations (persist, merge, remove, etc.) " +

@@ -130,6 +130,7 @@ public class RoutingEntityManagerAgent extends AbstractEntityManagerProvider imp
 
             register.register();
         }
+        setInitialized(true);
     }
 
 }
