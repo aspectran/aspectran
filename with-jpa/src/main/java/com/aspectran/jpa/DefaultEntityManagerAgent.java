@@ -47,7 +47,7 @@ public class DefaultEntityManagerAgent extends AbstractEntityManagerProvider imp
     @NonNull
     public EntityManagerAdvice getEntityManagerAdvice() {
         Activity currentActivity = getAvailableActivity();
-        checkTransactional(currentActivity.getMode());
+        checkTransactional(currentActivity);
         EntityManagerAdvice entityManagerAdvice = currentActivity.getAvailableAdvice(txAspectId);
         if (entityManagerAdvice == null) {
             if (getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
@@ -70,6 +70,7 @@ public class DefaultEntityManagerAgent extends AbstractEntityManagerProvider imp
             register.setTargetBeanClass(getTargetBeanClass());
             register.register();
         }
+        setInitialized(true);
     }
 
 }

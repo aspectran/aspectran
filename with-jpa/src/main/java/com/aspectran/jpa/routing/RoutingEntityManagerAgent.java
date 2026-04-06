@@ -83,7 +83,7 @@ public class RoutingEntityManagerAgent extends AbstractEntityManagerProvider imp
     @NonNull
     public EntityManagerAdvice getEntityManagerAdvice() {
         Activity currentActivity = getAvailableActivity();
-        checkTransactional(currentActivity.getMode());
+        checkTransactional(currentActivity);
 
         EntityManagerAdvice primaryAdvice = currentActivity.getAvailableAdvice(primaryAspectId);
         if (primaryAdvice != null && primaryAdvice.isOpen()) {

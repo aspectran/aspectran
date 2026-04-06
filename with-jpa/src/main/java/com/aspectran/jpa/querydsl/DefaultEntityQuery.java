@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
  *
  * <p>Created: 2025-04-24</p>
  */
-public class DefaultEntityQuery extends EntityQuery implements InitializableBean {
+public class DefaultEntityQuery extends AbstractEntityQuery implements InitializableBean {
 
     private final String txAspectId;
 
@@ -47,7 +47,7 @@ public class DefaultEntityQuery extends EntityQuery implements InitializableBean
     @NonNull
     public EntityManagerAdvice getEntityManagerAdvice() {
         Activity currentActivity = getAvailableActivity();
-        checkTransactional(currentActivity.getMode());
+        checkTransactional(currentActivity);
         EntityManagerAdvice entityManagerAdvice = currentActivity.getAvailableAdvice(txAspectId);
         if (entityManagerAdvice == null) {
             if (getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
@@ -70,6 +70,7 @@ public class DefaultEntityQuery extends EntityQuery implements InitializableBean
             register.setTargetBeanClass(getTargetBeanClass());
             register.register();
         }
+        setInitialized(true);
     }
 
 }

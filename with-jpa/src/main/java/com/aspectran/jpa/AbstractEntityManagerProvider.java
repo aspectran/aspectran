@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.utils.ClassUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Base support class for JPA {@link EntityManager} agents.
@@ -39,31 +40,66 @@ public abstract class AbstractEntityManagerProvider extends AbstractEntityManage
 
     private String targetBeanId;
 
+    private boolean initialized;
+
+    /**
+     * Returns the bean ID of the {@link jakarta.persistence.EntityManagerFactory}
+     * associated with this provider.
+     * @return the bean ID of the EntityManagerFactory
+     */
     public String getEntityManagerFactoryBeanId() {
         return entityManagerFactoryBeanId;
     }
 
+    /**
+     * Sets the bean ID of the {@link jakarta.persistence.EntityManagerFactory}
+     * to use for the advice.
+     * @param entityManagerFactoryBeanId the bean ID of the EntityManagerFactory
+     */
     public void setEntityManagerFactoryBeanId(String entityManagerFactoryBeanId) {
+        checkNotInitialized();
         this.entityManagerFactoryBeanId = entityManagerFactoryBeanId;
     }
 
+    /**
+     * Returns the ID of the target bean to which the EntityManager advice will be applied.
+     * @return the target bean ID
+     */
     public String getTargetBeanId() {
         return targetBeanId;
     }
 
+    /**
+     * Sets the ID of the target bean to which the EntityManager advice will be applied.
+     * @param targetBeanId the target bean ID
+     */
     public void setTargetBeanId(String targetBeanId) {
+        checkNotInitialized();
         this.targetBeanId = targetBeanId;
     }
 
+    /**
+     * Returns the target bean class to which the EntityManager advice will be applied.
+     * @return the target bean class
+     */
     public Class<?> getTargetBeanClass() {
         return ClassUtils.getUserClass(getClass());
     }
 
+    /**
+     * Returns the current EntityManager bound to this advisor/context.
+     * @return the active EntityManager
+     */
     @Override
     public EntityManager getEntityManager() {
         return getEntityManagerAdvice().getEntityManager();
     }
 
+    /**
+     * Returns the {@link jakarta.persistence.EntityManagerFactory} associated
+     * with this provider.
+     * @return the EntityManagerFactory
+     */
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
         try {
@@ -85,12 +121,32 @@ public abstract class AbstractEntityManagerProvider extends AbstractEntityManage
 
     /**
      * Ensures that the provider is operating within a transactional context.
+     * @param activity the current activity
      * @throws IllegalStateException if called during a non-transactional proxy-mode activity
      */
-    protected void checkTransactional(Activity.Mode activityMode) {
-        if (activityMode == Activity.Mode.PROXY) {
+    protected void checkTransactional(@NonNull Activity activity) {
+        if (activity.getMode() == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
                     " needs to be wrapped in an instant activity.");
+        }
+    }
+
+    /**
+     * Sets whether this provider has been initialized.
+     * @param initialized true if initialized, false otherwise
+     */
+    protected void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Checks if this provider has not been initialized.
+     * @throws IllegalStateException if the provider has already been initialized
+     */
+    protected void checkNotInitialized() {
+        if (initialized) {
+            throw new IllegalStateException(getClass().getSimpleName() +
+                    " has already been initialized and cannot be modified");
         }
     }
 

@@ -15,134 +15,16 @@
  */
 package com.aspectran.jpa.querydsl;
 
-import com.aspectran.core.component.bean.annotation.Advisable;
-import com.aspectran.jpa.AbstractEntityManagerProvider;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQueryFactory;
-import com.querydsl.jpa.JPQLTemplates;
-import com.querydsl.jpa.impl.JPADeleteClause;
-import com.querydsl.jpa.impl.JPAInsertClause;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
 
 /**
- * Base class for integrated {@link EntityManager} and {@link JPQLQueryFactory} (Querydsl).
+ * Integrated interface combining JPA {@link EntityManager} and Querydsl {@link JPQLQueryFactory}.
  *
- * <p>This class provides Querydsl's fluent API for building JPQL queries
- * while maintaining the capabilities of a context-bound JPA EntityManager.</p>
+ * <p>This interface allows for seamless use of both standard JPA operations
+ * and Querydsl's fluent API for building JPQL queries within a single component.</p>
  *
- * <p>Created: 2025-04-24</p>
+ * <p>Created: 2026. 4. 6.</p>
  */
-public abstract class EntityQuery extends AbstractEntityManagerProvider implements JPQLQueryFactory {
-
-    private JPQLTemplates templates;
-
-    public void setTemplates(JPQLTemplates templates) {
-        this.templates = templates;
-    }
-
-    @Advisable
-    @Override
-    public JPADeleteClause delete(EntityPath<?> path) {
-        assertNotReadOnly();
-        getEntityManagerAdvice().transactional();
-        if (templates != null) {
-            return new JPADeleteClause(getEntityManager(), path, templates);
-        } else {
-            return new JPADeleteClause(getEntityManager(), path);
-        }
-    }
-
-    @Advisable
-    @Override
-    public <T> JPAQuery<T> select(Expression<T> expr) {
-        return query().select(expr);
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<Tuple> select(Expression<?>... exprs) {
-        return query().select(exprs);
-    }
-
-    @Advisable
-    @Override
-    public <T> JPAQuery<T> selectDistinct(Expression<T> expr) {
-        return select(expr).distinct();
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<Tuple> selectDistinct(Expression<?>... exprs) {
-        return select(exprs).distinct();
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<Integer> selectOne() {
-        return select(Expressions.ONE);
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<Integer> selectZero() {
-        return select(Expressions.ZERO);
-    }
-
-    @Advisable
-    @Override
-    public <T> JPAQuery<T> selectFrom(EntityPath<T> from) {
-        return select(from).from(from);
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<?> from(EntityPath<?> from) {
-        return query().from(from);
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<?> from(EntityPath<?>... from) {
-        return query().from(from);
-    }
-
-    @Advisable
-    @Override
-    public JPAUpdateClause update(EntityPath<?> path) {
-        assertNotReadOnly();
-        getEntityManagerAdvice().transactional();
-        if (templates != null) {
-            return new JPAUpdateClause(getEntityManager(), path, templates);
-        } else {
-            return new JPAUpdateClause(getEntityManager(), path);
-        }
-    }
-
-    @Advisable
-    @Override
-    public JPAInsertClause insert(EntityPath<?> path) {
-        assertNotReadOnly();
-        getEntityManagerAdvice().transactional();
-        if (templates != null) {
-            return new JPAInsertClause(getEntityManager(), path, templates);
-        } else {
-            return new JPAInsertClause(getEntityManager(), path);
-        }
-    }
-
-    @Advisable
-    @Override
-    public JPAQuery<?> query() {
-        if (templates != null) {
-            return new JPAQuery<Void>(getEntityManager(), templates);
-        } else {
-            return new JPAQuery<Void>(getEntityManager());
-        }
-    }
-
+public interface EntityQuery extends EntityManager, JPQLQueryFactory {
 }

@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.jpa.EntityManagerAdvice;
 import com.aspectran.jpa.EntityManagerAdviceRegister;
-import com.aspectran.jpa.querydsl.EntityQuery;
+import com.aspectran.jpa.querydsl.AbstractEntityQuery;
 import com.aspectran.utils.Assert;
 import com.querydsl.jpa.JPQLQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -35,7 +35,7 @@ import org.jspecify.annotations.NonNull;
  *
  * <p>Created: 2026. 4. 5.</p>
  */
-public class RoutingEntityQuery extends EntityQuery implements InitializableBean {
+public class RoutingEntityQuery extends AbstractEntityQuery implements InitializableBean {
 
     /** Method name patterns that are treated as read-only by default. */
     private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = {
@@ -88,7 +88,7 @@ public class RoutingEntityQuery extends EntityQuery implements InitializableBean
     @NonNull
     public EntityManagerAdvice getEntityManagerAdvice() {
         Activity currentActivity = getAvailableActivity();
-        checkTransactional(currentActivity.getMode());
+        checkTransactional(currentActivity);
 
         EntityManagerAdvice primaryAdvice = currentActivity.getAvailableAdvice(primaryAspectId);
         if (primaryAdvice != null && primaryAdvice.isOpen()) {
@@ -135,6 +135,7 @@ public class RoutingEntityQuery extends EntityQuery implements InitializableBean
 
             register.register();
         }
+        setInitialized(true);
     }
 
 }

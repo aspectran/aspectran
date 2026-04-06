@@ -21,7 +21,7 @@
  *
  * <h3>Key Classes:</h3>
  * <ul>
- *   <li>{@link com.aspectran.jpa.querydsl.EntityQuery}: Base class for integrated
+ *   <li>{@link com.aspectran.jpa.querydsl.AbstractEntityQuery}: Base class for integrated
  *       {@code EntityManager} and {@code JPQLQueryFactory}.</li>
  *   <li>{@link com.aspectran.jpa.querydsl.DefaultEntityQuery}: An integrated agent
  *       that uses a single transaction aspect for all operations.</li>
