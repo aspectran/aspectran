@@ -35,6 +35,8 @@ import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,6 +51,8 @@ import java.util.Map;
  * </p>
  */
 public abstract class AbstractActivity implements Activity {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractActivity.class);
 
     /**
      * The owning activity context, providing access to environment, beans, adapters, etc.
@@ -352,6 +356,9 @@ public abstract class AbstractActivity implements Activity {
                     // for propagation are allowed to pass through from upper frames.
                     // Hints within the current frame (before any barrier) are always returned.
                     if (!barrier || hint.isPropagated()) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("{}", hint);
+                        }
                         return hint;
                     }
                 }

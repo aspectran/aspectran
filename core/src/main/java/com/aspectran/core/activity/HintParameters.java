@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.apon.DefaultParameters;
 
 import java.io.IOException;
@@ -99,6 +100,11 @@ public class HintParameters extends DefaultParameters implements Serializable {
      */
     public boolean isPropagated() {
         return propagated;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.toString("Hint [" + type + "]", this);
     }
 
 }
