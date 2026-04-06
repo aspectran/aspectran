@@ -121,33 +121,6 @@ public class ToStringBuilder {
     }
 
     /**
-     * Appends an identifier in brackets to the string representation.
-     * An identifier is typically used to provide additional context,
-     * such as [transactional].
-     * @param identifier the identifier to append
-     * @return this builder instance for chaining
-     */
-    public ToStringBuilder appendIdentifier(String identifier) {
-        if (identifier != null) {
-            if (braced && !buffer.isEmpty() && buffer.charAt(buffer.length() - 1) == '{') {
-                buffer.setLength(buffer.length() - 1);
-                appendOpenBracket();
-                buffer.append(identifier);
-                appendCloseBracket();
-                buffer.append(" ");
-                appendOpenBrace();
-            } else {
-                appendOpenBracket();
-                buffer.append(identifier);
-                appendCloseBracket();
-                buffer.append(" ");
-            }
-            this.start = buffer.length();
-        }
-        return this;
-    }
-
-    /**
      * Checks if a {@link StringifyContext} has been set for this builder.
      * @return {@code true} if a StringifyContext is present, {@code false} otherwise
      */
