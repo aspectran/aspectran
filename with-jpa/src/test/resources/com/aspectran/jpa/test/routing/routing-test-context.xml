@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <append resource="com/aspectran/jpa/test/db/db-rules.xml"/>
+
+    <!-- Read-Only session: single transaction -->
+    <bean id="readOnlyEntityManager" class="com.aspectran.jpa.DefaultEntityManagerAgent">
+        <argument>readOnlyTxAspect</argument>
+        <property name="targetBeanId">readOnlyEntityManager</property>
+        <property name="entityManagerFactoryBeanId">readOnlyEntityManagerFactory</property>
+    </bean>
+
+    <bean id="readOnlyDao" class="com.aspectran.jpa.test.routing.dao.JpaTestDao">
+        <argument>#{readOnlyEntityManager}</argument>
+    </bean>
+
+    <!-- Intelligent Routing: Reuse writable session if open -->
+    <bean id="intelligentRoutingEntityManager" class="com.aspectran.jpa.routing.RoutingEntityManagerAgent">
+        <argument>intelligentTxAspect</argument>
+        <argument>intelligentReadOnlyTxAspect</argument>
+        <property name="targetBeanId">intelligentRoutingEntityManager</property>
+        <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
+    </bean>
+
+    <bean id="intelligentDao" class="com.aspectran.jpa.test.routing.dao.JpaTestDao">
+        <argument>#{intelligentRoutingEntityManager}</argument>
+    </bean>
+
+    <!-- Test EntityManager with single transaction (no routing) -->
+    <bean id="singleEntityManager" class="com.aspectran.jpa.DefaultEntityManagerAgent">
+        <argument>singleTxAspect</argument>
+        <property name="targetBeanId">singleEntityManager</property>
+        <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
+    </bean>
+
+    <bean id="singleDao" class="com.aspectran.jpa.test.routing.dao.JpaTestDao">
+        <argument>#{singleEntityManager}</argument>
+    </bean>
+
+</aspectran>
