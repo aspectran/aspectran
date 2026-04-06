@@ -74,7 +74,7 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
     @Override
     public SqlSessionAdvice getSqlSessionAdvice() {
         Activity currentActivity = getAvailableActivity();
-        checkTransactional(currentActivity.getMode());
+        checkTransactional(currentActivity);
 
         SqlSessionAdvice primaryAdvice = currentActivity.getAvailableAdvice(primaryAspectId);
         if (primaryAdvice != null && primaryAdvice.isOpen()) {
@@ -137,6 +137,7 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
             register.setReadOnlyRollbackOnClose(isReadOnlyRollbackOnClose());
             register.register();
         }
+        setInitialized(true);
     }
 
 }

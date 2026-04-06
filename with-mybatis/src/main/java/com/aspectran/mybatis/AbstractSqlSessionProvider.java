@@ -23,6 +23,7 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Base support class for MyBatis {@link SqlSession} agents.
@@ -53,6 +54,12 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
 
     private boolean readOnlyRollbackOnClose;
 
+    private boolean initialized;
+
+    /**
+     * Returns the bean ID of the {@link SqlSessionFactory} associated with this provider.
+     * @return the bean ID of the SqlSessionFactory
+     */
     public String getSqlSessionFactoryBeanId() {
         return sqlSessionFactoryBeanId;
     }
@@ -62,6 +69,7 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param sqlSessionFactoryBeanId the bean ID of the SqlSessionFactory
      */
     public void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
+        checkNotInitialized();
         this.sqlSessionFactoryBeanId = sqlSessionFactoryBeanId;
     }
 
@@ -78,6 +86,7 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param targetBeanId the target bean ID
      */
     public void setTargetBeanId(String targetBeanId) {
+        checkNotInitialized();
         this.targetBeanId = targetBeanId;
     }
 
@@ -89,6 +98,10 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
         return ClassUtils.getUserClass(getClass());
     }
 
+    /**
+     * Returns the default {@link ExecutorType} for the advice.
+     * @return the executor type
+     */
     public ExecutorType getExecutorType() {
         return executorType;
     }
@@ -98,6 +111,7 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param executorType the executor type
      */
     public void setExecutorType(ExecutorType executorType) {
+        checkNotInitialized();
         this.executorType = executorType;
     }
 
@@ -115,11 +129,16 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param executorType the executor type name
      */
     public void setExecutorTypeAsString(String executorType) {
+        checkNotInitialized();
         if (executorType != null) {
             setExecutorType(ExecutorType.valueOf(executorType.toUpperCase()));
         }
     }
 
+    /**
+     * Returns the transaction isolation level for the advice.
+     * @return the transaction isolation level
+     */
     public TransactionIsolationLevel getIsolationLevel() {
         return isolationLevel;
     }
@@ -129,6 +148,7 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param isolationLevel the transaction isolation level
      */
     public void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
+        checkNotInitialized();
         this.isolationLevel = isolationLevel;
     }
 
@@ -151,11 +171,16 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param isolationLevel the isolation level name
      */
     public void setIsolationLevelAsString(String isolationLevel) {
+        checkNotInitialized();
         if (isolationLevel != null) {
             setIsolationLevel(TransactionIsolationLevel.valueOf(isolationLevel.toUpperCase()));
         }
     }
 
+    /**
+     * Returns whether auto-commit is enabled for the advice.
+     * @return true if auto-commit is enabled, false otherwise
+     */
     public boolean isAutoCommit() {
         return autoCommit;
     }
@@ -165,9 +190,14 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param autoCommit true to enable auto-commit, false otherwise
      */
     public void setAutoCommit(boolean autoCommit) {
+        checkNotInitialized();
         this.autoCommit = autoCommit;
     }
 
+    /**
+     * Returns whether read-only mode is enabled for the advice.
+     * @return true if read-only mode is enabled, false otherwise
+     */
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -177,9 +207,14 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param readOnly true to enable read-only mode, false otherwise
      */
     public void setReadOnly(boolean readOnly) {
+        checkNotInitialized();
         this.readOnly = readOnly;
     }
 
+    /**
+     * Returns whether to force a rollback when closing a read-only session.
+     * @return true to force rollback on close, false otherwise
+     */
     public boolean isReadOnlyRollbackOnClose() {
         return readOnlyRollbackOnClose;
     }
@@ -189,6 +224,7 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
      * @param readOnlyRollbackOnClose true to force rollback on close, false otherwise
      */
     public void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
+        checkNotInitialized();
         this.readOnlyRollbackOnClose = readOnlyRollbackOnClose;
     }
 
@@ -228,12 +264,32 @@ public abstract class AbstractSqlSessionProvider extends AbstractSqlSessionAgent
 
     /**
      * Ensures that the provider is operating within a transactional context.
+     * @param activity the current activity
      * @throws IllegalStateException if called during a non-transactional proxy-mode activity
      */
-    protected void checkTransactional(Activity.Mode activityMode) {
-        if (activityMode == Activity.Mode.PROXY) {
+    protected void checkTransactional(@NonNull Activity activity) {
+        if (activity.getMode() == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
                     " needs to be wrapped in an instant activity.");
+        }
+    }
+
+    /**
+     * Sets whether this provider has been initialized.
+     * @param initialized true if initialized, false otherwise
+     */
+    protected void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Checks if this provider has not been initialized.
+     * @throws IllegalStateException if the provider has already been initialized
+     */
+    protected void checkNotInitialized() {
+        if (initialized) {
+            throw new IllegalStateException(getClass().getSimpleName() +
+                    " has already been initialized and cannot be modified");
         }
     }
 

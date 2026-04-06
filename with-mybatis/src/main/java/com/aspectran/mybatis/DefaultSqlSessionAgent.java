@@ -51,7 +51,7 @@ public class DefaultSqlSessionAgent extends AbstractSqlSessionProvider implement
     @Override
     public SqlSessionAdvice getSqlSessionAdvice() {
         Activity currentActivity = getAvailableActivity();
-        checkTransactional(currentActivity.getMode());
+        checkTransactional(currentActivity);
         SqlSessionAdvice sqlSessionAdvice = currentActivity.getAvailableAdvice(txAspectId);
         if (sqlSessionAdvice == null) {
             if (getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
@@ -85,6 +85,7 @@ public class DefaultSqlSessionAgent extends AbstractSqlSessionProvider implement
             register.setReadOnlyRollbackOnClose(isReadOnlyRollbackOnClose());
             register.register();
         }
+        setInitialized(true);
     }
 
 }
