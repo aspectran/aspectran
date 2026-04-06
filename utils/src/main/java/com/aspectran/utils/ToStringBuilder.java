@@ -55,12 +55,12 @@ public class ToStringBuilder {
     }
 
     /**
-     * Creates a new ToStringBuilder with a specified name and default capacity.
-     * The name will be prepended to the string representation.
-     * @param name the name to prepend
+     * Creates a new ToStringBuilder with a specified header and default capacity.
+     * The header will be prepended to the string representation.
+     * @param header the header to prepend
      */
-    public ToStringBuilder(String name) {
-        this(name, 64);
+    public ToStringBuilder(String header) {
+        this(header, 64);
     }
 
     /**
@@ -72,13 +72,13 @@ public class ToStringBuilder {
     }
 
     /**
-     * Creates a new ToStringBuilder with a specified name and initial capacity.
-     * @param name the name to prepend
+     * Creates a new ToStringBuilder with a specified header and initial capacity.
+     * @param header the header to prepend
      * @param capacity the initial capacity of the internal StringBuilder
      */
-    public ToStringBuilder(String name, int capacity) {
+    public ToStringBuilder(String header, int capacity) {
         this.buffer = new StringBuilder(capacity);
-        labeling(name, true);
+        heading(header, true);
     }
 
     /**
@@ -93,31 +93,58 @@ public class ToStringBuilder {
 
     /**
      * Private constructor used by static {@code toString} methods to initialize the builder
-     * with a name, an object, and an optional {@code StringifyContext}.
-     * @param name the name to prepend
+     * with a header, an object, and an optional {@code StringifyContext}.
+     * @param header the header to prepend
      * @param value the object to append
      * @param stringifyContext the context for stringification options
      */
-    private ToStringBuilder(String name, Object value, StringifyContext stringifyContext) {
+    private ToStringBuilder(String header, Object value, StringifyContext stringifyContext) {
         this.buffer = new StringBuilder(128);
         setStringifyContext(stringifyContext);
-        if (name != null) {
-            labeling(name, false);
+        if (header != null) {
+            heading(header, false);
         }
         if (value != null) {
             appendValue(value);
         }
     }
 
-    private void labeling(String name, boolean braced) {
-        if (name != null) {
-            buffer.append(name).append(" ");
+    private void heading(String header, boolean braced) {
+        if (header != null) {
+            buffer.append(header).append(" ");
         }
         if (braced) {
             appendOpenBrace();
         }
         this.braced = braced;
         this.start = buffer.length();
+    }
+
+    /**
+     * Appends an identifier in brackets to the string representation.
+     * An identifier is typically used to provide additional context,
+     * such as [transactional].
+     * @param identifier the identifier to append
+     * @return this builder instance for chaining
+     */
+    public ToStringBuilder appendIdentifier(String identifier) {
+        if (identifier != null) {
+            if (braced && !buffer.isEmpty() && buffer.charAt(buffer.length() - 1) == '{') {
+                buffer.setLength(buffer.length() - 1);
+                appendOpenBracket();
+                buffer.append(identifier);
+                appendCloseBracket();
+                buffer.append(" ");
+                appendOpenBrace();
+            } else {
+                appendOpenBracket();
+                buffer.append(identifier);
+                appendCloseBracket();
+                buffer.append(" ");
+            }
+            this.start = buffer.length();
+        }
+        return this;
     }
 
     /**

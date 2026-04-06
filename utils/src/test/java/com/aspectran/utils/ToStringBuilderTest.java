@@ -143,24 +143,22 @@ class ToStringBuilderTest {
     }
 
     @Test
-    void testAppendSize() {
-        Vector<String> list = new Vector<>();
-        list.add("value1");
-        list.add("value2");
-        Map<String, Object> map = Map.of("key1", "value1", "key2", "value2");
-        Iterator<String> iterator = list.iterator();
-        Enumeration<String> enumeration = list.elements();
+    void testAppendIdentifier() {
+        ToStringBuilder tsb = new ToStringBuilder("Hint");
+        tsb.appendIdentifier("transactional");
+        tsb.append("readOnly", true);
 
-        ToStringBuilder tsb = new ToStringBuilder("Size");
-        tsb.appendSize("size1", list);
-        tsb.appendSize("size2", map);
-        tsb.appendSize("size2", iterator);
-        tsb.appendSize("size2", enumeration);
+        assertEquals("Hint [transactional] {readOnly=true}", tsb.toString());
+    }
 
-        String actual = tsb.toString();
-        String expected = "Size {size1=2, size2=2, size2=2, size2=2}";
+    @Test
+    void testAppendIdentifierMultiple() {
+        ToStringBuilder tsb = new ToStringBuilder("Hint");
+        tsb.appendIdentifier("transactional");
+        tsb.appendIdentifier("cache");
+        tsb.append("readOnly", true);
 
-        assertEquals(expected, actual);
+        assertEquals("Hint [transactional] [cache] {readOnly=true}", tsb.toString());
     }
 
 }
