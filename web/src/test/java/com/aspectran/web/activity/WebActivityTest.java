@@ -16,8 +16,8 @@
 package com.aspectran.web.activity;
 
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.test.web.WebAspectranTest;
 import com.aspectran.test.web.WebActivityTester;
+import com.aspectran.test.web.WebAspectranTest;
 import com.aspectran.utils.json.JsonWriter;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;

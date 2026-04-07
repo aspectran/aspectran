@@ -16,8 +16,8 @@
 package com.aspectran.mybatis.test.dao;
 
 import com.aspectran.mybatis.SqlMapperAccess;
-import com.aspectran.mybatis.test.mapper.TestSqlMapperProvider;
 import com.aspectran.mybatis.test.mapper.TestMapper;
+import com.aspectran.mybatis.test.mapper.TestSqlMapperProvider;
 import com.aspectran.mybatis.test.model.Member;
 import org.jspecify.annotations.NonNull;
 

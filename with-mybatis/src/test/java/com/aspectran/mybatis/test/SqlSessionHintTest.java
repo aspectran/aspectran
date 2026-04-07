@@ -16,7 +16,6 @@
 package com.aspectran.mybatis.test;
 
 import com.aspectran.core.activity.ActivityPerformException;
-import com.aspectran.mybatis.test.dao.TestDao;
 import com.aspectran.mybatis.test.model.Member;
 import com.aspectran.mybatis.test.service.TestHintService;
 import com.aspectran.test.ActivityTester;
@@ -24,11 +23,7 @@ import com.aspectran.test.AspectranTest;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @AspectranTest(
         rules = {

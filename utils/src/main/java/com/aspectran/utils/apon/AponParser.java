@@ -16,7 +16,6 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
