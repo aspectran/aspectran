@@ -98,9 +98,8 @@ public abstract class ProxyHintScanner {
     private static void addMethodHints(
             @NonNull Map<Method, List<HintParameters>> methodHints,
             @NonNull Method method, @NonNull List<HintParameters> hints) {
-        String source = method.toString();
         for (HintParameters hint : hints) {
-            hint.setSource(source);
+            hint.setSource(method);
         }
         methodHints.computeIfAbsent(method, k -> new ArrayList<>()).addAll(hints);
     }
