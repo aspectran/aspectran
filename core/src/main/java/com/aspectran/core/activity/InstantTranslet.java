@@ -50,6 +50,12 @@ import java.util.Map;
  */
 public class InstantTranslet implements Translet {
 
+    private static final String RESPONSE_ACTION_NOT_SUPPORTED =
+            "Response-related actions are not supported in a non-translet environment";
+
+    private static final String PROCESS_RESULT_SETTING_NOT_SUPPORTED =
+            "Setting process result is not supported in a non-translet environment";
+
     private final Activity activity;
 
     public InstantTranslet(@NonNull Activity activity) {
@@ -122,21 +128,18 @@ public class InstantTranslet implements Translet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V> V getSessionAdaptee() {
-        return (hasSessionAdapter() ? (V)activity.getSessionAdapter().getAdaptee() : null);
+        return (hasSessionAdapter() ? activity.getSessionAdapter().getAdaptee() : null);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V> V getRequestAdaptee() {
-        return (V)activity.getRequestAdapter().getAdaptee();
+        return getRequestAdapter().getAdaptee();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V> V getResponseAdaptee() {
-        return (V)activity.getResponseAdapter().getAdaptee();
+        return getResponseAdapter().getAdaptee();
     }
 
     @Override
@@ -161,7 +164,7 @@ public class InstantTranslet implements Translet {
 
     @Override
     public void setProcessResult(ProcessResult processResult) {
-        // do nothing
+        throw new UnsupportedOperationException(PROCESS_RESULT_SETTING_NOT_SUPPORTED);
     }
 
     @Override
@@ -181,93 +184,87 @@ public class InstantTranslet implements Translet {
 
     @Override
     public String getParameter(String name) {
-        return activity.getRequestAdapter().getParameter(name);
+        return getRequestAdapter().getParameter(name);
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        return activity.getRequestAdapter().getParameterValues(name);
+        return getRequestAdapter().getParameterValues(name);
     }
 
     @Override
     public Collection<String> getParameterNames() {
-        return activity.getRequestAdapter().getParameterNames();
+        return getRequestAdapter().getParameterNames();
     }
 
     @Override
     public void setParameter(String name, String value) {
-        activity.getRequestAdapter().setParameter(name, value);
+        getRequestAdapter().setParameter(name, value);
     }
 
     @Override
     public void setParameter(String name, String[] values) {
-        activity.getRequestAdapter().setParameter(name, values);
+        getRequestAdapter().setParameter(name, values);
     }
 
     @Override
     public Map<String, Object> getAllParameters() {
-        return activity.getRequestAdapter().getAllParameters();
+        return getRequestAdapter().getAllParameters();
     }
 
     @Override
     public void extractParameters(Map<String, Object> targetParameters) {
-        targetParameters.putAll(activity.getRequestAdapter().getParameterMap());
+        getRequestAdapter().extractParameters(targetParameters);
     }
 
     @Override
     public FileParameter getFileParameter(String name) {
-        return activity.getRequestAdapter().getFileParameter(name);
+        return getRequestAdapter().getFileParameter(name);
     }
 
     @Override
     public FileParameter[] getFileParameterValues(String name) {
-        return activity.getRequestAdapter().getFileParameterValues(name);
+        return getRequestAdapter().getFileParameterValues(name);
     }
 
     @Override
     public Collection<String> getFileParameterNames() {
-        return activity.getRequestAdapter().getFileParameterNames();
+        return getRequestAdapter().getFileParameterNames();
     }
 
     @Override
     public void setFileParameter(String name, FileParameter fileParameter) {
-        activity.getRequestAdapter().setFileParameter(name, fileParameter);
+        getRequestAdapter().setFileParameter(name, fileParameter);
     }
 
     @Override
     public void setFileParameter(String name, FileParameter[] fileParameters) {
-        activity.getRequestAdapter().setFileParameter(name, fileParameters);
+        getRequestAdapter().setFileParameter(name, fileParameters);
     }
 
     @Override
     public void removeFileParameter(String name) {
-        activity.getRequestAdapter().removeFileParameter(name);
+        getRequestAdapter().removeFileParameter(name);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <V> V getAttribute(String name) {
-        return (V)activity.getRequestAdapter().getAttribute(name);
+        return getRequestAdapter().getAttribute(name);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        activity.getRequestAdapter().setAttribute(name, value);
-    }
-
-    @Override
-    public HintParameters peekHint(String type) {
-        return activity.peekHint(type);
+        getRequestAdapter().setAttribute(name, value);
     }
 
     @Override
     public Collection<String> getAttributeNames() {
-        return activity.getRequestAdapter().getAttributeNames();
+        return getRequestAdapter().getAttributeNames();
     }
 
     @Override
     public void removeAttribute(String name) {
-        activity.getRequestAdapter().removeAttribute(name);
+        getRequestAdapter().removeAttribute(name);
     }
 
     @Override
@@ -291,63 +288,68 @@ public class InstantTranslet implements Translet {
     }
 
     @Override
+    public HintParameters peekHint(String type) {
+        return activity.peekHint(type);
+    }
+
+    @Override
     public void transform(TransformRule transformRule) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void transform(CustomTransformer transformer) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void dispatch(String name) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void dispatch(String name, String dispatcherName) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void dispatch(DispatchRule dispatchRule) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void forward(String transletName) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void forward(ForwardRule forwardRule) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void redirect(String path) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void redirect(String path, Map<String, String> parameters) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void redirect(RedirectRule redirectRule) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void response(Response response) {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override
     public void response() {
-        // do nothing
+        throw new UnsupportedOperationException(RESPONSE_ACTION_NOT_SUPPORTED);
     }
 
     @Override

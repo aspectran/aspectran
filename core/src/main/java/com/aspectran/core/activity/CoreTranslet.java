@@ -281,6 +281,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public boolean hasPathVariables() {
+        return activity.getTransletRule().hasPathVariables();
+    }
+
+    @Override
     public boolean hasInputFlashMap() {
         return (inputFlashMap != null && !inputFlashMap.isEmpty());
     }
@@ -465,11 +470,6 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public <V> V getFinallyAdviceResult(String aspectId) {
         return activity.getFinallyAdviceResult(aspectId);
-    }
-
-    @Override
-    public boolean hasPathVariables() {
-        return activity.getTransletRule().hasPathVariables();
     }
 
     @Override

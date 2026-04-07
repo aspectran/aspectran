@@ -306,18 +306,6 @@ public interface Translet {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns a hint of the specified type from the activity's hint stack,
-     * respecting call frame boundaries.
-     * <p>The stack is searched from top to bottom. If a frame boundary (marker)
-     * is encountered during the search, only hints from upper frames that are
-     * explicitly marked as propagated will be considered.</p>
-     * @param type the hint type to look for
-     * @return the hint parameters, or {@code null} if no matching hint is found
-     *         within the current frame or allowed by propagation rules
-     */
-    HintParameters peekHint(String type);
-
-    /**
      * Returns a collection of all attribute names in the current request scope.
      * @return a collection of attribute names
      */
@@ -328,6 +316,12 @@ public interface Translet {
      * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
+
+    /**
+     * Checks if the current translet name contains path variables to be extracted.
+     * @return true if path variables are present, false otherwise
+     */
+    boolean hasPathVariables();
 
     /**
      * Checks if there is a flash map from a previous request (e.g., after a redirect).
@@ -352,6 +346,18 @@ public interface Translet {
      * @return the output flash map
      */
     FlashMap getOutputFlashMap();
+
+    /**
+     * Returns a hint of the specified type from the activity's hint stack,
+     * respecting call frame boundaries.
+     * <p>The stack is searched from top to bottom. If a frame boundary (marker)
+     * is encountered during the search, only hints from upper frames that are
+     * explicitly marked as propagated will be considered.</p>
+     * @param type the hint type to look for
+     * @return the hint parameters, or {@code null} if no matching hint is found
+     *         within the current frame or allowed by propagation rules
+     */
+    HintParameters peekHint(String type);
 
     /**
      * Immediately performs a transformation and ends the request processing.
@@ -501,12 +507,6 @@ public interface Translet {
      * @return the result of the finally advice, or {@code null}
      */
     <V> V getFinallyAdviceResult(String aspectId);
-
-    /**
-     * Checks if the current translet name contains path variables to be extracted.
-     * @return true if path variables are present, false otherwise
-     */
-    boolean hasPathVariables();
 
     /**
      * Returns the response content that has been written so far, if supported by the adapter.

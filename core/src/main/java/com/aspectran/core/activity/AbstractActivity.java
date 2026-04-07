@@ -47,76 +47,49 @@ import java.util.Map;
  * <p>This class provides common functionality and manages the core components
  * and state required for processing a request. It handles the lifecycle of adapters
  * (request, response, session), manages exceptions, and provides access to various
- * evaluators and managers within the activity scope.
- * </p>
+ * evaluators and managers within the activity scope.</p>
  */
 public abstract class AbstractActivity implements Activity {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractActivity.class);
 
-    /**
-     * The owning activity context, providing access to environment, beans, adapters, etc.
-     */
+    /** The owning activity context, providing access to environment, beans, adapters, etc. */
     private final ActivityContext context;
 
-    /**
-     * The previously current activity, to be restored after this activity completes.
-     */
+    /** The previously current activity, to be restored after this activity completes. */
     private Activity pendingActivity;
 
-    /**
-     * The session adapter associated with this activity (optional).
-     */
+    /** The session adapter associated with this activity (optional). */
     private SessionAdapter sessionAdapter;
 
-    /**
-     * The request adapter associated with this activity (maybe initialized lazily).
-     */
+    /** The request adapter associated with this activity (maybe initialized lazily). */
     private RequestAdapter requestAdapter;
 
-    /**
-     * The response adapter associated with this activity (maybe initialized lazily).
-     */
+    /** The response adapter associated with this activity (maybe initialized lazily). */
     private ResponseAdapter responseAdapter;
 
-    /**
-     * The exception that was raised during processing, if any.
-     */
+    /** The exception that was raised during processing, if any. */
     private Exception raisedException;
 
-    /**
-     * Arbitrary settings stored at the activity scope.
-     */
+    /** Arbitrary settings stored at the activity scope. */
     private Map<String, Object> settings;
 
-    /**
-     * Lazily initialized stringify context for logging/debugging purposes.
-     */
+    /** Lazily initialized stringify context for logging/debugging purposes. */
     private StringifyContext stringifyContext;
 
-    /**
-     * Lazily initialized evaluator for token expressions.
-     */
+    /** Lazily initialized evaluator for token expressions. */
     private TokenEvaluator tokenEvaluator;
 
-    /**
-     * Lazily initialized evaluator for item expressions.
-     */
+    /** Lazily initialized evaluator for item expressions. */
     private ItemEvaluator itemEvaluator;
 
-    /**
-     * Manager for FlashMap to pass attributes across requests, optional.
-     */
+    /** Manager for FlashMap to pass attributes across requests, optional. */
     private FlashMapManager flashMapManager;
 
-    /**
-     * Resolver for determining the current locale, optional.
-     */
+    /** Resolver for determining the current locale, optional. */
     private LocaleResolver localeResolver;
 
-    /**
-     * The stack of hints pushed onto the activity.
-     */
+    /** The stack of hints pushed onto the activity. */
     private ArrayStack<HintParameters> hintStack;
 
     /**
