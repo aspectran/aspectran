@@ -89,11 +89,7 @@ public abstract class AnnotatedMethodInvoker {
                 }
                 Exception thrown = null;
                 try {
-                    if (activity.hasTranslet()) {
-                        args[i] = resolveArgumentWithTranslet(activity, pbr);
-                    } else {
-                        args[i] = resolveArgument(activity, pbr);
-                    }
+                    args[i] = resolveArgument(activity, pbr);
                 } catch (TypeConversionException e) {
                     thrown = e;
                     if (e.getCause() instanceof NumberFormatException && pbr.getType().isPrimitive()) {
@@ -139,7 +135,7 @@ public abstract class AnnotatedMethodInvoker {
     }
 
     /**
-     * Resolves the argument for a single method parameter when a {@link Translet} is available.
+     * Resolves the argument for a single method parameter.
      * <p>It handles various parameter types, including the Translet itself, request parameters,
      * maps, collections, and APON objects. It can also perform bean lookups and model binding.</p>
      * @param activity the current activity
@@ -147,114 +143,88 @@ public abstract class AnnotatedMethodInvoker {
      * @return the resolved argument value
      * @throws Exception if resolution fails for any reason
      */
-    private static Object resolveArgumentWithTranslet(@NonNull Activity activity, @NonNull ParameterBindingRule pbr)
+    @Nullable
+    private static Object resolveArgument(@NonNull Activity activity, @NonNull ParameterBindingRule pbr)
             throws Exception {
-        Translet translet = activity.getTranslet();
         Class<?> type = pbr.getType();
         String name = pbr.getName();
+        Translet translet = (activity.hasTranslet() ? activity.getTranslet() : null);
 
-        Object result;
         if (type == Translet.class) {
-            result = translet;
-        } else if (type.isArray()) {
-            if (type.getComponentType() == Translet.class) {
-                result = new Translet[] { translet };
-            } else {
+            return (translet != null ? translet : new InstantTranslet(activity));
+        }
+        if (type.isArray() && type.getComponentType() == Translet.class) {
+            return new Translet[] { (translet != null ? translet : new InstantTranslet(activity)) };
+        }
+
+        Object result = Void.TYPE;
+        if (translet != null) {
+            if (type.isArray()) {
                 Object value = translet.getParameterValues(name);
                 result = resolveValue(value, type, pbr.getAnnotations(), activity);
-                if (result == Void.TYPE) {
-                    result = null;
+            } else if (type == ParameterMap.class) {
+                ParameterMap parameterMap = new ParameterMap();
+                for (String paramName : translet.getParameterNames()) {
+                    parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
                 }
-            }
-        } else if (type == ParameterMap.class) {
-            ParameterMap parameterMap = new ParameterMap();
-            for (String paramName : translet.getParameterNames()) {
-                parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
-            }
-            result = parameterMap;
-        } else if (Map.class.isAssignableFrom(type)) {
-            if (!type.isInterface()) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
-                map.putAll(translet.getAllParameters());
-                result = map;
-            } else {
-                result = new HashMap<>(translet.getAllParameters());
-            }
-        } else if (Collection.class.isAssignableFrom(type)) {
-            String[] values = translet.getParameterValues(name);
-            if (!type.isInterface()) {
-                @SuppressWarnings("unchecked")
-                Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
-                if (values != null) {
-                    collection.addAll(Arrays.asList(values));
-                }
-                result = collection;
-            } else {
-                if (values != null) {
-                    result = new ArrayList<>(Arrays.asList(values));
+                result = parameterMap;
+            } else if (Map.class.isAssignableFrom(type)) {
+                if (!type.isInterface()) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
+                    map.putAll(translet.getAllParameters());
+                    result = map;
                 } else {
-                    result = new ArrayList<>();
+                    result = new HashMap<>(translet.getAllParameters());
                 }
-            }
-        } else if (Parameters.class.isAssignableFrom(type)) {
-            Parameters parameters;
-            if (type.isInterface()) {
-                parameters = translet.getRequestAdapter().getBodyAsParameters();
-                if (parameters == null) {
-                    parameters = translet.getRequestAdapter().getParameters();
+            } else if (Collection.class.isAssignableFrom(type)) {
+                String[] values = translet.getParameterValues(name);
+                if (!type.isInterface()) {
+                    @SuppressWarnings("unchecked")
+                    Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
+                    if (values != null) {
+                        collection.addAll(Arrays.asList(values));
+                    }
+                    result = collection;
+                } else {
+                    if (values != null) {
+                        result = new ArrayList<>(Arrays.asList(values));
+                    } else {
+                        result = new ArrayList<>();
+                    }
                 }
-            } else {
-                @SuppressWarnings("unchecked")
-                Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
-                parameters = translet.getRequestAdapter().getBodyAsParameters(requiredType);
-                if (parameters == null) {
-                    parameters = translet.getRequestAdapter().getParameters(requiredType);
-                }
-            }
-            return parameters;
-        } else {
-            Object value = translet.getParameter(name);
-            result = resolveValue(value, type, pbr.getAnnotations(), activity);
-            if (result == Void.TYPE) {
-                if (type.isAnnotationPresent(Component.class)) {
-                    try {
-                        result = translet.getBean(type);
-                    } catch (NoUniqueBeanException e) {
-                        result = translet.getBean(type, name);
+            } else if (Parameters.class.isAssignableFrom(type)) {
+                if (type.isInterface()) {
+                    result = translet.getRequestAdapter().getBodyAsParameters();
+                    if (result == null) {
+                        result = translet.getRequestAdapter().getParameters();
                     }
                 } else {
-                    result = bindModel(activity, type);
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
+                    result = translet.getRequestAdapter().getBodyAsParameters(requiredType);
+                    if (result == null) {
+                        result = translet.getRequestAdapter().getParameters(requiredType);
+                    }
+                }
+            } else {
+                Object value = translet.getParameter(name);
+                result = resolveValue(value, type, pbr.getAnnotations(), activity);
+            }
+        }
+
+        if (result == Void.TYPE) {
+            if (translet != null && !type.isAnnotationPresent(Component.class)) {
+                result = bindModel(activity, type);
+            } else {
+                try {
+                    result = activity.getBean(type);
+                } catch (NoUniqueBeanException e) {
+                    result = activity.getBean(type, name);
                 }
             }
         }
-        return result;
-    }
-
-    /**
-     * Resolves the argument for a single method parameter in a non-translet environment (e.g., daemon).
-     * <p>Resolution is typically limited to injecting beans from the activity context.</p>
-     * @param activity the current activity
-     * @param pbr the binding rule for the parameter to resolve
-     * @return the resolved argument value (usually a bean)
-     */
-    private static Object resolveArgument(@NonNull Activity activity, @NonNull ParameterBindingRule pbr) {
-        Class<?> type = pbr.getType();
-        String name = pbr.getName();
-
-        Object result;
-        if (type == Translet.class) {
-            result = new InstantTranslet(activity);
-        } else if (type.isArray() && type.getComponentType() == Translet.class) {
-            result = new Translet[] { new InstantTranslet(activity) };
-        } else {
-            try {
-                result = activity.getBean(type);
-            } catch (NoUniqueBeanException e) {
-                result = activity.getBean(type, name);
-            }
-        }
-        return result;
+        return (result != Void.TYPE ? result : null);
     }
 
     /**
