@@ -65,7 +65,7 @@ class HybridActivityContextBuilderTest {
         String result2 = context.getTemplateRenderer().render("echo2");
         assertEquals("ECHO-2", result2);
 
-        String devProp1 = context.getEnvironment().getProperty("prop-1", context.getDefaultActivity());
+        String devProp1 = context.getEnvironment().getProperty("prop-1");
         String devProp2 = context.getEnvironment().getProperty("prop-2", context.getDefaultActivity());
         assertEquals("dev-debug-1", devProp1);
         assertEquals("dev-debug-2", devProp2);

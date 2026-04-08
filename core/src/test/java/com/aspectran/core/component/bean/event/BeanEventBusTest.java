@@ -17,16 +17,9 @@ package com.aspectran.core.component.bean.event;
 
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.utils.ResourceUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.aspectran.test.AspectranTest;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,35 +29,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *
  * <p>Created: 2016. 3. 26.</p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AspectranTest(
+    basePackages = "com.aspectran.core.component.bean.event",
+    async = true
+)
 class BeanEventBusTest {
 
-    private HybridActivityContextBuilder builder;
-
-    private BeanRegistry beanRegistry;
-
-    @BeforeAll
-    void ready() throws IOException, ActivityContextBuilderException {
-        File baseDir = ResourceUtils.getResourceAsFile(".");
-
-        builder = new HybridActivityContextBuilder();
-        builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setDebugMode(true);
-        builder.setActiveProfiles("dev", "local");
-        builder.setBasePackages("com.aspectran.core.component.bean.event");
-        ActivityContext context = builder.build();
-        beanRegistry = context.getBeanRegistry();
-    }
-
-    @AfterAll
-    void finish() {
-        if (builder != null) {
-            builder.destroy();
-        }
-    }
-
     @Test
-    void testEventBus() {
+    void testEventBus(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         SamplePublisher publisher = beanRegistry.getBean(SamplePublisher.class);
         SampleListener listener = beanRegistry.getBean(SampleListener.class);
 

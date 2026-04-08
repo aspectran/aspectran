@@ -93,6 +93,7 @@ public class WebAspectranExtension extends AspectranExtension {
         return super.resolveParameter(parameterContext, extensionContext);
     }
 
+    @NonNull
     private AspectranTest adapt(@NonNull final WebAspectranTest web) {
         return new AspectranTest() {
             @Override

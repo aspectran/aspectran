@@ -34,7 +34,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AspectranTest(
     profiles = {"dev", "local"},
     basePackages = "com.aspectran.core.component.bean",
-    rules = {"/config/bean/autowire-bean-test-config.xml", "/config/bean/test-properties.xml"},
+    rules = {
+            "/config/bean/autowire-bean-test-config.xml",
+            "/config/bean/test-properties.xml"
+    },
     debugMode = true
 )
 class AutowireBeanTest {

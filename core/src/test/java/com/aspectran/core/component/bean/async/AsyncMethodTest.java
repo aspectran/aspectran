@@ -21,19 +21,10 @@ import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.config.AsyncConfig;
-import com.aspectran.core.context.config.ContextConfig;
-import com.aspectran.core.context.resource.InvalidResourceException;
-import com.aspectran.utils.ResourceUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.aspectran.test.AspectranTest;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -43,41 +34,15 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AspectranTest(
+    basePackages = "com.aspectran.core.component.bean.async",
+    async = true
+)
 class AsyncMethodTest {
 
-    private HybridActivityContextBuilder builder;
-
-    private ActivityContext context;
-
-    private BeanRegistry beanRegistry;
-
-    @BeforeAll
-    void ready() throws IOException, ActivityContextBuilderException, InvalidResourceException {
-        File baseDir = ResourceUtils.getResourceAsFile(".");
-
-        ContextConfig contextConfig = new ContextConfig();
-        contextConfig.setBasePackage(new String[]{"com.aspectran.core.component.bean.async"});
-        AsyncConfig asyncConfig = contextConfig.touchAsyncConfig();
-        asyncConfig.setEnabled(true);
-
-        builder = new HybridActivityContextBuilder();
-        builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setDebugMode(true);
-        builder.configure(contextConfig);
-        context = builder.build();
-        beanRegistry = context.getBeanRegistry();
-    }
-
-    @AfterAll
-    void finish() {
-        if (builder != null) {
-            builder.destroy();
-        }
-    }
-
     @Test
-    void testNoActivity() throws InterruptedException, ExecutionException {
+    void testNoActivity(@NonNull ActivityContext context) throws InterruptedException, ExecutionException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -95,7 +60,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testVoidMethod() throws ActivityPerformException, InterruptedException {
+    void testVoidMethod(@NonNull ActivityContext context) throws ActivityPerformException, InterruptedException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -119,7 +85,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testNestedInvocation1() throws InterruptedException, ExecutionException {
+    void testNestedInvocation1(@NonNull ActivityContext context) throws InterruptedException, ExecutionException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -129,7 +96,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testNestedInvocation2() throws ActivityPerformException, ExecutionException, InterruptedException {
+    void testNestedInvocation2(@NonNull ActivityContext context) throws ActivityPerformException, ExecutionException, InterruptedException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -144,7 +112,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testFutureMethod() throws ExecutionException, InterruptedException {
+    void testFutureMethod(@NonNull ActivityContext context) throws ExecutionException, InterruptedException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -158,7 +127,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testCustomExecutor() throws ExecutionException, InterruptedException {
+    void testCustomExecutor(@NonNull ActivityContext context) throws ExecutionException, InterruptedException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -172,7 +142,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testActivityPropagation() throws ExecutionException, InterruptedException, ActivityPerformException {
+    void testActivityPropagation(@NonNull ActivityContext context) throws ExecutionException, InterruptedException, ActivityPerformException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -187,7 +158,8 @@ class AsyncMethodTest {
     }
 
     @Test
-    void errorOccurredMethod() throws InterruptedException {
+    void errorOccurredMethod(@NonNull ActivityContext context) throws InterruptedException {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 

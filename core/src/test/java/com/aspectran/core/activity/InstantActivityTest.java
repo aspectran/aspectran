@@ -23,17 +23,13 @@ import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.utils.ResourceUtils;
+import com.aspectran.test.AspectranTest;
 import org.jspecify.annotations.NonNull;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.File;
 import java.io.Writer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,33 +37,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 1/3/24</p>
  */
+@AspectranTest(
+    rules = "/config/activity/instant-activity-config.xml"
+)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InstantActivityTest {
-
-    private ActivityContextBuilder builder;
 
     private ActivityContext context;
 
     private SessionAdapter sessionAdapter;
 
     @BeforeAll
-    void ready() throws Exception {
-        File baseDir = ResourceUtils.getResourceAsFile(".");
-
-        builder = new HybridActivityContextBuilder();
-        builder.setBasePath(baseDir.getCanonicalPath());
-        context = builder.build("/config/activity/instant-activity-config.xml");
-
+    void ready(ActivityContext context) throws Exception {
+        this.context = context;
         SessionManager sessionManager = createSessionManager();
         SessionAgent sessionAgent = new SessionAgent(sessionManager);
         sessionAdapter = new DefaultSessionAdapter(sessionAgent);
-    }
-
-    @AfterAll
-    void finish() {
-        if (builder != null) {
-            builder.destroy();
-        }
     }
 
     @NonNull

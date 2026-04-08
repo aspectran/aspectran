@@ -16,6 +16,7 @@
 package com.aspectran.core.sample;
 
 import com.aspectran.core.activity.Translet;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class TestAdvice {
         return msg;
     }
 
-    public String goodbye(Translet translet) {
+    public String goodbye(@NonNull Translet translet) {
         logger.info("activityData {}", translet.getActivityData());
 
         String msg = "Goodbye!";

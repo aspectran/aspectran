@@ -23,6 +23,5 @@ import com.aspectran.core.component.bean.annotation.Component;
  */
 @Component
 @Bean("myCustomTaskExecutor")
-@SuppressWarnings("serial")
 public class MyCustomTaskExecutor extends SimpleAsyncTaskExecutor {
 }

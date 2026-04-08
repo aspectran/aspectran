@@ -4,7 +4,7 @@
 # comment line-3
 #
 context: {
-    base: ./target/test-classes
+    base: ./target/test-classes  # inline comment
     rules: /WEB-INF/aspectran/config/test-root.xml
     encoding: utf-8
     resources: [

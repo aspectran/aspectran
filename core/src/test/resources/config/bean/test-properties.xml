@@ -4,31 +4,25 @@
 <aspectran>
 
     <bean id="properties" class="java.util.HashMap">
-        <arguments>
-            <item type="map">
+            <argument type="map">
                 <entry name="property1">Property-1</entry>
                 <entry name="property2">Property-2</entry>
                 <entry name="property3">Property-3</entry>
-            </item>
-        </arguments>
+            </argument>
     </bean>
 
 	<environment profile="dev">
-        <properties>
-            <item name="env.property1">DEV-#{properties^property1}</item>
-            <item name="env.property2">DEV-#{properties^property2}</item>
-            <item name="env.property3">DEV-#{properties^property3}</item>
-            <item name="env.property4">DEV-#{properties^property1} / #{properties^property2} / #{properties^property3}</item>
-        </properties>
+        <property name="env.property1">DEV-#{properties^property1}</property>
+        <property name="env.property2">DEV-#{properties^property2}</property>
+        <property name="env.property3">DEV-#{properties^property3}</property>
+        <property name="env.property4">DEV-#{properties^property1} / #{properties^property2} / #{properties^property3}</property>
 	</environment>
 
 	<environment profile="prod">
-        <properties>
-            <item name="env.property1">PROD-#{properties^property1}</item>
-            <item name="env.property2">PROD-#{properties^property2}</item>
-            <item name="env.property3">PROD-#{properties^property3}</item>
-            <item name="env.property4">PROD-#{properties^property1} / #{properties^property2} / #{properties^property3}</item>
-        </properties>
+        <property name="env.property1">PROD-#{properties^property1}</property>
+        <property name="env.property2">PROD-#{properties^property2}</property>
+        <property name="env.property3">PROD-#{properties^property3}</property>
+        <property name="env.property4">PROD-#{properties^property1} / #{properties^property2} / #{properties^property3}</property>
 	</environment>
 
     <template id="property-1" style="apon">
