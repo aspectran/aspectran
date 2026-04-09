@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.HasParameters;
+import com.aspectran.core.context.rule.ability.HasParameterRules;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
@@ -58,13 +58,13 @@ class ParametersNodeletAdder implements NodeletAdder {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 Object object = AspectranNodeParsingContext.peekObject();
                 if (object instanceof TransletRule transletRule) {
-                    HasParameters hasParameters = transletRule.touchRequestRule(false);
-                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasParameters.getParameterItemRuleMap());
-                    hasParameters.setParameterItemRuleMap(irm);
+                    HasParameterRules hasParameterRules = transletRule.touchRequestRule(false);
+                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasParameterRules.getParameterItemRuleMap());
+                    hasParameterRules.setParameterItemRuleMap(irm);
                 } else {
-                    HasParameters hasParameters = (HasParameters)object;
-                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasParameters.getParameterItemRuleMap());
-                    hasParameters.setParameterItemRuleMap(irm);
+                    HasParameterRules hasParameterRules = (HasParameterRules)object;
+                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasParameterRules.getParameterItemRuleMap());
+                    hasParameterRules.setParameterItemRuleMap(irm);
                 }
             });
     }

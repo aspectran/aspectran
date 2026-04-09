@@ -23,10 +23,10 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.HasArguments;
-import com.aspectran.core.context.rule.ability.HasAttributes;
-import com.aspectran.core.context.rule.ability.HasParameters;
-import com.aspectran.core.context.rule.ability.HasProperties;
+import com.aspectran.core.context.rule.ability.HasArgumentRules;
+import com.aspectran.core.context.rule.ability.HasAttributeRules;
+import com.aspectran.core.context.rule.ability.HasParameterRules;
+import com.aspectran.core.context.rule.ability.HasPropertyRules;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.BooleanUtils;
@@ -105,13 +105,13 @@ class ItemNodeletAdder implements NodeletAdder {
                         requestRule.addAttributeItemRule(itemRule);
                     }
                 } else if (getName().equals(ParameterNodeletAdder.instance().getName())) {
-                    ((HasParameters)object).addParameterItemRule(itemRule);
+                    ((HasParameterRules)object).addParameterItemRule(itemRule);
                 } else if (getName().equals(AttributeNodeletAdder.instance().getName())) {
-                    ((HasAttributes)object).addAttributeItemRule(itemRule);
+                    ((HasAttributeRules)object).addAttributeItemRule(itemRule);
                 } else if (getName().equals(ArgumentNodeletAdder.instance().getName())) {
-                    ((HasArguments)object).addArgumentItemRule(itemRule);
+                    ((HasArgumentRules)object).addArgumentItemRule(itemRule);
                 } else if (getName().equals(PropertyNodeletAdder.instance().getName())) {
-                    ((HasProperties)object).addPropertyItemRule(itemRule);
+                    ((HasPropertyRules)object).addPropertyItemRule(itemRule);
                 }
             })
             .child("value")

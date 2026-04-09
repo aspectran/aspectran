@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.ability.HasArguments;
+import com.aspectran.core.context.rule.ability.HasArgumentRules;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
@@ -55,9 +55,9 @@ class ArgumentsNodeletAdder implements NodeletAdder {
             .with(ItemNodeletAdder.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
-                HasArguments hasArguments = AspectranNodeParsingContext.peekObject();
-                irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasArguments.getArgumentItemRuleMap());
-                hasArguments.setArgumentItemRuleMap(irm);
+                HasArgumentRules hasArgumentRules = AspectranNodeParsingContext.peekObject();
+                irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasArgumentRules.getArgumentItemRuleMap());
+                hasArgumentRules.setArgumentItemRuleMap(irm);
             });
     }
 
