@@ -35,6 +35,10 @@ public class FileRuleAppender extends AbstractRuleAppender {
 
     private final String filePath;
 
+    /**
+     * Constructs a new instance of FileRuleAppender with the specified file path.
+     * @param filePath the path to the file containing rules to be appended
+     */
     public FileRuleAppender(String filePath) {
         this(null, filePath);
     }

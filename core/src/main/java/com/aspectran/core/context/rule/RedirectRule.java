@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenParser;
-import com.aspectran.core.context.rule.ability.HasParameters;
+import com.aspectran.core.context.rule.ability.HasParameterRules;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.BooleanUtils;
@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectRule implements Replicable<RedirectRule>, HasParameters {
+public class RedirectRule implements Replicable<RedirectRule>, HasParameterRules {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 

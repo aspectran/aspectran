@@ -67,6 +67,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         this.encoding = encoding;
     }
 
+    /**
+     * Sets the listener for receiving file appended events.
+     * @param listener the listener to be notified when a file is appended
+     */
     public void setFileAppendedListener(FileAppendedListener listener) {
         this.fileAppendedListener = listener;
     }

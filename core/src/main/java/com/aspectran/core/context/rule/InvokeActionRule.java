@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
-import com.aspectran.core.context.rule.ability.HasArguments;
-import com.aspectran.core.context.rule.ability.HasProperties;
+import com.aspectran.core.context.rule.ability.HasArgumentRules;
+import com.aspectran.core.context.rule.ability.HasPropertyRules;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  *
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class InvokeActionRule implements BeanReferenceable, HasArguments, HasProperties {
+public class InvokeActionRule implements BeanReferenceable, HasArgumentRules, HasPropertyRules {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_METHOD_ACTION_RULE;
 

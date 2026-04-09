@@ -33,6 +33,10 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
 
     private final ClassLoader classLoader;
 
+    /**
+     * Constructs a new ResourceRuleAppender with the specified resource.
+     * @param resource the path to the classpath resource containing the rules to append
+     */
     public ResourceRuleAppender(String resource) {
         this(resource, null);
     }

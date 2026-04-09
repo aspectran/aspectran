@@ -20,8 +20,8 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Describable;
-import com.aspectran.core.context.rule.ability.HasArguments;
-import com.aspectran.core.context.rule.ability.HasProperties;
+import com.aspectran.core.context.rule.ability.HasArgumentRules;
+import com.aspectran.core.context.rule.ability.HasPropertyRules;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -43,7 +43,7 @@ import java.util.List;
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Describable, HasArguments, HasProperties {
+public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Describable, HasArgumentRules, HasPropertyRules {
 
     public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 

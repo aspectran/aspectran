@@ -26,106 +26,107 @@ import java.io.InputStream;
 import java.io.Reader;
 
 /**
- * Defines the contract for appending rules from various sources such as files,
- * classpath resources, or URLs.
- * <p>Implementations provide an {@link java.io.InputStream} for the configuration
- * data to be parsed.</p>
+ * Defines the contract for loading and appending rule configuration from various sources
+ * such as the file system, classpath, or network URLs.
+ * <p>Implementations of this interface provide standardized access to rule resources
+ * through input streams or readers, allowing the framework to aggregate multiple
+ * configuration sources.</p>
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
 public interface RuleAppender {
 
     /**
-     * Returns the appender type.
-     * @return the appender type
+     * Returns the type of this rule appender.
+     * @return the {@link AppenderType} representing the source type of this appender
      */
     AppenderType getAppenderType();
 
     /**
-     * Returns the append rule.
-     * @return the append rule
+     * Returns the rule that describes the resource to be appended.
+     * @return the {@link AppendRule} instance
      */
     AppendRule getAppendRule();
 
     /**
-     * Sets the append rule.
-     * @param appendRule the append rule
+     * Sets the rule that describes the resource to be appended.
+     * @param appendRule the {@link AppendRule} instance
      */
     void setAppendRule(AppendRule appendRule);
 
     /**
-     * Returns the appendable file format type.
-     * @return the appendable file format type
+     * Returns the format of the rule configuration file to be appended.
+     * @return the {@link AppendableFileFormatType}
      */
     AppendableFileFormatType getAppendableFileFormatType();
 
     /**
-     * Sets the appendable file format type.
-     * @param appendableFileFormatType the appendable file format type
+     * Sets the format of the rule configuration file to be appended.
+     * @param appendableFileFormatType the {@link AppendableFileFormatType}
      */
     void setAppendableFileFormatType(AppendableFileFormatType appendableFileFormatType);
 
     /**
-     * Returns the profiles.
-     * @return the profiles
+     * Returns the active profiles for which the rules are applicable.
+     * @return the {@link Profiles}
      */
     Profiles getProfiles();
 
     /**
-     * Sets the profile.
-     * @param profile the profile
+     * Sets a profile that determines whether the rule resource should be applied.
+     * @param profile the profile name
      */
     void setProfile(String profile);
 
     /**
-     * Returns the qualified name of the resource.
+     * Returns the unique, qualified name of the rule resource.
      * @return the qualified name
      */
     String getQualifiedName();
 
     /**
-     * Returns the last modified time of the resource.
-     * @return the last modified time
+     * Returns the last modified time of the rule resource.
+     * @return the last modified time in milliseconds
      */
     long getLastModified();
 
     /**
-     * Sets the last modified time of the resource.
-     * @param lastModified the last modified time
+     * Sets the last modified time of the rule resource.
+     * @param lastModified the last modified time in milliseconds
      */
     void setLastModified(long lastModified);
 
     /**
-     * Returns an input stream for reading the rules.
-     * @return the input stream
-     * @throws IOException if an I/O error has occurred
+     * Returns an input stream for reading the rule configuration data.
+     * @return an {@link InputStream} to access the rule resource
+     * @throws IOException if an I/O error occurs while opening the stream
      */
     InputStream getInputStream() throws IOException;
 
     /**
-     * Returns a reader for reading the rules.
-     * @return the reader
-     * @throws IOException if an I/O error has occurred
+     * Returns a reader for reading the rule configuration data.
+     * @return a {@link Reader} to access the rule resource
+     * @throws IOException if an I/O error occurs while opening the reader
      */
     Reader getReader() throws IOException;
 
     /**
-     * Returns a reader for reading the rules with the specified encoding.
-     * @param encoding the encoding
-     * @return the reader
-     * @throws IOException if an I/O error has occurred
+     * Returns a reader for reading the rule configuration data using the specified encoding.
+     * @param encoding the character encoding to use
+     * @return a {@link Reader} with the specified encoding
+     * @throws IOException if an I/O error occurs while opening the reader
      */
     Reader getReader(String encoding) throws IOException;
 
     /**
-     * Returns the node tracker.
-     * @return the node tracker
+     * Returns the {@link NodeTracker} used to track the location of the rules during parsing.
+     * @return the node tracker instance
      */
     NodeTracker getNodeTracker();
 
     /**
-     * Sets the node tracker.
-     * @param nodeTracker the node tracker
+     * Sets the {@link NodeTracker} used to track the location of the rules during parsing.
+     * @param nodeTracker the node tracker instance
      */
     void setNodeTracker(NodeTracker nodeTracker);
 

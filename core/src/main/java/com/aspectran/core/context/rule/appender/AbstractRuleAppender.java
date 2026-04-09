@@ -46,6 +46,10 @@ abstract class AbstractRuleAppender implements RuleAppender {
 
     private NodeTracker nodeTracker;
 
+    /**
+     * Constructs an instance of AbstractRuleAppender with the specified appender type.
+     * @param appenderType the type of appender to define the source of the rules
+     */
     AbstractRuleAppender(AppenderType appenderType) {
         this.appenderType = appenderType;
     }

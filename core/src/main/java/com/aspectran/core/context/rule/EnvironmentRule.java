@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.ability.Describable;
-import com.aspectran.core.context.rule.ability.HasProperties;
+import com.aspectran.core.context.rule.ability.HasPropertyRules;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 
@@ -27,7 +27,7 @@ import org.jspecify.annotations.NonNull;
  *
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
-public class EnvironmentRule implements Describable, HasProperties {
+public class EnvironmentRule implements Describable, HasPropertyRules {
 
     private String profile;
 

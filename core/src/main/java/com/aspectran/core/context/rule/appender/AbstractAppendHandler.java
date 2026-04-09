@@ -46,6 +46,10 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private boolean debugMode;
 
+    /**
+     * Constructs an instance of {@code AbstractAppendHandler} with the specified {@code RuleParsingContext}.
+     * @param ruleParsingContext the context used for parsing rules, must not be null
+     */
     AbstractAppendHandler(@NonNull RuleParsingContext ruleParsingContext) {
         this.ruleParsingContext = ruleParsingContext;
         this.environmentProfiles = ruleParsingContext.getEnvironmentProfiles();
