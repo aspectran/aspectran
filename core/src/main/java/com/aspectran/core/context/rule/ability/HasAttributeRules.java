@@ -19,12 +19,14 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
- * An interface for rules that can have attributes.
+ * Defines a contract for rules that can contain and manage a map of attribute rules.
+ * This interface provides a way to add and manage {@link ItemRule} instances
+ * that represent attributes.
  */
-public interface HasAttributes {
+public interface HasAttributeRules {
 
     /**
-     * Gets the attribute item rule map.
+     * Returns the attribute item rule map.
      * @return the attribute item rule map
      */
     ItemRuleMap getAttributeItemRuleMap();

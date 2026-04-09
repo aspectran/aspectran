@@ -19,12 +19,14 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
- * An interface for rules that can have parameters.
+ * Defines a contract for rules that can contain and manage a map of parameter rules.
+ * This interface provides a way to add and manage {@link ItemRule} instances
+ * that represent parameters.
  */
-public interface HasParameters {
+public interface HasParameterRules {
 
     /**
-     * Gets the parameter item rule map.
+     * Returns the parameter item rule map.
      * @return the parameter item rule map
      */
     ItemRuleMap getParameterItemRuleMap();

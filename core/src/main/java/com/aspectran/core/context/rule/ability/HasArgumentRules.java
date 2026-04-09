@@ -19,12 +19,14 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
- * An interface for rules that can have constructor arguments.
+ * Defines a contract for rules that can contain and manage a map of argument rules.
+ * This interface provides a way to add and manage {@link ItemRule} instances
+ * that represent constructor arguments.
  */
-public interface HasArguments {
+public interface HasArgumentRules {
 
     /**
-     * Gets the argument item rule map.
+     * Returns the argument item rule map.
      * @return the argument item rule map
      */
     ItemRuleMap getArgumentItemRuleMap();
