@@ -35,42 +35,52 @@ import java.io.File;
  */
 public class AspectranShell {
 
+    /**
+     * The main entry point for the Aspectran Shell.
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         bootstrap(basePath, aspectranConfigFile);
     }
 
+    /**
+     * Bootstrap the Aspectran Shell.
+     * @param aspectranConfigFile the Aspectran configuration file
+     */
     public static void bootstrap(File aspectranConfigFile) {
         bootstrap(null, aspectranConfigFile);
     }
 
+    /**
+     * Bootstrap the Aspectran Shell.
+     * @param basePath the base path
+     * @param aspectranConfigFile the Aspectran configuration file
+     */
     public static void bootstrap(@Nullable String basePath, File aspectranConfigFile) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
         }
 
-        DefaultShellCommander commander = null;
         int exitStatus = 0;
 
-        try {
-            ShellConsole console = new DefaultShellConsole();
-            commander = new DefaultShellCommander(console);
-            commander.configure(basePath, aspectranConfigFile);
-            commander.run();
-        } catch (Exception e) {
+        try (ShellConsole console = new DefaultShellConsole()) {
+            DefaultShellCommander commander = new DefaultShellCommander(console);
+            try {
+                commander.configure(basePath, aspectranConfigFile);
+                commander.run();
+            } finally {
+                commander.release();
+            }
+        } catch (Throwable e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof InsufficientEnvironmentException that) {
                 System.err.println(that.getPrettyMessage());
             } else {
-                System.err.println(cause.getMessage());
                 e.printStackTrace(System.err);
             }
             exitStatus = 1;
-        } finally {
-            if (commander != null) {
-                commander.release();
-            }
         }
 
         System.exit(exitStatus);

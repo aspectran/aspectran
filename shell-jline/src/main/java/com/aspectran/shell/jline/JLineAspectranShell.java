@@ -75,12 +75,11 @@ public class JLineAspectranShell {
             } finally {
                 commander.release();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof InsufficientEnvironmentException that) {
                 System.err.println(that.getPrettyMessage());
             } else {
-                System.err.println(cause.getMessage());
                 e.printStackTrace(System.err);
             }
             exitStatus = 1;

@@ -95,7 +95,6 @@ public class JLineTerminal {
     public JLineTerminal(ShellConsole console, String encoding) throws IOException {
         this.terminal = TerminalBuilder.builder()
                 .name(TERMINAL_NAME)
-                .system(true)
                 .encoding(encoding)
                 .build();
 
