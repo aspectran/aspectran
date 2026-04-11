@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -183,7 +184,7 @@ class AponWriterTest {
     void testCompactWritingOfEmptyStructures() throws IOException {
         Parameters params = new VariableParameters();
         params.putValue("emptyBlock", new VariableParameters());
-        params.putValue("emptyArray", new java.util.ArrayList<String>());
+        params.putValue("emptyArray", new ArrayList<String>());
 
         String expected = """
                 emptyBlock: {}
@@ -233,6 +234,54 @@ class AponWriterTest {
         String apon = writer.write(params).toString();
 
         assertEquals("dateTime:\"2026-03-29 16:30:00\"", apon);
+    }
+
+    /**
+     * Tests that unassigned array parameters are not written as empty arrays.
+     */
+    @Test
+    void testUnassignedArrayParameters() throws IOException {
+        class TestParameters extends DefaultParameters {
+            static final ParameterKey methods = new ParameterKey("methods", ValueType.STRING, true);
+            static final ParameterKey headers = new ParameterKey("headers", ValueType.STRING, true);
+            static final ParameterKey pointcut = new ParameterKey("pointcut", VariableParameters.class, true);
+            static final ParameterKey[] parameterKeys = new ParameterKey[] { methods, headers, pointcut };
+            TestParameters() { super(parameterKeys); }
+        }
+
+        TestParameters params = new TestParameters();
+        // None of the parameters are assigned.
+
+        // When nullWritable is false (default), unassigned parameters are omitted
+        String apon1 = new AponWriter().nullWritable(false).write(params).toString();
+        assertEquals("", apon1.trim());
+
+        // When nullWritable is true, unassigned parameters are written as null
+        String apon2 = new AponWriter().nullWritable(true).write(params).toString();
+        assertTrue(apon2.contains("methods: null"));
+        assertTrue(apon2.contains("headers: null"));
+        assertTrue(apon2.contains("pointcut: null"));
+        assertFalse(apon2.contains("[]"));
+    }
+
+    /**
+     * Tests that explicitly assigned empty arrays are still written as empty arrays [].
+     */
+    @Test
+    void testAssignedEmptyArrayParameters() throws IOException {
+        class TestParameters extends DefaultParameters {
+            static final ParameterKey methods = new ParameterKey("methods", ValueType.STRING, true);
+            static final ParameterKey[] parameterKeys = new ParameterKey[] { methods };
+            TestParameters() { super(parameterKeys); }
+        }
+
+        TestParameters params = new TestParameters();
+        params.putValue(TestParameters.methods, new ArrayList<String>());
+        // The parameter is explicitly assigned an empty list.
+        assertTrue(params.getParameter(TestParameters.methods).isAssigned());
+
+        String apon = new AponWriter().write(params).toString();
+        assertTrue(apon.contains("methods: []"));
     }
 
 }

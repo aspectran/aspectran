@@ -359,6 +359,13 @@ public class AponWriter implements Flushable {
         for (Parameter parameter : parameters.getParameterValues()) {
             if (parameter.getValueType() == ValueType.PARAMETERS) {
                 if (parameter.isArray()) {
+                    if (!parameter.isAssigned()) {
+                        if (nullWritable) {
+                            writeName(parameter);
+                            writeNull();
+                        }
+                        continue;
+                    }
                     @SuppressWarnings("unchecked")
                     List<Parameters> list = (List<Parameters>)parameter.getValueList();
                     if (list != null) {
@@ -393,6 +400,13 @@ public class AponWriter implements Flushable {
                 }
             } else if (parameter.getValueType() == ValueType.TEXT) {
                 if (parameter.isArray()) {
+                    if (!parameter.isAssigned()) {
+                        if (nullWritable) {
+                            writeName(parameter);
+                            writeNull();
+                        }
+                        continue;
+                    }
                     @SuppressWarnings("unchecked")
                     List<String> list = (List<String>)parameter.getValueList();
                     if (list != null) {
@@ -448,6 +462,13 @@ public class AponWriter implements Flushable {
                 }
             } else {
                 if (parameter.isArray()) {
+                    if (!parameter.isAssigned()) {
+                        if (nullWritable) {
+                            writeName(parameter);
+                            writeNull();
+                        }
+                        continue;
+                    }
                     List<?> list = parameter.getValueList();
                     if (list != null) {
                         if (parameter.isBracketed()) {
