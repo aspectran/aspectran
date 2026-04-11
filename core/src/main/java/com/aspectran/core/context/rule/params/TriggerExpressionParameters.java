@@ -134,8 +134,7 @@ public class TriggerExpressionParameters extends DefaultParameters {
         putValue(TriggerExpressionParameters.expression, expression);
     }
 
-    @NonNull
-    public static ParameterKey[] getParameterKeys() {
+    public static ParameterKey @NonNull [] getParameterKeys() {
         return Arrays.copyOf(parameterKeys, parameterKeys.length);
     }
 
