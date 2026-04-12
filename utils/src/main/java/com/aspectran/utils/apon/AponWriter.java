@@ -357,147 +357,60 @@ public class AponWriter implements Flushable {
      */
     private void writeParameters(@NonNull Parameters parameters) throws IOException {
         for (Parameter parameter : parameters.getParameterValues()) {
-            if (parameter.getValueType() == ValueType.PARAMETERS) {
-                if (parameter.isArray()) {
-                    if (!parameter.isAssigned()) {
-                        if (nullWritable) {
-                            writeName(parameter);
-                            writeNull();
-                        }
-                        continue;
-                    }
-                    @SuppressWarnings("unchecked")
-                    List<Parameters> list = (List<Parameters>)parameter.getValueList();
-                    if (list != null) {
-                        if (parameter.isBracketed()) {
-                            writeName(parameter);
-                            if (list.isEmpty()) {
-                                emptyArray();
-                            } else {
-                                beginArray();
-                                for (Parameters p : list) {
-                                    if (nullWritable || p != null) {
-                                        writeValue(p);
-                                    }
-                                }
-                                endArray();
-                            }
-                        } else {
-                            for (Parameters p : list) {
-                                if (nullWritable || p != null) {
-                                    writeName(parameter);
-                                    writeValue(p);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    Parameters p = parameter.getValueAsParameters();
-                    if (nullWritable || p != null) {
-                        writeName(parameter);
-                        writeValue(p);
-                    }
-                }
-            } else if (parameter.getValueType() == ValueType.TEXT) {
-                if (parameter.isArray()) {
-                    if (!parameter.isAssigned()) {
-                        if (nullWritable) {
-                            writeName(parameter);
-                            writeNull();
-                        }
-                        continue;
-                    }
-                    @SuppressWarnings("unchecked")
-                    List<String> list = (List<String>)parameter.getValueList();
-                    if (list != null) {
-                        if (parameter.isBracketed()) {
-                            writeName(parameter);
-                            if (list.isEmpty()) {
-                                emptyArray();
-                            } else {
-                                beginArray();
-                                for (String text : list) {
-                                    if (nullWritable || text != null) {
-                                        if (currentStyle == AponRenderStyle.PRETTY) {
-                                            beginText();
-                                            writeText(text);
-                                            endText();
-                                        } else {
-                                            writeString(text);
-                                        }
-                                    }
-                                }
-                                endArray();
-                            }
-                        } else {
-                            for (String text : list) {
-                                if (nullWritable || text != null) {
-                                    writeName(parameter);
-                                    if (currentStyle == AponRenderStyle.PRETTY) {
-                                        beginText();
-                                        writeText(text);
-                                        endText();
-                                    } else {
-                                        writeString(text);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    String text = parameter.getValueAsString();
-                    if (text != null) {
-                        writeName(parameter);
-                        if (currentStyle == AponRenderStyle.PRETTY) {
-                            beginText();
-                            writeText(text);
-                            endText();
-                        } else {
-                            writeString(text);
-                        }
-                    } else if (nullWritable) {
+            if (parameter.isArray()) {
+                if (!parameter.isAssigned()) {
+                    if (nullWritable) {
                         writeName(parameter);
                         writeNull();
                     }
+                    continue;
+                }
+                List<?> list = parameter.getValueList();
+                if (list != null) {
+                    if (list.isEmpty()) {
+                        writeName(parameter);
+                        emptyArray();
+                    } else if (parameter.isBracketed()) {
+                        writeName(parameter);
+                        beginArray();
+                        for (Object value : list) {
+                            writeParameterValue(parameter, value);
+                        }
+                        endArray();
+                    } else {
+                        for (Object value : list) {
+                            if (nullWritable || value != null) {
+                                writeName(parameter);
+                                writeParameterValue(parameter, value);
+                            }
+                        }
+                    }
                 }
             } else {
-                if (parameter.isArray()) {
-                    if (!parameter.isAssigned()) {
-                        if (nullWritable) {
-                            writeName(parameter);
-                            writeNull();
-                        }
-                        continue;
-                    }
-                    List<?> list = parameter.getValueList();
-                    if (list != null) {
-                        if (parameter.isBracketed()) {
-                            writeName(parameter);
-                            if (list.isEmpty()) {
-                                emptyArray();
-                            } else {
-                                beginArray();
-                                for (Object value : list) {
-                                    writeValue(value);
-                                }
-                                endArray();
-                            }
-                        } else {
-                            for (Object value : list) {
-                                if (nullWritable || value != null) {
-                                    writeName(parameter);
-                                    writeValue(value);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (nullWritable || parameter.getValue() != null) {
-                        writeName(parameter);
-                        writeValue(parameter.getValue());
-                    }
+                Object value = parameter.getValue();
+                if (nullWritable || value != null) {
+                    writeName(parameter);
+                    writeParameterValue(parameter, value);
                 }
             }
+        }
+    }
+
+    /**
+     * Writes a single parameter value, handling special types like TEXT.
+     * @param parameter the parameter metadata
+     * @param value the value to write
+     * @throws IOException if an I/O error occurs
+     */
+    private void writeParameterValue(@NonNull Parameter parameter, Object value) throws IOException {
+        if (value == null) {
+            writeNull();
+        } else if (parameter.getValueType() == ValueType.TEXT && currentStyle == AponRenderStyle.PRETTY) {
+            beginText();
+            writeText(value.toString());
+            endText();
+        } else {
+            writeValue(value);
         }
     }
 

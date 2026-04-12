@@ -269,12 +269,6 @@ class AponWriterTest {
      */
     @Test
     void testAssignedEmptyArrayParameters() throws IOException {
-        class TestParameters extends DefaultParameters {
-            static final ParameterKey methods = new ParameterKey("methods", ValueType.STRING, true);
-            static final ParameterKey[] parameterKeys = new ParameterKey[] { methods };
-            TestParameters() { super(parameterKeys); }
-        }
-
         TestParameters params = new TestParameters();
         params.putValue(TestParameters.methods, new ArrayList<String>());
         // The parameter is explicitly assigned an empty list.
@@ -282,6 +276,19 @@ class AponWriterTest {
 
         String apon = new AponWriter().write(params).toString();
         assertTrue(apon.contains("methods: []"));
+
+        TestParameters params2 = AponReader.read(apon, TestParameters.class);
+        String apon2 = new AponWriter().write(params2).toString();
+        assertTrue(apon2.contains("methods: []"));
+    }
+
+    public static class TestParameters extends DefaultParameters {
+        static final ParameterKey methods = new ParameterKey("methods", ValueType.STRING, true, true);
+        static final ParameterKey[] parameterKeys = new ParameterKey[]{methods};
+
+        public TestParameters() {
+            super(parameterKeys);
+        }
     }
 
 }
