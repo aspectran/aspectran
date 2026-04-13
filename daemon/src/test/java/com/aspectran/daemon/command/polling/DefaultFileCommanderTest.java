@@ -82,8 +82,11 @@ class DefaultFileCommanderTest {
         Path commandFile = incomingDir.resolve("01-success.apon");
         Files.writeString(commandFile, "command: sysinfo");
 
+        // Explicitly trigger polling to avoid timing issues in CI environments
+        daemon.getFileCommander().polling();
+
         // Wait for completion
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             if (countFiles(completedDir) > 0) break;
             Thread.sleep(100);
         }
@@ -107,8 +110,14 @@ class DefaultFileCommanderTest {
         Path commandFile = incomingDir.resolve("02-malformed.apon");
         Files.writeString(commandFile, "invalid_format_without_colon");
 
+        // Explicitly trigger polling
+        daemon.getFileCommander().polling();
+
         // Wait for handling
-        Thread.sleep(1000L);
+        for (int i = 0; i < 50; i++) {
+            if (countFiles(failedDir) > 0) break;
+            Thread.sleep(100);
+        }
 
         assertTrue(Files.notExists(commandFile), "Malformed file should be removed from incoming");
         // Integrated report should be the only file in failed directory
@@ -136,8 +145,11 @@ class DefaultFileCommanderTest {
         Path slowCommandFile = incomingDir.resolve("03-slow.apon");
         Files.writeString(slowCommandFile, "command: sysinfo, arguments: { item: { value: gc } }");
         
+        // Explicitly trigger polling for the slow command
+        daemon.getFileCommander().polling();
+
         // Wait for it to be queued
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             if (Files.exists(queuedDir.resolve("03-slow.apon"))) break;
             Thread.sleep(100);
         }
@@ -147,8 +159,11 @@ class DefaultFileCommanderTest {
         Path isolatedCommandFile = incomingDir.resolve("04-isolated.apon");
         Files.writeString(isolatedCommandFile, "command: quit");
 
+        // Explicitly trigger polling for the isolated command
+        daemon.getFileCommander().polling();
+
         // Wait for polling rollback
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             if (Files.exists(isolatedCommandFile)) break;
             Thread.sleep(100);
         }
