@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -75,8 +76,6 @@ public class DefaultFileCommander extends AbstractFileCommander {
     private static final String FAILED_PATH = "failed";
 
     private static final String DEFAULT_INCOMING_PATH = COMMANDS_PATH + "/incoming";
-
-    private final Object lock = new Object();
 
     private final Path incomingDir;
 
@@ -126,13 +125,13 @@ public class DefaultFileCommander extends AbstractFileCommander {
             if (incomingFiles != null) {
                 for (Path file : incomingFiles) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Delete old incoming command file: {}", file);
+                        logger.debug("Deleting old incoming command file: {}", file);
                     }
-                    Files.deleteIfExists(file);
+                    removeCommandFile(file);
                 }
             }
         } catch (Exception e) {
-            throw new Exception("Could not create directory structure for file commander", e);
+            throw new Exception("Failed to create directory structure for file commander", e);
         }
     }
 
@@ -170,78 +169,107 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     @Override
     public void requeue() {
-        List<Path> queuedFiles = retrieveCommandFiles(queuedDir);
-        if (queuedFiles != null) {
-            if (isRequeuable()) {
-                for (Path file : queuedFiles) {
-                    CommandParameters parameters = readCommandFile(file);
-                    if (parameters != null) {
-                        if (parameters.isRequeuable()) {
-                            try {
-                                Path incomingFile = incomingDir.resolve(file.getFileName());
-                                incomingFile = FilenameUtils.generateUniqueFile(incomingFile.toFile()).toPath();
-                                Files.move(file, incomingFile, StandardCopyOption.REPLACE_EXISTING);
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("Re-queued Command: {} in {}", incomingFile.getFileName(), incomingDir);
-                                }
-                            } catch (IOException e) {
-                                logger.warn("Failed to re-queue command file: {}", file, e);
-                                removeCommandFile(file);
-                            }
-                        } else {
-                            removeCommandFile(file);
-                        }
-                    } else {
-                        // Malformed file already handled in readCommandFile
+        if (!isRequeuable()) {
+            List<Path> files = retrieveCommandFiles(queuedDir);
+            if (files != null) {
+                for (Path file : files) {
+                    removeCommandFile(file);
+                }
+            }
+            return;
+        }
+
+        processCommandFiles(queuedDir, -1, (file, parameters) -> {
+            if (parameters.isRequeuable()) {
+                try {
+                    Path target = incomingDir.resolve(file.getFileName());
+                    Path moved = moveUnique(file, target);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Re-queued command: {} to {}", moved.getFileName(), incomingDir);
                     }
+                } catch (IOException e) {
+                    logger.warn("Failed to re-queue command file: {}", file, e);
+                    removeCommandFile(file);
                 }
             } else {
-                for (Path file : queuedFiles) {
-                    removeCommandFile(file);
+                removeCommandFile(file);
+            }
+            return true;
+        });
+    }
+
+    @Override
+    public void polling() {
+        int limit = getCommandExecutor().getAvailableThreads();
+        processCommandFiles(incomingDir, limit, (file, parameters) -> {
+            try {
+                Path target = queuedDir.resolve(file.getFileName());
+                Path queuedFile = moveUnique(file, target);
+                String queuedFileName = queuedFile.getFileName().toString();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Queued command: {} to {}", queuedFileName, queuedDir);
+                }
+
+                if (!executeQueuedCommand(parameters, queuedFileName)) {
+                    // Rollback if executor rejected the command
+                    Files.move(queuedFile, file, StandardCopyOption.REPLACE_EXISTING);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Command execution rejected; rolled back to incoming: {}", file.getFileName());
+                    }
+                }
+                return true;
+            } catch (IOException e) {
+                logger.error("Failed to process incoming command file: {}", file, e);
+                return false;
+            }
+        });
+    }
+
+    private void processCommandFiles(Path dir, int limit, CommandFileProcessor processor) {
+        List<Path> files = retrieveCommandFiles(dir);
+        if (files != null) {
+            int count = 0;
+            for (Path file : files) {
+                if (limit > 0 && count >= limit) {
+                    break;
+                }
+                CommandParameters parameters = readCommandFile(file);
+                if (parameters != null) {
+                    if (processor.process(file, parameters)) {
+                        count++;
+                    }
                 }
             }
         }
     }
 
-    @Override
-    public void polling() {
-        List<Path> files = retrieveCommandFiles(incomingDir);
-        if (files != null) {
-            int limit = getCommandExecutor().getAvailableThreads();
-            for (int i = 0; i < files.size() && i < limit; i++) {
-                Path file = files.get(i);
-                CommandParameters parameters = readCommandFile(file);
-                if (parameters != null) {
-                    try {
-                        Path queuedFile = queuedDir.resolve(file.getFileName());
-                        queuedFile = FilenameUtils.generateUniqueFile(queuedFile.toFile()).toPath();
+    private Path moveUnique(Path source, Path target) throws IOException {
+        while (true) {
+            try {
+                Path dest = FilenameUtils.generateUniqueFile(target);
+                Files.move(source, dest);
+                return dest;
+            } catch (FileAlreadyExistsException e) {
+                // ignore and try again
+            }
+        }
+    }
 
-                        // Move to queued directory
-                        Files.move(file, queuedFile, StandardCopyOption.REPLACE_EXISTING);
-
-                        String queuedFileName = queuedFile.getFileName().toString();
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Queued Command: {} in {}", queuedFileName, queuedDir);
-                        }
-
-                        if (!executeQueuedCommand(parameters, queuedFileName)) {
-                            // Rollback if executor rejected the command
-                            Files.move(queuedFile, file, StandardCopyOption.REPLACE_EXISTING);
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Command execution rejected, rolled back to incoming: {}", file.getFileName());
-                            }
-                        }
-                    } catch (IOException e) {
-                        logger.error("Failed to process incoming command file: {}", file, e);
-                    }
-                }
+    private Path createUnique(Path target) throws IOException {
+        while (true) {
+            try {
+                Path file = FilenameUtils.generateUniqueFile(target);
+                Files.createFile(file);
+                return file;
+            } catch (FileAlreadyExistsException e) {
+                // ignore and try again
             }
         }
     }
 
     private boolean executeQueuedCommand(CommandParameters parameters, String fileName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Execute Command: {}{}{}", fileName, System.lineSeparator(), parameters);
+            logger.debug("Executing command: {}{}{}", fileName, System.lineSeparator(), parameters);
         }
         return getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
@@ -249,7 +277,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 removeCommandFile(queuedDir.resolve(fileName));
                 writeCompletedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Result of Completed Command: {}{}{}", fileName, System.lineSeparator(), parameters);
+                    logger.trace("Completed command result: {}{}{}", fileName, System.lineSeparator(), parameters);
                 }
             }
 
@@ -258,7 +286,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 removeCommandFile(queuedDir.resolve(fileName));
                 writeFailedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Result of Failed Command: {}{}{}", fileName, System.lineSeparator(), parameters);
+                    logger.trace("Failed command result: {}{}{}", fileName, System.lineSeparator(), parameters);
                 }
             }
 
@@ -291,7 +319,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
     @Nullable
     private CommandParameters readCommandFile(@NonNull Path file) {
         if (logger.isTraceEnabled()) {
-            logger.trace("Read command file: {}", file);
+            logger.trace("Reading command file: {}", file);
         }
         try {
             CommandParameters parameters = new CommandParameters();
@@ -327,52 +355,50 @@ public class DefaultFileCommander extends AbstractFileCommander {
     private void writeCompletedCommand(CommandParameters parameters, String fileName) {
         String written = writeCommandFile(completedDir, fileName, parameters);
         if (logger.isDebugEnabled()) {
-            logger.debug("Completed Command: {} in {}", written, completedDir);
+            logger.debug("Completed command: {} to {}", written, completedDir);
         }
     }
 
     private void writeFailedCommand(CommandParameters parameters, String fileName) {
         String written = writeCommandFile(failedDir, fileName, parameters);
         if (logger.isDebugEnabled()) {
-            logger.debug("Failed Command: {} in {}", written, failedDir);
+            logger.debug("Failed command: {} to {}", written, failedDir);
         }
     }
 
     @Nullable
     private String writeCommandFile(@NonNull Path dir, String fileName, CommandParameters parameters) {
-        Path file = null;
         try {
-            synchronized (lock) {
-                file = FilenameUtils.generateUniqueFile(dir.resolve(fileName).toFile()).toPath();
-                Files.createFile(file);
-            }
+            Path target = dir.resolve(fileName);
+            Path file = createUnique(target);
             if (logger.isTraceEnabled()) {
-                logger.trace("Write command file: {}", file);
+                logger.trace("Writing command file: {}", file);
             }
             try (AponWriterCloseable aponWriter = new AponWriterCloseable(file.toFile()).nullWritable(false)) {
                 aponWriter.write(parameters);
             }
             return file.getFileName().toString();
         } catch (IOException e) {
-            if (file != null) {
-                logger.warn("Failed to write command file: {}", file, e);
-            } else {
-                Path f = dir.resolve(fileName);
-                logger.warn("Failed to write command file: {}", f, e);
-            }
+            Path f = dir.resolve(fileName);
+            logger.warn("Failed to write command file: {}", f, e);
             return null;
         }
     }
 
     private void removeCommandFile(Path file) {
         if (logger.isTraceEnabled()) {
-            logger.trace("Delete command file: {}", file);
+            logger.trace("Deleting command file: {}", file);
         }
         try {
             Files.deleteIfExists(file);
         } catch (IOException e) {
             logger.warn("Failed to delete command file: {}", file, e);
         }
+    }
+
+    @FunctionalInterface
+    private interface CommandFileProcessor {
+        boolean process(Path file, CommandParameters parameters);
     }
 
 }

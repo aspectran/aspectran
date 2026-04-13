@@ -19,6 +19,9 @@ import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -66,7 +69,7 @@ public class FilenameUtils {
      * @return the name of the file without the path, or an empty string if none exists
      */
     public static @NonNull String getName(String filename) {
-        Assert.notNull(filename, "'filename' must not be null");
+        Assert.notNull(filename, "filename must not be null");
         int index = indexOfLastSeparator(filename);
         return filename.substring(index + 1);
     }
@@ -102,7 +105,7 @@ public class FilenameUtils {
      * @return the extension of the file, or an empty string if none exists
      */
     public static String getExtension(String filename) {
-        Assert.notNull(filename, "'filename' must not be null");
+        Assert.notNull(filename, "filename must not be null");
         int index = indexOfExtension(filename);
         if (index == -1) {
             return StringUtils.EMPTY;
@@ -125,7 +128,7 @@ public class FilenameUtils {
      * @return the filename minus the extension
      */
     public static String removeExtension(String filename) {
-        Assert.notNull(filename, "'filename' must not be null");
+        Assert.notNull(filename, "filename must not be null");
         int index = indexOfExtension(filename);
         if (index == -1) {
             return filename;
@@ -245,8 +248,9 @@ public class FilenameUtils {
      * @return a unique {@link File} handle (which may not yet exist on the filesystem)
      * @throws IOException if an I/O error occurs
      */
-    public static File generateUniqueFile(File srcFile) throws IOException {
-        return generateUniqueFile(srcFile, EXTENSION_SEPARATOR);
+    @NonNull
+    public static File generateUniqueFile(@NonNull File srcFile) throws IOException {
+        return generateUniqueFile(srcFile.toPath()).toFile();
     }
 
     /**
@@ -256,32 +260,56 @@ public class FilenameUtils {
      * @return a unique {@link File} handle (which may not yet exist on the filesystem)
      * @throws IOException if an I/O error occurs
      */
-    public static File generateUniqueFile(File srcFile, String extSeparator) throws IOException {
-        Assert.notNull(srcFile, "'srcFile' must not be null");
+    @NonNull
+    public static File generateUniqueFile(@NonNull File srcFile, String extSeparator) throws IOException {
+        return generateUniqueFile(srcFile.toPath(), extSeparator).toFile();
+    }
 
-        String path = getFullPath(srcFile.getCanonicalPath());
-        String name = removeExtension(srcFile.getName());
-        String ext = getExtension(srcFile.getName());
+    /**
+     * Generates a unique file handle by appending a counter to the filename if it already exists.
+     * @param srcPath the path to make unique
+     * @return a unique {@link Path} handle (which may not yet exist on the filesystem)
+     * @throws IOException if an I/O error occurs
+     */
+    public static Path generateUniqueFile(Path srcPath) throws IOException {
+        return generateUniqueFile(srcPath, EXTENSION_SEPARATOR);
+    }
 
-        String newName;
-        if (StringUtils.hasLength(ext)) {
-            newName = name + extSeparator + ext;
-        } else {
-            newName = name;
-        }
+    /**
+     * Generates a unique file handle by appending a counter to the filename if it already exists.
+     * @param srcPath the path to make unique
+     * @param extSeparator the file extension separator
+     * @return a unique {@link Path} handle (which may not yet exist on the filesystem)
+     * @throws IOException if an I/O error occurs
+     */
+    public static Path generateUniqueFile(Path srcPath, String extSeparator) throws IOException {
+        Assert.notNull(srcPath, "srcPath must not be null");
 
-        File destFile = new File(path, newName);
+        Path parent = srcPath.getParent();
+        String filename = srcPath.getFileName().toString();
+        String name = removeExtension(filename);
+        String ext = getExtension(filename);
+
+        Path destPath = srcPath;
         int count = 0;
-        while (destFile.exists()) {
+        while (Files.exists(destPath)) {
             count++;
-            if (ext != null && !ext.isEmpty()) {
+            String newName;
+            if (StringUtils.hasLength(ext)) {
                 newName = name + NAME_SEPARATOR + count + extSeparator + ext;
             } else {
                 newName = name + NAME_SEPARATOR + count;
             }
-            destFile = new File(path, newName);
+            if (parent != null) {
+                destPath = parent.resolve(newName);
+            } else {
+                destPath = Paths.get(newName);
+            }
+            if (count > 10000) {
+                throw new IOException("Failed to generate a unique filename after 10000 attempts for: " + filename);
+            }
         }
-        return (count == 0 ? srcFile : destFile);
+        return destPath;
     }
 
     /**
@@ -294,8 +322,9 @@ public class FilenameUtils {
      * @return a unique {@link File} handle
      * @throws IOException if an I/O error occurs
      */
-    public static File generateSafetyUniqueFile(File file) throws IOException {
-        return generateSafetyUniqueFile(file, EXTENSION_SEPARATOR);
+    @NonNull
+    public static File generateSafetyUniqueFile(@NonNull File file) throws IOException {
+        return generateSafetyUniqueFile(file.toPath()).toFile();
     }
 
     /**
@@ -305,23 +334,52 @@ public class FilenameUtils {
      * @return a unique {@link File} handle
      * @throws IOException if an I/O error occurs
      */
+    @NonNull
     public static File generateSafetyUniqueFile(@NonNull File file, String extSeparator) throws IOException {
-        String path = file.getCanonicalPath();
-        String ext = getExtension(path);
+        return generateSafetyUniqueFile(file.toPath(), extSeparator).toFile();
+    }
+
+    /**
+     * Creates a system-safe, unique filename based on the current time and a random number.
+     * @param srcPath the original path to derive the parent path and extension from
+     * @return a unique {@link Path} handle
+     * @throws IOException if an I/O error occurs
+     */
+    public static Path generateSafetyUniqueFile(Path srcPath) throws IOException {
+        return generateSafetyUniqueFile(srcPath, EXTENSION_SEPARATOR);
+    }
+
+    /**
+     * Creates a system-safe, unique filename based on the current time and a random number.
+     * @param srcPath the original path to derive the parent path and extension from
+     * @param extSeparator the file extension separator
+     * @return a unique {@link Path} handle
+     * @throws IOException if an I/O error occurs
+     */
+    public static Path generateSafetyUniqueFile(@NonNull Path srcPath, String extSeparator)
+            throws IOException {
+        String filename = srcPath.getFileName().toString();
+        String ext = getExtension(filename);
 
         String prefix = Long.toString(System.currentTimeMillis());
         Random rnd = new Random();
         String suffix = Integer.toString(rnd.nextInt(9999));
 
-        String fullName;
+        String newName;
         if (ext != null && !ext.isEmpty()) {
-            fullName = prefix + NAME_SEPARATOR + suffix + extSeparator + ext;
+            newName = prefix + NAME_SEPARATOR + suffix + extSeparator + ext;
         } else {
-            fullName = prefix + NAME_SEPARATOR + suffix;
+            newName = prefix + NAME_SEPARATOR + suffix;
         }
 
-        File file2 = new File(getFullPath(path), fullName);
-        return generateUniqueFile(file2, NAME_SEPARATOR);
+        Path parent = srcPath.getParent();
+        Path destPath;
+        if (parent != null) {
+            destPath = parent.resolve(newName);
+        } else {
+            destPath = Paths.get(newName);
+        }
+        return generateUniqueFile(destPath, NAME_SEPARATOR);
     }
 
     /**
