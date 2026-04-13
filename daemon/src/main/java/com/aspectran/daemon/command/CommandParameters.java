@@ -66,6 +66,8 @@ public class CommandParameters extends DefaultParameters {
     private static final ParameterKey attributes;
     private static final ParameterKey requeuable;
     private static final ParameterKey result;
+    private static final ParameterKey error;
+    private static final ParameterKey source;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -80,6 +82,8 @@ public class CommandParameters extends DefaultParameters {
         attributes = new ParameterKey("attributes", ItemHolderParameters.class);
         requeuable = new ParameterKey("requeuable", ValueType.BOOLEAN);
         result = new ParameterKey("result", ValueType.TEXT);
+        error = new ParameterKey("error", ValueType.TEXT);
+        source = new ParameterKey("source", ValueType.TEXT);
 
         parameterKeys = new ParameterKey[] {
                 command,
@@ -91,7 +95,9 @@ public class CommandParameters extends DefaultParameters {
                 parameters,
                 attributes,
                 requeuable,
-                result
+                result,
+                error,
+                source
         };
     }
 
@@ -366,6 +372,42 @@ public class CommandParameters extends DefaultParameters {
      */
     public CommandParameters setResult(String resultText) {
         putValue(result, resultText);
+        return this;
+    }
+
+    /**
+     * Returns the system error message if any.
+     * @return the error message, or {@code null} if no error is set
+     */
+    public String getError() {
+        return getString(error);
+    }
+
+    /**
+     * Sets the system error message.
+     * @param errorText the error message
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setError(String errorText) {
+        putValue(error, errorText);
+        return this;
+    }
+
+    /**
+     * Returns the original raw content of the command file.
+     * @return the raw content
+     */
+    public String getSource() {
+        return getString(source);
+    }
+
+    /**
+     * Sets the original raw content of the command file.
+     * @param sourceText the raw content
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setSource(String sourceText) {
+        putValue(source, sourceText);
         return this;
     }
 

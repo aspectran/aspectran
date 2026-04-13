@@ -208,14 +208,15 @@ public class CommandExecutor {
                 parameters.setResult(commandResult.getResult());
                 return true;
             } else {
-                parameters.setResult("[FAILED] " + commandResult.getResult());
+                parameters.setResult(commandResult.getResult());
+                parameters.setError(commandResult.getError());
                 return false;
             }
         } catch (Exception e) {
             logger.error("Error executing daemon command {}", command, e);
             parameters.setResult("[FAILED] An unexpected error occurred while executing the command '" +
-                    command.getDescriptor().getName() + "'." + System.lineSeparator() +
-                    ExceptionUtils.getStacktrace(e));
+                    command.getDescriptor().getName() + "'.");
+            parameters.setError(ExceptionUtils.getStacktrace(e));
             return false;
         }
     }

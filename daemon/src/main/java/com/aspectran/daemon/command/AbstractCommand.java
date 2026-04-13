@@ -149,26 +149,27 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Logs the throwable with the given message and returns a failed result whose
-     * message includes the stack trace on a new line.
+     * message is stored in the result and stack trace in the error.
      * @param message contextual message to log
      * @param throwable the cause
      * @return a failed result containing the message and stack trace
      */
     protected CommandResult failed(String message, Throwable throwable) {
         logger.error(message, throwable);
-        return new CommandResult(false, message + System.lineSeparator() +
+        return new CommandResult(false, "[FAILED] " + message,
                 ExceptionUtils.getStacktrace(throwable));
     }
 
     /**
-     * Logs the provided throwable and returns a failed result whose message consists of
-     * the full stack trace.
+     * Logs the provided throwable and returns a failed result whose error
+     * consists of the full stack trace.
      * @param throwable the cause
      * @return a failed result with the throwable's stack trace
      */
     protected CommandResult failed(Throwable throwable) {
         logger.error(throwable.toString(), throwable);
-        return new CommandResult(false, ExceptionUtils.getStacktrace(throwable));
+        return new CommandResult(false, "[FAILED] " + throwable.toString(),
+                ExceptionUtils.getStacktrace(throwable));
     }
 
 }

@@ -31,14 +31,27 @@ public class CommandResult {
 
     private final String result;
 
+    private final String error;
+
     /**
      * Creates a new instance of the command result.
      * @param success whether the command executed successfully
      * @param result the output produced by the executed command; may be {@code null}
      */
     public CommandResult(boolean success, String result) {
+        this(success, result, null);
+    }
+
+    /**
+     * Creates a new instance of the command result.
+     * @param success whether the command executed successfully
+     * @param result the output produced by the executed command; may be {@code null}
+     * @param error the detailed error information; may be {@code null}
+     */
+    public CommandResult(boolean success, String result, String error) {
         this.success = success;
         this.result = result;
+        this.error = error;
     }
 
     /**
@@ -55,6 +68,14 @@ public class CommandResult {
      */
     public String getResult() {
         return result;
+    }
+
+    /**
+     * Returns the detailed error information, if any.
+     * @return the error information, or {@code null} if no error occurred
+     */
+    public String getError() {
+        return error;
     }
 
 }

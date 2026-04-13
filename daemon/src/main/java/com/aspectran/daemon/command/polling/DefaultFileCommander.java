@@ -19,22 +19,28 @@ import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandParameters;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.apon.AponReader;
-import com.aspectran.utils.apon.AponWriter;
+import com.aspectran.utils.apon.AponWriterCloseable;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * The default {@link FileCommander} implementation that uses the local filesystem
@@ -60,25 +66,25 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     protected final Logger logger = LoggerFactory.getLogger(DefaultFileCommander.class);
 
-    private static final String COMMANDS_PATH = "/cmd";
+    private static final String COMMANDS_PATH = "cmd";
 
-    private static final String QUEUED_PATH = COMMANDS_PATH + "/queued";
+    private static final String QUEUED_PATH = "queued";
 
-    private static final String COMPLETED_PATH = COMMANDS_PATH + "/completed";
+    private static final String COMPLETED_PATH = "completed";
 
-    private static final String FAILED_PATH = COMMANDS_PATH + "/failed";
+    private static final String FAILED_PATH = "failed";
 
-    private static final String DEFAULT_INCOMING_PATH = COMMANDS_PATH + "/incoming";
+    private static final String DEFAULT_INCOMING_PATH = "incoming";
 
     private final Object lock = new Object();
 
-    private final File incomingDir;
+    private final Path incomingDir;
 
-    private final File queuedDir;
+    private final Path queuedDir;
 
-    private final File completedDir;
+    private final Path completedDir;
 
-    private final File failedDir;
+    private final Path failedDir;
 
     /**
      * Instantiates a new DefaultFileCommander.
@@ -90,40 +96,34 @@ public class DefaultFileCommander extends AbstractFileCommander {
         super(daemon, pollingConfig);
 
         try {
-            File commandsDir = new File(getDaemon().getBasePath(), COMMANDS_PATH);
-            commandsDir.mkdirs();
+            Path basePath = Paths.get(getDaemon().getBasePath());
+            Path cmdDir = basePath.resolve(COMMANDS_PATH);
 
-            File queuedDir = new File(getDaemon().getBasePath(), QUEUED_PATH);
-            queuedDir.mkdirs();
-            this.queuedDir = queuedDir;
+            this.queuedDir = cmdDir.resolve(QUEUED_PATH);
+            Files.createDirectories(this.queuedDir);
 
-            File completedDir = new File(getDaemon().getBasePath(), COMPLETED_PATH);
-            completedDir.mkdirs();
-            this.completedDir = completedDir;
+            this.completedDir = cmdDir.resolve(COMPLETED_PATH);
+            Files.createDirectories(this.completedDir);
 
-            File failedDir = new File(getDaemon().getBasePath(), FAILED_PATH);
-            failedDir.mkdirs();
-            this.failedDir = failedDir;
+            this.failedDir = cmdDir.resolve(FAILED_PATH);
+            Files.createDirectories(this.failedDir);
 
             String incomingPath = pollingConfig.getIncoming(DEFAULT_INCOMING_PATH);
-            File incomingDir;
             if (incomingPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
                 // Using url fully qualified paths
-                URI uri = URI.create(incomingPath);
-                incomingDir = new File(uri);
+                this.incomingDir = Paths.get(URI.create(incomingPath));
             } else {
-                incomingDir = new File(getDaemon().getBasePath(), incomingPath);
+                this.incomingDir = cmdDir.resolve(incomingPath);
             }
-            incomingDir.mkdirs();
-            this.incomingDir = incomingDir;
+            Files.createDirectories(this.incomingDir);
 
-            File[] incomingFiles = retrieveCommandFiles(incomingDir);
+            List<Path> incomingFiles = retrieveCommandFiles(incomingDir);
             if (incomingFiles != null) {
-                for (File file : incomingFiles) {
+                for (Path file : incomingFiles) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Delete old incoming command file: {}", file);
                     }
-                    file.delete();
+                    Files.deleteIfExists(file);
                 }
             }
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
      * Returns the directory where incoming command files are placed.
      * @return the incoming command directory
      */
-    public File getIncomingDir() {
+    public Path getIncomingDir() {
         return incomingDir;
     }
 
@@ -143,7 +143,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
      * Returns the directory where command files are moved while being processed.
      * @return the queued command directory
      */
-    public File getQueuedDir() {
+    public Path getQueuedDir() {
         return queuedDir;
     }
 
@@ -151,7 +151,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
      * Returns the directory where successfully processed command files are moved.
      * @return the completed command directory
      */
-    public File getCompletedDir() {
+    public Path getCompletedDir() {
         return completedDir;
     }
 
@@ -159,27 +159,40 @@ public class DefaultFileCommander extends AbstractFileCommander {
      * Returns the directory where failed command files are moved.
      * @return the failed command directory
      */
-    public File getFailedDir() {
+    public Path getFailedDir() {
         return failedDir;
     }
 
     @Override
     public void requeue() {
-        File[] queuedFiles = retrieveCommandFiles(queuedDir);
+        List<Path> queuedFiles = retrieveCommandFiles(queuedDir);
         if (queuedFiles != null) {
             if (isRequeuable()) {
-                for (File file : queuedFiles) {
+                for (Path file : queuedFiles) {
                     CommandParameters parameters = readCommandFile(file);
                     if (parameters != null) {
                         if (parameters.isRequeuable()) {
-                            writeIncomingCommand(parameters, file.getName());
+                            try {
+                                Path incomingFile = incomingDir.resolve(file.getFileName());
+                                incomingFile = FilenameUtils.generateUniqueFile(incomingFile.toFile()).toPath();
+                                Files.move(file, incomingFile, StandardCopyOption.REPLACE_EXISTING);
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Re-queued Command: {} in {}", incomingFile.getFileName(), incomingDir);
+                                }
+                            } catch (IOException e) {
+                                logger.warn("Failed to re-queue command file: {}", file, e);
+                                removeCommandFile(file);
+                            }
+                        } else {
+                            removeCommandFile(file);
                         }
-                        removeCommandFile(queuedDir, file.getName());
+                    } else {
+                        // Malformed file already handled in readCommandFile
                     }
                 }
             } else {
-                for (File file : queuedFiles) {
-                    removeCommandFile(queuedDir, file.getName());
+                for (Path file : queuedFiles) {
+                    removeCommandFile(file);
                 }
             }
         }
@@ -187,32 +200,48 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     @Override
     public void polling() {
-        File[] files = retrieveCommandFiles(incomingDir);
+        List<Path> files = retrieveCommandFiles(incomingDir);
         if (files != null) {
             int limit = getCommandExecutor().getAvailableThreads();
-            for (int i = 0; i < files.length && i < limit; i++) {
-                File file = files[i];
+            for (int i = 0; i < files.size() && i < limit; i++) {
+                Path file = files.get(i);
                 CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
-                    String incomingFileName = file.getName();
-                    String queuedFileName = writeQueuedCommand(parameters, incomingFileName);
-                    if (queuedFileName != null) {
-                        removeCommandFile(incomingDir, incomingFileName);
-                        executeQueuedCommand(parameters, queuedFileName);
+                    try {
+                        Path queuedFile = queuedDir.resolve(file.getFileName());
+                        queuedFile = FilenameUtils.generateUniqueFile(queuedFile.toFile()).toPath();
+
+                        // Move to queued directory
+                        Files.move(file, queuedFile, StandardCopyOption.REPLACE_EXISTING);
+
+                        String queuedFileName = queuedFile.getFileName().toString();
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Queued Command: {} in {}", queuedFileName, queuedDir);
+                        }
+
+                        if (!executeQueuedCommand(parameters, queuedFileName)) {
+                            // Rollback if executor rejected the command
+                            Files.move(queuedFile, file, StandardCopyOption.REPLACE_EXISTING);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Command execution rejected, rolled back to incoming: {}", file.getFileName());
+                            }
+                        }
+                    } catch (IOException e) {
+                        logger.error("Failed to process incoming command file: {}", file, e);
                     }
                 }
             }
         }
     }
 
-    private void executeQueuedCommand(CommandParameters parameters, String fileName) {
+    private boolean executeQueuedCommand(CommandParameters parameters, String fileName) {
         if (logger.isDebugEnabled()) {
             logger.debug("Execute Command: {}{}{}", fileName, System.lineSeparator(), parameters);
         }
-        getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
+        return getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
-                removeCommandFile(queuedDir, fileName);
+                removeCommandFile(queuedDir.resolve(fileName));
                 writeCompletedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
                     logger.trace("Result of Completed Command: {}{}{}", fileName, System.lineSeparator(), parameters);
@@ -221,7 +250,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
             @Override
             public void failure() {
-                removeCommandFile(queuedDir, fileName);
+                removeCommandFile(queuedDir.resolve(fileName));
                 writeFailedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
                     logger.trace("Result of Failed Command: {}{}{}", fileName, System.lineSeparator(), parameters);
@@ -237,43 +266,57 @@ public class DefaultFileCommander extends AbstractFileCommander {
         });
     }
 
-    private File[] retrieveCommandFiles(@NonNull File dir) {
-        File[] files = dir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
-        if (files != null && files.length > 0) {
-            Arrays.sort(files, Comparator.comparing(File::getName));
+    @Nullable
+    private List<Path> retrieveCommandFiles(@NonNull Path dir) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*.apon")) {
+            List<Path> files = new ArrayList<>();
+            for (Path path : stream) {
+                if (Files.isRegularFile(path)) {
+                    files.add(path);
+                }
+            }
+            files.sort(Comparator.comparing(Path::getFileName));
+            return (files.isEmpty() ? null : files);
+        } catch (IOException e) {
+            logger.warn("Failed to retrieve command files from directory: {}", dir, e);
+            return null;
         }
-        return files;
     }
 
     @Nullable
-    private CommandParameters readCommandFile(@NonNull File file) {
+    private CommandParameters readCommandFile(@NonNull Path file) {
         if (logger.isTraceEnabled()) {
             logger.trace("Read command file: {}", file);
         }
         try {
             CommandParameters parameters = new CommandParameters();
-            AponReader.read(file, parameters);
+            AponReader.read(file.toFile(), parameters);
             return parameters;
         } catch (Exception e) {
             logger.error("Failed to read command file: {}", file, e);
-            removeCommandFile(incomingDir, file.getName());
+            handleMalformedFile(file, e);
             return null;
         }
     }
 
-    private void writeIncomingCommand(CommandParameters parameters, String fileName) {
-        String written = writeCommandFile(incomingDir, fileName, parameters);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Incoming Command: {} in {}", written, incomingDir);
-        }
-    }
+    private void handleMalformedFile(@NonNull Path file, Exception e) {
+        try {
+            String source = Files.readString(file);
+            removeCommandFile(file);
 
-    private String writeQueuedCommand(CommandParameters parameters, String fileName) {
-        String written = writeCommandFile(queuedDir, fileName, parameters);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Queued Command: {} in {}", written, queuedDir);
+            CommandParameters parameters = new CommandParameters();
+            parameters.setResult("[FAILED] Malformed command file: " + file.getFileName());
+            parameters.setError(ExceptionUtils.getStacktrace(e));
+            parameters.setSource(source);
+
+            writeCommandFile(failedDir, file.getFileName().toString(), parameters);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Malformed command file handled and moved to failed directory: {}", file.getFileName());
+            }
+        } catch (IOException ioe) {
+            logger.error("Failed to handle malformed command file: {}", file, ioe);
+            removeCommandFile(file);
         }
-        return written;
     }
 
     private void writeCompletedCommand(CommandParameters parameters, String fileName) {
@@ -291,38 +334,39 @@ public class DefaultFileCommander extends AbstractFileCommander {
     }
 
     @Nullable
-    private String writeCommandFile(File dir, String fileName, CommandParameters parameters) {
-        File file = null;
+    private String writeCommandFile(@NonNull Path dir, String fileName, CommandParameters parameters) {
+        Path file = null;
         try {
             synchronized (lock) {
-                file = FilenameUtils.generateUniqueFile(new File(dir, fileName));
-                file.createNewFile();
+                file = FilenameUtils.generateUniqueFile(dir.resolve(fileName).toFile()).toPath();
+                Files.createFile(file);
             }
             if (logger.isTraceEnabled()) {
                 logger.trace("Write command file: {}", file);
             }
-            AponWriter aponWriter = new AponWriter(file).nullWritable(false);
-            aponWriter.write(parameters);
-            aponWriter.close();
-            return file.getName();
+            try (AponWriterCloseable aponWriter = new AponWriterCloseable(file.toFile()).nullWritable(false)) {
+                aponWriter.write(parameters);
+            }
+            return file.getFileName().toString();
         } catch (IOException e) {
             if (file != null) {
                 logger.warn("Failed to write command file: {}", file, e);
             } else {
-                File f = new File(dir, fileName);
+                Path f = dir.resolve(fileName);
                 logger.warn("Failed to write command file: {}", f, e);
             }
             return null;
         }
     }
 
-    private void removeCommandFile(File dir, String fileName) {
-        File file = new File(dir, fileName);
+    private void removeCommandFile(Path file) {
         if (logger.isTraceEnabled()) {
             logger.trace("Delete command file: {}", file);
         }
-        if (!file.delete()) {
-            logger.warn("Failed to delete command file: {}", file);
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException e) {
+            logger.warn("Failed to delete command file: {}", file, e);
         }
     }
 

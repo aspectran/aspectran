@@ -1,5 +1,5 @@
 context: {
-    rules: classpath:config/app-context.xml
+    rules: classpath:config/aspectran-rules.xml
     resources: [
     ]
     scan: [
