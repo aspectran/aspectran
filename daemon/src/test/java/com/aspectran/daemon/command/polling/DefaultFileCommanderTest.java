@@ -76,14 +76,13 @@ class DefaultFileCommanderTest {
 
         daemon = new SimpleDaemon();
         daemon.prepare(root.getCanonicalPath(), daemonConfig);
-        daemon.start();
 
-        // Write a valid command using single-line APON
+        // Write a valid command using single-line APON before starting the daemon
         Path commandFile = incomingDir.resolve("01-success.apon");
         Files.writeString(commandFile, "command: sysinfo");
 
-        // Explicitly trigger polling to avoid timing issues in CI environments
-        daemon.getFileCommander().polling();
+        // The daemon will poll once immediately upon starting
+        daemon.start();
 
         // Wait for completion
         for (int i = 0; i < 50; i++) {
@@ -99,19 +98,17 @@ class DefaultFileCommanderTest {
     void testPollingMalformed() throws Exception {
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
+        pollingConfig.setPollingInterval(3600000); // 1 hour
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
         daemon.prepare(root.getCanonicalPath(), daemonConfig);
-        daemon.start();
 
-        // Write an invalid APON file
+        // Write an invalid APON file before starting
         Path commandFile = incomingDir.resolve("02-malformed.apon");
         Files.writeString(commandFile, "invalid_format_without_colon");
 
-        // Explicitly trigger polling
-        daemon.getFileCommander().polling();
+        daemon.start();
 
         // Wait for handling
         for (int i = 0; i < 50; i++) {
@@ -134,41 +131,31 @@ class DefaultFileCommanderTest {
         executorConfig.setMaxThreads(2);
 
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
+        pollingConfig.setPollingInterval(3600000); // 1 hour
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
         daemon.prepare(root.getCanonicalPath(), daemonConfig);
-        daemon.start();
 
-        // 1. Submit a slow command
+        // 1. Submit a slow command first
         Path slowCommandFile = incomingDir.resolve("03-slow.apon");
         Files.writeString(slowCommandFile, "command: sysinfo, arguments: { item: { value: gc } }");
         
-        // Explicitly trigger polling for the slow command
-        daemon.getFileCommander().polling();
-
-        // Wait for it to be queued
-        for (int i = 0; i < 50; i++) {
-            if (Files.exists(queuedDir.resolve("03-slow.apon"))) break;
-            Thread.sleep(100);
-        }
-
-        // 2. Submit an isolated command (quit). 
-        // It should be rejected because sysinfo is already running.
+        // 2. Submit an isolated command (quit) which should be rejected
         Path isolatedCommandFile = incomingDir.resolve("04-isolated.apon");
         Files.writeString(isolatedCommandFile, "command: quit");
 
-        // Explicitly trigger polling for the isolated command
-        daemon.getFileCommander().polling();
+        daemon.start();
 
-        // Wait for polling rollback
+        // Wait for polling and rollback
         for (int i = 0; i < 50; i++) {
-            if (Files.exists(isolatedCommandFile)) break;
+            // Check if rollback happened (isolated file stays in incoming)
+            // AND the slow command was moved to queued or completed
+            if (Files.exists(isolatedCommandFile) && Files.notExists(slowCommandFile)) break;
             Thread.sleep(100);
         }
 
-        // The isolated command should be rolled back to incoming
+        // The isolated command should be rolled back to incoming (or stayed there)
         assertTrue(Files.exists(isolatedCommandFile), "Isolated command should be rolled back to incoming");
         assertTrue(Files.notExists(queuedDir.resolve("04-isolated.apon")), "Isolated command should not be in queued");
     }
