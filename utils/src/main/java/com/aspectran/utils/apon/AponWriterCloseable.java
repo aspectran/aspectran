@@ -15,10 +15,15 @@
  */
 package com.aspectran.utils.apon;
 
+import org.jspecify.annotations.NonNull;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * An {@link AponWriter} variant that implements {@link Closeable} for use with
@@ -28,7 +33,7 @@ import java.io.Writer;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * try (AponWriterCloseable writer = new AponWriterCloseable(new File("output.apon"))) {
+ * try (AponWriterCloseable writer = new AponWriterCloseable(Paths.get("output.apon"))) {
  *     writer.write(params);
  * }
  * }</pre>
@@ -41,8 +46,40 @@ public class AponWriterCloseable extends AponWriter implements Closeable {
      * @param file the file to write to
      * @throws IOException if an I/O error occurs
      */
-    public AponWriterCloseable(File file) throws IOException {
-        super(file);
+    public AponWriterCloseable(@NonNull File file) throws IOException {
+        this(file.toPath());
+    }
+
+    /**
+     * Instantiates a new AponWriterCloseable that writes to the specified file using the given charset.
+     * <p>Pretty printing is enabled by default with two-space indentation.</p>
+     * @param file the file to write to
+     * @param charset the charset to use
+     * @throws IOException if an I/O error occurs
+     */
+    public AponWriterCloseable(@NonNull File file, Charset charset) throws IOException {
+        this(file.toPath(), charset);
+    }
+
+    /**
+     * Instantiates a new AponWriterCloseable that writes to the specified path.
+     * <p>Pretty printing is enabled by default with two-space indentation.</p>
+     * @param path the path to write to
+     * @throws IOException if an I/O error occurs
+     */
+    public AponWriterCloseable(@NonNull Path path) throws IOException {
+        super(Files.newBufferedWriter(path));
+    }
+
+    /**
+     * Instantiates a new AponWriterCloseable that writes to the specified path using the given charset.
+     * <p>Pretty printing is enabled by default with two-space indentation.</p>
+     * @param path the path to write to
+     * @param charset the charset to use
+     * @throws IOException if an I/O error occurs
+     */
+    public AponWriterCloseable(@NonNull Path path, Charset charset) throws IOException {
+        super(Files.newBufferedWriter(path, charset));
     }
 
     /**

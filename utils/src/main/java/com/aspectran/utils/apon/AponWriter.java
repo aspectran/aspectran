@@ -21,13 +21,10 @@ import com.aspectran.utils.StringifyContext;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -90,25 +87,6 @@ public class AponWriter implements Flushable {
     public AponWriter() {
         this.stringWriter = new StringWriter();
         this.writer = this.stringWriter;
-    }
-
-    /**
-     * Creates a new AponWriter that writes to the specified file.
-     * @param file the file to write to
-     * @throws IOException if an I/O error occurs
-     */
-    public AponWriter(@NonNull File file) throws IOException {
-        this(Files.newBufferedWriter(file.toPath()));
-    }
-
-    /**
-     * Creates a new AponWriter that writes to the specified file using the given charset.
-     * @param file the file to write to
-     * @param charset the charset to use
-     * @throws IOException if an I/O error occurs
-     */
-    public AponWriter(@NonNull File file, Charset charset) throws IOException {
-        this(Files.newBufferedWriter(file.toPath(), charset));
     }
 
     /**
