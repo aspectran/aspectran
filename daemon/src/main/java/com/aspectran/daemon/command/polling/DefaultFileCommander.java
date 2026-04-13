@@ -74,7 +74,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     private static final String FAILED_PATH = "failed";
 
-    private static final String DEFAULT_INCOMING_PATH = "incoming";
+    private static final String DEFAULT_INCOMING_PATH = COMMANDS_PATH + "/incoming";
 
     private final Object lock = new Object();
 
@@ -113,11 +113,16 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 // Using url fully qualified paths
                 this.incomingDir = Paths.get(URI.create(incomingPath));
             } else {
-                this.incomingDir = cmdDir.resolve(incomingPath);
+                // Resolve against basePath, not cmdDir, because incomingPath
+                // from config may already contain the '/cmd/' prefix
+                if (incomingPath.startsWith("/")) {
+                    incomingPath = incomingPath.substring(1);
+                }
+                this.incomingDir = basePath.resolve(incomingPath);
             }
             Files.createDirectories(this.incomingDir);
 
-            List<Path> incomingFiles = retrieveCommandFiles(incomingDir);
+            List<Path> incomingFiles = retrieveCommandFiles(this.incomingDir);
             if (incomingFiles != null) {
                 for (Path file : incomingFiles) {
                     if (logger.isDebugEnabled()) {

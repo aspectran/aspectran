@@ -42,8 +42,7 @@ public class ProcrunDaemon {
      * @throws IllegalStateException if no daemon has been started
      */
     protected static DefaultDaemon getDefaultDaemon() {
-        Assert.state(defaultDaemon != null,
-            "No DefaultDaemon available");
+        Assert.state(defaultDaemon != null, "No DefaultDaemon available");
         return defaultDaemon;
     }
 
