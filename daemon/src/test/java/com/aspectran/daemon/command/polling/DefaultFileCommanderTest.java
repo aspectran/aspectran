@@ -71,7 +71,7 @@ class DefaultFileCommanderTest {
         DaemonConfig daemonConfig = new DaemonConfig();
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.SysInfoCommand");
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(100);
+        pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
@@ -99,7 +99,7 @@ class DefaultFileCommanderTest {
     void testPollingMalformed() throws Exception {
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(100);
+        pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
@@ -134,7 +134,7 @@ class DefaultFileCommanderTest {
         executorConfig.setMaxThreads(2);
 
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(100);
+        pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
