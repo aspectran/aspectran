@@ -179,16 +179,16 @@ public class AselVariableExpressionEvaluator implements IStandardVariableExpress
             IStandardVariableExpression expression, String expressionStr,
             @NonNull StandardExpressionExecutionContext execContext,
             boolean applyOgnlShortcuts) throws ExpressionParserException {
-        // If restrictions apply, we want to avoid applying shortcuts so that we delegate to OGNL validation
-        // of method calls and references to allowed classes.
-        boolean doApplyOgnlShortcuts = applyOgnlShortcuts &&
-                !execContext.getRestrictVariableAccess() && !execContext.getRestrictInstantiationAndStatic();
-
-        if (execContext.getRestrictInstantiationAndStatic() &&
-                StandardExpressionUtils.containsOGNLInstantiationOrStaticOrParam(expressionStr)) {
+        if (execContext.getRestrictExternalAccess() &&
+                StandardExpressionUtils.containsExternalAccess(expressionStr)) {
             throw new TemplateProcessingException(
                     "Instantiation of new objects and access to static classes or parameters is forbidden in this context");
         }
+
+        // If restrictions apply, we want to avoid applying shortcuts so that we delegate to OGNL validation
+        // of method calls and references to allowed classes.
+        boolean doApplyOgnlShortcuts = applyOgnlShortcuts &&
+                !execContext.getRestrictVariableAccess() && !execContext.getRestrictExternalAccess();
 
         if (expression instanceof VariableExpression ve) {
             Object cachedExpression = ve.getCachedExpression();
