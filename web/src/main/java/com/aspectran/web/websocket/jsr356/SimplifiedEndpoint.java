@@ -112,6 +112,20 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
+     * Sends a message to authorized sessions that match the given predicate.
+     * @param message the text message to send
+     * @param predicate the predicate to apply to each session
+     */
+    public void broadcast(String message, Predicate<Session> predicate) {
+        Assert.notNull(predicate, "predicate must not be null");
+        for (Session session : sessions) {
+            if (session.isOpen() && predicate.test(session)) {
+                sendText(session, message);
+            }
+        }
+    }
+
+    /**
      * Sends a text message to the given session asynchronously.
      * @param session the session to send the message to
      * @param text the text message to send
