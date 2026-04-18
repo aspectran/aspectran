@@ -63,6 +63,21 @@ public final class PBTokenIssuer {
     }
 
     /**
+     * Creates a new token by encrypting the given payload with a specific encryption password and salt.
+     * @param payload the parameters to be included in the token (must not be null)
+     * @param encryptionPassword the password to use for encryption
+     * @param salt the salt to use for encryption
+     * @return the encrypted token string
+     * @throws IllegalArgumentException if the payload, encryptionPassword, or salt is null or empty
+     */
+    public static String createToken(Parameters payload, String encryptionPassword, String salt) {
+        Assert.notNull(payload, "payload must not be null");
+        Assert.hasLength(encryptionPassword, "encryptionPassword must not be null or empty");
+        Assert.hasLength(salt, "salt must not be null or empty");
+        return PBEncryptionUtils.encrypt(payload.toString(), encryptionPassword, salt);
+    }
+
+    /**
      * Parses the specified token using the global encryption settings and extracts the
      * payload as a {@link com.aspectran.utils.apon.VariableParameters} instance.
      * @param token the token string to parse
@@ -113,7 +128,23 @@ public final class PBTokenIssuer {
      */
     public static <T extends Parameters> T parseToken(String token, String encryptionPassword)
             throws InvalidPBTokenException {
-        return parseToken(token, encryptionPassword, null);
+        return parseToken(token, encryptionPassword, null, null);
+    }
+
+    /**
+     * Parses the specified token and extracts the payload as {@link com.aspectran.utils.apon.VariableParameters}
+     * using a specific encryption password and salt.
+     * @param token the token string to parse
+     * @param encryptionPassword the password to use for decryption
+     * @param salt the salt to use for decryption
+     * @param <T> the type of the payload
+     * @return the payload as a {@link com.aspectran.utils.apon.VariableParameters} instance
+     * @throws InvalidPBTokenException if the token is invalid or malformed
+     * @throws IllegalArgumentException if the token, encryptionPassword, or salt is null or empty
+     */
+    public static <T extends Parameters> T parseToken(String token, String encryptionPassword, String salt)
+            throws InvalidPBTokenException {
+        return parseToken(token, encryptionPassword, salt, null);
     }
 
     /**
@@ -127,13 +158,37 @@ public final class PBTokenIssuer {
      * @throws InvalidPBTokenException if the token is invalid or malformed
      * @throws IllegalArgumentException if the token or encryptionPassword is null or empty
      */
+    public static <T extends Parameters> T parseToken(
+            String token, String encryptionPassword, @Nullable Class<T> payloadType)
+            throws InvalidPBTokenException {
+        return parseToken(token, encryptionPassword, null, payloadType);
+    }
+
+    /**
+     * Parses the specified token and extracts the payload into a new instance of the given type
+     * using a specific encryption password and salt.
+     * @param token the token string to parse
+     * @param encryptionPassword the password to use for decryption
+     * @param salt the salt to use for decryption
+     * @param payloadType the class of the payload, a subclass of {@link Parameters}
+     * @param <T> the type of the payload
+     * @return a new instance of the specified payload type
+     * @throws InvalidPBTokenException if the token is invalid or malformed
+     * @throws IllegalArgumentException if the token, encryptionPassword, or salt is null or empty
+     */
     @SuppressWarnings("unchecked")
-    public static <T extends Parameters> T parseToken(String token, String encryptionPassword, @Nullable Class<T> payloadType)
+    public static <T extends Parameters> T parseToken(
+            String token, String encryptionPassword, @Nullable String salt, @Nullable Class<T> payloadType)
             throws InvalidPBTokenException {
         Assert.hasLength(token, "token must not be null or empty");
         Assert.hasLength(encryptionPassword, "encryptionPassword must not be null or empty");
         try {
-            String payload = PBEncryptionUtils.decrypt(token, encryptionPassword);
+            String payload;
+            if (salt != null) {
+                payload = PBEncryptionUtils.decrypt(token, encryptionPassword, salt);
+            } else {
+                payload = PBEncryptionUtils.decrypt(token, encryptionPassword);
+            }
             if (payloadType != null) {
                 return AponReader.read(payload, payloadType);
             } else {
@@ -164,6 +219,19 @@ public final class PBTokenIssuer {
      */
     public static void validate(String token, String encryptionPassword) throws InvalidPBTokenException {
         parseToken(token, encryptionPassword);
+    }
+
+    /**
+     * Validates the given token by attempting to parse it with a specific encryption password and salt.
+     * An exception is thrown if the token is invalid or malformed.
+     * @param token the token to validate
+     * @param encryptionPassword the password to use for decryption
+     * @param salt the salt to use for decryption
+     * @throws InvalidPBTokenException if the token is invalid
+     * @throws IllegalArgumentException if the token, encryptionPassword, or salt is null or empty
+     */
+    public static void validate(String token, String encryptionPassword, String salt) throws InvalidPBTokenException {
+        parseToken(token, encryptionPassword, salt);
     }
 
 }

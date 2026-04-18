@@ -41,6 +41,7 @@ class PBTokenIssuerTest {
 
     private static final String DEFAULT_PASSWORD = "encryption-password-for-test";
     private static final String CUSTOM_PASSWORD = "custom-encryption-password";
+    private static final String CUSTOM_SALT = "this-is-a-long-custom-encryption-salt";
 
     @BeforeAll
     static void passwordSetting() {
@@ -65,6 +66,16 @@ class PBTokenIssuerTest {
         params.putValue("p2", "v2");
         String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD);
         Parameters params2 = PBTokenIssuer.parseToken(token, CUSTOM_PASSWORD);
+        assertEquals(params.toString(), params2.toString());
+    }
+
+    @Test
+    void testStaticPBTokenWithCustomPasswordAndSalt() throws InvalidPBTokenException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        params.putValue("p2", "v2");
+        String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD, CUSTOM_SALT);
+        Parameters params2 = PBTokenIssuer.parseToken(token, CUSTOM_PASSWORD, CUSTOM_SALT);
         assertEquals(params.toString(), params2.toString());
     }
 
@@ -138,11 +149,30 @@ class PBTokenIssuerTest {
     }
 
     @Test
+    void testStaticInvalidTokenWrongSalt() {
+        Parameters params = new VariableParameters();
+        params.putValue("data", "some-secret-data");
+
+        String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD, "salt-number-one-long-string");
+        assertThrows(InvalidPBTokenException.class, () -> {
+            PBTokenIssuer.parseToken(token, CUSTOM_PASSWORD, "salt-number-two-long-string"); // This should fail
+        });
+    }
+
+    @Test
     void testStaticValidateToken() throws InvalidPBTokenException {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD);
         PBTokenIssuer.validate(token, CUSTOM_PASSWORD); // Should not throw exception
+    }
+
+    @Test
+    void testStaticValidateTokenWithCustomPasswordAndSalt() throws InvalidPBTokenException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD, CUSTOM_SALT);
+        PBTokenIssuer.validate(token, CUSTOM_PASSWORD, CUSTOM_SALT); // Should not throw exception
     }
 
     @Test
