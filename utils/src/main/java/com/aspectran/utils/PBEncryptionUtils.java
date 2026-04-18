@@ -134,6 +134,33 @@ public class PBEncryptionUtils {
     }
 
     /**
+     * Validates the encryption configuration.
+     * <p>This method attempts to initialize an encryptor with the provided parameters
+     * and performs a test encryption to ensure the configuration is valid.
+     * If the salt is too short for the chosen algorithm, an {@link IllegalArgumentException}
+     * will be thrown with a descriptive message.</p>
+     * @param algorithm the encryption algorithm
+     * @param password the encryption password
+     * @param salt the encryption salt (optional)
+     * @throws IllegalArgumentException if the configuration is invalid
+     */
+    public static void validate(String algorithm, String password, String salt) {
+        if (salt != null && salt.length() < 8) {
+            throw new IllegalArgumentException("Encryption salt must be at least 8 characters long");
+        }
+        try {
+            getByteEncryptor(algorithm, password, salt).encrypt(new byte[] { 0 });
+        } catch (Exception e) {
+            String message = "Encryption configuration is invalid: " + e.getMessage();
+            if (e.getMessage() != null && e.getMessage().contains("salt larger than set")) {
+                message = "The provided salt is too short for algorithm " + algorithm +
+                        ". Please provide a longer salt string (at least 8-16 characters).";
+            }
+            throw new IllegalArgumentException(message, e);
+        }
+    }
+
+    /**
      * Encrypts the input string using the default password-based encryptor.
      * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
      * @param inputString the string to encrypt
