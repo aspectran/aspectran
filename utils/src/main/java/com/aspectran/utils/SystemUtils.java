@@ -19,6 +19,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+
 /**
  * A utility class for safely accessing {@link System} properties.
  * <p>Provides methods to get and clear system properties while gracefully
@@ -106,6 +110,48 @@ public abstract class SystemUtils {
      */
     public static String getUserDir() {
         return getProperty(USER_DIR_PROPERTY);
+    }
+
+    /**
+     * Returns the local IP address of the system.
+     * <p>This method attempts to find a non-loopback IPv4 address.</p>
+     * @return the local IP address, or "localhost" if no address is found
+     */
+    public static String getLocalIP() {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                if (iface.isLoopback() || !iface.isUp()) {
+                    continue;
+                }
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (addr.isLoopbackAddress() || addr.isLinkLocalAddress()) {
+                        continue;
+                    }
+                    if (addr.getHostAddress().contains(":")) { // Skip IPv6
+                        continue;
+                    }
+                    return addr.getHostAddress();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return "localhost";
+    }
+
+    /**
+     * Returns the local host name of the system.
+     * @return the local host name, or "localhost" if it cannot be determined
+     */
+    public static String getHostName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "localhost";
+        }
     }
 
 }
