@@ -286,7 +286,7 @@ public final class TimeLimitedPBTokenIssuer {
      */
     public static <T extends Parameters> T parseToken(String token, String encryptionPassword)
             throws InvalidPBTokenException {
-        return parseToken(token, encryptionPassword, null, null);
+        return parseToken(token, encryptionPassword, (Class<T>)null);
     }
 
     /**
@@ -320,7 +320,8 @@ public final class TimeLimitedPBTokenIssuer {
      * @throws InvalidPBTokenException if the token is invalid, malformed, or cannot be decrypted
      * @throws IllegalArgumentException if the token or encryptionPassword is null or empty
      */
-    public static <T extends Parameters> T parseToken(String token, String encryptionPassword, @Nullable Class<T> payloadType)
+    public static <T extends Parameters> T parseToken(
+            String token, String encryptionPassword, @Nullable Class<T> payloadType)
             throws InvalidPBTokenException {
         return parseToken(token, encryptionPassword, null, payloadType);
     }
@@ -340,8 +341,8 @@ public final class TimeLimitedPBTokenIssuer {
      * @throws IllegalArgumentException if the token, encryptionPassword, or salt is null or empty
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Parameters> T parseToken(String token, String encryptionPassword,
-                                                      @Nullable String salt, @Nullable Class<T> payloadType)
+    public static <T extends Parameters> T parseToken(
+            String token, String encryptionPassword, @Nullable String salt, @Nullable Class<T> payloadType)
             throws InvalidPBTokenException {
         Assert.hasLength(token, "token must not be null or empty");
         Assert.hasLength(encryptionPassword, "encryptionPassword must not be null or empty");

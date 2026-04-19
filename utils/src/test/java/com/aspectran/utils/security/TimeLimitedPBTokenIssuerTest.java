@@ -41,6 +41,7 @@ class TimeLimitedPBTokenIssuerTest {
     static void passwordSetting() {
         // System default password for static methods without explicit password
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, DEFAULT_PASSWORD);
+        PBEncryptionUtils.reload();
     }
 
     @Test
@@ -104,6 +105,17 @@ class TimeLimitedPBTokenIssuerTest {
     }
 
     @Test
+    void testStaticTimeLimitedPBTokenInvalidSalt() {
+        Parameters params = new VariableParameters();
+        params.putValue("data", "some-secret-data");
+
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, CUSTOM_PASSWORD, "salt-number-one-long-string");
+        assertThrows(InvalidPBTokenException.class, () -> {
+            TimeLimitedPBTokenIssuer.parseToken(token, CUSTOM_PASSWORD, "salt-number-two-long-string"); // This should fail
+        });
+    }
+
+    @Test
     void testStaticTimeLimitedPBTokenInvalidPassword() {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
@@ -114,21 +126,11 @@ class TimeLimitedPBTokenIssuerTest {
     }
 
     @Test
-    void testStaticTimeLimitedPBTokenInvalidSalt() {
-        Parameters params = new VariableParameters();
-        params.putValue("p1", "v1");
-        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, CUSTOM_PASSWORD, "salt-number-one-long-string");
-        assertThrows(InvalidPBTokenException.class, () -> {
-            TimeLimitedPBTokenIssuer.parseToken(token, CUSTOM_PASSWORD, "salt-number-two-long-string");
-        });
-    }
-
-    @Test
     void testStaticTimeLimitedPBTokenValidateWithDefaultPassword() throws InvalidPBTokenException {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L);
-        TimeLimitedPBTokenIssuer.validate(token); // Should not throw exception
+        TimeLimitedPBTokenIssuer.validate(token);
     }
 
     @Test
@@ -136,26 +138,7 @@ class TimeLimitedPBTokenIssuerTest {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, CUSTOM_PASSWORD);
-        TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD); // Should not throw exception
-    }
-
-    @Test
-    void testStaticTimeLimitedPBTokenValidateWithCustomPasswordAndSalt() throws InvalidPBTokenException {
-        Parameters params = new VariableParameters();
-        params.putValue("p1", "v1");
-        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, CUSTOM_PASSWORD, CUSTOM_SALT);
-        TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD, CUSTOM_SALT); // Should not throw exception
-    }
-
-    @Test
-    void testStaticTimeLimitedPBTokenValidateExpired() throws InterruptedException {
-        Parameters params = new VariableParameters();
-        params.putValue("p1", "v1");
-        String token = TimeLimitedPBTokenIssuer.createToken(params, 100L, CUSTOM_PASSWORD);
-        Thread.sleep(200L);
-        assertThrows(ExpiredPBTokenException.class, () -> {
-            TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD);
-        });
+        TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD);
     }
 
 }

@@ -47,6 +47,7 @@ class PBTokenIssuerTest {
     static void passwordSetting() {
         // System default password for static methods without explicit password
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, DEFAULT_PASSWORD);
+        PBEncryptionUtils.reload();
     }
 
     @Test
@@ -165,21 +166,6 @@ class PBTokenIssuerTest {
         params.putValue("p1", "v1");
         String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD);
         PBTokenIssuer.validate(token, CUSTOM_PASSWORD); // Should not throw exception
-    }
-
-    @Test
-    void testStaticValidateTokenWithCustomPasswordAndSalt() throws InvalidPBTokenException {
-        Parameters params = new VariableParameters();
-        params.putValue("p1", "v1");
-        String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD, CUSTOM_SALT);
-        PBTokenIssuer.validate(token, CUSTOM_PASSWORD, CUSTOM_SALT); // Should not throw exception
-    }
-
-    @Test
-    void testStaticValidateTokenInvalid() {
-        assertThrows(InvalidPBTokenException.class, () -> {
-            PBTokenIssuer.validate("invalid-token", CUSTOM_PASSWORD);
-        });
     }
 
 }

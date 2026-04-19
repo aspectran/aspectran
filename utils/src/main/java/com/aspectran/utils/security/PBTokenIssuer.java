@@ -128,7 +128,7 @@ public final class PBTokenIssuer {
      */
     public static <T extends Parameters> T parseToken(String token, String encryptionPassword)
             throws InvalidPBTokenException {
-        return parseToken(token, encryptionPassword, null, null);
+        return parseToken(token, encryptionPassword, (Class<T>)null);
     }
 
     /**

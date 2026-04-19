@@ -28,6 +28,7 @@ import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;
+import com.aspectran.utils.PBEncryptionUtils;
 import com.aspectran.utils.ShutdownHook;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -88,11 +89,22 @@ public class DefaultCoreService extends AbstractCoreService {
             if (systemConfig != null) {
                 String[] propertyNames = systemConfig.getPropertyNames();
                 if (propertyNames != null) {
+                    boolean reloadNeeded = false;
                     for (String name : propertyNames) {
                         String value = systemConfig.getProperty(name);
                         if (value != null) {
-                            System.setProperty(name, value);
+                            if (System.getProperty(name) == null) {
+                                System.setProperty(name, value);
+                                if (!reloadNeeded && (PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY.equals(name) ||
+                                        PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY.equals(name) ||
+                                        PBEncryptionUtils.ENCRYPTION_SALT_KEY.equals(name))) {
+                                    reloadNeeded = true;
+                                }
+                            }
                         }
+                    }
+                    if (reloadNeeded) {
+                        PBEncryptionUtils.reload();
                     }
                 }
             }

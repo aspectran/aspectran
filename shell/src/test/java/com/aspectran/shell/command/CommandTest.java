@@ -44,6 +44,7 @@ class CommandTest {
     void saveProperties() {
         // System default
         System.setProperty(ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+        PBEncryptionUtils.reload();
     }
 
     @Test

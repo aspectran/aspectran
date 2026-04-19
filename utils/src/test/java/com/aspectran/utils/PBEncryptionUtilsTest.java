@@ -16,6 +16,7 @@
 package com.aspectran.utils;
 
 import org.jasypt.encryption.StringEncryptor;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +35,14 @@ class PBEncryptionUtilsTest {
             "PBEWITHHMACSHA256ANDAES_128",
             "PBEWITHHMACSHA512ANDAES_256"
     };
+
+    @AfterAll
+    static void restoreProperties() {
+        System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+        System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
+        System.clearProperty(PBEncryptionUtils.ENCRYPTION_SALT_KEY);
+        PBEncryptionUtils.reload();
+    }
 
     @Test
     void testVariousAlgorithmsWithRandomSalt() {
@@ -107,14 +116,11 @@ class PBEncryptionUtilsTest {
         System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, "PBEWithMD5AndTripleDES");
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, password);
         System.setProperty(PBEncryptionUtils.ENCRYPTION_SALT_KEY, salt);
+        PBEncryptionUtils.reload();
 
-        // Since PBEncryptionUtils initializes static fields only once, 
-        // we test if the explicit methods work with these properties.
-        String encrypted = PBEncryptionUtils.encrypt(original,
-                System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY),
-                System.getProperty(PBEncryptionUtils.ENCRYPTION_SALT_KEY));
-
-        String decrypted = PBEncryptionUtils.decrypt(encrypted, password, salt);
+        // Now PBEncryptionUtils should use the updated properties.
+        String encrypted = PBEncryptionUtils.encrypt(original);
+        String decrypted = PBEncryptionUtils.decrypt(encrypted);
         assertEquals(original, decrypted);
     }
 

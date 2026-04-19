@@ -82,19 +82,10 @@ public class PBEncryptionUtils {
 
     private static final Charset ENCRYPTED_MESSAGE_CHARSET = StandardCharsets.US_ASCII;
 
-    private static final String algorithm;
-
-    private static final String password;
-
-    private static final String salt;
-
-    private static final StringEncryptor encryptor;
+    private static volatile EncryptionConfig config;
 
     static {
-        algorithm = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_ALGORITHM_KEY, DEFAULT_ALGORITHM));
-        password = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_PASSWORD_KEY));
-        salt = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_SALT_KEY));
-        encryptor = (StringUtils.hasText(password) ? getStringEncryptor(password, salt) : null);
+        reload();
     }
 
     /**
@@ -104,33 +95,39 @@ public class PBEncryptionUtils {
     }
 
     /**
+     * Reloads the encryption configuration from the JVM system properties.
+     * This method can be called to apply changes to the encryption settings at runtime.
+     * @since 8.1.0
+     */
+    public static void reload() {
+        config = new EncryptionConfig();
+    }
+
+    /**
      * Returns the encryption algorithm currently in use.
-     * This value is determined from the "{@value #ENCRYPTION_ALGORITHM_KEY}" system property
-     * at class loading time.
+     * This value is determined from the "{@value #ENCRYPTION_ALGORITHM_KEY}" system property.
      * @return the name of the encryption algorithm
      */
     public static String getAlgorithm() {
-        return algorithm;
+        return config.algorithm;
     }
 
     /**
      * Returns the encryption password currently in use.
-     * This value is determined from the "{@value #ENCRYPTION_PASSWORD_KEY}" system property
-     * at class loading time.
+     * This value is determined from the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
      * @return the encryption password, or {@code null} if not set
      */
     public static String getPassword() {
-        return password;
+        return config.password;
     }
 
     /**
      * Returns the encryption salt currently in use.
-     * This value is determined from the "{@value #ENCRYPTION_SALT_KEY}" system property
-     * at class loading time.
+     * This value is determined from the "{@value #ENCRYPTION_SALT_KEY}" system property.
      * @return the encryption salt, or {@code null} if not set
      */
     public static String getSalt() {
-        return salt;
+        return config.salt;
     }
 
     /**
@@ -234,13 +231,14 @@ public class PBEncryptionUtils {
 
     /**
      * Returns the default {@link StringEncryptor} instance.
-     * <p>This encryptor is initialized at class loading time using the algorithm and password
+     * <p>This encryptor is initialized from the algorithm and password
      * specified by the "{@value #ENCRYPTION_ALGORITHM_KEY}" and "{@value #ENCRYPTION_PASSWORD_KEY}"
      * system properties.</p>
      * @return the default string encryptor
      * @throws InsufficientEnvironmentException if the encryption password is not set
      */
     public static StringEncryptor getDefaultEncryptor() {
+        StringEncryptor encryptor = config.encryptor;
         if (encryptor == null) {
             checkPassword(null);
         }
@@ -269,7 +267,7 @@ public class PBEncryptionUtils {
      */
     @NonNull
     public static StringEncryptor getStringEncryptor(String encryptionPassword, String salt) {
-        return getStringEncryptor(algorithm, encryptionPassword, salt);
+        return getStringEncryptor(getAlgorithm(), encryptionPassword, salt);
     }
 
     /**
@@ -296,7 +294,7 @@ public class PBEncryptionUtils {
      */
     @NonNull
     public static ByteEncryptor getByteEncryptor(String encryptionPassword) {
-        return getByteEncryptor(algorithm, encryptionPassword, null);
+        return getByteEncryptor(getAlgorithm(), encryptionPassword, null);
     }
 
     /**
@@ -311,7 +309,7 @@ public class PBEncryptionUtils {
      */
     @NonNull
     public static ByteEncryptor getByteEncryptor(String encryptionPassword, String salt) {
-        return getByteEncryptor(algorithm, encryptionPassword, salt);
+        return getByteEncryptor(getAlgorithm(), encryptionPassword, salt);
     }
 
     /**
@@ -352,6 +350,25 @@ public class PBEncryptionUtils {
                     "or decryption; Make sure the JVM system property \"" + ENCRYPTION_PASSWORD_KEY + "\" is set up; " +
                     "(Default algorithm: " + getAlgorithm() + ")");
         }
+    }
+
+    private static final class EncryptionConfig {
+
+        private final String algorithm;
+
+        private final String password;
+
+        private final String salt;
+
+        private final StringEncryptor encryptor;
+
+        private EncryptionConfig() {
+            this.algorithm = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_ALGORITHM_KEY, DEFAULT_ALGORITHM));
+            this.password = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_PASSWORD_KEY));
+            this.salt = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_SALT_KEY));
+            this.encryptor = (StringUtils.hasText(password) ? getStringEncryptor(algorithm, password, salt) : null);
+        }
+
     }
 
     /**

@@ -17,6 +17,7 @@ package com.aspectran.jetty.shell.command;
 
 import com.aspectran.shell.command.ShellCommander;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.PBEncryptionUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -39,6 +40,7 @@ class JettyCommandTest {
     void saveProperties() {
         // System default
         System.setProperty(ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+        PBEncryptionUtils.reload();
     }
 
     @Test
