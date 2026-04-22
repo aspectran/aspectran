@@ -176,11 +176,9 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
 
     /**
      * Configures the service using the provided {@link AspectranConfig}.
-     * <p>
-     * If the service is not derived, it first performs the standard core service
+     * <p>If the service is not derived, it first performs the standard core service
      * configuration. Then, it initializes the daemon-specific components
-     * (executor, commander, registry) based on the {@link DaemonConfig}.
-     * </p>
+     * (executor, commander, registry) based on the {@link DaemonConfig}.</p>
      * @param aspectranConfig the service configuration (never {@code null})
      */
     @Override
@@ -193,6 +191,18 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
 
         DaemonConfig daemonConfig = aspectranConfig.touchDaemonConfig();
         configure(daemonConfig);
+    }
+
+    /**
+     * Applies {@link DaemonConfig}-specific settings, such as the {@link RequestAcceptor}
+     * based on the daemon's acceptable request rules.
+     * @param daemonConfig the daemon-specific configuration (never {@code null})
+     */
+    private void configure(@NonNull DaemonConfig daemonConfig) {
+        AcceptableConfig acceptableConfig = daemonConfig.getAcceptableConfig();
+        if (acceptableConfig != null) {
+            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
+        }
 
         try {
             DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
@@ -211,18 +221,6 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
             this.commandRegistry = commandRegistry;
         } catch (Exception e) {
             throw new CoreServiceException("Failed to initialize daemon components", e);
-        }
-    }
-
-    /**
-     * Applies {@link DaemonConfig}-specific settings, such as the {@link RequestAcceptor}
-     * based on the daemon's acceptable request rules.
-     * @param daemonConfig the daemon-specific configuration (never {@code null})
-     */
-    private void configure(@NonNull DaemonConfig daemonConfig) {
-        AcceptableConfig acceptableConfig = daemonConfig.getAcceptableConfig();
-        if (acceptableConfig != null) {
-            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
         }
     }
 

@@ -16,6 +16,7 @@
 package com.aspectran.daemon.service;
 
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
@@ -25,11 +26,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A builder class for creating and configuring {@link DefaultDaemonService} instances.
- * <p>This class provides a static factory method to construct a daemon service,
- * applying configuration from an {@link AspectranConfig} object. It also sets up
- * a {@link ServiceStateListener} to manage the service's lifecycle, including
- * session management, registration with the {@link CoreServiceHolder}, and
- * pause/resume state.
+ * <p>This class provides static factory methods to construct a daemon service,
+ * applying configuration from an {@link AspectranConfig} object or a parent service.
+ * It also sets up a {@link ServiceStateListener} to manage the service's lifecycle,
+ * including session management, registration with the {@link CoreServiceHolder},
+ * and pause/resume state.
  */
 public abstract class DefaultDaemonServiceBuilder {
 
@@ -41,22 +42,28 @@ public abstract class DefaultDaemonServiceBuilder {
      * @return a new, configured {@code DefaultDaemonService} instance
      */
     @NonNull
-    public static DefaultDaemonService build(AspectranConfig aspectranConfig) {
-        return build(aspectranConfig, null);
+    public static DefaultDaemonService build(@NonNull AspectranConfig aspectranConfig) {
+        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
+        DefaultDaemonService daemonService = new DefaultDaemonService();
+        daemonService.configure(aspectranConfig);
+        setServiceStateListener(daemonService);
+        return daemonService;
     }
 
     /**
-     * Builds a new {@link DefaultDaemonService} instance from the given configuration.
-     * @param aspectranConfig the Aspectran configuration
+     * Builds a new {@link DefaultDaemonService} instance from the given parent service.
+     * <p>The new daemon service will be a derived service of the parent service,
+     * sharing its {@link com.aspectran.core.context.ActivityContext}.
+     * It will also use the same {@link AspectranConfig} as the parent service.</p>
      * @param parentService the parent service
      * @return a new, configured {@code DefaultDaemonService} instance
+     * @since 9.5.2
      */
     @NonNull
-    public static DefaultDaemonService build(AspectranConfig aspectranConfig,
-                                             com.aspectran.core.service.CoreService parentService) {
-        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
+    public static DefaultDaemonService build(@NonNull CoreService parentService) {
+        Assert.notNull(parentService, "parentService must not be null");
         DefaultDaemonService daemonService = new DefaultDaemonService(parentService);
-        daemonService.configure(aspectranConfig);
+        daemonService.configure(parentService.getAspectranConfig());
         setServiceStateListener(daemonService);
         return daemonService;
     }

@@ -54,6 +54,12 @@
         </dependency>
         <!-- Additional testing dependencies -->
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-embed</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
