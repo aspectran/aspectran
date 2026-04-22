@@ -16,7 +16,7 @@
 package com.aspectran.daemon.command;
 
 import com.aspectran.core.context.config.DaemonExecutorConfig;
-import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class CommandExecutor {
 
     private static final int DEFAULT_MAX_THREADS = Runtime.getRuntime().availableProcessors();
 
-    private final Daemon daemon;
+    private final DaemonService daemonService;
 
     private final int maxThreads;
 
@@ -60,15 +60,15 @@ public class CommandExecutor {
 
     /**
      * Instantiates a new CommandExecutor.
-     * @param daemon the daemon that owns this executor
+     * @param daemonService the daemon service that owns this executor
      * @param executorConfig the executor configuration
      */
-    public CommandExecutor(Daemon daemon, DaemonExecutorConfig executorConfig) {
-        if (daemon == null) {
-            throw new IllegalArgumentException("daemon must not be null");
+    public CommandExecutor(DaemonService daemonService, DaemonExecutorConfig executorConfig) {
+        if (daemonService == null) {
+            throw new IllegalArgumentException("daemonService must not be null");
         }
 
-        this.daemon = daemon;
+        this.daemonService = daemonService;
 
         if (executorConfig != null) {
             this.maxThreads = executorConfig.getMaxThreads(DEFAULT_MAX_THREADS);
@@ -128,7 +128,7 @@ public class CommandExecutor {
             return false;
         }
 
-        Command command = daemon.getCommandRegistry().getCommand(commandName);
+        Command command = daemonService.getCommandRegistry().getCommand(commandName);
         if (command == null) {
             parameters.setResult("Command not found: " + commandName);
             if (callback != null) {
@@ -148,10 +148,8 @@ public class CommandExecutor {
             return false;
         }
 
-        if (daemon.getDaemonService() != null) {
-            // DefaultActivity will always be specified here
-            parameters.setActivity(daemon.getDaemonService().getActivityContext().getAvailableActivity());
-        }
+        // DefaultActivity will always be specified here
+        parameters.setActivity(daemonService.getActivityContext().getAvailableActivity());
 
         Runnable runnable = () -> {
             Thread currentThread = Thread.currentThread();

@@ -16,14 +16,14 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonPollingConfig;
-import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.service.DaemonService;
 
 /**
  * Abstract base class for {@link FileCommander} implementations, providing common
  * state and behavior.
  * <p>
- * This class manages a reference to the owning {@link Daemon}, the polling
+ * This class manages a reference to the owning {@link DaemonService}, the polling
  * interval, and the re-queueability of commands based on the provided
  * {@link DaemonPollingConfig}.
  * </p>
@@ -34,7 +34,7 @@ public abstract class AbstractFileCommander implements FileCommander {
 
     private static final long DEFAULT_POLLING_INTERVAL = 5000L;
 
-    private final Daemon daemon;
+    private final DaemonService daemonService;
 
     private volatile long pollingInterval;
 
@@ -42,27 +42,27 @@ public abstract class AbstractFileCommander implements FileCommander {
 
     /**
      * Instantiates a new abstract file commander.
-     * @param daemon the daemon that owns this commander
+     * @param daemonService the daemon service that owns this commander
      * @param pollingConfig the polling configuration
      */
-    public AbstractFileCommander(Daemon daemon, DaemonPollingConfig pollingConfig) {
-        if (daemon == null) {
-            throw new IllegalArgumentException("daemon must not be null");
+    public AbstractFileCommander(DaemonService daemonService, DaemonPollingConfig pollingConfig) {
+        if (daemonService == null) {
+            throw new IllegalArgumentException("daemonService must not be null");
         }
 
-        this.daemon = daemon;
+        this.daemonService = daemonService;
         this.pollingInterval = pollingConfig.getPollingInterval(DEFAULT_POLLING_INTERVAL);
         this.requeuable = pollingConfig.isRequeuable();
     }
 
     @Override
-    public Daemon getDaemon() {
-        return daemon;
+    public DaemonService getDaemonService() {
+        return daemonService;
     }
 
     @Override
     public CommandExecutor getCommandExecutor() {
-        return daemon.getCommandExecutor();
+        return daemonService.getCommandExecutor();
     }
 
     @Override

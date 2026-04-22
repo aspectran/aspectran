@@ -17,14 +17,8 @@ package com.aspectran.daemon;
 
 import com.aspectran.core.AboutMe;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.context.config.DaemonExecutorConfig;
-import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandRegistry;
-import com.aspectran.daemon.command.DaemonCommandRegistry;
-import com.aspectran.daemon.command.builtins.QuitCommand;
-import com.aspectran.daemon.command.polling.DefaultFileCommander;
 import com.aspectran.daemon.command.polling.FileCommander;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.daemon.service.DefaultDaemonService;
@@ -40,11 +34,11 @@ import java.io.File;
 /**
  * Base implementation of the {@link Daemon} contract.
  * <p>
- * This class wires together the daemon service, command executor/registry, and
- * optional file-based command polling. It provides common lifecycle operations
- * such as prepare, start (optionally waiting), stop, and destroy. Subclasses
- * may extend behavior but typically use this as-is via {@link DefaultDaemon} or
- * platform wrappers (e.g., {@link JsvcDaemon}, {@link ProcrunDaemon}).
+ * This class wraps a {@link DaemonService} and provides high-level lifecycle
+ * control (start/stop/destroy). Most of the actual command handling and
+ * polling logic is managed by the underlying {@link DaemonService}.
+ * Subclasses may extend behavior but typically use this as-is via
+ * {@link DefaultDaemon} or platform wrappers (e.g., {@link JsvcDaemon}, {@link ProcrunDaemon}).
  * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
@@ -56,15 +50,7 @@ public class AbstractDaemon implements Daemon {
 
     private DefaultDaemonService daemonService;
 
-    private CommandExecutor commandExecutor;
-
-    private FileCommander fileCommander;
-
-    private CommandRegistry commandRegistry;
-
     private boolean waiting;
-
-    private Thread thread;
 
     private volatile boolean active;
 
@@ -90,17 +76,17 @@ public class AbstractDaemon implements Daemon {
 
     @Override
     public CommandExecutor getCommandExecutor() {
-        return commandExecutor;
+        return (daemonService != null ? daemonService.getCommandExecutor() : null);
     }
 
     @Override
     public FileCommander getFileCommander() {
-        return fileCommander;
+        return (daemonService != null ? daemonService.getFileCommander() : null);
     }
 
     @Override
     public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
+        return (daemonService != null ? daemonService.getCommandRegistry() : null);
     }
 
     @Override
@@ -131,37 +117,14 @@ public class AbstractDaemon implements Daemon {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
         }
 
-        startDaemonService(aspectranConfig);
-        initDaemon(aspectranConfig.touchDaemonConfig());
-    }
-
-    private void initDaemon(DaemonConfig daemonConfig) throws Exception {
         AboutMe.printPretty(System.out);
-
-        try {
-            DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
-            this.commandExecutor = new CommandExecutor(this, executorConfig);
-
-            DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-            if (pollingConfig.isEnabled()) {
-                this.fileCommander = new DefaultFileCommander(this, pollingConfig);
-            }
-
-            DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
-            commandRegistry.addCommand(daemonConfig.getCommands());
-            if (commandRegistry.getCommand(QuitCommand.class) == null) {
-                commandRegistry.addCommand(QuitCommand.class);
-            }
-            this.commandRegistry = commandRegistry;
-        } catch (Exception e) {
-            throw new Exception("Failed to initialize daemon", e);
-        }
+        startDaemonService(aspectranConfig);
     }
 
     private void startDaemonService(AspectranConfig aspectranConfig) throws Exception {
         try {
             this.daemonService = DefaultDaemonServiceBuilder.build(aspectranConfig);
-            this.daemonService.start();
+            this.daemonService.setDaemon(this);
         } catch (Exception e) {
             throw new Exception("Failed to start daemon service", e);
         }
@@ -181,36 +144,27 @@ public class AbstractDaemon implements Daemon {
 
     protected void start(long waitTimeoutMillis) throws Exception {
         if (!active) {
-            waiting = (waitTimeoutMillis >= 0L);
-            if (name == null) {
-                name = getClass().getSimpleName();
+            if (daemonService != null) {
+                daemonService.start();
             }
 
-            Runnable runnable = () -> {
-                if (!active) {
-                    active = true;
-                    if (fileCommander != null) {
-                        fileCommander.requeue();
-                    }
+            active = true;
+            waiting = (waitTimeoutMillis >= 0L);
+
+            if (waitTimeoutMillis >= 0L) {
+                if (name == null) {
+                    name = getClass().getSimpleName();
+                }
+                Thread thread = new Thread(() -> {
                     while (active) {
                         try {
-                            if (fileCommander != null) {
-                                fileCommander.polling();
-                                Thread.sleep(fileCommander.getPollingInterval());
-                            } else {
-                                // If there is no file commander, the daemon thread will just wait until it is stopped.
-                                Thread.sleep(Long.MAX_VALUE);
-                            }
+                            Thread.sleep(Long.MAX_VALUE);
                         } catch (InterruptedException ie) {
                             active = false;
                         }
                     }
-                }
-            };
-
-            thread = new Thread(runnable, name);
-            thread.start();
-            if (waitTimeoutMillis >= 0L) {
+                }, name);
+                thread.start();
                 thread.join(waitTimeoutMillis);
             }
         }
@@ -220,11 +174,8 @@ public class AbstractDaemon implements Daemon {
     public void stop() {
         if (active) {
             active = false;
-            if (thread != null) {
-                if (thread.getState() == Thread.State.TIMED_WAITING) {
-                    thread.interrupt();
-                }
-                thread = null;
+            if (daemonService != null && daemonService.isActive()) {
+                daemonService.stop();
             }
         }
     }
@@ -233,16 +184,7 @@ public class AbstractDaemon implements Daemon {
     public void destroy() {
         stop();
 
-        if (commandExecutor != null) {
-            commandExecutor.shutdown();
-        }
-        if (fileCommander != null) {
-            fileCommander = null;
-        }
         if (daemonService != null) {
-            if (daemonService.isActive()) {
-                daemonService.stop();
-            }
             daemonService.withdraw();
             daemonService = null;
         }

@@ -40,7 +40,7 @@ public class PollingIntervalCommand extends AbstractCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try {
-            long oldPollingInterval = getCommandRegistry().getDaemon().getFileCommander().getPollingInterval();
+            long oldPollingInterval = getDaemonService().getFileCommander().getPollingInterval();
             long newPollingInterval = 0L;
 
             Object[] args = parameters.getArguments();
@@ -59,7 +59,7 @@ public class PollingIntervalCommand extends AbstractCommand {
             } else if (newPollingInterval < 1000L) {
                 return failed(error("The polling interval must be at least 1000 ms."));
             } else {
-                getCommandRegistry().getDaemon().getFileCommander().setPollingInterval(newPollingInterval);
+                getDaemonService().getFileCommander().setPollingInterval(newPollingInterval);
                 return success(info("The polling interval has been changed from " + oldPollingInterval +
                         "ms to " + newPollingInterval + "ms."));
             }

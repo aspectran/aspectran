@@ -20,6 +20,10 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.polling.FileCommander;
 
 import java.util.Map;
 
@@ -35,6 +39,18 @@ import java.util.Map;
  * @since 5.1.0
  */
 public interface DaemonService extends CoreService {
+
+    /**
+     * Returns the daemon that owns this service.
+     * @return the daemon instance, or {@code null} if not associated with a daemon
+     */
+    Daemon getDaemon();
+
+    /**
+     * Sets the daemon that owns this service.
+     * @param daemon the daemon instance
+     */
+    void setDaemon(Daemon daemon);
 
     /**
      * Creates and returns a new session adapter for the daemon environment.
@@ -64,5 +80,23 @@ public interface DaemonService extends CoreService {
      * @return the result of the translet execution
      */
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap);
+
+    /**
+     * Returns the command executor used to run administrative commands.
+     * @return the command executor
+     */
+    CommandExecutor getCommandExecutor();
+
+    /**
+     * Returns the file-based commander (polling) if configured.
+     * @return the file-based commander
+     */
+    FileCommander getFileCommander();
+
+    /**
+     * Returns the registry of available commands.
+     * @return the command registry
+     */
+    CommandRegistry getCommandRegistry();
 
 }

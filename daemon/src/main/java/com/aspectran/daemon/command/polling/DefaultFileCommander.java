@@ -16,9 +16,9 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonPollingConfig;
-import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandParameters;
+import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.ResourceUtils;
@@ -87,15 +87,15 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     /**
      * Instantiates a new DefaultFileCommander.
-     * @param daemon the daemon that owns this commander
+     * @param daemonService the daemon service that owns this commander
      * @param pollingConfig the polling configuration
      * @throws Exception if an error occurs while creating the directory structure
      */
-    public DefaultFileCommander(Daemon daemon, DaemonPollingConfig pollingConfig) throws Exception {
-        super(daemon, pollingConfig);
+    public DefaultFileCommander(DaemonService daemonService, DaemonPollingConfig pollingConfig) throws Exception {
+        super(daemonService, pollingConfig);
 
         try {
-            Path basePath = Paths.get(getDaemon().getBasePath());
+            Path basePath = Paths.get(getDaemonService().getBasePath());
             Path cmdDir = basePath.resolve(COMMANDS_PATH);
 
             this.queuedDir = cmdDir.resolve(QUEUED_PATH);

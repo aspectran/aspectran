@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon.command;
 
-import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ClassUtils;
 
 import java.util.Collection;
@@ -34,19 +34,19 @@ public class DaemonCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private final Daemon daemon;
+    private final DaemonService daemonService;
 
     /**
      * Instantiates a new DaemonCommandRegistry.
-     * @param daemon the daemon that owns this registry
+     * @param daemonService the daemon service that owns this registry
      */
-    public DaemonCommandRegistry(Daemon daemon) {
-        this.daemon = daemon;
+    public DaemonCommandRegistry(DaemonService daemonService) {
+        this.daemonService = daemonService;
     }
 
     @Override
-    public Daemon getDaemon() {
-        return daemon;
+    public DaemonService getDaemonService() {
+        return daemonService;
     }
 
     @Override

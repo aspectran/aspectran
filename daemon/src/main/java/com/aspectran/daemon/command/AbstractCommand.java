@@ -73,7 +73,7 @@ public abstract class AbstractCommand implements Command {
      * @throws IllegalStateException if the service is not available or not active
      */
     public DaemonService getDaemonService() {
-        DaemonService daemonService = registry.getDaemon().getDaemonService();
+        DaemonService daemonService = registry.getDaemonService();
         if (daemonService == null || !daemonService.getServiceLifeCycle().isActive()) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
@@ -85,8 +85,8 @@ public abstract class AbstractCommand implements Command {
      * @return {@code true} if the service exists and its lifecycle is active
      */
     public boolean isServiceAvailable() {
-        return (registry.getDaemon().getDaemonService() != null &&
-                registry.getDaemon().getDaemonService().getServiceLifeCycle().isActive());
+        return (registry.getDaemonService() != null &&
+                registry.getDaemonService().getServiceLifeCycle().isActive());
     }
 
     /**

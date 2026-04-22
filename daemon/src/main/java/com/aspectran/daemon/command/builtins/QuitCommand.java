@@ -15,6 +15,7 @@
  */
 package com.aspectran.daemon.command.builtins;
 
+import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -39,12 +40,13 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        if (!getCommandRegistry().getDaemon().isWaiting()) {
-            return failed(getCommandRegistry().getDaemon().getName() + " does not support the 'quit' command.");
+        Daemon daemon = getDaemonService().getDaemon();
+        if (daemon == null || !daemon.isWaiting()) {
+            return failed(getDaemonService().getServiceName() + " does not support the 'quit' command.");
         }
 
-        info("Shutting down " + getCommandRegistry().getDaemon().getName() + "...");
-        getCommandRegistry().getDaemon().stop();
+        info("Shutting down " + daemon.getName() + "...");
+        daemon.stop();
 
         return success(info("The daemon has been shut down successfully."));
     }

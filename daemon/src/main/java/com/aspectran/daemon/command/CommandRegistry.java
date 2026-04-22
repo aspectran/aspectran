@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon.command;
 
-import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.service.DaemonService;
 
 import java.util.Collection;
 
@@ -23,17 +23,17 @@ import java.util.Collection;
  * Registry of daemon commands.
  * <p>
  * Provides lookup and enumeration of {@link Command} implementations associated
- * with a {@link com.aspectran.daemon.Daemon}. Implementations may support
+ * with a {@link com.aspectran.daemon.service.DaemonService}. Implementations may support
  * dynamic registration.
  * </p>
  */
 public interface CommandRegistry {
 
     /**
-     * Returns the owning daemon instance associated with this registry.
-     * @return the {@link Daemon}
+     * Returns the owning daemon service associated with this registry.
+     * @return the {@link DaemonService}
      */
-    Daemon getDaemon();
+    DaemonService getDaemonService();
 
     /**
      * Look up a command by its descriptor name.

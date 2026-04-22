@@ -42,8 +42,20 @@ public abstract class DefaultDaemonServiceBuilder {
      */
     @NonNull
     public static DefaultDaemonService build(AspectranConfig aspectranConfig) {
+        return build(aspectranConfig, null);
+    }
+
+    /**
+     * Builds a new {@link DefaultDaemonService} instance from the given configuration.
+     * @param aspectranConfig the Aspectran configuration
+     * @param parentService the parent service
+     * @return a new, configured {@code DefaultDaemonService} instance
+     */
+    @NonNull
+    public static DefaultDaemonService build(AspectranConfig aspectranConfig,
+                                             com.aspectran.core.service.CoreService parentService) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
-        DefaultDaemonService daemonService = new DefaultDaemonService();
+        DefaultDaemonService daemonService = new DefaultDaemonService(parentService);
         daemonService.configure(aspectranConfig);
         setServiceStateListener(daemonService);
         return daemonService;

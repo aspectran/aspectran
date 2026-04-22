@@ -59,6 +59,14 @@ public class DefaultDaemonService extends AbstractDaemonService {
     }
 
     /**
+     * Package-private constructor used by the daemon infrastructure.
+     * @param parentService the parent service
+     */
+    DefaultDaemonService(com.aspectran.core.service.CoreService parentService) {
+        super(parentService, (parentService != null));
+    }
+
+    /**
      * Executes a translet by name using an optional method prefix in the name.
      * <p>
      * If {@code name} starts with a recognized {@link MethodType} followed by a space

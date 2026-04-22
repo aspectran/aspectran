@@ -15,8 +15,8 @@
  */
 package com.aspectran.daemon.command.polling;
 
-import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.service.DaemonService;
 
 /**
  * Defines a file-based command polling mechanism.
@@ -32,10 +32,10 @@ import com.aspectran.daemon.command.CommandExecutor;
 public interface FileCommander {
 
     /**
-     * Returns the daemon that owns this commander.
-     * @return the daemon instance
+     * Returns the daemon service that owns this commander.
+     * @return the daemon service instance
      */
-    Daemon getDaemon();
+    DaemonService getDaemonService();
 
     /**
      * Returns the command executor used to run commands.
