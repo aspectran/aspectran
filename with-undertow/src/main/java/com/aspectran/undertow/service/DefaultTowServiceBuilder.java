@@ -71,7 +71,7 @@ public class DefaultTowServiceBuilder {
     @NonNull
     public static DefaultTowService build(
             CoreService parentService, AspectranConfig aspectranConfig,
-          ResourceManager resourceManager) {
+            ResourceManager resourceManager) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultTowService towService = new DefaultTowService(parentService, false);
         if (resourceManager != null) {
