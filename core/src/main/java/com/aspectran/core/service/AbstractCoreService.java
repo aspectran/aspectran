@@ -319,35 +319,31 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     /**
      * Initializes the {@code FlashMapManager}.
-     * If this service is a derived service, it uses the parent's {@code FlashMapManager}.
-     * Otherwise, it tries to get a bean from the {@code ActivityContext},
-     * falling back to a {@code SessionFlashMapManager} if none is found.
+     * <p>It first tries to get a bean from the {@code ActivityContext}.
+     * If no bean is found, it falls back to a new {@code SessionFlashMapManager}
+     * for this service, ensuring isolation between different service types.</p>
      */
     protected void initFlashMapManager() {
-        if (isDerived()) {
-            flashMapManager = getParentService().getFlashMapManager();
-        } else {
-            checkContextConfigured();
-            try {
-                flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Detected {}", flashMapManager);
-                } else if (logger.isDebugEnabled()) {
-                    logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
-                }
-            } catch (NoUniqueBeanException e) {
-                flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class,
-                        FlashMapManager.FLASH_MAP_MANAGER_BEAN_ID);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Detected {}", flashMapManager);
-                } else if (logger.isDebugEnabled()) {
-                    logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
-                }
-            } catch (NoSuchBeanException e) {
-                flashMapManager = new SessionFlashMapManager();
-                if (logger.isTraceEnabled()) {
-                    logger.trace("No FlashMapManager: using default [{}]", flashMapManager);
-                }
+        checkContextConfigured();
+        try {
+            flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", flashMapManager);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
+            }
+        } catch (NoUniqueBeanException e) {
+            flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class,
+                    FlashMapManager.FLASH_MAP_MANAGER_BEAN_ID);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", flashMapManager);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
+            }
+        } catch (NoSuchBeanException e) {
+            flashMapManager = new SessionFlashMapManager();
+            if (logger.isTraceEnabled()) {
+                logger.trace("No FlashMapManager bean found: using default [{}]", flashMapManager);
             }
         }
     }
@@ -367,31 +363,30 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     /**
      * Initializes the {@code LocaleResolver}.
-     * If this service is a derived service, it uses the parent's {@code LocaleResolver}.
-     * Otherwise, it tries to get a bean from the {@code ActivityContext}.
+     * <p>It first tries to get a bean from the {@code ActivityContext}.
+     * If no bean is found, it inherits the {@code LocaleResolver} from the parent service
+     * to maintain strategy consistency across the service hierarchy.</p>
      */
     protected void initLocaleResolver() {
-        if (isDerived()) {
-            localeResolver = getParentService().getLocaleResolver();
-        } else {
-            checkContextConfigured();
-            try {
-                localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Detected {}", localeResolver);
-                } else if (logger.isDebugEnabled()) {
-                    logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
-                }
-            } catch (NoUniqueBeanException e) {
-                localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class,
-                        LocaleResolver.LOCALE_RESOLVER_BEAN_ID);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Detected {}", localeResolver);
-                } else if (logger.isDebugEnabled()) {
-                    logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
-                }
-            } catch (NoSuchBeanException e) {
-                // ignore
+        checkContextConfigured();
+        try {
+            localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", localeResolver);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+            }
+        } catch (NoUniqueBeanException e) {
+            localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class,
+                    LocaleResolver.LOCALE_RESOLVER_BEAN_ID);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", localeResolver);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+            }
+        } catch (NoSuchBeanException e) {
+            if (getParentService() != null) {
+                localeResolver = getParentService().getLocaleResolver();
             }
         }
     }
