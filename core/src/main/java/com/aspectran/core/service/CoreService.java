@@ -69,6 +69,12 @@ public interface CoreService {
     boolean isDerived();
 
     /**
+     * Returns the name of this service.
+     * @return the service name
+     */
+    String getServiceName();
+
+    /**
      * Returns the service life cycle manager for this service.
      * @return the service life cycle
      */

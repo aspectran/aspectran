@@ -381,6 +381,11 @@ class ContextReloadingTest {
         }
 
         @Override
+        public String getServiceName() {
+            return "MockCoreService";
+        }
+
+        @Override
         public ServiceLifeCycle getServiceLifeCycle() {
             return lifeCycle;
         }
