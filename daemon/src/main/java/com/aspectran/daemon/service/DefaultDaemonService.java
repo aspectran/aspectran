@@ -23,6 +23,7 @@ import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandResult;
+import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,7 +169,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         }
         try {
             CommandParameters parameters = new CommandParameters();
-            com.aspectran.utils.apon.AponReader.read(apon, parameters);
+            AponReader.read(apon, parameters);
             return execute(parameters);
         } catch (Exception e) {
             logger.error("Failed to parse command parameters: {}", apon, e);
