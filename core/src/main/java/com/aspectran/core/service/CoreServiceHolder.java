@@ -132,19 +132,20 @@ public final class CoreServiceHolder {
      */
     public static synchronized void release(CoreService service) {
         Assert.notNull(service, "service must not be null");
-        Assert.state(allServices.contains(service), "Not a registered service: " + service);
-        for (ServiceHoldingListener listener : serviceHoldingListeners) {
-            listener.beforeServiceRelease(service);
+        if (allServices.contains(service)) {
+            for (ServiceHoldingListener listener : serviceHoldingListeners) {
+                listener.beforeServiceRelease(service);
+            }
+            allServices.remove(service);
+            if (allServices.isEmpty()) {
+                serviceHoldingListeners.clear();
+            }
+            if (currentService != null && currentService == service) {
+                currentService = null;
+            }
+            servicesByLoader.entrySet().removeIf(entry -> service.equals(entry.getValue()));
+            servicesByClass.entrySet().removeIf(entry -> service.equals(entry.getValue()));
         }
-        allServices.remove(service);
-        if (allServices.isEmpty()) {
-            serviceHoldingListeners.clear();
-        }
-        if (currentService != null && currentService == service) {
-            currentService = null;
-        }
-        servicesByLoader.entrySet().removeIf(entry -> service.equals(entry.getValue()));
-        servicesByClass.entrySet().removeIf(entry -> service.equals(entry.getValue()));
     }
 
     /**

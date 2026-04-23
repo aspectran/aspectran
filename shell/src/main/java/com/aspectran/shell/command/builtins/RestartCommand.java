@@ -56,7 +56,7 @@ public class RestartCommand extends AbstractCommand {
             }
             console.writeLine("Restarting shell...");
             try {
-                getShellService().getServiceLifeCycle().restart();
+                getShellService().getRootService().getServiceLifeCycle().restart();
             } catch (Exception e) {
                 throw new ShellCommandExecutionException("Failed to restart the shell.", e);
             }

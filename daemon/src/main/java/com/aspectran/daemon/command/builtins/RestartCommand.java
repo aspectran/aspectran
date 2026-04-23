@@ -44,7 +44,7 @@ public class RestartCommand extends AbstractCommand {
 
         try {
             info("Restarting the daemon service...");
-            daemonService.getServiceLifeCycle().restart();
+            daemonService.getRootService().getServiceLifeCycle().restart();
             return success(info("The daemon service has been restarted successfully."));
         } catch (Exception e) {
             return failed(e);

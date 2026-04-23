@@ -216,6 +216,9 @@ public class DefaultCoreService extends AbstractCoreService {
             buildActivityContext();
             buildSchedulerService();
             afterContextLoaded();
+        } else if (getParentService() != null) {
+            setAspectranConfig(getParentService().getAspectranConfig());
+            setActivityContext(getParentService().getActivityContext());
         }
         initFlashMapManager();
         initLocaleResolver();
