@@ -22,7 +22,9 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.FileCommander;
 
 import java.util.Map;
@@ -80,6 +82,30 @@ public interface DaemonService extends CoreService {
      * @return the result of the translet execution
      */
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap);
+
+    /**
+     * Executes the command with the given parameters.
+     * <p>
+     * Unlike {@link #translate}, which handles business logic and may be
+     * restricted when the service is paused, this method is intended for
+     * administrative control and remains available regardless of the
+     * service's current pause state.
+     * </p>
+     * @param parameters the parameters for the command
+     * @return the result of the command execution
+     */
+    CommandResult execute(CommandParameters parameters);
+
+    /**
+     * Executes the command with the given APON string.
+     * <p>
+     * This is a convenience method that parses the APON string into
+     * {@link CommandParameters} and then calls {@link #execute(CommandParameters)}.
+     * </p>
+     * @param apon the APON string representing the command and its parameters
+     * @return the result of the command execution
+     */
+    CommandResult execute(String apon);
 
     /**
      * Returns the command executor used to run administrative commands.

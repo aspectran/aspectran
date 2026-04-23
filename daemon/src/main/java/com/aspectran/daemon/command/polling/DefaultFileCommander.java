@@ -15,8 +15,9 @@
  */
 package com.aspectran.daemon.command.polling;
 
+import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.core.context.config.DaemonPollingConfig;
-import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.command.AsyncCommandExecutor;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
@@ -55,8 +56,10 @@ import java.util.List;
  *   <li>{@code /cmd/failed}: Command files that failed during processing are moved here.</li>
  * </ul>
  * The polling cycle retrieves command files from the incoming directory, moves them
- * to the queued directory, executes them via the {@link CommandExecutor}, and then
- * moves them to either the completed or failed directory.
+ * to the queued directory, executes them via the {@link AsyncCommandExecutor}, and then
+ * moves them to either the completed or failed directory based on the execution result.
+ * If a command is rejected (e.g., due to isolation rules), it is rolled back from
+ * the queued directory to the incoming directory to be retried in the next cycle.
  * If re-queuing is enabled, commands in the queued directory can be moved back to
  * the incoming directory upon restart.
  * </p>
@@ -89,10 +92,13 @@ public class DefaultFileCommander extends AbstractFileCommander {
      * Instantiates a new DefaultFileCommander.
      * @param daemonService the daemon service that owns this commander
      * @param pollingConfig the polling configuration
+     * @param executorConfig the executor configuration
      * @throws Exception if an error occurs while creating the directory structure
      */
-    public DefaultFileCommander(DaemonService daemonService, DaemonPollingConfig pollingConfig) throws Exception {
-        super(daemonService, pollingConfig);
+    public DefaultFileCommander(DaemonService daemonService,
+                                DaemonPollingConfig pollingConfig,
+                                DaemonExecutorConfig executorConfig) throws Exception {
+        super(daemonService, pollingConfig, executorConfig);
 
         try {
             Path basePath = Paths.get(getDaemonService().getBasePath());
@@ -200,8 +206,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     @Override
     public void polling() {
-        int limit = getCommandExecutor().getAvailableThreads();
-        processCommandFiles(incomingDir, limit, (file, parameters) -> {
+        processCommandFiles(incomingDir, -1, (file, parameters) -> {
             try {
                 Path target = queuedDir.resolve(file.getFileName());
                 Path queuedFile = moveUnique(file, target);
@@ -216,6 +221,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Command execution rejected; rolled back to incoming: {}", file.getFileName());
                     }
+                    return false;
                 }
                 return true;
             } catch (IOException e) {
@@ -271,7 +277,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing command: {}{}{}", fileName, System.lineSeparator(), parameters);
         }
-        return getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
+        return getCommandExecutor().execute(parameters, new AsyncCommandExecutor.Callback() {
             @Override
             public void success() {
                 removeCommandFile(queuedDir.resolve(fileName));

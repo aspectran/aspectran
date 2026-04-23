@@ -49,17 +49,8 @@ class ProcrunDaemonTest {
         ItemRule arg1 = new ItemRule();
         arg1.setValue("Hello");
         parameters.putArgument(arg1);
-        commandExecutor.execute(parameters, new CommandExecutor.Callback() {
-            @Override
-            public void success() {
-                assertEquals(arg1.getValue(), parameters.getResult());
-            }
-
-            @Override
-            public void failure() {
-                assertEquals(arg1.getValue(), parameters.getResult());
-            }
-        });
+        commandExecutor.execute(parameters);
+        assertEquals(arg1.getValue(), parameters.getResult());
     }
 
     @Test
@@ -72,17 +63,8 @@ class ProcrunDaemonTest {
         ItemRule arg1 = new ItemRule();
         arg1.setValue("props");
         parameters.putArgument(arg1);
-        commandExecutor.execute(parameters, new CommandExecutor.Callback() {
-            @Override
-            public void success() {
-                System.out.println(parameters.getResult());
-            }
-
-            @Override
-            public void failure() {
-                System.out.println(parameters.getResult());
-            }
-        });
+        commandExecutor.execute(parameters);
+        System.out.println(parameters.getResult());
     }
 
     @Test

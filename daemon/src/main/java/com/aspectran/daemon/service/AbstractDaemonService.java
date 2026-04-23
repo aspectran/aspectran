@@ -205,12 +205,12 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
         }
 
         try {
-            DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
-            this.commandExecutor = new CommandExecutor(this, executorConfig);
+            this.commandExecutor = new CommandExecutor(this);
 
             DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
             if (pollingConfig.isEnabled()) {
-                this.fileCommander = new DefaultFileCommander(this, pollingConfig);
+                DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
+                this.fileCommander = new DefaultFileCommander(this, pollingConfig, executorConfig);
             }
 
             DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
@@ -238,9 +238,6 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     protected void doStop() {
         polling = false;
         stopPollingThread();
-        if (commandExecutor != null) {
-            commandExecutor.shutdown();
-        }
         super.doStop();
     }
 

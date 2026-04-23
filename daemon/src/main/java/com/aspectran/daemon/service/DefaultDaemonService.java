@@ -21,6 +21,8 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
+import com.aspectran.daemon.command.CommandParameters;
+import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,6 +154,28 @@ public class DefaultDaemonService extends AbstractDaemonService {
             ThreadContextHelper.restoreClassLoader(origClassLoader);
         }
         return translet;
+    }
+
+    @Override
+    public CommandResult execute(CommandParameters parameters) {
+        return getCommandExecutor().execute(parameters);
+    }
+
+    @Override
+    public CommandResult execute(String apon) {
+        if (apon == null) {
+            throw new IllegalArgumentException("apon must not be null");
+        }
+        try {
+            CommandParameters parameters = new CommandParameters();
+            com.aspectran.utils.apon.AponReader.read(apon, parameters);
+            return execute(parameters);
+        } catch (Exception e) {
+            logger.error("Failed to parse command parameters: {}", apon, e);
+            String message = "[FAILED] Malformed command data";
+            String error = com.aspectran.utils.ExceptionUtils.getStacktrace(e);
+            return new CommandResult(false, message, error);
+        }
     }
 
     /**

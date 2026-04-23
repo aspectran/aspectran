@@ -15,17 +15,17 @@
  */
 package com.aspectran.daemon.command.polling;
 
+import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.core.context.config.DaemonPollingConfig;
-import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.command.AsyncCommandExecutor;
 import com.aspectran.daemon.service.DaemonService;
 
 /**
  * Abstract base class for {@link FileCommander} implementations, providing common
  * state and behavior.
  * <p>
- * This class manages a reference to the owning {@link DaemonService}, the polling
- * interval, and the re-queueability of commands based on the provided
- * {@link DaemonPollingConfig}.
+ * This class manages a reference to the owning {@link DaemonService}, an
+ * {@link AsyncCommandExecutor} for background processing, and other polling-related settings.
  * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
@@ -36,6 +36,8 @@ public abstract class AbstractFileCommander implements FileCommander {
 
     private final DaemonService daemonService;
 
+    private final AsyncCommandExecutor commandExecutor;
+
     private volatile long pollingInterval;
 
     private final boolean requeuable;
@@ -44,13 +46,17 @@ public abstract class AbstractFileCommander implements FileCommander {
      * Instantiates a new abstract file commander.
      * @param daemonService the daemon service that owns this commander
      * @param pollingConfig the polling configuration
+     * @param executorConfig the executor configuration
      */
-    public AbstractFileCommander(DaemonService daemonService, DaemonPollingConfig pollingConfig) {
+    public AbstractFileCommander(DaemonService daemonService,
+                                 DaemonPollingConfig pollingConfig,
+                                 DaemonExecutorConfig executorConfig) {
         if (daemonService == null) {
             throw new IllegalArgumentException("daemonService must not be null");
         }
 
         this.daemonService = daemonService;
+        this.commandExecutor = new AsyncCommandExecutor(daemonService.getCommandExecutor(), executorConfig);
         this.pollingInterval = pollingConfig.getPollingInterval(DEFAULT_POLLING_INTERVAL);
         this.requeuable = pollingConfig.isRequeuable();
     }
@@ -61,8 +67,8 @@ public abstract class AbstractFileCommander implements FileCommander {
     }
 
     @Override
-    public CommandExecutor getCommandExecutor() {
-        return daemonService.getCommandExecutor();
+    public AsyncCommandExecutor getCommandExecutor() {
+        return commandExecutor;
     }
 
     @Override

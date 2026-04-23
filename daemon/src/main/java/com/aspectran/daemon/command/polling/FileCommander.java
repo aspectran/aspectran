@@ -15,6 +15,7 @@
  */
 package com.aspectran.daemon.command.polling;
 
+import com.aspectran.daemon.command.AsyncCommandExecutor;
 import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.service.DaemonService;
 
@@ -41,7 +42,7 @@ public interface FileCommander {
      * Returns the command executor used to run commands.
      * @return the command executor
      */
-    CommandExecutor getCommandExecutor();
+    AsyncCommandExecutor getCommandExecutor();
 
     /**
      * Moves any commands from the 'queued' directory back to the 'incoming'
