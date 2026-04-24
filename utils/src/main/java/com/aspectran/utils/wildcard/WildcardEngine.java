@@ -19,6 +19,8 @@ import com.aspectran.utils.Assert;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Arrays;
+
 /**
  * Internal engine for wildcard pattern matching.
  * <p>This class is not part of the public API and is intended for internal
@@ -29,223 +31,114 @@ class WildcardEngine {
 
     /**
      * The master implementation of the wildcard matching algorithm.
-     * <p>IMPORTANT: The {@link #mask} method shares a very similar algorithmic structure.
-     * Any bug fixes or logic changes applied here MUST be carefully mirrored
-     * in the {@code mask} method as well.</p>
      * @param pattern the compiled pattern
      * @param input the input to match
      * @param separatorFlags an array to store separator positions, or null
      * @return true if the input matches the pattern, false otherwise
      */
-    static boolean match(WildcardPattern pattern, CharSequence input, @Nullable int[] separatorFlags) {
+    static boolean match(WildcardPattern pattern, CharSequence input, int @Nullable [] separatorFlags) {
         Assert.notNull(pattern, "pattern must not be null");
-
         if (input == null) {
             return matchNull(pattern);
         }
+        if (separatorFlags != null) {
+            Arrays.fill(separatorFlags, 0);
+        }
+        int[] separatorCount = new int[1];
+        return matchRecursive(pattern, input, 0, 0, separatorFlags, separatorCount);
+    }
 
+    private static boolean matchRecursive(
+            @NonNull WildcardPattern pattern, @NonNull CharSequence input,
+            int tokenIndex, int charIndex, int[] separatorFlags, int[] separatorCount) {
         char[] tokens = pattern.getTokens();
         int[] types = pattern.getTypes();
         char separator = pattern.getSeparator();
-
         int tokenCount = tokens.length;
         int inputLength = input.length();
-        int separatorCount = 0;
-        int tokenIndex = 0;
-        int charIndex = 0;
 
-        while (tokenIndex < tokenCount && charIndex < inputLength) {
-            if (types[tokenIndex] == WildcardPattern.LITERAL_TYPE) {
-                if (tokens[tokenIndex++] != input.charAt(charIndex++)) {
-                    return false;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.STAR_TYPE) {
-                int tempTokenIndex1 = tokenIndex + 1;
-                if (tempTokenIndex1 < tokenCount) {
-                    int tempTokenIndex2 = tempTokenIndex1;
-                    for (; tempTokenIndex2 < tokenCount; tempTokenIndex2++) {
-                        if (types[tempTokenIndex2] == WildcardPattern.EOT_TYPE ||
-                                types[tempTokenIndex2] != WildcardPattern.LITERAL_TYPE) {
-                            break;
-                        }
-                    }
-                    if (tempTokenIndex1 == tempTokenIndex2) {
-                        // prefix*
-                        for (; charIndex < inputLength; charIndex++) {
-                            if (input.charAt(charIndex) == separator) {
-                                break;
-                            }
-                        }
-                        tokenIndex++;
-                    } else {
-                        // *suffix
-                        int currentSuffixToken = tempTokenIndex1;
-                        do {
-                            if (input.charAt(charIndex) == separator) {
-                                return false;
-                            }
-                            if (tokens[currentSuffixToken] != input.charAt(charIndex++)) {
-                                currentSuffixToken = tempTokenIndex1;
-                            }
-                            else {
-                                currentSuffixToken++;
-                            }
-                        } while (currentSuffixToken < tempTokenIndex2 && charIndex < inputLength);
-                        if (currentSuffixToken < tempTokenIndex2) {
-                            return false;
-                        }
-                        tokenIndex = tempTokenIndex2;
-                    }
-                } else {
-                    for (; charIndex < inputLength; charIndex++) {
-                        if (input.charAt(charIndex) == separator) {
-                            break;
-                        }
-                    }
-                    tokenIndex++;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.STAR_STAR_TYPE) {
-                if (separator > 0) {
-                    int tempTokenIndex1 = -1;
-                    int tempTokenIndex2 = -1;
-                    for (int i = tokenIndex + 1; i < tokenCount; i++) {
-                        if (tempTokenIndex1 == -1) {
-                            if (types[i] == WildcardPattern.LITERAL_TYPE) {
-                                tempTokenIndex1 = i;
-                            }
-                        }
-                        else {
-                            if (types[i] != WildcardPattern.LITERAL_TYPE) {
-                                tempTokenIndex2 = i - 1;
-                                break;
-                            }
-                        }
-                    }
-                    if (tempTokenIndex1 > -1 && tempTokenIndex2 > -1) {
-                        int charRangeStart = charIndex;
-                        int charRangeEnd = charIndex;
-                        int currentSuffixToken = tempTokenIndex1;
-                        while (currentSuffixToken <= tempTokenIndex2 && charRangeEnd < inputLength) {
-                            if (input.charAt(charRangeEnd++) != tokens[currentSuffixToken]) {
-                                currentSuffixToken = tempTokenIndex1;
-                            }
-                            else {
-                                currentSuffixToken++;
-                            }
-                        }
-                        if (currentSuffixToken <= tempTokenIndex2) {
-                            tokenIndex = tempTokenIndex2;
-                            if (charIndex > 0) {
-                                charIndex--;
-                            }
-                        } else {
-                            if (separatorFlags != null && charRangeStart < charRangeEnd) {
-                                for (int i = charRangeStart; i < charRangeEnd; i++) {
-                                    if (input.charAt(i) == separator) {
-                                        separatorFlags[i] = ++separatorCount;
-                                    }
-                                }
-                            }
-                            charIndex = charRangeEnd;
-                            tokenIndex = tempTokenIndex2 + 1;
-                        }
-                    } else {
-                        tokenIndex++;
-                        int separatorCountInPattern = 0;
-                        for (int i = tokenIndex; i < tokenCount; i++) {
-                            if (types[i] == WildcardPattern.SEPARATOR_TYPE) {
-                                separatorCountInPattern++;
-                            }
-                        }
-                        if (separatorCountInPattern > 0) {
-                            int charRangeStart = charIndex;
-                            int charRangeEnd = inputLength;
-                            int separatorCountInInput = 0;
-                            while (charRangeEnd > 0 && charRangeStart <= charRangeEnd--) {
-                                if (input.charAt(charRangeEnd) == separator) {
-                                    separatorCountInInput++;
-                                }
-                                if (separatorCountInPattern == separatorCountInInput) {
-                                    break;
-                                }
-                            }
-                            if (separatorCountInPattern == separatorCountInInput) {
-                                charIndex = charRangeEnd;
-                                if (separatorFlags != null) {
-                                    while (charRangeStart < charRangeEnd) {
-                                        if (input.charAt(charRangeStart) == separator) {
-                                            separatorFlags[charRangeStart] = ++separatorCount;
-                                        }
-                                        charRangeStart++;
-                                    }
-                                }
-                            }
-                        } else {
-                            charIndex = inputLength; //complete
-                        }
-                    }
-                }
-                else {
-                    charIndex = inputLength; //complete
-                    tokenIndex++;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
-                if (tokenIndex > tokenCount - 1 ||
-                        types[tokenIndex + 1] != WildcardPattern.LITERAL_TYPE ||
-                        tokens[tokenIndex + 1] != input.charAt(charIndex)) {
-                    if (separator > 0) {
-                        if (input.charAt(charIndex) != separator) {
-                            charIndex++;
-                        }
-                    } else {
-                        charIndex++;
-                    }
-                }
-                tokenIndex++;
-            } else if (types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
-                if (separator > 0) {
-                    if (input.charAt(charIndex) == separator) {
-                        return false;
-                    }
-                }
-                charIndex++;
-                tokenIndex++;
-            } else if (types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE) {
-                if (tokens[tokenIndex++] != input.charAt(charIndex++)) {
-                    return false;
-                }
-                if (separatorFlags != null) {
-                    separatorFlags[charIndex - 1] = ++separatorCount;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.EOT_TYPE) {
-                break;
-            } else {
-                tokenIndex++;
-            }
+        if (tokenIndex == tokenCount || types[tokenIndex] == WildcardPattern.EOT_TYPE) {
+            return charIndex == inputLength;
         }
 
-        if (charIndex < inputLength) {
+        int type = types[tokenIndex];
+        if (type == WildcardPattern.LITERAL_TYPE || type == WildcardPattern.SEPARATOR_TYPE) {
+            if (charIndex < inputLength && tokens[tokenIndex] == input.charAt(charIndex)) {
+                if (type == WildcardPattern.SEPARATOR_TYPE && separatorFlags != null) {
+                    separatorFlags[charIndex] = ++separatorCount[0];
+                }
+                if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + 1, separatorFlags, separatorCount)) {
+                    return true;
+                }
+                if (type == WildcardPattern.SEPARATOR_TYPE && separatorFlags != null) {
+                    separatorFlags[charIndex] = 0;
+                    separatorCount[0]--;
+                }
+            }
+            return false;
+        } else if (type == WildcardPattern.STAR_TYPE) {
+            for (int i = 0; charIndex + i <= inputLength; i++) {
+                if (i > 0 && separator > Character.MIN_VALUE && input.charAt(charIndex + i - 1) == separator) {
+                    break;
+                }
+                if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + i, separatorFlags, separatorCount)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (type == WildcardPattern.STAR_STAR_TYPE) {
+            // Swallowing case: if ** matches empty string and is between separators, skip next separator in pattern
+            if (tokenIndex > 0 && types[tokenIndex - 1] == WildcardPattern.SEPARATOR_TYPE &&
+                    tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == WildcardPattern.SEPARATOR_TYPE) {
+                if (matchRecursive(pattern, input, tokenIndex + 2, charIndex, separatorFlags, separatorCount)) {
+                    return true;
+                }
+            }
+            // Normal matching (crosses separators)
+            for (int i = 0; charIndex + i <= inputLength; i++) {
+                int sc = separatorCount[0];
+                if (separatorFlags != null && separator > Character.MIN_VALUE) {
+                    for (int j = 0; j < i; j++) {
+                        if (input.charAt(charIndex + j) == separator) {
+                            separatorFlags[charIndex + j] = ++sc;
+                        }
+                    }
+                }
+                int savedSc = separatorCount[0];
+                separatorCount[0] = sc;
+                if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + i, separatorFlags, separatorCount)) {
+                    return true;
+                }
+                separatorCount[0] = savedSc;
+                if (separatorFlags != null && separator > Character.MIN_VALUE) {
+                    for (int j = 0; j < i; j++) {
+                        if (input.charAt(charIndex + j) == separator) {
+                            separatorFlags[charIndex + j] = 0;
+                        }
+                    }
+                }
+            }
+            return false;
+        } else if (type == WildcardPattern.QUESTION_TYPE) {
+            // matches 0 or 1
+            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+                if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + 1, separatorFlags, separatorCount)) {
+                    return true;
+                }
+            }
+            return matchRecursive(pattern, input, tokenIndex + 1, charIndex, separatorFlags, separatorCount);
+        } else if (type == WildcardPattern.PLUS_TYPE) {
+            // matches exactly 1
+            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+                return matchRecursive(pattern, input, tokenIndex + 1, charIndex + 1, separatorFlags, separatorCount);
+            }
             return false;
         }
-
-        if (tokenIndex < tokenCount) {
-            for (int i = tokenIndex; i < tokenCount; i++) {
-                if (types[i] == WildcardPattern.LITERAL_TYPE ||
-                        types[i] == WildcardPattern.PLUS_TYPE ||
-                        types[i] == WildcardPattern.SEPARATOR_TYPE) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return false;
     }
 
     /**
      * The master implementation of the wildcard masking algorithm.
-     * <p>IMPORTANT: The {@link #match} method shares a very similar algorithmic structure.
-     * Any bug fixes or logic changes applied here MUST be carefully mirrored
-     * in the {@code match} method as well.</p>
      * @param pattern the precompiled wildcard pattern
      * @param input the input character sequence to be masked
      * @return the masked string if the input matches; {@code null} otherwise
@@ -253,242 +146,117 @@ class WildcardEngine {
     @Nullable
     static String mask(WildcardPattern pattern, CharSequence input) {
         Assert.notNull(pattern, "pattern must not be null");
-
         if (input == null) {
             return (matchNull(pattern) ? "" : null);
         }
 
+        int[] maskFlags = new int[input.length()];
+        if (maskRecursive(pattern, input, 0, 0, maskFlags)) {
+            char separator = pattern.getSeparator();
+            int[] types = pattern.getTypes();
+            StringBuilder sb = new StringBuilder();
+            int lastWildcardTokenIndex = -1;
+            for (int i = 0; i < input.length(); i++) {
+                int tIdx = maskFlags[i] - 1;
+                if (tIdx >= 0 && isWildcard(types[tIdx])) {
+                    if (lastWildcardTokenIndex != -1 && tIdx > lastWildcardTokenIndex) {
+                        if (hasSeparatorBetween(types, lastWildcardTokenIndex, tIdx)) {
+                            sb.append(separator);
+                        }
+                    }
+                    sb.append(input.charAt(i));
+                    lastWildcardTokenIndex = tIdx;
+                }
+            }
+            return sb.toString();
+        }
+        return null;
+    }
+
+    private static boolean isWildcard(int type) {
+        return type == WildcardPattern.STAR_TYPE || type == WildcardPattern.STAR_STAR_TYPE ||
+               type == WildcardPattern.QUESTION_TYPE || type == WildcardPattern.PLUS_TYPE;
+    }
+
+    private static boolean hasSeparatorBetween(int[] types, int start, int end) {
+        for (int i = start + 1; i < end; i++) {
+            if (types[i] == WildcardPattern.SEPARATOR_TYPE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean maskRecursive(
+            @NonNull WildcardPattern pattern, @NonNull CharSequence input,
+            int tokenIndex, int charIndex, int[] maskFlags) {
         char[] tokens = pattern.getTokens();
         int[] types = pattern.getTypes();
         char separator = pattern.getSeparator();
-
         int tokenCount = tokens.length;
         int inputLength = input.length();
 
-        char[] masks = new char[inputLength];
-        char c;
-
-        int tokenIndex = 0;
-        int charIndex = 0;
-
-        while (tokenIndex < tokenCount && charIndex < inputLength) {
-            if (types[tokenIndex] == WildcardPattern.LITERAL_TYPE) {
-                if (tokens[tokenIndex++] != input.charAt(charIndex++)) {
-                    return null;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.STAR_TYPE) {
-                int tempTokenIndex1 = tokenIndex + 1;
-                if (tempTokenIndex1 < tokenCount) {
-                    int tempTokenIndex2 = tempTokenIndex1;
-                    for (; tempTokenIndex2 < tokenCount; tempTokenIndex2++) {
-                        if (types[tempTokenIndex2] == WildcardPattern.EOT_TYPE ||
-                                types[tempTokenIndex2] != WildcardPattern.LITERAL_TYPE) {
-                            break;
-                        }
-                    }
-                    if (tempTokenIndex1 == tempTokenIndex2) {
-                        // prefix*
-                        for (; charIndex < inputLength; charIndex++) {
-                            c = input.charAt(charIndex);
-                            if (c == separator) {
-                                break;
-                            }
-                            masks[charIndex] = c;
-                        }
-                        tokenIndex++;
-                    } else {
-                        // *suffix
-                        int currentSuffixToken = tempTokenIndex1;
-                        do {
-                            c = input.charAt(charIndex);
-                            if (c == separator) {
-                                return null;
-                            }
-                            if (tokens[currentSuffixToken] != c) {
-                                currentSuffixToken = tempTokenIndex1;
-                                masks[charIndex] = c;
-                            } else {
-                                currentSuffixToken++;
-                            }
-                            charIndex++;
-                        } while (currentSuffixToken < tempTokenIndex2 && charIndex < inputLength);
-                        if (currentSuffixToken < tempTokenIndex2) {
-                            return null;
-                        }
-                        tokenIndex = tempTokenIndex2;
-                    }
-                } else {
-                    for (; charIndex < inputLength; charIndex++) {
-                        c = input.charAt(charIndex);
-                        if (c == separator) {
-                            break;
-                        }
-                        masks[charIndex] = c;
-                    }
-                    tokenIndex++;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.STAR_STAR_TYPE) {
-                if (separator != Character.MIN_VALUE) {
-                    int tempTokenIndex1 = -1;
-                    int tempTokenIndex2 = -1;
-                    for (int i = tokenIndex + 1; i < tokenCount; i++) {
-                        if (tempTokenIndex1 == -1) {
-                            if (types[i] == WildcardPattern.LITERAL_TYPE) {
-                                tempTokenIndex1 = i;
-                            }
-                        } else {
-                            if (types[i] != WildcardPattern.LITERAL_TYPE) {
-                                tempTokenIndex2 = i - 1;
-                                break;
-                            }
-                        }
-                    }
-                    if (tempTokenIndex1 > -1 && tempTokenIndex2 > -1) {
-                        int charRangeEnd = charIndex;
-                        int currentSuffixToken = tempTokenIndex1;
-                        while (currentSuffixToken <= tempTokenIndex2 && charRangeEnd < inputLength) {
-                            c = input.charAt(charRangeEnd);
-                            if (c != tokens[currentSuffixToken]) {
-                                currentSuffixToken = tempTokenIndex1;
-                                masks[charRangeEnd] = c;
-                            } else {
-                                currentSuffixToken++;
-                            }
-                            charRangeEnd++;
-                        }
-                        if (currentSuffixToken <= tempTokenIndex2) {
-                            tokenIndex = tempTokenIndex2;
-                            if (charIndex > 0) {
-                                charIndex--;
-                                masks[charIndex] = 0; //erase
-                            }
-                        } else {
-                            charIndex = charRangeEnd;
-                            tokenIndex = tempTokenIndex2 + 1;
-                        }
-                    } else {
-                        tokenIndex++;
-                        int separatorCountInPattern = 0;
-                        for (int i = tokenIndex; i < tokenCount; i++) {
-                            if (types[i] == WildcardPattern.SEPARATOR_TYPE) {
-                                separatorCountInPattern++;
-                            }
-                        }
-                        if (separatorCountInPattern > 0) {
-                            int charRangeStart = charIndex;
-                            int charRangeEnd = inputLength;
-                            int separatorCountInInput = 0;
-                            while (charRangeEnd > 0 && charRangeStart <= charRangeEnd--) {
-                                if (input.charAt(charRangeEnd) == separator) {
-                                    separatorCountInInput++;
-                                }
-                                if (separatorCountInPattern == separatorCountInInput) {
-                                    break;
-                                }
-                            }
-                            if (separatorCountInPattern == separatorCountInInput) {
-                                charIndex = charRangeEnd;
-                                for (int i = charRangeStart; i < charRangeEnd; i++) {
-                                    masks[i] = input.charAt(i);
-                                }
-                            }
-                        } else {
-                            for (; charIndex < inputLength; charIndex++) {
-                                masks[charIndex] = input.charAt(charIndex);
-                            }
-                        }
-                    }
-                } else {
-                    for (int i = charIndex; i < inputLength; i++) {
-                        masks[i] = input.charAt(i);
-                    }
-                    charIndex = inputLength; //complete
-                    tokenIndex++;
-                }
-            } else if (types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
-                if (tokenIndex > tokenCount - 1 ||
-                        types[tokenIndex + 1] != WildcardPattern.LITERAL_TYPE ||
-                        tokens[tokenIndex + 1] != input.charAt(charIndex)) {
-                    if (separator != Character.MIN_VALUE) {
-                        if (input.charAt(charIndex) != separator) {
-                            masks[charIndex] = input.charAt(charIndex);
-                            charIndex++;
-                        }
-                    } else {
-                        masks[charIndex] = input.charAt(charIndex);
-                        charIndex++;
-                    }
-                }
-                tokenIndex++;
-            } else if (types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
-                if (separator != Character.MIN_VALUE) {
-                    if (input.charAt(charIndex) == separator) {
-                        return null;
-                    }
-                }
-                masks[charIndex] = input.charAt(charIndex);
-                charIndex++;
-                tokenIndex++;
-            } else if (types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE) {
-                if (tokens[tokenIndex] != input.charAt(charIndex)) {
-                    return null;
-                }
-                if (tokenIndex > 0 && charIndex > 0 && masks[charIndex - 1] > 0 &&
-                        (types[tokenIndex - 1] == WildcardPattern.STAR_STAR_TYPE ||
-                                types[tokenIndex - 1] == WildcardPattern.STAR_TYPE)) {
-                    masks[charIndex] = input.charAt(charIndex);
-                }
-                tokenIndex++;
-                charIndex++;
-            } else if (types[tokenIndex] == WildcardPattern.EOT_TYPE) {
-                break;
-            } else {
-                tokenIndex++;
-            }
+        if (tokenIndex == tokenCount || types[tokenIndex] == WildcardPattern.EOT_TYPE) {
+            return charIndex == inputLength;
         }
 
-        if (charIndex < inputLength) {
-            if (charIndex == 0 && tokenCount > 0 && types[0] == WildcardPattern.STAR_STAR_TYPE) {
-                for (int end = 0; end < inputLength; end++) {
-                    if (input.charAt(end) != separator) {
-                        if (end > 0) {
-                            return input.subSequence(end, inputLength).toString();
-                        }
-                        break;
-                    }
-                }
-                return input.toString();
+        int type = types[tokenIndex];
+        if (type == WildcardPattern.LITERAL_TYPE || type == WildcardPattern.SEPARATOR_TYPE) {
+            if (charIndex < inputLength && tokens[tokenIndex] == input.charAt(charIndex)) {
+                return maskRecursive(pattern, input, tokenIndex + 1, charIndex + 1, maskFlags);
             }
-            return null;
-        }
-
-        if (tokenIndex < tokenCount) {
-            for (int i = tokenIndex; i < tokenCount; i++) {
-                if (types[i] == WildcardPattern.LITERAL_TYPE ||
-                        types[i] == WildcardPattern.PLUS_TYPE ||
-                        types[i] == WildcardPattern.SEPARATOR_TYPE) {
-                    return null;
-                }
-            }
-        }
-
-        StringBuilder sb = new StringBuilder(masks.length);
-        for (char mask : masks) {
-            if (mask > 0) {
-                sb.append(mask);
-            }
-        }
-        if (types[0] == WildcardPattern.STAR_STAR_TYPE || types[0] == WildcardPattern.STAR_TYPE) {
-            for (int end = 0; end < sb.length(); end++) {
-                if (sb.charAt(end) != separator) {
-                    if (end > 0) {
-                        sb.delete(0, end);
-                    }
+            return false;
+        } else if (type == WildcardPattern.STAR_TYPE) {
+            // Try from shortest to longest to handle backtracking expectations in some test cases
+            for (int i = 0; charIndex + i <= inputLength; i++) {
+                if (i > 0 && separator > Character.MIN_VALUE && input.charAt(charIndex + i - 1) == separator) {
                     break;
                 }
+                if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + i, maskFlags)) {
+                    for (int j = 0; j < i; j++) {
+                        maskFlags[charIndex + j] = tokenIndex + 1;
+                    }
+                    return true;
+                }
             }
+            return false;
+        } else if (type == WildcardPattern.STAR_STAR_TYPE) {
+            // Shortest match first for ** as well
+            for (int i = 0; charIndex + i <= inputLength; i++) {
+                // Swallowing case
+                if (i == 0 && tokenIndex > 0 && types[tokenIndex - 1] == WildcardPattern.SEPARATOR_TYPE &&
+                        tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == WildcardPattern.SEPARATOR_TYPE) {
+                    if (maskRecursive(pattern, input, tokenIndex + 2, charIndex, maskFlags)) {
+                        return true;
+                    }
+                }
+                if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + i, maskFlags)) {
+                    for (int j = 0; j < i; j++) {
+                        maskFlags[charIndex + j] = tokenIndex + 1;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        } else if (type == WildcardPattern.QUESTION_TYPE) {
+            // try match 1 then match 0
+            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+                if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + 1, maskFlags)) {
+                    maskFlags[charIndex] = tokenIndex + 1;
+                    return true;
+                }
+            }
+            return maskRecursive(pattern, input, tokenIndex + 1, charIndex, maskFlags);
+        } else if (type == WildcardPattern.PLUS_TYPE) {
+            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+                if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + 1, maskFlags)) {
+                    maskFlags[charIndex] = tokenIndex + 1;
+                    return true;
+                }
+            }
+            return false;
         }
-        return sb.toString();
+        return false;
     }
 
     private static boolean matchNull(@NonNull WildcardPattern pattern) {
