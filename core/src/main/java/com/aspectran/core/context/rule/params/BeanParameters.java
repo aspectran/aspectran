@@ -35,6 +35,7 @@ public class BeanParameters extends DefaultParameters {
     public static final ParameterKey factoryMethod;
     public static final ParameterKey initMethod;
     public static final ParameterKey destroyMethod;
+    public static final ParameterKey dependsOn;
     public static final ParameterKey lazyInit;
     public static final ParameterKey lazyDestroy;
     public static final ParameterKey important;
@@ -56,6 +57,7 @@ public class BeanParameters extends DefaultParameters {
         factoryMethod = new ParameterKey("factoryMethod", ValueType.STRING);
         initMethod = new ParameterKey("initMethod", ValueType.STRING);
         destroyMethod = new ParameterKey("destroyMethod", ValueType.STRING);
+        dependsOn = new ParameterKey("dependsOn", ValueType.STRING, true);
         lazyInit = new ParameterKey("lazyInit", ValueType.BOOLEAN);
         lazyDestroy = new ParameterKey("lazyDestroy", ValueType.BOOLEAN);
         important = new ParameterKey("important", ValueType.BOOLEAN);
@@ -75,6 +77,7 @@ public class BeanParameters extends DefaultParameters {
                 factoryMethod,
                 initMethod,
                 destroyMethod,
+                dependsOn,
                 lazyInit,
                 lazyDestroy,
                 important,

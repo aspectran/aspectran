@@ -481,6 +481,7 @@ public class AnnotatedConfigParser {
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
+        String[] dependsOn = (beanAnno.dependsOn().length > 0 ? beanAnno.dependsOn() : null);
         boolean lazyInit = beanAnno.lazyInit();
         boolean lazyDestroy = beanAnno.lazyDestroy();
         boolean important = beanAnno.important();
@@ -492,6 +493,7 @@ public class AnnotatedConfigParser {
         beanRule.setScopeType(scopeType);
         beanRule.setInitMethodName(initMethodName);
         beanRule.setDestroyMethodName(destroyMethodName);
+        beanRule.setDependsOn(dependsOn);
         if (lazyInit) {
             beanRule.setLazyInit(Boolean.TRUE);
         }
@@ -528,6 +530,7 @@ public class AnnotatedConfigParser {
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
+        String[] dependsOn = (beanAnno.dependsOn().length > 0 ? beanAnno.dependsOn() : null);
         boolean lazyInit = beanAnno.lazyInit();
         boolean lazyDestroy = beanAnno.lazyDestroy();
         boolean important = beanAnno.important();
@@ -546,6 +549,7 @@ public class AnnotatedConfigParser {
         beanRule.setFactoryOffered(true);
         beanRule.setInitMethodName(initMethodName);
         beanRule.setDestroyMethodName(destroyMethodName);
+        beanRule.setDependsOn(dependsOn);
         if (lazyInit) {
             beanRule.setLazyInit(Boolean.TRUE);
         }

@@ -57,20 +57,29 @@ class BeanNodeletAdder implements NodeletAdder {
                 String mask = attrs.get("mask");
                 String initMethod = StringUtils.emptyToNull(attrs.get("initMethod"));
                 String destroyMethod = StringUtils.emptyToNull(attrs.get("destroyMethod"));
+                String dependsOn = StringUtils.emptyToNull(attrs.get("dependsOn"));
                 String scope = attrs.get("scope");
                 Boolean singleton = BooleanUtils.toNullableBooleanObject(attrs.get("singleton"));
                 Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attrs.get("lazyInit"));
                 Boolean lazyDestroy = BooleanUtils.toNullableBooleanObject(attrs.get("lazyDestroy"));
                 Boolean important = BooleanUtils.toNullableBooleanObject(attrs.get("important"));
 
-                BeanRule beanRule;
-                if (className == null && scan == null && factoryBean != null) {
-                    beanRule = BeanRule.newByFactoryMethod(id, factoryBean, factoryMethod,
-                            initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
-                } else {
-                    beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
-                            factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
-                }
+                BeanRule beanRule = BeanRule.builder()
+                        .id(id)
+                        .className(className)
+                        .scanPattern(scan)
+                        .maskPattern(mask)
+                        .initMethodName(initMethod)
+                        .destroyMethodName(destroyMethod)
+                        .factoryBeanId(factoryBean)
+                        .factoryMethodName(factoryMethod)
+                        .scope(scope)
+                        .singleton(singleton)
+                        .lazyInit(lazyInit)
+                        .lazyDestroy(lazyDestroy)
+                        .important(important)
+                        .dependsOn(dependsOn)
+                        .build();
 
                 AspectranNodeParsingContext.pushObject(beanRule);
             })

@@ -89,6 +89,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     private Method destroyMethod;
 
+    private String[] dependsOn;
+
     private ItemRuleMap argumentItemRuleMap;
 
     private ItemRuleMap propertyItemRuleMap;
@@ -454,6 +456,34 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
+     * Returns the names of the beans that this bean depends on.
+     * @return the names of the beans that this bean depends on
+     */
+    public String[] getDependsOn() {
+        return dependsOn;
+    }
+
+    /**
+     * Sets the names of the beans that this bean depends on.
+     * @param dependsOn the names of the beans that this bean depends on
+     */
+    public void setDependsOn(String[] dependsOn) {
+        this.dependsOn = dependsOn;
+    }
+
+    /**
+     * Sets the names of the beans that this bean depends on.
+     * @param dependsOn a comma-delimited string of bean names
+     */
+    public void setDependsOn(String dependsOn) {
+        if (StringUtils.hasText(dependsOn)) {
+            this.dependsOn = StringUtils.splitWithComma(dependsOn);
+        } else {
+            this.dependsOn = null;
+        }
+    }
+
+    /**
      * Returns the resolved destroy method.
      * @return the destroy method
      */
@@ -779,6 +809,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
             tsb.append("scope", scopeType);
             tsb.append("initMethod", initMethodName);
             tsb.append("destroyMethod", destroyMethodName);
+            tsb.append("dependsOn", dependsOn);
             tsb.append("factoryMethod", factoryMethodName);
             tsb.append("initializableBean", initializableBean);
             tsb.append("disposableBean", disposableBean);
@@ -813,171 +844,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Creates a new instance of BeanRule.
-     * @param id the bean ID
-     * @param className the bean class name
-     * @param scanPattern the package pattern to scan for components
-     * @param maskPattern the pattern to exclude from scanning
-     * @param initMethodName the name of the initialization method
-     * @param destroyMethodName the name of the destruction method
-     * @param factoryMethodName the name of the factory method
-     * @param scope the bean scope
-     * @param singleton whether the bean is a singleton
-     * @param lazyInit whether to initialize lazily
-     * @param lazyDestroy whether to destroy lazily
-     * @param important whether this bean is important and cannot be overridden
-     * @return a new BeanRule instance
-     * @throws IllegalRuleException if the configuration is invalid
-     */
-    @NonNull
-    public static BeanRule newInstance(
-            String id,
-            String className,
-            String scanPattern,
-            String maskPattern,
-            String initMethodName,
-            String destroyMethodName,
-            String factoryMethodName,
-            String scope,
-            Boolean singleton,
-            Boolean lazyInit,
-            Boolean lazyDestroy,
-            Boolean important) throws IllegalRuleException {
-        if (className == null && scanPattern == null) {
-            throw new IllegalRuleException("The 'bean' element requires a 'class' attribute");
-        }
-
-        ScopeType scopeType = ScopeType.resolve(scope);
-        if (scope != null && scopeType == null) {
-            throw new IllegalRuleException("No scope type for '" + scope + "'");
-        }
-        if (scopeType == null) {
-            scopeType = (singleton == null || singleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE);
-        }
-
-        BeanRule beanRule = new BeanRule();
-        beanRule.setId(id);
-        if (scanPattern == null) {
-            beanRule.setClassName(className);
-        } else {
-            beanRule.setScanPattern(scanPattern);
-            beanRule.setMaskPattern(maskPattern);
-        }
-        beanRule.setScopeType(scopeType);
-        beanRule.setSingleton(singleton);
-        beanRule.setInitMethodName(initMethodName);
-        beanRule.setDestroyMethodName(destroyMethodName);
-        beanRule.setFactoryMethodName(factoryMethodName);
-        beanRule.setLazyInit(lazyInit);
-        beanRule.setLazyDestroy(lazyDestroy);
-        beanRule.setImportant(important);
-        return beanRule;
-    }
-
-    /**
-     * Creates a new instance of BeanRule for a bean produced by a factory.
-     * @param id the bean ID
-     * @param factoryBeanId the ID of the factory bean
-     * @param factoryMethodName the name of the factory method
-     * @param initMethodName the name of the initialization method
-     * @param destroyMethodName the name of the destruction method
-     * @param scope the bean scope
-     * @param singleton whether the bean is a singleton
-     * @param lazyInit whether to initialize lazily
-     * @param lazyDestroy whether to destroy lazily
-     * @param important whether this bean is important
-     * @return a new BeanRule instance
-     * @throws IllegalRuleException if the configuration is invalid
-     */
-    @NonNull
-    public static BeanRule newByFactoryMethod(
-            String id,
-            String factoryBeanId,
-            String factoryMethodName,
-            String initMethodName,
-            String destroyMethodName,
-            String scope,
-            Boolean singleton,
-            Boolean lazyInit,
-            Boolean lazyDestroy,
-            Boolean important) throws IllegalRuleException {
-        if (factoryBeanId == null || factoryMethodName == null) {
-            throw new IllegalRuleException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute");
-        }
-
-        ScopeType scopeType = ScopeType.resolve(scope);
-        if (scope != null && scopeType == null) {
-            throw new IllegalRuleException("No scope type for '" + scope + "'");
-        }
-        if (scopeType == null) {
-            scopeType = (singleton == null || singleton) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
-        }
-
-        BeanRule beanRule = new BeanRule();
-        beanRule.setId(id);
-        beanRule.setScopeType(scopeType);
-        beanRule.setSingleton(singleton);
-        beanRule.setFactoryBeanId(factoryBeanId);
-        beanRule.setFactoryMethodName(factoryMethodName);
-        beanRule.setFactoryOffered(true);
-        beanRule.setInitMethodName(initMethodName);
-        beanRule.setDestroyMethodName(destroyMethodName);
-        beanRule.setLazyInit(lazyInit);
-        beanRule.setLazyDestroy(lazyDestroy);
-        beanRule.setImportant(important);
-        return beanRule;
-    }
-
-    /**
-     * Creates a new instance of BeanRule for an inner bean.
-     * @param className the bean class name
-     * @param initMethodName the name of the initialization method
-     * @param destroyMethodName the name of the destruction method
-     * @param factoryMethodName the name of the factory method
-     * @return a new BeanRule instance
-     * @throws IllegalRuleException if the configuration is invalid
-     */
-    @NonNull
-    public static BeanRule newInnerInstance(
-            String className,
-            String initMethodName,
-            String destroyMethodName,
-            String factoryMethodName) throws IllegalRuleException {
-        if (StringUtils.hasText(destroyMethodName)) {
-            throw new IllegalRuleException("Inner beans does not support destroy methods");
-        }
-        BeanRule beanRule = newInstance(null, className, null, null,
-                initMethodName, destroyMethodName, factoryMethodName,
-                null, false, null, null,null);
-        beanRule.setInnerBean(true);
-        return beanRule;
-    }
-
-    /**
-     * Creates a new instance of BeanRule for an inner bean produced by a factory.
-     * @param factoryBeanId the ID of the factory bean
-     * @param factoryMethodName the name of the factory method
-     * @param initMethodName the name of the initialization method
-     * @param destroyMethodName the name of the destruction method
-     * @return a new BeanRule instance
-     * @throws IllegalRuleException if the configuration is invalid
-     */
-    @NonNull
-    public static BeanRule newInnerByFactoryMethod(
-            String factoryBeanId,
-            String factoryMethodName,
-            String initMethodName,
-            String destroyMethodName) throws IllegalRuleException {
-        if (StringUtils.hasText(destroyMethodName)) {
-            throw new IllegalRuleException("Inner beans does not support destroy methods");
-        }
-        BeanRule beanRule = newByFactoryMethod(null, factoryBeanId, factoryMethodName,
-                initMethodName, destroyMethodName, null, false, null, null,null);
-        beanRule.setInnerBean(true);
-        return beanRule;
-    }
-
-    /**
      * Creates a replica of the given BeanRule.
      * @param beanRule the bean rule to replicate
      * @return a new, replicated instance of BeanRule
@@ -995,6 +861,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         newBeanRule.setFactoryMethodName(beanRule.getFactoryMethodName());
         newBeanRule.setInitMethodName(beanRule.getInitMethodName());
         newBeanRule.setDestroyMethodName(beanRule.getDestroyMethodName());
+        newBeanRule.setDependsOn(beanRule.getDependsOn());
         newBeanRule.setArgumentItemRuleMap(beanRule.getArgumentItemRuleMap());
         newBeanRule.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
         newBeanRule.setLazyInit(beanRule.getLazyInit());
@@ -1004,6 +871,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         newBeanRule.setInnerBean(beanRule.isInnerBean());
         newBeanRule.setProxied(beanRule.getProxied());
         return newBeanRule;
+    }
+
+    /**
+     * Creates a new BeanRuleBuilder instance.
+     * @return a new BeanRuleBuilder instance
+     */
+    @NonNull
+    public static BeanRuleBuilder builder() {
+        return new BeanRuleBuilder();
     }
 
 }

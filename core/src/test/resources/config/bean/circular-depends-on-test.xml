@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+    <bean id="beanA" class="com.aspectran.core.component.bean.DependsOnBeanTest$TestBean" initMethod="init" destroyMethod="destroy" dependsOn="beanB">
+        <argument value="beanA"/>
+    </bean>
+    <bean id="beanB" class="com.aspectran.core.component.bean.DependsOnBeanTest$TestBean" initMethod="init" destroyMethod="destroy" dependsOn="beanA">
+        <argument value="beanB"/>
+    </bean>
+</aspectran>

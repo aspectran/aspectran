@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;
@@ -54,12 +55,14 @@ class InnerBeanNodeletAdder implements NodeletAdder {
                 String initMethod = StringUtils.emptyToNull(attrs.get("initMethod"));
                 String destroyMethod = StringUtils.emptyToNull(attrs.get("destroyMethod"));
 
-                BeanRule beanRule;
-                if (className == null && factoryBean != null) {
-                    beanRule = BeanRule.newInnerByFactoryMethod(factoryBean, factoryMethod, initMethod, destroyMethod);
-                } else {
-                    beanRule = BeanRule.newInnerInstance(className, initMethod, destroyMethod, factoryMethod);
-                }
+                BeanRule beanRule = BeanRule.builder()
+                        .className(className)
+                        .initMethodName(initMethod)
+                        .destroyMethodName(destroyMethod)
+                        .factoryBeanId(factoryBean)
+                        .factoryMethodName(factoryMethod)
+                        .innerBean(true)
+                        .build();
 
                 AspectranNodeParsingContext.pushObject(beanRule);
             })

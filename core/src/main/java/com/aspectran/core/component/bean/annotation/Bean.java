@@ -47,6 +47,12 @@ public @interface Bean {
     /** Name of a destruction method to invoke on container shutdown. */
     String destroyMethod() default "";
 
+    /**
+     * The names of the beans that this bean depends on.
+     * The bean factory will guarantee that these beans are initialized before this bean.
+     */
+    String[] dependsOn() default {};
+
     /** Whether to lazily initialize this bean on first use instead of at startup. */
     boolean lazyInit() default false;
 

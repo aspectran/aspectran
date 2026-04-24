@@ -400,18 +400,27 @@ public class ParametersToRules {
         String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
         String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
         String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
+        String[] dependsOn = beanParameters.getStringArray(BeanParameters.dependsOn);
         Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
         Boolean lazyDestroy = beanParameters.getBoolean(BeanParameters.lazyDestroy);
         Boolean important = beanParameters.getBoolean(BeanParameters.important);
 
-        BeanRule beanRule;
-        if (className == null && scan == null && factoryBean != null) {
-            beanRule = BeanRule.newByFactoryMethod(id, factoryBean, factoryMethod,
-                    initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
-        } else {
-            beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
-                    factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
-        }
+        BeanRule beanRule = BeanRule.builder()
+                .id(id)
+                .className(className)
+                .scanPattern(scan)
+                .maskPattern(mask)
+                .initMethodName(initMethod)
+                .destroyMethodName(destroyMethod)
+                .factoryBeanId(factoryBean)
+                .factoryMethodName(factoryMethod)
+                .scope(scope)
+                .singleton(singleton)
+                .lazyInit(lazyInit)
+                .lazyDestroy(lazyDestroy)
+                .important(important)
+                .dependsOn(dependsOn)
+                .build();
 
         List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);
         if (descriptionParametersList != null) {
@@ -457,12 +466,14 @@ public class ParametersToRules {
         String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
         String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
 
-        BeanRule beanRule;
-        if (className == null && factoryBean != null) {
-            beanRule = BeanRule.newInnerByFactoryMethod(factoryBean, factoryMethod, initMethod, destroyMethod);
-        } else {
-            beanRule = BeanRule.newInnerInstance(className, initMethod, destroyMethod, factoryMethod);
-        }
+        BeanRule beanRule = BeanRule.builder()
+                .className(className)
+                .initMethodName(initMethod)
+                .destroyMethodName(destroyMethod)
+                .factoryBeanId(factoryBean)
+                .factoryMethodName(factoryMethod)
+                .innerBean(true)
+                .build();
 
         List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);
         if (descriptionParametersList != null) {

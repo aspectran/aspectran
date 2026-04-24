@@ -48,6 +48,8 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
 
     private final EventListenerRegistry eventListenerRegistry = new  EventListenerRegistry();
 
+    private final ThreadLocal<Set<String>> currentlyInCreation = new ThreadLocal<>();
+
     private final BeanRuleRegistry beanRuleRegistry;
 
     /**
@@ -250,20 +252,66 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      * @return the newly created bean instance
      */
     private BeanInstance createAndRegisterBean(@NonNull Scope scope, @NonNull BeanRule beanRule) {
-        Object bean = createBean(beanRule, scope);
-        BeanInstance instance;
-        if (bean != null && beanRule.isFactoryProductionRequired()) {
-            // For FactoryBeans, getFactoryProducedObject handles registration.
-            // Synchronize on the factory bean instance to ensure thread-safe object production.
-            synchronized (bean) {
-                produceObjectFromFactory(beanRule, bean, scope);
-                instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
-            }
-        } else {
-            instance = BeanInstance.forProduct(bean);
-            scope.putBeanInstance(beanRule, instance);
+        if (beanRule.getId() != null) {
+            beforeCreateBean(beanRule);
         }
-        return instance;
+        try {
+            if (beanRule.getDependsOn() != null) {
+                for (String dependsOnId : beanRule.getDependsOn()) {
+                    if (isCurrentlyInCreation(dependsOnId)) {
+                        throw new BeanCreationException(beanRule, "Circular depends-on relationship between '" +
+                                beanRule.getId() + "' and '" + dependsOnId + "'");
+                    }
+                    getBean(dependsOnId);
+                }
+            }
+
+            Object bean = createBean(beanRule, scope);
+            BeanInstance instance;
+            if (bean != null && beanRule.isFactoryProductionRequired()) {
+                // For FactoryBeans, getFactoryProducedObject handles registration.
+                // Synchronize on the factory bean instance to ensure thread-safe object production.
+                synchronized (bean) {
+                    produceObjectFromFactory(beanRule, bean, scope);
+                    instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
+                }
+            } else {
+                instance = BeanInstance.forProduct(bean);
+                scope.putBeanInstance(beanRule, instance);
+            }
+            return instance;
+        } finally {
+            if (beanRule.getId() != null) {
+                afterCreateBean(beanRule.getId());
+            }
+        }
+    }
+
+    private void beforeCreateBean(@NonNull BeanRule beanRule) {
+        String beanId = beanRule.getId();
+        Set<String> currentlyCreation = currentlyInCreation.get();
+        if (currentlyCreation == null) {
+            currentlyCreation = new java.util.HashSet<>();
+            currentlyInCreation.set(currentlyCreation);
+        }
+        if (!currentlyCreation.add(beanId)) {
+            throw new BeanCreationException(beanRule, "Circular dependency: bean '" + beanId + "' is currently in creation");
+        }
+    }
+
+    private void afterCreateBean(String beanId) {
+        Set<String> currentlyCreation = currentlyInCreation.get();
+        if (currentlyCreation != null) {
+            currentlyCreation.remove(beanId);
+            if (currentlyCreation.isEmpty()) {
+                currentlyInCreation.remove();
+            }
+        }
+    }
+
+    private boolean isCurrentlyInCreation(String beanId) {
+        Set<String> currentlyCreation = currentlyInCreation.get();
+        return (currentlyCreation != null && currentlyCreation.contains(beanId));
     }
 
     /**

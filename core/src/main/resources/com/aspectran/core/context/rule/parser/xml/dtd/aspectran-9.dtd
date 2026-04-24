@@ -87,6 +87,7 @@
   factoryMethod CDATA #IMPLIED
   initMethod    CDATA #IMPLIED
   destroyMethod CDATA #IMPLIED
+  dependsOn     CDATA #IMPLIED
   scope         (singleton | prototype | request | session) #IMPLIED
   singleton     (true | false) #IMPLIED
   lazyInit      (true | false) #IMPLIED
