@@ -57,13 +57,15 @@ class WildcardEngineTest {
                 new WildcardTestCase("/a/+/c", "/a/bb/c", '/', false, null, "Plus does not match multiple chars"),
                 new WildcardTestCase("/a/+/c", "/a//c", '/', false, null, "Plus requires at least 1 char"),
                 new WildcardTestCase("a/**", "a/", '/', true, "", "Double star matches trailing separator"),
+                new WildcardTestCase("a/**", "a", '/', true, "", "Double star matches without trailing separator"),
                 new WildcardTestCase("**/a", "/a", '/', true, "", "Double star matches leading separator"),
+                new WildcardTestCase("**/a", "a", '/', true, "", "Double star matches without separator"),
 
                 // Java Packages (Separator: '.')
                 new WildcardTestCase("com.**.Test", "com.aspectran.Test", '.', true, "aspectran", "Strict segment matching"),
                 new WildcardTestCase("com.**.Test", "com.aspectranTest", '.', false, null, "Separator missing after double star"),
                 new WildcardTestCase("**.Test", "beanTest", '.', false, null, "Separator required before literal"),
-                new WildcardTestCase("**.*Test", "beanTest", '.', false, null, "Asterisk still requires separator if present in pattern"),
+                new WildcardTestCase("**.*Test", "beanTest", '.', true, "bean", "Asterisk matches if leading double star is swallowed"),
                 new WildcardTestCase("com.aspectran.**.Test*Bean?", "com.aspectran.bean.DependsOnBeanTest$TestBean", '.', false, null, "The bug case: should not match"),
 
                 // Plus (+) vs Question (?) vs Star (*)
@@ -90,7 +92,7 @@ class WildcardEngineTest {
                 new WildcardTestCase("a/**/b", "a/x/y/b", '/', true, "x/y", "Double star between separators"),
                 new WildcardTestCase("a/**/b", "a/b", '/', true, "", "Double star between separators matches empty segment"),
                 new WildcardTestCase("**/a/**/b", "x/a/y/b", '/', true, "x/y", "Multiple double stars"),
-                new WildcardTestCase("**/a/**/b", "a/b", '/', false, null, "Multiple double stars matching nothing"),
+                new WildcardTestCase("**/a/**/b", "a/b", '/', true, "", "Multiple double stars matching nothing"),
                 new WildcardTestCase("*/*/*", "a/b/c", '/', true, "a/b/c", "Multiple single stars"),
                 new WildcardTestCase("?/?/?", "a/b/c", '/', true, "a/b/c", "Multiple questions"),
                 new WildcardTestCase("a**b", "axxxb", '/', true, "xxx", "Double star without separators"),

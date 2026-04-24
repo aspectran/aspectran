@@ -21,6 +21,15 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
+import static com.aspectran.utils.wildcard.WildcardPattern.EOT_TYPE;
+import static com.aspectran.utils.wildcard.WildcardPattern.LITERAL_TYPE;
+import static com.aspectran.utils.wildcard.WildcardPattern.PLUS_TYPE;
+import static com.aspectran.utils.wildcard.WildcardPattern.QUESTION_TYPE;
+import static com.aspectran.utils.wildcard.WildcardPattern.SEPARATOR_TYPE;
+import static com.aspectran.utils.wildcard.WildcardPattern.STAR_STAR_TYPE;
+import static com.aspectran.utils.wildcard.WildcardPattern.STAR_TYPE;
+import static java.lang.Character.MIN_VALUE;
+
 /**
  * Internal engine for wildcard pattern matching.
  * <p>This class is not part of the public API and is intended for internal
@@ -57,28 +66,32 @@ class WildcardEngine {
         int tokenCount = tokens.length;
         int inputLength = input.length();
 
-        if (tokenIndex == tokenCount || types[tokenIndex] == WildcardPattern.EOT_TYPE) {
+        if (tokenIndex == tokenCount || types[tokenIndex] == EOT_TYPE) {
             return charIndex == inputLength;
         }
 
         int type = types[tokenIndex];
-        if (type == WildcardPattern.LITERAL_TYPE || type == WildcardPattern.SEPARATOR_TYPE) {
+        if (type == LITERAL_TYPE || type == SEPARATOR_TYPE) {
             if (charIndex < inputLength && tokens[tokenIndex] == input.charAt(charIndex)) {
-                if (type == WildcardPattern.SEPARATOR_TYPE && separatorFlags != null) {
+                if (type == SEPARATOR_TYPE && separatorFlags != null) {
                     separatorFlags[charIndex] = ++separatorCount[0];
                 }
                 if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + 1, separatorFlags, separatorCount)) {
                     return true;
                 }
-                if (type == WildcardPattern.SEPARATOR_TYPE && separatorFlags != null) {
+                if (type == SEPARATOR_TYPE && separatorFlags != null) {
                     separatorFlags[charIndex] = 0;
                     separatorCount[0]--;
                 }
+            } else if (type == SEPARATOR_TYPE && charIndex == inputLength &&
+                    tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == STAR_STAR_TYPE) {
+                // Optional trailing separator followed by **
+                return matchRecursive(pattern, input, tokenIndex + 1, charIndex, separatorFlags, separatorCount);
             }
             return false;
-        } else if (type == WildcardPattern.STAR_TYPE) {
+        } else if (type == STAR_TYPE) {
             for (int i = 0; charIndex + i <= inputLength; i++) {
-                if (i > 0 && separator > Character.MIN_VALUE && input.charAt(charIndex + i - 1) == separator) {
+                if (i > 0 && separator > MIN_VALUE && input.charAt(charIndex + i - 1) == separator) {
                     break;
                 }
                 if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + i, separatorFlags, separatorCount)) {
@@ -86,10 +99,16 @@ class WildcardEngine {
                 }
             }
             return false;
-        } else if (type == WildcardPattern.STAR_STAR_TYPE) {
-            // Swallowing case: if ** matches empty string and is between separators, skip next separator in pattern
-            if (tokenIndex > 0 && types[tokenIndex - 1] == WildcardPattern.SEPARATOR_TYPE &&
-                    tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == WildcardPattern.SEPARATOR_TYPE) {
+        } else if (type == STAR_STAR_TYPE) {
+            // Check for trailing /** case: if we are at the end of input and current pattern is ** preceded by /
+            if (charIndex == inputLength && tokenIndex > 0 && types[tokenIndex - 1] == SEPARATOR_TYPE) {
+                if (matchRecursive(pattern, input, tokenIndex + 1, charIndex, separatorFlags, separatorCount)) {
+                    return true;
+                }
+            }
+            // Swallowing case: if ** matches empty string and is between separators (or at the start), skip next separator in pattern
+            if ((tokenIndex == 0 || types[tokenIndex - 1] == SEPARATOR_TYPE) &&
+                    tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == SEPARATOR_TYPE) {
                 if (matchRecursive(pattern, input, tokenIndex + 2, charIndex, separatorFlags, separatorCount)) {
                     return true;
                 }
@@ -97,7 +116,7 @@ class WildcardEngine {
             // Normal matching (crosses separators)
             for (int i = 0; charIndex + i <= inputLength; i++) {
                 int sc = separatorCount[0];
-                if (separatorFlags != null && separator > Character.MIN_VALUE) {
+                if (separatorFlags != null && separator > MIN_VALUE) {
                     for (int j = 0; j < i; j++) {
                         if (input.charAt(charIndex + j) == separator) {
                             separatorFlags[charIndex + j] = ++sc;
@@ -110,7 +129,7 @@ class WildcardEngine {
                     return true;
                 }
                 separatorCount[0] = savedSc;
-                if (separatorFlags != null && separator > Character.MIN_VALUE) {
+                if (separatorFlags != null && separator > MIN_VALUE) {
                     for (int j = 0; j < i; j++) {
                         if (input.charAt(charIndex + j) == separator) {
                             separatorFlags[charIndex + j] = 0;
@@ -119,17 +138,17 @@ class WildcardEngine {
                 }
             }
             return false;
-        } else if (type == WildcardPattern.QUESTION_TYPE) {
+        } else if (type == QUESTION_TYPE) {
             // matches 0 or 1
-            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+            if (charIndex < inputLength && (separator == MIN_VALUE || input.charAt(charIndex) != separator)) {
                 if (matchRecursive(pattern, input, tokenIndex + 1, charIndex + 1, separatorFlags, separatorCount)) {
                     return true;
                 }
             }
             return matchRecursive(pattern, input, tokenIndex + 1, charIndex, separatorFlags, separatorCount);
-        } else if (type == WildcardPattern.PLUS_TYPE) {
+        } else if (type == PLUS_TYPE) {
             // matches exactly 1
-            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+            if (charIndex < inputLength && (separator == MIN_VALUE || input.charAt(charIndex) != separator)) {
                 return matchRecursive(pattern, input, tokenIndex + 1, charIndex + 1, separatorFlags, separatorCount);
             }
             return false;
@@ -174,13 +193,13 @@ class WildcardEngine {
     }
 
     private static boolean isWildcard(int type) {
-        return type == WildcardPattern.STAR_TYPE || type == WildcardPattern.STAR_STAR_TYPE ||
-               type == WildcardPattern.QUESTION_TYPE || type == WildcardPattern.PLUS_TYPE;
+        return type == STAR_TYPE || type == STAR_STAR_TYPE ||
+               type == QUESTION_TYPE || type == PLUS_TYPE;
     }
 
     private static boolean hasSeparatorBetween(int[] types, int start, int end) {
         for (int i = start + 1; i < end; i++) {
-            if (types[i] == WildcardPattern.SEPARATOR_TYPE) {
+            if (types[i] == SEPARATOR_TYPE) {
                 return true;
             }
         }
@@ -196,20 +215,24 @@ class WildcardEngine {
         int tokenCount = tokens.length;
         int inputLength = input.length();
 
-        if (tokenIndex == tokenCount || types[tokenIndex] == WildcardPattern.EOT_TYPE) {
+        if (tokenIndex == tokenCount || types[tokenIndex] == EOT_TYPE) {
             return charIndex == inputLength;
         }
 
         int type = types[tokenIndex];
-        if (type == WildcardPattern.LITERAL_TYPE || type == WildcardPattern.SEPARATOR_TYPE) {
+        if (type == LITERAL_TYPE || type == SEPARATOR_TYPE) {
             if (charIndex < inputLength && tokens[tokenIndex] == input.charAt(charIndex)) {
                 return maskRecursive(pattern, input, tokenIndex + 1, charIndex + 1, maskFlags);
+            } else if (type == SEPARATOR_TYPE && charIndex == inputLength &&
+                    tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == STAR_STAR_TYPE) {
+                // Optional trailing separator followed by **
+                return maskRecursive(pattern, input, tokenIndex + 1, charIndex, maskFlags);
             }
             return false;
-        } else if (type == WildcardPattern.STAR_TYPE) {
+        } else if (type == STAR_TYPE) {
             // Try from shortest to longest to handle backtracking expectations in some test cases
             for (int i = 0; charIndex + i <= inputLength; i++) {
-                if (i > 0 && separator > Character.MIN_VALUE && input.charAt(charIndex + i - 1) == separator) {
+                if (i > 0 && separator > MIN_VALUE && input.charAt(charIndex + i - 1) == separator) {
                     break;
                 }
                 if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + i, maskFlags)) {
@@ -220,12 +243,18 @@ class WildcardEngine {
                 }
             }
             return false;
-        } else if (type == WildcardPattern.STAR_STAR_TYPE) {
+        } else if (type == STAR_STAR_TYPE) {
+            // Check for trailing /** case: if we are at the end of input and current pattern is ** preceded by /
+            if (charIndex == inputLength && tokenIndex > 0 && types[tokenIndex - 1] == SEPARATOR_TYPE) {
+                if (maskRecursive(pattern, input, tokenIndex + 1, charIndex, maskFlags)) {
+                    return true;
+                }
+            }
             // Shortest match first for ** as well
             for (int i = 0; charIndex + i <= inputLength; i++) {
-                // Swallowing case
-                if (i == 0 && tokenIndex > 0 && types[tokenIndex - 1] == WildcardPattern.SEPARATOR_TYPE &&
-                        tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == WildcardPattern.SEPARATOR_TYPE) {
+                // Swallowing case: if ** matches empty string and is between separators (or at the start)
+                if (i == 0 && (tokenIndex == 0 || types[tokenIndex - 1] == SEPARATOR_TYPE) &&
+                        tokenIndex + 1 < tokenCount && types[tokenIndex + 1] == SEPARATOR_TYPE) {
                     if (maskRecursive(pattern, input, tokenIndex + 2, charIndex, maskFlags)) {
                         return true;
                     }
@@ -238,17 +267,17 @@ class WildcardEngine {
                 }
             }
             return false;
-        } else if (type == WildcardPattern.QUESTION_TYPE) {
+        } else if (type == QUESTION_TYPE) {
             // try match 1 then match 0
-            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+            if (charIndex < inputLength && (separator == MIN_VALUE || input.charAt(charIndex) != separator)) {
                 if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + 1, maskFlags)) {
                     maskFlags[charIndex] = tokenIndex + 1;
                     return true;
                 }
             }
             return maskRecursive(pattern, input, tokenIndex + 1, charIndex, maskFlags);
-        } else if (type == WildcardPattern.PLUS_TYPE) {
-            if (charIndex < inputLength && (separator == Character.MIN_VALUE || input.charAt(charIndex) != separator)) {
+        } else if (type == PLUS_TYPE) {
+            if (charIndex < inputLength && (separator == MIN_VALUE || input.charAt(charIndex) != separator)) {
                 if (maskRecursive(pattern, input, tokenIndex + 1, charIndex + 1, maskFlags)) {
                     maskFlags[charIndex] = tokenIndex + 1;
                     return true;
@@ -262,9 +291,7 @@ class WildcardEngine {
     private static boolean matchNull(@NonNull WildcardPattern pattern) {
         int[] types = pattern.getTypes();
         for (int type : types) {
-            if (type == WildcardPattern.LITERAL_TYPE ||
-                    type == WildcardPattern.PLUS_TYPE ||
-                    type == WildcardPattern.SEPARATOR_TYPE) {
+            if (type == LITERAL_TYPE || type == PLUS_TYPE || type == SEPARATOR_TYPE) {
                 return false;
             }
         }
