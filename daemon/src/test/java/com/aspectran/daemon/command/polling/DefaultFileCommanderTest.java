@@ -131,7 +131,7 @@ class DefaultFileCommanderTest {
         executorConfig.setMaxThreads(2);
 
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(3600000); // 1 hour
+        pollingConfig.setPollingInterval(100); // 100ms for fast polling
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
