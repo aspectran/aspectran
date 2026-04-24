@@ -16,6 +16,7 @@
 package com.aspectran.utils.wildcard;
 
 import com.aspectran.utils.Assert;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -39,20 +40,13 @@ class WildcardEngine {
     static boolean match(WildcardPattern pattern, CharSequence input, @Nullable int[] separatorFlags) {
         Assert.notNull(pattern, "pattern must not be null");
 
+        if (input == null) {
+            return matchNull(pattern);
+        }
+
         char[] tokens = pattern.getTokens();
         int[] types = pattern.getTypes();
         char separator = pattern.getSeparator();
-
-        if (input == null) {
-            for (int i = 0; i < tokens.length; i++) {
-                if (types[i] == WildcardPattern.LITERAL_TYPE ||
-                        types[i] == WildcardPattern.PLUS_TYPE ||
-                        types[i] == WildcardPattern.SEPARATOR_TYPE) {
-                    return false;
-                }
-            }
-            return true;
-        }
 
         int tokenCount = tokens.length;
         int inputLength = input.length();
@@ -259,7 +253,10 @@ class WildcardEngine {
     @Nullable
     static String mask(WildcardPattern pattern, CharSequence input) {
         Assert.notNull(pattern, "pattern must not be null");
-        Assert.notNull(input, "input must not be null");
+
+        if (input == null) {
+            return (matchNull(pattern) ? "" : null);
+        }
 
         char[] tokens = pattern.getTokens();
         int[] types = pattern.getTypes();
@@ -492,6 +489,18 @@ class WildcardEngine {
             }
         }
         return sb.toString();
+    }
+
+    private static boolean matchNull(@NonNull WildcardPattern pattern) {
+        int[] types = pattern.getTypes();
+        for (int type : types) {
+            if (type == WildcardPattern.LITERAL_TYPE ||
+                    type == WildcardPattern.PLUS_TYPE ||
+                    type == WildcardPattern.SEPARATOR_TYPE) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
