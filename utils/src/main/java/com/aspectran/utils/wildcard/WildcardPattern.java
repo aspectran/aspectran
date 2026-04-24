@@ -30,8 +30,8 @@ import java.util.Objects;
  * </p>
  * <ul>
  *   <li><code>*</code> – zero or more characters within a single segment</li>
- *   <li><code>?</code> – exactly one character within a segment</li>
- *   <li><code>+</code> – one or more characters within a segment</li>
+ *   <li><code>?</code> – zero or one character within a segment</li>
+ *   <li><code>+</code> – exactly one character within a segment</li>
  *   <li><code>**</code> – cross-segment wildcard; when a separator is configured it may span
  *       across separators</li>
  *   <li><code>\</code> – escape character to treat the following character as a literal</li>
@@ -74,9 +74,9 @@ public class WildcardPattern {
     private static final char SPACE_CHAR = ' ';
     /** Wildcard for any sequence of characters within a segment. */
     public static final char STAR_CHAR = '*';
-    /** Wildcard for exactly one character within a segment. */
+    /** Wildcard for zero or one character within a segment. */
     public static final char QUESTION_CHAR = '?';
-    /** Wildcard for one or more characters within a segment. */
+    /** Wildcard for exactly one character within a segment. */
     public static final char PLUS_CHAR = '+';
 
     /** Token type: literal character. */
