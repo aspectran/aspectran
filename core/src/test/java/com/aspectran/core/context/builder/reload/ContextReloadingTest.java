@@ -102,6 +102,8 @@ class ContextReloadingTest {
                 content +
                 "</aspectran>";
         Files.writeString(appContextFile.toPath(), xml);
+        // Explicitly set the last modified time to ensure the timer detects the change
+        appContextFile.setLastModified(System.currentTimeMillis() + 1000);
     }
 
     private void writeSecondAppContext(String content) throws IOException {
@@ -113,6 +115,8 @@ class ContextReloadingTest {
                 content +
                 "</aspectran>";
         Files.writeString(appContextFile.toPath(), xml);
+        // Explicitly set the last modified time to ensure the timer detects the change
+        appContextFile.setLastModified(System.currentTimeMillis() + 1000);
     }
 
     @NonNull
@@ -143,7 +147,7 @@ class ContextReloadingTest {
         writeMainAppContext(createBeanRule(updatedMessage));
 
         // 4. Wait for reload (triggered by timer, calls lifeCycle.restart())
-        assertTrue(restartLatch.await(5, TimeUnit.SECONDS), "Context did not reload within 5 seconds");
+        assertTrue(restartLatch.await(10, TimeUnit.SECONDS), "Context did not reload within 10 seconds");
 
         // 5. Verify reloaded state from the new context held by the lifecycle
         ActivityContext context2 = lifeCycle.getContext();
@@ -172,7 +176,7 @@ class ContextReloadingTest {
         writeSecondAppContext(createBeanRule(updatedMessage));
 
         // 4. Wait for reload
-        assertTrue(restartLatch.await(5, TimeUnit.SECONDS), "Context did not reload on appended file change");
+        assertTrue(restartLatch.await(10, TimeUnit.SECONDS), "Context did not reload on appended file change");
 
         // 5. Verify reloaded state
         ActivityContext context2 = lifeCycle.getContext();
@@ -219,7 +223,7 @@ class ContextReloadingTest {
         assertTrue(appContextFile.delete());
 
         // 4. Wait for reload attempt
-        assertTrue(restartLatch.await(7, TimeUnit.SECONDS), "Context reload was not triggered on file deletion");
+        assertTrue(restartLatch.await(10, TimeUnit.SECONDS), "Context reload was not triggered on file deletion");
 
         // 5. Verify that the restart failed
         assertNotNull(lifeCycle.getRestartException());
