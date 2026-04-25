@@ -29,18 +29,15 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Executes daemon commands asynchronously using a thread pool.
- * <p>
- * This class manages a {@link ThreadPoolExecutor} to run commands in the background.
- * Before submitting a task to the thread pool, it performs a synchronous check using
- * {@link CommandExecutor#getAvailableCommand(CommandParameters)} to ensure the
- * command can be accepted (e.g., checking isolation rules).
- * </p>
- * <p>
- * If a command is rejected during the pre-execution check, this method returns
- * {@code false} immediately without invoking any callbacks. If the command is accepted,
- * it returns {@code true}, and the provided {@link Callback} is triggered once the
- * background execution completes.
- * </p>
+ * <p>This class employs a two-stage process for command execution. First, it
+ * synchronously reserves the command using {@link CommandExecutor#reserveCommand(CommandParameters)}.
+ * This ensures that the executor's state (e.g., active command count, isolation flags)
+ * is updated immediately, preventing race conditions during rapid command submission
+ * or polling. Second, it submits the command to an internal {@link ThreadPoolExecutor}
+ * for background execution.</p>
+ * <p>If a command is rejected during the initial reservation check, {@link #execute(CommandParameters, Callback)}
+ * returns {@code false} immediately. If accepted, it returns {@code true}, and the
+ * provided {@link Callback} is invoked once the background task completes.</p>
  *
  * <p>Created: 2026. 04. 23.</p>
  */

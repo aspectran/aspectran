@@ -26,12 +26,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Executes daemon commands synchronously.
- * <p>
- * This class handles the core logic for executing commands, including
+ * <p>This class handles the core logic for executing commands, including
  * registry lookup, isolated execution state management, and result capturing.
  * It serves as the primary execution engine for both direct synchronous calls
- * and asynchronous tasks managed by {@link AsyncCommandExecutor}.
- * </p>
+ * and asynchronous tasks managed by {@link AsyncCommandExecutor}.</p>
  *
  * <p>Created: 2026. 04. 23.</p>
  */
@@ -155,13 +153,17 @@ public class CommandExecutor {
     }
 
     /**
-     * Executes the command and captures the result.
+     * Performs the actual execution logic for a command.
+     * <p>
+     * This method assumes the command has already been reserved. It prepares
+     * the activity context and invokes the command's execution logic.
+     * </p>
      * @param command the command to execute
      * @param parameters the parameters for the command
      * @return the result of the command execution
      */
     @NonNull
-    protected CommandResult executeNow(Command command, CommandParameters parameters) {
+    protected CommandResult executeNow(Command command, @NonNull CommandParameters parameters) {
         // DefaultActivity will always be specified here
         parameters.setActivity(daemonService.getActivityContext().getAvailableActivity());
 
