@@ -515,12 +515,26 @@ public interface Translet {
     String getWrittenResponse();
 
     /**
-     * Evaluates an expression containing tokens (e.g., "Hello, ${userName}!").
+     * Evaluates an AsEL (Aspectran Expression Language) expression.
+     * <p>An AsEL expression can be a simple token-based string, a complex OGNL expression,
+     * or a combination of both. Token expressions like {@code ${bean.property}} or
+     * {@code @{attributeName}} are resolved first, and then the entire expression is
+     * evaluated using the OGNL engine.</p>
      * @param <V> the type of the evaluation result
      * @param expression the expression string to evaluate
      * @return the evaluated result
      */
     <V> V evaluate(String expression);
+
+    /**
+     * Evaluates an AsEL (Aspectran Expression Language) expression and
+     * converts the result to the specified type.
+     * @param <V> the type of the evaluation result
+     * @param expression the expression string to evaluate
+     * @param type the expected type of the result
+     * @return the evaluated and converted result
+     */
+    <V> V evaluate(String expression, Class<V> type);
 
     /**
      * Evaluates an array of pre-parsed tokens.

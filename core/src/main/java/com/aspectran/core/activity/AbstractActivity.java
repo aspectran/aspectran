@@ -28,6 +28,7 @@ import com.aspectran.core.context.asel.item.ItemEvaluation;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.asel.token.TokenEvaluation;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
@@ -437,6 +438,21 @@ public abstract class AbstractActivity implements Activity {
 
     protected void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
+    }
+
+    //---------------------------------------------------------------------
+    // Implementation for AsEL (Aspectran Expression Language) evaluation
+    //---------------------------------------------------------------------
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> V evaluate(String expression) {
+        return (V)ValueExpression.evaluate(expression, this);
+    }
+
+    @Override
+    public <V> V evaluate(String expression, Class<V> type) {
+        return ValueExpression.evaluate(expression, this, type);
     }
 
     //---------------------------------------------------------------------

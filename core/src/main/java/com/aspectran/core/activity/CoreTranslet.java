@@ -29,7 +29,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.asel.token.Token;
-import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
@@ -494,13 +493,17 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     //---------------------------------------------------------------------
-    // Implementation for token expression evaluation
+    // Implementation for AsEL (Aspectran Expression Language) evaluation
     //---------------------------------------------------------------------
 
     @Override
     public <V> V evaluate(String expression) {
-        Token[] tokens = TokenParser.parse(expression);
-        return evaluate(tokens);
+        return activity.evaluate(expression);
+    }
+
+    @Override
+    public <V> V evaluate(String expression, Class<V> type) {
+        return activity.evaluate(expression, type);
     }
 
     @Override
