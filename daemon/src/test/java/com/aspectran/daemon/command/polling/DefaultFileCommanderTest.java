@@ -19,7 +19,6 @@ import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.daemon.SimpleDaemon;
-import com.aspectran.utils.ResourceUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,8 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultFileCommanderTest {
 
+    private final File baseDir = new File("./target/app");
+
     private SimpleDaemon daemon;
-    private File root;
+    private String incomingDirPath;
     private Path incomingDir;
     private Path queuedDir;
     private Path completedDir;
@@ -45,14 +47,18 @@ class DefaultFileCommanderTest {
 
     @BeforeEach
     void setup() throws Exception {
-        root = ResourceUtils.getResourceAsFile(".");
-        Path cmdDir = root.toPath().resolve("cmd");
-        incomingDir = cmdDir.resolve("incoming");
+        String random = System.currentTimeMillis() + "-" + new Random().nextInt(10000);
+        Path cmdDir = baseDir.toPath().resolve("cmd");
+        incomingDirPath = "/cmd/incoming-" + random;
+        incomingDir = cmdDir.resolve("incoming-" + random);
         queuedDir = cmdDir.resolve("queued");
         completedDir = cmdDir.resolve("completed");
         failedDir = cmdDir.resolve("failed");
 
-        deleteDirectory(cmdDir);
+        deleteDirectory(queuedDir);
+        deleteDirectory(completedDir);
+        deleteDirectory(failedDir);
+
         Files.createDirectories(incomingDir);
         Files.createDirectories(queuedDir);
         Files.createDirectories(completedDir);
@@ -72,25 +78,27 @@ class DefaultFileCommanderTest {
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.SysInfoCommand");
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
+        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
-        daemon.prepare(root.getCanonicalPath(), daemonConfig);
+        daemon.prepare(baseDir.getCanonicalPath(), daemonConfig);
 
         // Write a valid command using single-line APON before starting the daemon
         Path commandFile = incomingDir.resolve("01-success.apon");
-        Files.writeString(commandFile, "command: sysinfo");
+        Files.writeString(commandFile, "command: sysinfo, arguments: { item: { value: mem } }");
 
         // The daemon will poll once immediately upon starting
         daemon.start();
 
         // Wait for completion
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 5; i++) {
             if (countFiles(completedDir) > 0) break;
+            System.out.println("Waiting for completion... " + i);
             Thread.sleep(100);
         }
 
-        assertTrue(Files.notExists(commandFile), "Original file should be removed from incoming");
+        assertTrue(Files.notExists(commandFile), "Original file should be removed from " + incomingDirPath);
         assertEquals(1, countFiles(completedDir), "One file should be in completed directory");
     }
 
@@ -99,10 +107,11 @@ class DefaultFileCommanderTest {
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(3600000); // 1 hour
+        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
-        daemon.prepare(root.getCanonicalPath(), daemonConfig);
+        daemon.prepare(baseDir.getCanonicalPath(), daemonConfig);
 
         // Write an invalid APON file before starting
         Path commandFile = incomingDir.resolve("02-malformed.apon");
@@ -111,8 +120,9 @@ class DefaultFileCommanderTest {
         daemon.start();
 
         // Wait for handling
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 5; i++) {
             if (countFiles(failedDir) > 0) break;
+            System.out.println("Waiting for handling... " + i);
             Thread.sleep(100);
         }
 
@@ -132,14 +142,15 @@ class DefaultFileCommanderTest {
 
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(3600000); // 1 hour
+        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
-        daemon.prepare(root.getCanonicalPath(), daemonConfig);
+        daemon.prepare(baseDir.getCanonicalPath(), daemonConfig);
 
         // 1. Submit a slow command first
         Path slowCommandFile = incomingDir.resolve("03-slow.apon");
-        Files.writeString(slowCommandFile, "command: sleep, arguments: { item: { value: 1000, valueType: long } }");
+        Files.writeString(slowCommandFile, "command: sleep, arguments: { item: { value: 500, valueType: long } }");
 
         // 2. Submit an isolated command (quit) which should be rejected
         Path isolatedCommandFile = incomingDir.resolve("04-isolated.apon");
@@ -149,14 +160,16 @@ class DefaultFileCommanderTest {
 
         // Wait for polling and rollback
         // The slow command should be moved out of incoming first
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 5; i++) {
             if (Files.notExists(slowCommandFile)) break;
+            System.out.println("Waiting for slow command to be moved out of " + incomingDirPath + "... " + i);
             Thread.sleep(100);
         }
         // Then the isolated command should be attempted and potentially rolled back
         // We wait a bit more to give the poller time to process the second file
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 5; i++) {
             if (Files.exists(isolatedCommandFile) && Files.notExists(queuedDir.resolve("04-isolated.apon"))) break;
+            System.out.println("Waiting for isolated command to be attempted... " + i);
             Thread.sleep(100);
         }
 
@@ -170,15 +183,16 @@ class DefaultFileCommanderTest {
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(1000);
+        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setRequeuable(true);
         pollingConfig.setEnabled(true);
 
         // Pre-place a file in the queued directory
         Path unfinishedFile = queuedDir.resolve("05-unfinished.apon");
-        Files.writeString(unfinishedFile, "command: sysinfo requeuable: true");
+        Files.writeString(unfinishedFile, "command: sysinfo, arguments: { item: { value: mem } }, requeuable: true");
 
         daemon = new SimpleDaemon();
-        daemon.prepare(root.getCanonicalPath(), daemonConfig);
+        daemon.prepare(baseDir.getCanonicalPath(), daemonConfig);
         // Manually trigger requeue for verification
         daemon.getFileCommander().requeue();
 
