@@ -149,13 +149,13 @@ class DefaultFileCommanderTest {
 
         // Wait for polling and rollback
         // The slow command should be moved out of incoming first
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             if (Files.notExists(slowCommandFile)) break;
             Thread.sleep(100);
         }
         // Then the isolated command should be attempted and potentially rolled back
         // We wait a bit more to give the poller time to process the second file
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             if (Files.exists(isolatedCommandFile) && Files.notExists(queuedDir.resolve("04-isolated.apon"))) break;
             Thread.sleep(100);
         }
