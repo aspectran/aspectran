@@ -41,7 +41,7 @@
     <bean id="nestedStringBean" class="java.lang.String" scope="prototype">
         <argument>
             <bean class="java.lang.String">
-                    <argument>Nested String Bean</argument>
+                <argument>Nested String Bean</argument>
             </bean>
         </argument>
     </bean>

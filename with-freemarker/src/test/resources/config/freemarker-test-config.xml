@@ -12,60 +12,50 @@
     </settings>
 
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
-        <arguments>
-            <item>
-                <bean class="com.aspectran.freemarker.ConfigurationFactoryBean">
-                    <properties>
-                        <item name="freemarkerSettings" type="properties">
-                            <entry name="incompatible_improvements">2.3.23</entry>
-                            <entry name="template_exception_handler">rethrow</entry>
-                            <entry name="default_encoding">UTF-8</entry>
-                            <entry name="number_format">0.####</entry>
-                        </item>
-                        <item name="templateLoaderPath" type="array">
-                            <value>classpath:view/freemarker</value>
-                        </item>
-                        <item name="trimDirectives" valueType="parameters">
-                            directive: {
-                                name: "trim"
-                            }
-                            directive: {
-                                name: "where"
-                                prefix: "WHERE "
-                                deprefixes: [
-                                    "and"
-                                    "or"
-                                ]
-                            }
-                            directive: {
-                                name: "set"
-                                prefix: "SET "
-                                desuffixes: ","
-                            }
-                        </item>
-                    </properties>
-                </bean>
-            </item>
-        </arguments>
+        <argument>
+            <bean class="com.aspectran.freemarker.ConfigurationFactoryBean">
+                <property name="freemarkerSettings" type="properties">
+                    <entry name="incompatible_improvements">2.3.23</entry>
+                    <entry name="template_exception_handler">rethrow</entry>
+                    <entry name="default_encoding">UTF-8</entry>
+                    <entry name="number_format">0.####</entry>
+                </property>
+                <property name="templateLoaderPath" type="array">
+                    <value>classpath:view/freemarker</value>
+                </property>
+                <property name="trimDirectives" valueType="parameters">
+                    directive: {
+                        name: "trim"
+                    }
+                    directive: {
+                        name: "where"
+                        prefix: "WHERE "
+                        deprefixes: [
+                            "and"
+                            "or"
+                        ]
+                    }
+                    directive: {
+                        name: "set"
+                        prefix: "SET "
+                        desuffixes: ","
+                    }
+                </property>
+            </bean>
+        </argument>
     </bean>
 
     <bean id="freemarkerViewDispatcher" class="com.aspectran.freemarker.view.FreeMarkerViewDispatcher">
         <description>
             Register a FreeMarker View Dispatcher.
         </description>
-        <arguments>
-            <item>#{freemarker}</item>
-        </arguments>
-        <properties>
-            <item name="suffix">.ftl</item>
-        </properties>
+        <argument>#{freemarker}</argument>
+        <property name="suffix">.ftl</property>
     </bean>
 
     <translet name="echo-1">
-        <parameters>
-            <item name="input_1">${input_1:12345}</item>
-            <item name="input_2">${input_2:67890}</item>
-        </parameters>
+        <parameter name="input_1">${input_1:12345}</parameter>
+        <parameter name="input_2">${input_2:67890}</parameter>
         <transform format="text">
             <template engine="freemarker" style="apon">
                 |${input_1}${input_2}
@@ -112,30 +102,24 @@
     </template>
 
     <translet name="select-translet">
-        <attributes>
-            <item name="name">${name:Jane}</item>
-            <item name="email">${email:jane@mail.com}</item>
-        </attributes>
+        <attribute name="name">${name:Jane}</attribute>
+        <attribute name="email">${email:jane@mail.com}</attribute>
         <transform format="text">
             <template>~{select-template}</template>
         </transform>
     </translet>
 
     <translet name="update-translet-1">
-        <attributes>
-            <item name="name">${name:Jane}</item>
-            <item name="email">${email:jane@mail.com}</item>
-        </attributes>
+        <attribute name="name">${name:Jane}</attribute>
+        <attribute name="email">${email:jane@mail.com}</attribute>
         <transform format="text">
             <template>~{update-template}</template>
         </transform>
     </translet>
 
     <translet name="update-translet-2">
-        <attributes>
-            <item name="name">${name:Jane}</item>
-            <item name="email">${email:jane@mail.com}</item>
-        </attributes>
+        <attribute name="name">${name:Jane}</attribute>
+        <attribute name="email">${email:jane@mail.com}</attribute>
         <dispatch name="update-translet-2" dispatcher="freemarkerViewDispatcher"/>
     </translet>
 

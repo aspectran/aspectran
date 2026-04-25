@@ -12,9 +12,7 @@
     </settings>
 
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
-        <arguments>
-            <item>#{freemarkerConfiguration}</item>
-        </arguments>
+        <argument>#{freemarkerConfiguration}</argument>
     </bean>
 
     <translet name="echo">
@@ -24,10 +22,8 @@
             |translet-description-line3
         </description>
         <request>
-            <parameters>
-                <item name="input-1">${input-1:12345}</item>
-                <item name="input-2">${input-2:67890}</item>
-            </parameters>
+            <parameter name="input-1">${input-1:12345}</parameter>
+            <parameter name="input-2">${input-2:67890}</parameter>
         </request>
         <transform format="text" contentType="text/plain">
             <template engine="token" style="apon">

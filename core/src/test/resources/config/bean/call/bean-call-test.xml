@@ -17,13 +17,11 @@
             <value>#{secondBean}</value>
             <value>#{thirdBean}</value>
         </property>
-        <properties>
-            <item name="orderedBeans2" type="array">
-                <value>#{firstBean}</value>
-                <value>#{secondBean}</value>
-                <value>#{thirdBean}</value>
-            </item>
-        </properties>
+        <property name="orderedBeans2" type="array">
+            <value>#{firstBean}</value>
+            <value>#{secondBean}</value>
+            <value>#{thirdBean}</value>
+        </property>
     </bean>
 
 </aspectran>

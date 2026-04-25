@@ -12,41 +12,31 @@
     </settings>
 
     <bean id="pebble" class="com.aspectran.pebble.PebbleTemplateEngine">
-        <arguments>
-            <item>
-                <bean class="com.aspectran.pebble.PebbleEngineFactoryBean">
-                    <properties>
-                        <item name="templateLoaderPath" type="array">
-                            <value>classpath:view</value>
-                        </item>
-                        <item name="newLineTrimming" valueType="boolean">false</item>
-<!--                        <item name="disallowedTokenParserTags" type="set">-->
-<!--                            <value>include</value>-->
-<!--                        </item>-->
-                    </properties>
-                </bean>
-            </item>
-        </arguments>
+        <argument>
+            <bean class="com.aspectran.pebble.PebbleEngineFactoryBean">
+                <property name="templateLoaderPath" type="array">
+                    <value>classpath:view</value>
+                </property>
+                <property name="newLineTrimming" valueType="boolean">false</property>
+<!--            <property name="disallowedTokenParserTags" type="set">-->
+<!--                <value>include</value>-->
+<!--            </property>-->
+            </bean>
+        </argument>
     </bean>
 
     <bean id="pebbleViewDispatcher" class="com.aspectran.pebble.view.PebbleViewDispatcher">
         <description>
             Register a Pebble View Dispatcher.
         </description>
-        <arguments>
-            <item>#{pebble}</item>
-        </arguments>
-        <properties>
-            <item name="suffix">.peb</item>
-        </properties>
+        <argument>#{pebble}</argument>
+        <property name="suffix">.peb</property>
     </bean>
 
     <translet name="echo-1">
         <request>
-            <parameters>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </parameters>
+            <parameter name="input_1">${input_1:12345}</parameter>
+            <parameter name="input_2">${input_2:67890}</parameter>
         </request>
         <transform format="text">
             <template engine="pebble" style="apon">

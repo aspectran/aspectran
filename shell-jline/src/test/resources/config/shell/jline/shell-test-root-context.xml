@@ -66,10 +66,8 @@
         <description style="apon">
             |It accepts parameters and prints them to the console.
         </description>
-        <parameters>
-            <item name="param1" mandatory="false"/>
-            <item name="param2" mandatory="true"/>
-        </parameters>
+        <parameter name="param1" mandatory="false"/>
+        <parameter name="param2" mandatory="true"/>
         <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
@@ -87,11 +85,9 @@
             |   It accepts parameters and prints them to the console.
             |
         </description>
-        <parameters>
-            <item name="param1" mandatory="true">${prefix} - 1</item>
-            <item name="param2">${prefix} - 2</item>
-            <item name="param3">${prefix} - 3</item>
-        </parameters>
+        <parameter name="param1" mandatory="true">${prefix} - 1</parameter>
+        <parameter name="param2">${prefix} - 2</parameter>
+        <parameter name="param3">${prefix} - 3</parameter>
         <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
@@ -110,14 +106,10 @@
             |   It accepts parameters and prints them to the console.
             |
         </description>
-        <parameters>
-            <item name="param1">first ${param1:12345}</item>
-            <item name="param2">second ${param2:67890}</item>
-            <item name="param3" mandatory="true">third ${param3-1} and ${param3-2}</item>
-        </parameters>
-        <attributes>
-            <item name="attr1">fourth ${param4}</item>
-        </attributes>
+        <parameter name="param1">first ${param1:12345}</parameter>
+        <parameter name="param2">second ${param2:67890}</parameter>
+        <parameter name="param3" mandatory="true">third ${param3-1} and ${param3-2}</parameter>
+        <attribute name="attr1">fourth ${param4}</attribute>
         <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
@@ -148,10 +140,8 @@
             |
         </description>
         <request>
-            <parameters>
-                <item name="email" mandatory="true">${emailId}@${emailDomain}</item>
-                <item name="password" secret="true"/>
-            </parameters>
+            <parameter name="email" mandatory="true">${emailId}@${emailDomain}</parameter>
+            <parameter name="password" secret="true"/>
         </request>
         <transform format="text">
             <template style="apon">
@@ -171,11 +161,9 @@
             |
         </description>
         <request>
-            <parameters>
-                <item name="email" mandatory="true">${emailId}@${emailDomain}</item>
-                <item name="password" secret="true" mandatory="true"/>
-                <item name="confirmPassword" secret="true"/>
-            </parameters>
+            <parameter name="email" mandatory="true">${emailId}@${emailDomain}</parameter>
+            <parameter name="password" secret="true" mandatory="true"/>
+            <parameter name="confirmPassword" secret="true"/>
         </request>
         <transform format="text">
             <template style="apon">

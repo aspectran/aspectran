@@ -12,11 +12,9 @@
     </settings>
 
     <environment>
-        <properties>
-            <item name="property1" value="PROPERTY1"/>
-            <item name="property2" value="PROPERTY2"/>
-            <item name="property3" value="PROPERTY3"/>
-        </properties>
+        <property name="property1" value="PROPERTY1"/>
+        <property name="property2" value="PROPERTY2"/>
+        <property name="property3" value="PROPERTY3"/>
     </environment>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
@@ -28,44 +26,40 @@
         <description>
             Defines a bean for multilingual processing.
         </description>
-        <properties>
-            <item name="basename">locale.messages</item>
-        </properties>
+        <property name="basename">locale.messages</property>
     </bean>
 
     <bean id="thymeleaf" class="com.aspectran.thymeleaf.ThymeleafTemplateEngine">
-        <arguments>
-            <item>
-                <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
-                    <property name="templateResolvers" type="set">
-                        <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
-                            <property name="prefix">view/html/</property>
-                            <property name="resolvablePatterns" type="set">
-                                <value>*.html</value>
-                            </property>
-                            <property name="templateMode">HTML</property>
-                            <property name="cacheable" valueType="boolean">true</property>
-                            <!-- Set template cache TTL to 1 hour -->
-                            <property name="cacheTTLMs" valueType="long">3600000</property>
-                        </bean>
-                        <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
-                            <property name="prefix">view/text/</property>
-                            <property name="resolvablePatterns" type="set">
-                                <value>*.txt</value>
-                            </property>
-                            <property name="templateMode">TEXT</property>
-                            <property name="cacheable" valueType="boolean">true</property>
-                            <!-- Set template cache TTL to 1 hour -->
-                            <property name="cacheTTLMs" valueType="long">3600000</property>
-                        </bean>
-                        <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
-                            <property name="templateMode">TEXT</property>
-                            <property name="cacheable" valueType="boolean">false</property>
-                        </bean>
-                    </property>
-                </bean>
-            </item>
-        </arguments>
+        <argument>
+            <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
+                <property name="templateResolvers" type="set">
+                    <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                        <property name="prefix">view/html/</property>
+                        <property name="resolvablePatterns" type="set">
+                            <value>*.html</value>
+                        </property>
+                        <property name="templateMode">HTML</property>
+                        <property name="cacheable" valueType="boolean">true</property>
+                        <!-- Set template cache TTL to 1 hour -->
+                        <property name="cacheTTLMs" valueType="long">3600000</property>
+                    </bean>
+                    <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                        <property name="prefix">view/text/</property>
+                        <property name="resolvablePatterns" type="set">
+                            <value>*.txt</value>
+                        </property>
+                        <property name="templateMode">TEXT</property>
+                        <property name="cacheable" valueType="boolean">true</property>
+                        <!-- Set template cache TTL to 1 hour -->
+                        <property name="cacheTTLMs" valueType="long">3600000</property>
+                    </bean>
+                    <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
+                        <property name="templateMode">TEXT</property>
+                        <property name="cacheable" valueType="boolean">false</property>
+                    </bean>
+                </property>
+            </bean>
+        </argument>
     </bean>
 
     <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
@@ -79,10 +73,8 @@
 
     <translet name="echo-1">
         <request>
-            <attributes>
-                <item name="input_1">12345</item>
-                <item name="input_2">${input_2:67890}</item>
-            </attributes>
+            <attribute name="input_1">12345</attribute>
+            <attribute name="input_2">${input_2:67890}</attribute>
         </request>
         <transform format="text">
             <template engine="thymeleaf" style="apon" contentType="plain/text">
@@ -93,9 +85,7 @@
 
     <translet name="echo-2">
         <request>
-            <attributes>
-                <item name="input_1" valueType="double">123456789</item>
-            </attributes>
+            <attribute name="input_1" valueType="double">123456789</attribute>
         </request>
         <transform format="text">
             <template engine="thymeleaf" style="apon" contentType="plain/text">
@@ -117,20 +107,16 @@
     </template>
 
     <translet name="translet-1">
-        <attributes>
-            <item name="name">${name:Jane}</item>
-            <item name="email">${email:jane@mail.com}</item>
-        </attributes>
+        <attribute name="name">${name:Jane}</attribute>
+        <attribute name="email">${email:jane@mail.com}</attribute>
         <transform format="text">
             <template>~{template-1}</template>
         </transform>
     </translet>
 
     <translet name="translet-2">
-        <attributes>
-            <item name="name">${name:Jane}</item>
-            <item name="email">${email:jane@mail.com}</item>
-        </attributes>
+        <attribute name="name">${name:Jane}</attribute>
+        <attribute name="email">${email:jane@mail.com}</attribute>
         <dispatch name="translet-2.txt" dispatcher="thymeleafViewDispatcher" contentType="text/plain"/>
     </translet>
 

@@ -36,9 +36,7 @@
     </bean>
 
     <bean class="com.aspectran.demo.examples.upload.SimpleFileUploadActivity">
-        <properties>
-            <item name="maxFiles" valueType="int">12</item>
-        </properties>
+        <property name="maxFiles" valueType="int">12</property>
     </bean>
 
     <translet name="/">

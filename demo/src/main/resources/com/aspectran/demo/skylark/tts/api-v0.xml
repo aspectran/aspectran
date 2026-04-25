@@ -13,9 +13,7 @@
 
     <translet name="/tts">
         <request>
-            <parameters>
-                <item name="text" mandatory="true"/>
-            </parameters>
+            <parameter name="text" mandatory="true"/>
         </request>
         <headers>
             <item name="Content-Type">text/plain</item>
@@ -26,9 +24,7 @@
 
     <translet name="/wav">
         <request>
-            <parameters>
-                <item name="text" mandatory="true"/>
-            </parameters>
+            <parameter name="text" mandatory="true"/>
         </request>
         <headers>
             <item name="Content-Type">audio/wav</item>

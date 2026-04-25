@@ -8,40 +8,36 @@
     </description>
 
     <bean id="freemarkerConfiguration" class="com.aspectran.freemarker.ConfigurationFactoryBean">
-        <properties>
-            <item name="freemarkerSettings" type="properties">
-                <entry name="incompatible_improvements">2.3.23</entry>
-                <entry name="template_exception_handler">rethrow</entry>
-                <entry name="default_encoding">UTF-8</entry>
-                <entry name="number_format">0.####</entry>
-            </item>
-            <item name="trimDirectives" valueType="parameters">
-                directive: {
-                    name: trim
-                }
-                directive: {
-                    name: where
-                    prefix: "WHERE "
-                    deprefixes: [
-                        "and "
-                        "and\t"
-                        "or "
-                        "or\t"
-                    ]
-                }
-                directive: {
-                    name: set
-                    prefix: "SET "
-                    desuffixes: ","
-                }
-            </item>
-        </properties>
+        <property name="freemarkerSettings" type="properties">
+            <entry name="incompatible_improvements">2.3.23</entry>
+            <entry name="template_exception_handler">rethrow</entry>
+            <entry name="default_encoding">UTF-8</entry>
+            <entry name="number_format">0.####</entry>
+        </property>
+        <property name="trimDirectives" valueType="parameters">
+            directive: {
+                name: trim
+            }
+            directive: {
+                name: where
+                prefix: "WHERE "
+                deprefixes: [
+                    "and "
+                    "and\t"
+                    "or "
+                    "or\t"
+                ]
+            }
+            directive: {
+                name: set
+                prefix: "SET "
+                desuffixes: ","
+            }
+        </property>
     </bean>
 
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
-        <arguments>
-            <item>#{freemarkerConfiguration}</item>
-        </arguments>
+        <argument>#{freemarkerConfiguration}</argument>
     </bean>
 
     <translet name="free">
@@ -51,10 +47,8 @@
             |
         </description>
         <request>
-            <parameters>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </parameters>
+            <parameter name="input_1">${input_1:12345}</parameter>
+            <parameter name="input_2">${input_2:67890}</parameter>
         </request>
         <transform format="text">
             <template engine="freemarker" style="apon">
@@ -126,11 +120,9 @@
             |
         </description>
         <request>
-            <parameters>
-                <item name="id"/>
-                <item name="name"/>
-                <item name="email"/>
-            </parameters>
+            <parameter name="id"/>
+            <parameter name="name"/>
+            <parameter name="email"/>
         </request>
         <transform format="text">
             <template>~{selectOne}</template>
@@ -144,11 +136,9 @@
             |
         </description>
         <request>
-            <parameters>
-                <item name="id" mandatory="true"/>
-                <item name="name" mandatory="true">${name:Jane}</item>
-                <item name="email" mandatory="true">${email:jane@mail.com}</item>
-            </parameters>
+            <parameter name="id" mandatory="true"/>
+            <parameter name="name" mandatory="true">${name:Jane}</parameter>
+            <parameter name="email" mandatory="true">${email:jane@mail.com}</parameter>
         </request>
         <transform format="text">
             <template>~{updateOne}</template>

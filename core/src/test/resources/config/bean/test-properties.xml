@@ -4,11 +4,11 @@
 <aspectran>
 
     <bean id="properties" class="java.util.HashMap">
-            <argument type="map">
-                <entry name="property1">Property-1</entry>
-                <entry name="property2">Property-2</entry>
-                <entry name="property3">Property-3</entry>
-            </argument>
+        <argument type="map">
+            <entry name="property1">Property-1</entry>
+            <entry name="property2">Property-2</entry>
+            <entry name="property3">Property-3</entry>
+        </argument>
     </bean>
 
 	<environment profile="dev">

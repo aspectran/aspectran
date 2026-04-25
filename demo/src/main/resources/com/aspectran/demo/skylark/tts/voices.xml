@@ -8,12 +8,10 @@
     </description>
 
     <bean id="voice-kevin16" class="com.aspectran.demo.skylark.tts.TextToSpeechBean">
-        <properties>
-            <item name="properties" type="properties">
-                <entry name="freetts.voices">com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory</entry>
-            </item>
-            <item name="voiceName">kevin16</item>
-        </properties>
+        <property name="properties" type="properties">
+            <entry name="freetts.voices">com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory</entry>
+        </property>
+        <property name="voiceName">kevin16</property>
     </bean>
 
 </aspectran>

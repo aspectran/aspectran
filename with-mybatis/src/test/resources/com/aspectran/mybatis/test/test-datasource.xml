@@ -9,7 +9,7 @@
                 <property name="driverClassName">org.h2.Driver</property>
                 <property name="jdbcUrl">jdbc:h2:mem:testdb;MODE=MariaDB;AUTOCOMMIT=OFF;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:com/aspectran/mybatis/test/test-schema.sql'</property>
                 <property name="username">sa</property>
-                <property name="password"></property>
+                <property name="password"/>
             </bean>
         </argument>
     </bean>
