@@ -126,12 +126,12 @@ class DefaultFileCommanderTest {
         DaemonConfig daemonConfig = new DaemonConfig();
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.QuitCommand");
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.SysInfoCommand");
-        
+
         DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
         executorConfig.setMaxThreads(2);
 
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-        pollingConfig.setPollingInterval(100); // 100ms for fast polling
+        pollingConfig.setPollingInterval(3600000); // 1 hour
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
@@ -139,8 +139,8 @@ class DefaultFileCommanderTest {
 
         // 1. Submit a slow command first
         Path slowCommandFile = incomingDir.resolve("03-slow.apon");
-        Files.writeString(slowCommandFile, "command: sysinfo, arguments: { item: { value: gc } }");
-        
+        Files.writeString(slowCommandFile, "command: sysinfo, arguments: { item: { value: mem } }");
+
         // 2. Submit an isolated command (quit) which should be rejected
         Path isolatedCommandFile = incomingDir.resolve("04-isolated.apon");
         Files.writeString(isolatedCommandFile, "command: quit");
