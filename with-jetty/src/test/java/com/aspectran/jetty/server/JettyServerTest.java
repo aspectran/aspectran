@@ -38,14 +38,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class JettyServerTest {
 
+    private final File baseDir = new File("./target/app");
+
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
     void ready() throws Exception {
-        File root = new File("target/app");
-        String basePath = root.getCanonicalPath();
+        String basePath = baseDir.getCanonicalPath();
         System.setProperty(BASE_PATH_PROPERTY_NAME, basePath); // for logback
-        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(root, "webroot"));
+        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(baseDir, "webroot"));
 
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
