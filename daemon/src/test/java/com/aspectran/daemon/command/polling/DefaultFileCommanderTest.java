@@ -125,7 +125,7 @@ class DefaultFileCommanderTest {
     void testPollingRejectionAndRollback() throws Exception {
         DaemonConfig daemonConfig = new DaemonConfig();
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.QuitCommand");
-        daemonConfig.addCommand("com.aspectran.daemon.command.builtins.SysInfoCommand");
+        daemonConfig.addCommand("com.aspectran.daemon.command.SleepCommand");
 
         DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
         executorConfig.setMaxThreads(2);
@@ -139,7 +139,7 @@ class DefaultFileCommanderTest {
 
         // 1. Submit a slow command first
         Path slowCommandFile = incomingDir.resolve("03-slow.apon");
-        Files.writeString(slowCommandFile, "command: sysinfo, arguments: { item: { value: mem } }");
+        Files.writeString(slowCommandFile, "command: sleep, arguments: { item: { value: 1000, valueType: long } }");
 
         // 2. Submit an isolated command (quit) which should be rejected
         Path isolatedCommandFile = incomingDir.resolve("04-isolated.apon");
@@ -149,13 +149,13 @@ class DefaultFileCommanderTest {
 
         // Wait for polling and rollback
         // The slow command should be moved out of incoming first
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             if (Files.notExists(slowCommandFile)) break;
             Thread.sleep(100);
         }
         // Then the isolated command should be attempted and potentially rolled back
         // We wait a bit more to give the poller time to process the second file
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             if (Files.exists(isolatedCommandFile) && Files.notExists(queuedDir.resolve("04-isolated.apon"))) break;
             Thread.sleep(100);
         }
