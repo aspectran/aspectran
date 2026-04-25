@@ -74,7 +74,7 @@ public class CommandExecutor {
      * @param parameters the parameters for the command
      * @return the command instance if available, {@code null} otherwise
      */
-    public Command getAvailableCommand(@NonNull CommandParameters parameters) {
+    public synchronized Command getAvailableCommand(@NonNull CommandParameters parameters) {
         String commandName = parameters.getCommandName();
 
         if (isolatedRunning.get()) {
@@ -102,6 +102,36 @@ public class CommandExecutor {
     }
 
     /**
+     * Checks availability and reserves the command for execution by incrementing
+     * the active command count and setting the isolation flag if necessary.
+     * @param parameters the parameters for the command
+     * @return the command instance if reserved, {@code null} otherwise
+     */
+    public synchronized Command reserveCommand(@NonNull CommandParameters parameters) {
+        Command command = getAvailableCommand(parameters);
+        if (command != null) {
+            activeCommands.incrementAndGet();
+            if (command.isIsolated()) {
+                isolatedRunning.set(true);
+            }
+            return command;
+        }
+        return null;
+    }
+
+    /**
+     * Releases the reserved command after execution by decrementing the
+     * active command count and clearing the isolation flag if necessary.
+     * @param command the command to release
+     */
+    public void releaseCommand(@NonNull Command command) {
+        if (command.isIsolated()) {
+            isolatedRunning.compareAndSet(true, false);
+        }
+        activeCommands.decrementAndGet();
+    }
+
+    /**
      * Executes the specified command synchronously and returns the result.
      * <p>
      * This method first validates the command's availability using
@@ -112,23 +142,15 @@ public class CommandExecutor {
      * @return the result of the command execution
      */
     public CommandResult execute(@NonNull CommandParameters parameters) {
-        Command command = getAvailableCommand(parameters);
+        Command command = reserveCommand(parameters);
         if (command == null) {
             return new CommandResult(false, parameters.getResult());
         }
 
-        // DefaultActivity will always be specified here
-        parameters.setActivity(daemonService.getActivityContext().getAvailableActivity());
-
-        activeCommands.incrementAndGet();
         try {
-            if (command.isIsolated()) {
-                isolatedRunning.set(true);
-            }
             return executeNow(command, parameters);
         } finally {
-            isolatedRunning.compareAndSet(true, false);
-            activeCommands.decrementAndGet();
+            releaseCommand(command);
         }
     }
 
@@ -139,7 +161,10 @@ public class CommandExecutor {
      * @return the result of the command execution
      */
     @NonNull
-    private CommandResult executeNow(Command command, CommandParameters parameters) {
+    protected CommandResult executeNow(Command command, CommandParameters parameters) {
+        // DefaultActivity will always be specified here
+        parameters.setActivity(daemonService.getActivityContext().getAvailableActivity());
+
         try {
             CommandResult commandResult = command.execute(parameters);
             if (commandResult.isSuccess()) {

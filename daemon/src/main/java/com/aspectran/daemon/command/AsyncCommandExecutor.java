@@ -101,7 +101,7 @@ public class AsyncCommandExecutor {
      * @return {@code true} if the command was accepted for execution, {@code false} otherwise
      */
     public boolean execute(@NonNull CommandParameters parameters, Callback callback) {
-        Command command = commandExecutor.getAvailableCommand(parameters);
+        Command command = commandExecutor.reserveCommand(parameters);
         if (command == null) {
             return false;
         }
@@ -115,7 +115,7 @@ public class AsyncCommandExecutor {
                 String threadName = "cmd-" + commandName;
                 currentThread.setName(threadName);
 
-                CommandResult commandResult = commandExecutor.execute(parameters);
+                CommandResult commandResult = commandExecutor.executeNow(command, parameters);
                 if (callback != null) {
                     try {
                         if (commandResult.isSuccess()) {
@@ -128,6 +128,7 @@ public class AsyncCommandExecutor {
                     }
                 }
             } finally {
+                commandExecutor.releaseCommand(command);
                 currentThread.setName(oldThreadName);
             }
         };
@@ -136,6 +137,7 @@ public class AsyncCommandExecutor {
             executorService.execute(runnable);
             return true;
         } catch (RejectedExecutionException e) {
+            commandExecutor.releaseCommand(command);
             logger.error("Command '{}' rejected by the executor; no available threads", commandName, e);
             return false;
         }

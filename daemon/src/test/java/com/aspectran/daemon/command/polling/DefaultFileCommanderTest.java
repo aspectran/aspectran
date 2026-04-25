@@ -165,6 +165,7 @@ class DefaultFileCommanderTest {
             System.out.println("Waiting for slow command to be moved out of " + incomingDirPath + "... " + i);
             Thread.sleep(100);
         }
+
         // Then the isolated command should be attempted and potentially rolled back
         // We wait a bit more to give the poller time to process the second file
         for (int i = 0; i < 5; i++) {
