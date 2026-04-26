@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+    <bean id="defaultScheduler" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
+        <property type="properties" name="quartzProperties">
+            <entry name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler</entry>
+            <entry name="org.quartz.threadPool.threadCount">5</entry>
+            <entry name="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</entry>
+        </property>
+    </bean>
+
+    <schedule id="test-schedule">
+        <scheduler bean="defaultScheduler">
+            <trigger type="simple">
+                intervalInSeconds: 1
+                repeatForever: true
+            </trigger>
+        </scheduler>
+        <job translet="test-job"/>
+    </schedule>
+
+    <translet name="test-job">
+        <action bean="testBean" method="doWork"/>
+    </translet>
+
+    <bean id="testBean" class="com.aspectran.core.scheduler.DistributedSchedulerTest$TestBean"/>
+
+</aspectran>
