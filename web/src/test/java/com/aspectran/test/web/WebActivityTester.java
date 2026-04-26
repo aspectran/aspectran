@@ -22,6 +22,7 @@ import com.aspectran.test.web.mock.MockHttpServletRequest;
 import com.aspectran.test.web.mock.MockHttpServletResponse;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.service.WebService;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
@@ -130,7 +131,7 @@ public class WebActivityTester {
      * Returns the last mock request object.
      * @return the mock request
      */
-    @Nullable
+    @NonNull
     public MockHttpServletRequest getLastRequest() {
         return lastRequest;
     }
@@ -139,7 +140,7 @@ public class WebActivityTester {
      * Returns the last mock response object.
      * @return the mock response
      */
-    @Nullable
+    @NonNull
     public MockHttpServletResponse getLastResponse() {
         return lastResponse;
     }

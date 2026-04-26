@@ -17,10 +17,9 @@ package com.aspectran.test;
 
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
@@ -104,25 +103,21 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
         }
     }
 
-    protected void bootstrap(ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
+    protected void bootstrap(@NonNull ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
             throws Exception {
-        HybridActivityContextBuilder builder = new HybridActivityContextBuilder();
-        builder.configure(aspectranConfig.getContextConfig());
-        if (annotation.debugMode()) {
-            builder.setDebugMode(true);
-        }
-        ActivityContext activityContext = builder.build();
+        TestCoreService coreService = TestCoreService.build(aspectranConfig);
+        ActivityContext activityContext = coreService.getActivityContext();
 
-        context.getStore(NAMESPACE).put(ActivityContextBuilder.class, builder);
+        context.getStore(NAMESPACE).put(TestCoreService.class, coreService);
         context.getStore(NAMESPACE).put(ActivityContext.class, activityContext);
         context.getStore(NAMESPACE).put(AspectranConfig.class, aspectranConfig);
     }
 
     @Override
     public void afterAll(@NonNull ExtensionContext context) throws Exception {
-        ActivityContextBuilder builder = context.getStore(NAMESPACE).get(ActivityContextBuilder.class, ActivityContextBuilder.class);
-        if (builder != null) {
-            builder.destroy();
+        TestCoreService coreService = context.getStore(NAMESPACE).get(TestCoreService.class, TestCoreService.class);
+        if (coreService != null) {
+            coreService.stop();
         }
     }
 
@@ -131,23 +126,26 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
             throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
         return (type == ActivityContext.class || type == InstantActivity.class ||
-                type == ActivityTester.class || type == AspectranConfig.class);
+                type == ActivityTester.class || type == AspectranConfig.class ||
+                type == TestCoreService.class || type == CoreService.class);
     }
 
     @Override
     public Object resolveParameter(@NonNull ParameterContext parameterContext, @NonNull ExtensionContext extensionContext)
             throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
-        ActivityContext activityContext = extensionContext.getStore(NAMESPACE).get(ActivityContext.class, ActivityContext.class);
-        if (activityContext != null) {
+        TestCoreService coreService = extensionContext.getStore(NAMESPACE).get(TestCoreService.class, TestCoreService.class);
+        if (coreService != null) {
             if (type == ActivityContext.class) {
-                return activityContext;
+                return coreService.getActivityContext();
             } else if (type == InstantActivity.class) {
-                return new InstantActivity(activityContext);
+                return new InstantActivity(coreService.getActivityContext());
             } else if (type == ActivityTester.class) {
-                return new ActivityTester(activityContext);
+                return new ActivityTester(coreService.getActivityContext());
             } else if (type == AspectranConfig.class) {
                 return extensionContext.getStore(NAMESPACE).get(AspectranConfig.class, AspectranConfig.class);
+            } else if (type == TestCoreService.class || type == CoreService.class) {
+                return coreService;
             }
         }
         return null;
