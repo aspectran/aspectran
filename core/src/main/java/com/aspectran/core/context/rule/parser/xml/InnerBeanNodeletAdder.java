@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;

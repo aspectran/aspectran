@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.component.schedule.ScheduledJobLockProvider;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.utils.Assert;
@@ -49,6 +50,8 @@ public final class CoreServiceHolder {
     private static final Map<Class<?>, CoreService> servicesByClass = new ConcurrentHashMap<>();
 
     private static volatile CoreService currentService;
+
+    private static volatile ScheduledJobLockProvider jobLockProvider;
 
     // Private constructor to prevent instantiation
     private CoreServiceHolder() {
@@ -268,6 +271,24 @@ public final class CoreServiceHolder {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the global job lock provider.
+     * @return the job lock provider
+     * @since 9.6.0
+     */
+    public static ScheduledJobLockProvider getJobLockProvider() {
+        return jobLockProvider;
+    }
+
+    /**
+     * Sets the global job lock provider.
+     * @param jobLockProvider the job lock provider
+     * @since 9.6.0
+     */
+    public static void setJobLockProvider(ScheduledJobLockProvider jobLockProvider) {
+        CoreServiceHolder.jobLockProvider = jobLockProvider;
     }
 
 }

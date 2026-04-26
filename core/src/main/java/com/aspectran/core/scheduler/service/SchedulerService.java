@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.scheduler.service;
 
+import com.aspectran.core.component.schedule.ScheduledJobLockProvider;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.ServiceLifeCycle;
 
@@ -48,6 +49,20 @@ public interface SchedulerService extends ServiceLifeCycle {
      * @return the activity context
      */
     ActivityContext getActivityContext();
+
+    /**
+     * Returns the job lock provider.
+     * @return the job lock provider
+     * @since 9.6.0
+     */
+    ScheduledJobLockProvider getJobLockProvider();
+
+    /**
+     * Sets the job lock provider.
+     * @param jobLockProvider the job lock provider
+     * @since 9.6.0
+     */
+    void setJobLockProvider(ScheduledJobLockProvider jobLockProvider);
 
     /**
      * Returns the number of seconds to wait before starting the scheduler after the service is initialized.

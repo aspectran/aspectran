@@ -17,6 +17,7 @@ package com.aspectran.core.scheduler.activity;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
+import com.aspectran.core.component.schedule.ScheduledJobLockProvider;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.scheduler.service.SchedulerService;
@@ -26,6 +27,8 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.aspectran.core.scheduler.service.SchedulerService.JOB_RULE_DATA_KEY;
 import static com.aspectran.core.scheduler.service.SchedulerService.SERVICE_DATA_KEY;
@@ -39,6 +42,8 @@ import static com.aspectran.core.scheduler.service.SchedulerService.SERVICE_DATA
  * @since 3.0.0
  */
 public class ActivityLauncherJob implements Job {
+
+    private static final Logger logger = LoggerFactory.getLogger(ActivityLauncherJob.class);
 
     /**
      * Called by the Quartz scheduler when the job is to be executed.
@@ -58,12 +63,44 @@ public class ActivityLauncherJob implements Job {
                 if (service.getLoggingGroup() != null) {
                     LoggingGroupHelper.set(service.getLoggingGroup());
                 }
-                Activity activity = perform(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
-                jobExecutionContext.setResult(activity);
+
+                String lockKey = null;
+                ScheduledJobLockProvider lockProvider = service.getJobLockProvider();
+                if (lockProvider != null && !jobRule.isIsolated() && !jobRule.getScheduleRule().isIsolated()) {
+                    lockKey = getLockKey(service, jobRule);
+                    if (!lockProvider.lock(lockKey)) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Skipping execution of scheduled job '{}' as it is already locked by another node",
+                                    lockKey);
+                        }
+                        return;
+                    }
+                }
+
+                try {
+                    Activity activity = perform(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
+                    jobExecutionContext.setResult(activity);
+                } finally {
+                    if (lockKey != null) {
+                        lockProvider.unlock(lockKey);
+                    }
+                }
             }
         } catch (Exception e) {
             throw new JobExecutionException(e);
         }
+    }
+
+    @NonNull
+    private String getLockKey(@NonNull SchedulerService service, ScheduledJobRule jobRule) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("job-lock:");
+        if (service.getActivityContext().getName() != null) {
+            sb.append(service.getActivityContext().getName()).append(":");
+        }
+        sb.append(jobRule.getScheduleRule().getId()).append(":");
+        sb.append(jobRule.getTransletName());
+        return sb.toString();
     }
 
     /**

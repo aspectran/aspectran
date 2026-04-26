@@ -16,6 +16,7 @@
 package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
+import com.aspectran.core.component.schedule.ScheduledJobLockProvider;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.rule.ScheduleRule;
@@ -26,6 +27,7 @@ import com.aspectran.core.scheduler.activity.ActivityJobListener;
 import com.aspectran.core.scheduler.activity.ActivityLauncherJob;
 import com.aspectran.core.service.AbstractServiceLifeCycle;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
@@ -61,6 +63,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
     private final Map<String, Scheduler> schedulerMap = new HashMap<>();
 
+    private ScheduledJobLockProvider jobLockProvider;
+
     private int startDelaySeconds = 0;
 
     private boolean waitOnShutdown = false;
@@ -81,6 +85,19 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         Assert.state(getParentService().getActivityContext() != null,
                 "No ActivityContext configured yet");
         return getParentService().getActivityContext();
+    }
+
+    @Override
+    public ScheduledJobLockProvider getJobLockProvider() {
+        if (jobLockProvider != null) {
+            return jobLockProvider;
+        }
+        return CoreServiceHolder.getJobLockProvider();
+    }
+
+    @Override
+    public void setJobLockProvider(ScheduledJobLockProvider jobLockProvider) {
+        this.jobLockProvider = jobLockProvider;
     }
 
     @Override
