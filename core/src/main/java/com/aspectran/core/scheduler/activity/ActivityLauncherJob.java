@@ -67,7 +67,7 @@ public class ActivityLauncherJob implements Job {
                 String lockKey = null;
                 ScheduledJobLockProvider lockProvider = service.getJobLockProvider();
                 if (lockProvider != null && !jobRule.isIsolated() && !jobRule.getScheduleRule().isIsolated()) {
-                    lockKey = getLockKey(service, jobRule);
+                    lockKey = getLockKey(service, jobRule, jobExecutionContext);
                     if (!lockProvider.lock(lockKey)) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Skipping execution of scheduled job '{}' as it is already locked by another node",
@@ -91,15 +91,25 @@ public class ActivityLauncherJob implements Job {
         }
     }
 
+    /**
+     * Generates a unique lock key for the scheduled job.
+     * The key includes the scheduled fire time to ensure that nodes with slight clock drifts
+     * all compete for the same lock key for a specific execution interval.
+     * @param service the scheduler service
+     * @param jobRule the scheduled job rule
+     * @param context the job execution context
+     * @return the unique lock key
+     */
     @NonNull
-    private String getLockKey(@NonNull SchedulerService service, ScheduledJobRule jobRule) {
+    private String getLockKey(@NonNull SchedulerService service, ScheduledJobRule jobRule, JobExecutionContext context) {
         StringBuilder sb = new StringBuilder();
         sb.append("job-lock:");
         if (service.getActivityContext().getName() != null) {
             sb.append(service.getActivityContext().getName()).append(":");
         }
         sb.append(jobRule.getScheduleRule().getId()).append(":");
-        sb.append(jobRule.getTransletName());
+        sb.append(jobRule.getTransletName()).append(":");
+        sb.append(context.getScheduledFireTime().getTime());
         return sb.toString();
     }
 
@@ -108,12 +118,11 @@ public class ActivityLauncherJob implements Job {
      * @param context the current ActivityContext
      * @param jobExecutionContext the Quartz job execution context
      * @param transletName the name of the translet to execute
-     * @return the executed Activity instance
-     * @throws ActivityException if an error occurs during activity preparation or execution
+     * @return the {@link Activity} instance used for execution
+     * @throws ActivityException if an error occurs during execution
      */
     @NonNull
-    private Activity perform(
-            ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
+    private Activity perform(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
         JobActivity activity = new JobActivity(context, jobExecutionContext);
         activity.prepare(transletName);
