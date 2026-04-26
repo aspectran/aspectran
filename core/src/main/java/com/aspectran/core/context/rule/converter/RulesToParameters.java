@@ -470,6 +470,8 @@ public class RulesToParameters {
             toDescriptionParameters(scheduleRule.getDescriptionRule(), scheduleParameters, ScheduleParameters.description);
         }
         scheduleParameters.putValueIfNotNull(ScheduleParameters.id, scheduleRule.getId());
+        scheduleParameters.putValueIfNotNull(ScheduleParameters.isolated, scheduleRule.getIsolated());
+        scheduleParameters.putValueIfNotNull(ScheduleParameters.disabled, scheduleRule.getDisabled());
 
         SchedulerParameters schedulerParameters = scheduleParameters.attachParameters(ScheduleParameters.scheduler);
         schedulerParameters.putValueIfNotNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
@@ -508,6 +510,7 @@ public class RulesToParameters {
 
         ScheduledJobParameters scheduledJobParameters = new ScheduledJobParameters();
         scheduledJobParameters.putValue(ScheduledJobParameters.translet, scheduledJobRule.getTransletName());
+        scheduledJobParameters.putValueIfNotNull(ScheduledJobParameters.isolated, scheduledJobRule.getIsolated());
         scheduledJobParameters.putValueIfNotNull(ScheduledJobParameters.disabled, scheduledJobRule.getDisabled());
         return scheduledJobParameters;
     }

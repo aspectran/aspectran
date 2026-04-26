@@ -54,7 +54,7 @@ public class ActivityLauncherJob implements Job {
             JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
             ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(JOB_RULE_DATA_KEY);
             SchedulerService service = (SchedulerService)jobDataMap.get(SERVICE_DATA_KEY);
-            if (service.isActive() && !jobRule.isDisabled()) {
+            if (service.isActive() && !jobRule.isDisabled() && !jobRule.getScheduleRule().isDisabled()) {
                 if (service.getLoggingGroup() != null) {
                     LoggingGroupHelper.set(service.getLoggingGroup());
                 }

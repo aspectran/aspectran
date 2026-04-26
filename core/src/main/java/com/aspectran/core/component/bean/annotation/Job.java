@@ -62,6 +62,12 @@ public @interface Job {
     String translet() default "";
 
     /**
+     * Specifies whether this job is isolated.
+     * @return {@code true} if the job is isolated, {@code false} otherwise
+     */
+    boolean isolated() default false;
+
+    /**
      * Specifies whether this job is disabled.
      * <p>If set to {@code true}, this job will be skipped even when the schedule's
      * trigger fires. This is useful for temporarily deactivating a specific job

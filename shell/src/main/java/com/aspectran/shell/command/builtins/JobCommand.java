@@ -78,6 +78,16 @@ public class JobCommand extends AbstractCommand {
                 .valueName("translet_name")
                 .desc("Disables an enabled job")
                 .build());
+        addOption(Option.builder("enableSchedule")
+                .hasValues()
+                .valueName("schedule_id")
+                .desc("Enables a disabled schedule")
+                .build());
+        addOption(Option.builder("disableSchedule")
+                .hasValues()
+                .valueName("schedule_id")
+                .desc("Disables an enabled schedule")
+                .build());
         addOption(Option.builder("h")
                 .longName("help")
                 .desc("Display help for this command")
@@ -101,6 +111,12 @@ public class JobCommand extends AbstractCommand {
         } else if (options.hasOption("disable")) {
             String[] transletNames = options.getValues("disable");
             changeJobActiveState(shellService, console, transletNames, true);
+        } else if (options.hasOption("enableSchedule")) {
+            String[] scheduleIds = options.getValues("enableSchedule");
+            changeScheduleActiveState(shellService, console, scheduleIds, false);
+        } else if (options.hasOption("disableSchedule")) {
+            String[] scheduleIds = options.getValues("disableSchedule");
+            changeScheduleActiveState(shellService, console, scheduleIds, true);
         } else {
             printQuickHelp(console);
         }
@@ -109,11 +125,11 @@ public class JobCommand extends AbstractCommand {
     private void listScheduledJobs(
             @NonNull ShellService shellService, @NonNull ShellConsole console, String[] keywords) {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
-        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
-                "----", "--------------------", "----------------------------------", "-------");
-        console.writeLine(" %4s | %-20s | %-34s | %-7s ", "No.", "Schedule ID", "Job Name", "Enabled");
-        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
-                "----", "--------------------", "----------------------------------", "-------");
+        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-8s-+-%-7s-",
+                "----", "--------------------", "----------------------------------", "--------", "-------");
+        console.writeLine(" %4s | %-20s | %-34s | %-8s | %-7s ", "No.", "Schedule ID", "Job Name", "Isolated", "Enabled");
+        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-8s-+-%-7s-",
+                "----", "--------------------", "----------------------------------", "--------", "-------");
         int num = 0;
         for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
             for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
@@ -129,7 +145,8 @@ public class JobCommand extends AbstractCommand {
                         continue;
                     }
                 }
-                console.write("%5d | %-20s | %-34s |", ++num, scheduleRule.getId(), jobRule.getTransletName());
+                console.write("%5d | %-20s | %-34s | %-8s |", ++num, scheduleRule.getId(),
+                        jobRule.getTransletName(), jobRule.isIsolated());
                 if (!jobRule.isDisabled()) {
                     console.getStyler().successStyle();
                 }
@@ -142,8 +159,8 @@ public class JobCommand extends AbstractCommand {
         if (num == 0) {
             console.writeLine(" %4s   %s", " ", "No scheduled jobs found to display.");
         }
-        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
-                "----", "--------------------", "----------------------------------", "-------");
+        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-8s-+-%-7s-",
+                "----", "--------------------", "----------------------------------", "--------", "-------");
     }
 
     private void describeScheduledJobRule(
@@ -198,6 +215,11 @@ public class JobCommand extends AbstractCommand {
             return;
         }
         for (ScheduledJobRule jobRule : scheduledJobRules) {
+            if (jobRule.isIsolated()) {
+                console.writeLine("The job '%s' on schedule '%s' is isolated and cannot be enabled or disabled.",
+                        jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                continue;
+            }
             if (disabled) {
                 if (jobRule.isDisabled()) {
                     console.writeLine("The job '%s' on schedule '%s' is already disabled.",
@@ -215,6 +237,42 @@ public class JobCommand extends AbstractCommand {
                     jobRule.setDisabled(false);
                     console.writeLine("The job '%s' on schedule '%s' has been enabled.",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                }
+            }
+        }
+    }
+
+    private void changeScheduleActiveState(
+            @NonNull ShellService shellService, @NonNull ShellConsole console,
+            @Nullable String[] scheduleIds, boolean disabled) {
+        if (scheduleIds == null || scheduleIds.length == 0) {
+            return;
+        }
+        ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
+        for (String scheduleId : scheduleIds) {
+            ScheduleRule scheduleRule = scheduleRuleRegistry.getScheduleRule(scheduleId);
+            if (scheduleRule == null) {
+                console.writeError("Schedule '" + scheduleId + "' not found.");
+                continue;
+            }
+            if (scheduleRule.isIsolated()) {
+                console.writeLine("The schedule '%s' is isolated and cannot be enabled or disabled.",
+                        scheduleRule.getId());
+                continue;
+            }
+            if (disabled) {
+                if (scheduleRule.isDisabled()) {
+                    console.writeLine("The schedule '%s' is already disabled.", scheduleRule.getId());
+                } else {
+                    scheduleRule.setDisabled(true);
+                    console.writeLine("The schedule '%s' has been disabled.", scheduleRule.getId());
+                }
+            } else {
+                if (!scheduleRule.isDisabled()) {
+                    console.writeLine("The schedule '%s' is already enabled.", scheduleRule.getId());
+                } else {
+                    scheduleRule.setDisabled(false);
+                    console.writeLine("The schedule '%s' has been enabled.", scheduleRule.getId());
                 }
             }
         }

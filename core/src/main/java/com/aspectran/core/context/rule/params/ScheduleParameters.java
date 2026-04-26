@@ -28,6 +28,8 @@ public class ScheduleParameters extends DefaultParameters {
     public static final ParameterKey id;
     public static final ParameterKey scheduler;
     public static final ParameterKey job;
+    public static final ParameterKey isolated;
+    public static final ParameterKey disabled;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -36,12 +38,16 @@ public class ScheduleParameters extends DefaultParameters {
         id = new ParameterKey("id", ValueType.STRING);
         scheduler = new ParameterKey("scheduler", SchedulerParameters.class);
         job = new ParameterKey("job", ScheduledJobParameters.class, true, true);
+        isolated = new ParameterKey("isolated", ValueType.BOOLEAN);
+        disabled = new ParameterKey("disabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 description,
                 id,
                 scheduler,
-                job
+                job,
+                isolated,
+                disabled
         };
     }
 

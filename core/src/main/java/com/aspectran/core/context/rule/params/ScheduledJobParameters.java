@@ -25,16 +25,19 @@ import com.aspectran.utils.apon.ValueType;
 public class ScheduledJobParameters extends DefaultParameters {
 
     public static final ParameterKey translet;
+    public static final ParameterKey isolated;
     public static final ParameterKey disabled;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         translet = new ParameterKey("translet", ValueType.STRING);
+        isolated = new ParameterKey("isolated", ValueType.BOOLEAN);
         disabled = new ParameterKey("disabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 translet,
+                isolated,
                 disabled
         };
     }

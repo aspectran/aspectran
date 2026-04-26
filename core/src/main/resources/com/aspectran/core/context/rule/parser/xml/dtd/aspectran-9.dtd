@@ -102,7 +102,9 @@
 
 <!ELEMENT schedule (description*, scheduler, job*)>
 <!ATTLIST schedule
-  id      ID #IMPLIED
+  id       ID #IMPLIED
+  isolated (true | false) #IMPLIED
+  disabled (true | false) #IMPLIED
 >
 
 <!ELEMENT scheduler (trigger)>
@@ -118,6 +120,7 @@
 <!ELEMENT job EMPTY>
 <!ATTLIST job
   translet CDATA #REQUIRED
+  isolated (true | false) #IMPLIED
   disabled (true | false) #IMPLIED
 >
 

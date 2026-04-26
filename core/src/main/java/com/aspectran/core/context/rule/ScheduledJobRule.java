@@ -32,6 +32,8 @@ public class ScheduledJobRule {
 
     private String transletName;
 
+    private Boolean isolated;
+
     private Boolean disabled;
 
     /**
@@ -67,6 +69,30 @@ public class ScheduledJobRule {
     }
 
     /**
+     * Gets the raw boolean value indicating if this job is isolated.
+     * @return true if isolated, false if not, or null if not specified
+     */
+    public Boolean getIsolated() {
+        return isolated;
+    }
+
+    /**
+     * Returns whether this job is isolated.
+     * @return true if this job is isolated; false otherwise
+     */
+    public boolean isIsolated() {
+        return (isolated != null && isolated);
+    }
+
+    /**
+     * Sets whether this job is isolated.
+     * @param isolated true to isolate the job, false otherwise
+     */
+    public void setIsolated(Boolean isolated) {
+        this.isolated = isolated;
+    }
+
+    /**
      * Gets the raw boolean value indicating if this job is disabled.
      * @return true if disabled, false if enabled, or null if not specified
      */
@@ -94,6 +120,7 @@ public class ScheduledJobRule {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("translet", transletName);
+        tsb.append("isolated", isolated);
         tsb.append("disabled", disabled);
         return tsb.toString();
     }
@@ -110,12 +137,29 @@ public class ScheduledJobRule {
     public static ScheduledJobRule newInstance(
             @NonNull ScheduleRule scheduleRule, String transletName,
             Boolean disabled) throws IllegalRuleException {
+        return newInstance(scheduleRule, transletName, null, disabled);
+    }
+
+    /**
+     * Creates a new instance of ScheduledJobRule.
+     * @param scheduleRule the parent schedule rule
+     * @param transletName the name of the translet to execute (required)
+     * @param isolated whether the job is isolated
+     * @param disabled whether the job is disabled
+     * @return a new {@code ScheduledJobRule} instance
+     * @throws IllegalRuleException if the translet name is null
+     */
+    @NonNull
+    public static ScheduledJobRule newInstance(
+            @NonNull ScheduleRule scheduleRule, String transletName,
+            Boolean isolated, Boolean disabled) throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'job' element requires a 'translet' attribute");
         }
 
         ScheduledJobRule scheduledJobRule = new ScheduledJobRule(scheduleRule);
         scheduledJobRule.setTransletName(transletName);
+        scheduledJobRule.setIsolated(isolated);
         scheduledJobRule.setDisabled(disabled);
         return scheduledJobRule;
     }

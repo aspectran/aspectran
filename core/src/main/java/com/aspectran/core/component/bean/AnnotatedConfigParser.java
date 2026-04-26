@@ -578,7 +578,9 @@ public class AnnotatedConfigParser {
             scheduleId = Namespace.applyNamespace(nameArray, scheduleId);
         }
 
-        ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
+        ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId,
+                (scheduleAnno.isolated() ? Boolean.TRUE : null),
+                (scheduleAnno.disabled() ? Boolean.TRUE : null));
 
         String schedulerBeanId = StringUtils.emptyToNull(scheduleAnno.scheduler());
         if (schedulerBeanId != null) {
@@ -602,6 +604,9 @@ public class AnnotatedConfigParser {
             }
             ScheduledJobRule jobRule = new ScheduledJobRule(scheduleRule);
             jobRule.setTransletName(transletName);
+            if (job.isolated()) {
+                jobRule.setIsolated(Boolean.TRUE);
+            }
             if (job.disabled()) {
                 jobRule.setDisabled(Boolean.TRUE);
             }

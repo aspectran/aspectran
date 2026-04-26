@@ -56,6 +56,10 @@ public class ScheduleRule implements BeanReferenceable, Describable {
 
     private List<ScheduledJobRule> scheduledJobRuleList = new ArrayList<>();
 
+    private Boolean isolated;
+
+    private Boolean disabled;
+
     private DescriptionRule descriptionRule;
 
     /**
@@ -162,6 +166,54 @@ public class ScheduleRule implements BeanReferenceable, Describable {
         scheduledJobRuleList.add(scheduledJobRule);
     }
 
+    /**
+     * Gets whether this schedule is isolated.
+     * @return true if isolated, false otherwise
+     */
+    public Boolean getIsolated() {
+        return isolated;
+    }
+
+    /**
+     * Returns whether this schedule is isolated.
+     * @return true if isolated, false otherwise
+     */
+    public boolean isIsolated() {
+        return (isolated != null && isolated);
+    }
+
+    /**
+     * Sets whether this schedule is isolated.
+     * @param isolated true to isolate the schedule
+     */
+    public void setIsolated(Boolean isolated) {
+        this.isolated = isolated;
+    }
+
+    /**
+     * Gets whether this schedule is disabled.
+     * @return true if disabled, false otherwise
+     */
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    /**
+     * Returns whether this schedule is disabled.
+     * @return true if disabled, false otherwise
+     */
+    public boolean isDisabled() {
+        return (disabled != null && disabled);
+    }
+
+    /**
+     * Sets whether this schedule is disabled.
+     * @param disabled true to disable the schedule
+     */
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+
     @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
@@ -184,6 +236,8 @@ public class ScheduleRule implements BeanReferenceable, Describable {
         tsb.append("scheduler", schedulerBeanId);
         tsb.append("trigger", triggerExpressionParameters);
         tsb.append("jobs", scheduledJobRuleList);
+        tsb.append("isolated", isolated);
+        tsb.append("disabled", disabled);
         return tsb.toString();
     }
 
@@ -195,12 +249,28 @@ public class ScheduleRule implements BeanReferenceable, Describable {
      */
     @NonNull
     public static ScheduleRule newInstance(String id) throws IllegalRuleException {
+        return newInstance(id, null, null);
+    }
+
+    /**
+     * Creates a new instance of ScheduleRule.
+     * @param id the ID of the schedule, which is mandatory
+     * @param isolated whether the schedule is isolated
+     * @param disabled whether the schedule is disabled
+     * @return a new {@code ScheduleRule} instance
+     * @throws IllegalRuleException if the ID is null
+     */
+    @NonNull
+    public static ScheduleRule newInstance(String id, Boolean isolated, Boolean disabled)
+            throws IllegalRuleException {
         if (id == null) {
             throw new IllegalRuleException("The 'schedule' element requires an 'id' attribute");
         }
 
         ScheduleRule scheduleRule = new ScheduleRule();
         scheduleRule.setId(id);
+        scheduleRule.setIsolated(isolated);
+        scheduleRule.setDisabled(disabled);
         return scheduleRule;
     }
 

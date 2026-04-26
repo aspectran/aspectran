@@ -121,6 +121,15 @@ public class ComponentCommand extends AbstractCommand {
                     }
                     break;
                 }
+                case "schedule": {
+                    switch (mode) {
+                        case "enable":
+                            return changeScheduleActiveState(daemonService, targets, false);
+                        case "disable":
+                            return changeScheduleActiveState(daemonService, targets, true);
+                    }
+                    break;
+                }
                 default:
                     return failed(error("Invalid component type specified: " + type));
             }
@@ -328,11 +337,11 @@ public class ComponentCommand extends AbstractCommand {
     private CommandResult listScheduledJobs(@NonNull DaemonService daemonService, String[] keywords) {
         Collection<ScheduleRule> scheduleRules = daemonService.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
         Formatter formatter = new Formatter();
-        formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-%n", "----", "--------------------",
-                "---------------------------------", "--------");
-        formatter.format(" %4s | %-20s | %-33s | %-8s %n", "No.", "Schedule ID", "Job Name", "Enabled");
-        formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-%n", "----", "--------------------",
-                "---------------------------------", "--------");
+        formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-+-%-8s-%n", "----", "--------------------",
+                "---------------------------------", "--------", "--------");
+        formatter.format(" %4s | %-20s | %-33s | %-8s | %-8s %n", "No.", "Schedule ID", "Job Name", "Isolated", "Enabled");
+        formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-+-%-8s-%n", "----", "--------------------",
+                "---------------------------------", "--------", "--------");
         int num = 0;
         for (ScheduleRule scheduleRule : scheduleRules) {
             for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
@@ -348,15 +357,15 @@ public class ComponentCommand extends AbstractCommand {
                         continue;
                     }
                 }
-                formatter.format("%5d | %-20s | %-33s | %-8s %n", ++num, scheduleRule.getId(),
-                        jobRule.getTransletName(), !jobRule.isDisabled());
+                formatter.format("%5d | %-20s | %-33s | %-8s | %-8s %n", ++num, scheduleRule.getId(),
+                        jobRule.getTransletName(), jobRule.isIsolated(), !jobRule.isDisabled());
             }
         }
         if (num == 0) {
             formatter.format(" %4s   %s%n", " ", "No scheduled jobs found to display.");
         }
-        formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
-                "---------------------------------", "--------");
+        formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-+-%-8s-", "----", "--------------------",
+                "---------------------------------", "--------", "--------");
         return success(formatter.toString());
     }
 
@@ -428,6 +437,11 @@ public class ComponentCommand extends AbstractCommand {
         }
         Formatter formatter = new Formatter();
         for (ScheduledJobRule jobRule : scheduledJobRules) {
+            if (jobRule.isIsolated()) {
+                formatter.format("The job '%s' on schedule '%s' is isolated and cannot be enabled or disabled.%n",
+                        jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                continue;
+            }
             if (disabled) {
                 if (jobRule.isDisabled()) {
                     formatter.format("The job '%s' on schedule '%s' is already disabled.%n",
@@ -445,6 +459,45 @@ public class ComponentCommand extends AbstractCommand {
                     jobRule.setDisabled(false);
                     formatter.format("The job '%s' on schedule '%s' has been enabled.%n",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
+                }
+            }
+        }
+        return success(formatter.toString());
+    }
+
+    private CommandResult changeScheduleActiveState(DaemonService daemonService, String[] targets, boolean disabled) {
+        if (targets == null || targets.length == 0) {
+            return failed(error("No schedule ID specified. Please provide one or more schedule IDs to enable or disable."));
+        }
+        ScheduleRuleRegistry scheduleRuleRegistry = daemonService.getActivityContext().getScheduleRuleRegistry();
+        Set<ScheduleRule> scheduleRules = new LinkedHashSet<>();
+        for (String scheduleId : targets) {
+            ScheduleRule scheduleRule = scheduleRuleRegistry.getScheduleRule(scheduleId);
+            if (scheduleRule == null) {
+                return failed(error("Schedule '" + scheduleId + "' not found."));
+            }
+            scheduleRules.add(scheduleRule);
+        }
+        Formatter formatter = new Formatter();
+        for (ScheduleRule scheduleRule : scheduleRules) {
+            if (scheduleRule.isIsolated()) {
+                formatter.format("The schedule '%s' is isolated and cannot be enabled or disabled.%n",
+                        scheduleRule.getId());
+                continue;
+            }
+            if (disabled) {
+                if (scheduleRule.isDisabled()) {
+                    formatter.format("The schedule '%s' is already disabled.%n", scheduleRule.getId());
+                } else {
+                    scheduleRule.setDisabled(true);
+                    formatter.format("The schedule '%s' has been disabled.%n", scheduleRule.getId());
+                }
+            } else {
+                if (!scheduleRule.isDisabled()) {
+                    formatter.format("The schedule '%s' is already enabled.%n", scheduleRule.getId());
+                } else {
+                    scheduleRule.setDisabled(false);
+                    formatter.format("The schedule '%s' has been enabled.%n", scheduleRule.getId());
                 }
             }
         }

@@ -87,4 +87,16 @@ public @interface Schedule {
      */
     Job[] jobs() default {};
 
+    /**
+     * Whether this schedule should be applied in isolation from other schedules.
+     * @return true if isolated, false otherwise
+     */
+    boolean isolated() default false;
+
+    /**
+     * Specifies whether this schedule is disabled.
+     * @return true if disabled, false otherwise
+     */
+    boolean disabled() default false;
+
 }

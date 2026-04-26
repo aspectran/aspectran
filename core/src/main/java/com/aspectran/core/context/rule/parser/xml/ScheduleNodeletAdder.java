@@ -50,8 +50,10 @@ class ScheduleNodeletAdder implements NodeletAdder {
         group.child("schedule")
             .nodelet(attrs -> {
                 String id = StringUtils.emptyToNull(attrs.get("id"));
+                Boolean isolated = BooleanUtils.toNullableBooleanObject(attrs.get("isolated"));
+                Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
-                ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
+                ScheduleRule scheduleRule = ScheduleRule.newInstance(id, isolated, disabled);
 
                 AspectranNodeParsingContext.pushObject(scheduleRule);
             })
@@ -82,11 +84,12 @@ class ScheduleNodeletAdder implements NodeletAdder {
             .parent().child("job")
                 .nodelet(attrs -> {
                     String transletName = StringUtils.emptyToNull(attrs.get("translet"));
+                    Boolean isolated = BooleanUtils.toNullableBooleanObject(attrs.get("isolated"));
                     Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
                     ScheduleRule scheduleRule = AspectranNodeParsingContext.peekObject();
 
-                    ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, transletName, disabled);
+                    ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, transletName, isolated, disabled);
                     scheduleRule.addScheduledJobRule(scheduledJobRule);
                 });
     }
