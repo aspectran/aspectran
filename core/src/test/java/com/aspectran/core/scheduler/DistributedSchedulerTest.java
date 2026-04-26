@@ -25,6 +25,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -67,8 +68,8 @@ public class DistributedSchedulerTest implements AspectranConfigProvider {
     void testDistributedLockSuccess(CoreService coreService) {
         lockProvider.setShouldSucceed(true);
 
-        // Wait for the scheduler to trigger the job at least once
-        await().until(() -> lockProvider.getLockCallCount() > 0);
+        // Wait for the full cycle: lock AND unlock
+        await().atMost(Duration.ofSeconds(10)).until(() -> lockProvider.getUnlockCallCount() > 0);
 
         assertEquals(lockProvider.getLockCallCount(), lockProvider.getUnlockCallCount());
     }
@@ -78,7 +79,7 @@ public class DistributedSchedulerTest implements AspectranConfigProvider {
         lockProvider.setShouldSucceed(false);
 
         // Wait for the scheduler to attempt to trigger the job
-        await().until(() -> lockProvider.getLockCallCount() > 0);
+        await().atMost(Duration.ofSeconds(10)).until(() -> lockProvider.getLockCallCount() > 0);
 
         // Since lock failed, unlock should not be called and job execution should be skipped
         assertEquals(0, lockProvider.getUnlockCallCount());
