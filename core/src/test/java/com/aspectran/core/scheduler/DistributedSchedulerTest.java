@@ -17,7 +17,6 @@ package com.aspectran.core.scheduler;
 
 import com.aspectran.core.component.schedule.ScheduledJobLockProvider;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.test.AspectranConfigProvider;
 import com.aspectran.test.AspectranTest;
@@ -65,7 +64,7 @@ public class DistributedSchedulerTest implements AspectranConfigProvider {
     }
 
     @Test
-    void testDistributedLockSuccess(CoreService coreService) {
+    void testDistributedLockSuccess() {
         lockProvider.setShouldSucceed(true);
 
         // Wait for the full cycle: lock AND unlock
@@ -75,7 +74,7 @@ public class DistributedSchedulerTest implements AspectranConfigProvider {
     }
 
     @Test
-    void testDistributedLockFailure(CoreService coreService) {
+    void testDistributedLockFailure() {
         lockProvider.setShouldSucceed(false);
 
         // Wait for the scheduler to attempt to trigger the job
