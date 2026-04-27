@@ -17,6 +17,9 @@ package com.aspectran.web.support.rest.response;
 
 import com.aspectran.utils.ToStringBuilder;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Represents the payload of a RESTful response.
  * <p>This class is a generic container for API responses, encapsulating the
@@ -24,6 +27,12 @@ import com.aspectran.utils.ToStringBuilder;
  * used via its subclasses, {@link SuccessResponse} and {@link FailureResponse}.</p>
  */
 public class ResponsePayload {
+
+    private static final String SUCCESS_NAME = "success";
+
+    private static final String DATA_NAME = "data";
+
+    private static final String ERROR_NAME = "error";
 
     private final boolean success;
 
@@ -102,12 +111,37 @@ public class ResponsePayload {
         return this;
     }
 
+    /**
+     * Returns a map representing the response payload, with fields included
+     * based on the success status.
+     * <p>In a successful response, the "error" field is omitted. In a failed
+     * response, the "data" field is omitted if it is null.</p>
+     * @return a map representing the response payload
+     */
+    public Map<String, Object> toEntity() {
+        Map<String, Object> entity = new LinkedHashMap<>();
+        entity.put(SUCCESS_NAME, success);
+        if (success) {
+            if (data != null) {
+                entity.put(DATA_NAME, data);
+            }
+        } else {
+            if (data != null) {
+                entity.put(DATA_NAME, data);
+            }
+            if (error != null) {
+                entity.put(ERROR_NAME, error);
+            }
+        }
+        return entity;
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.appendForce("success", success);
-        tsb.append("data", data);
-        tsb.append("error", error);
+        tsb.appendForce(SUCCESS_NAME, success);
+        tsb.append(DATA_NAME, data);
+        tsb.append(ERROR_NAME, error);
         return tsb.toString();
     }
 

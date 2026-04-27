@@ -30,6 +30,7 @@ import com.aspectran.utils.json.JsonWriter;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
+import com.aspectran.web.support.rest.response.ResponsePayload;
 import org.jspecify.annotations.NonNull;
 
 import javax.xml.transform.TransformerException;
@@ -179,7 +180,8 @@ public class DefaultRestResponse extends AbstractRestResponse {
         if (callback != null) {
             writer.write(callback + JsonTransformResponse.ROUND_BRACKET_OPEN);
         }
-        if (getName() != null || getData() != null) {
+        Object data = resolveData();
+        if (getName() != null || data != null) {
             StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
             JsonWriter jsonWriter = new JsonWriter(writer);
             jsonWriter.setStringifyContext(stringifyContext);
@@ -187,7 +189,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
                 jsonWriter.beginObject();
                 jsonWriter.writeName(getName());
             }
-            jsonWriter.writeValue(getData());
+            jsonWriter.writeValue(data);
             if (getName() != null) {
                 jsonWriter.endObject();
             }
@@ -204,16 +206,17 @@ public class DefaultRestResponse extends AbstractRestResponse {
      * @throws IOException if an I/O error occurs
      */
     private void toAPON(Activity activity, int indent) throws IOException {
-        if (getName() != null || getData() != null) {
+        Object data = resolveData();
+        if (getName() != null || data != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
             StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
 
             Parameters parameters;
             if (getName() != null) {
-                parameters = ObjectToParameters.from(getName(), getData(), stringifyContext);
+                parameters = ObjectToParameters.from(getName(), data, stringifyContext);
             } else {
-                parameters = ObjectToParameters.from(getData(), stringifyContext);
+                parameters = ObjectToParameters.from(data, stringifyContext);
             }
 
             AponTransformResponse.transform(parameters, writer, stringifyContext);
@@ -229,18 +232,19 @@ public class DefaultRestResponse extends AbstractRestResponse {
      * @throws TransformerException if an error occurs during XML transformation
      */
     private void toXML(Activity activity, String encoding, int indent) throws IOException, TransformerException {
-        if (getName() != null || getData() != null) {
+        Object data = resolveData();
+        if (getName() != null || data != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
             StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
 
-            Object data;
+            Object dataToTransform;
             if (getName() != null) {
-                data = Collections.singletonMap(getName(), getData());
+                dataToTransform = Collections.singletonMap(getName(), data);
             } else {
-                data = getData();
+                dataToTransform = data;
             }
-            XmlTransformResponse.transform(data, writer, encoding, stringifyContext);
+            XmlTransformResponse.transform(dataToTransform, writer, encoding, stringifyContext);
         }
     }
 
@@ -250,12 +254,22 @@ public class DefaultRestResponse extends AbstractRestResponse {
      * @throws IOException if an I/O error occurs
      */
     private void toText(Activity activity) throws IOException {
-        if (getName() != null || getData() != null) {
+        Object data = resolveData();
+        if (getName() != null || data != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
-            if (getData() != null) {
-                writer.write(ToStringBuilder.toString(getName(), getData()));
+            if (data != null) {
+                writer.write(ToStringBuilder.toString(getName(), data));
             }
+        }
+    }
+
+    private Object resolveData() {
+        Object data = getData();
+        if (data instanceof ResponsePayload payload) {
+            return payload.toEntity();
+        } else {
+            return data;
         }
     }
 
@@ -266,6 +280,9 @@ public class DefaultRestResponse extends AbstractRestResponse {
             stringifyContext = activity.getStringifyContext().clone();
         } else {
             stringifyContext.merge(activity.getStringifyContext());
+        }
+        if (!stringifyContext.hasNullWritable()) {
+            stringifyContext.setNullWritable(false);
         }
         if (stringifyContext.isPrettyPrint() && !stringifyContext.hasIndentSize() && indent > -1) {
             stringifyContext.setIndentSize(indent);

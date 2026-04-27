@@ -25,6 +25,10 @@ import com.aspectran.utils.ToStringBuilder;
  */
 public class ErrorPayload {
 
+    private static final String CODE_NAME = "code";
+
+    private static final String MESSAGE_NAME = "message";
+
     private String code;
 
     private String message;
@@ -75,8 +79,8 @@ public class ErrorPayload {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("code", code);
-        tsb.append("message", message);
+        tsb.append(CODE_NAME, code);
+        tsb.append(MESSAGE_NAME, message);
         return tsb.toString();
     }
 
