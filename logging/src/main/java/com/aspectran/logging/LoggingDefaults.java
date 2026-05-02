@@ -26,6 +26,8 @@ public final class LoggingDefaults {
 
     public static final String ARCHIVED_LOGS_DIR_PROPERTY = "aspectran.archivedLogsDir";
 
+    public static final String LOG_CHARSET_PROPERTY = "aspectran.logCharset";
+
     public static final String DEFAULT_LOGS_DIR = "logs";
 
     public static final String DEFAULT_ARCHIVED_LOGS_DIR = "archived";
