@@ -21,6 +21,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -78,6 +79,17 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
             }
         }
         return false;
+    }
+
+    /**
+     * Performs the given action for each authorized session.
+     * @param action the action to be performed for each session
+     */
+    protected void forEachSession(Consumer<Session> action) {
+        Assert.notNull(action, "action must not be null");
+        for (Session session : sessions) {
+            action.accept(session);
+        }
     }
 
     /**
