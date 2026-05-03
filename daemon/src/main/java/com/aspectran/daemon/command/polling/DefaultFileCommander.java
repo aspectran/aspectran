@@ -22,7 +22,7 @@ import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.FilenameUtils;
-import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.AponWriterCloseable;
 import org.jspecify.annotations.NonNull;
@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -43,6 +42,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.aspectran.core.context.config.AspectranConfig.COMMANDS_PATH_PROPERTY;
 
 /**
  * The default {@link FileCommander} implementation that uses the local filesystem
@@ -70,15 +71,13 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     protected final Logger logger = LoggerFactory.getLogger(DefaultFileCommander.class);
 
-    private static final String COMMANDS_PATH = "cmd";
+    private static final String DEFAULT_COMMANDS_PATH = "cmd";
 
     private static final String QUEUED_PATH = "queued";
 
     private static final String COMPLETED_PATH = "completed";
 
     private static final String FAILED_PATH = "failed";
-
-    private static final String DEFAULT_INCOMING_PATH = COMMANDS_PATH + "/incoming";
 
     private final Path incomingDir;
 
@@ -102,7 +101,13 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
         try {
             Path basePath = Paths.get(getDaemonService().getBasePath());
-            Path cmdDir = basePath.resolve(COMMANDS_PATH);
+            Path cmdDir;
+            String cmdPath = SystemUtils.getProperty(COMMANDS_PATH_PROPERTY);
+            if (cmdPath != null) {
+                cmdDir = Paths.get(cmdPath);
+            } else {
+                cmdDir = basePath.resolve(DEFAULT_COMMANDS_PATH);
+            }
 
             this.queuedDir = cmdDir.resolve(QUEUED_PATH);
             Files.createDirectories(this.queuedDir);
@@ -113,18 +118,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
             this.failedDir = cmdDir.resolve(FAILED_PATH);
             Files.createDirectories(this.failedDir);
 
-            String incomingPath = pollingConfig.getIncoming(DEFAULT_INCOMING_PATH);
-            if (incomingPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-                // Using url fully qualified paths
-                this.incomingDir = Paths.get(URI.create(incomingPath));
-            } else {
-                // Resolve against basePath, not cmdDir, because incomingPath
-                // from config may already contain the '/cmd/' prefix
-                if (incomingPath.startsWith("/")) {
-                    incomingPath = incomingPath.substring(1);
-                }
-                this.incomingDir = basePath.resolve(incomingPath);
-            }
+            this.incomingDir = cmdDir.resolve("incoming");
             Files.createDirectories(this.incomingDir);
 
             List<Path> incomingFiles = retrieveCommandFiles(this.incomingDir);
