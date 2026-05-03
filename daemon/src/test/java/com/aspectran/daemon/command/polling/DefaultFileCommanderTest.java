@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import static com.aspectran.core.context.config.AspectranConfig.COMMANDS_PATH_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,7 +40,6 @@ class DefaultFileCommanderTest {
     private final File baseDir = new File("./target/app");
 
     private SimpleDaemon daemon;
-    private String incomingDirPath;
     private Path incomingDir;
     private Path queuedDir;
     private Path completedDir;
@@ -48,16 +48,13 @@ class DefaultFileCommanderTest {
     @BeforeEach
     void setup() throws Exception {
         String random = System.currentTimeMillis() + "-" + new Random().nextInt(10000);
-        Path cmdDir = baseDir.toPath().resolve("cmd");
-        incomingDirPath = "/cmd/incoming-" + random;
-        incomingDir = cmdDir.resolve("incoming-" + random);
+        Path cmdDir = baseDir.toPath().resolve("cmd-" + random);
+        System.setProperty(COMMANDS_PATH_PROPERTY, cmdDir.toAbsolutePath().toString());
+
+        incomingDir = cmdDir.resolve("incoming");
         queuedDir = cmdDir.resolve("queued");
         completedDir = cmdDir.resolve("completed");
         failedDir = cmdDir.resolve("failed");
-
-        deleteDirectory(queuedDir);
-        deleteDirectory(completedDir);
-        deleteDirectory(failedDir);
 
         Files.createDirectories(incomingDir);
         Files.createDirectories(queuedDir);
@@ -70,6 +67,7 @@ class DefaultFileCommanderTest {
         if (daemon != null) {
             daemon.destroy();
         }
+        System.clearProperty(COMMANDS_PATH_PROPERTY);
     }
 
     @Test
@@ -78,7 +76,6 @@ class DefaultFileCommanderTest {
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.SysInfoCommand");
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(3600000); // 1 hour to prevent auto-polling
-        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
@@ -98,7 +95,7 @@ class DefaultFileCommanderTest {
             Thread.sleep(100);
         }
 
-        assertTrue(Files.notExists(commandFile), "Original file should be removed from " + incomingDirPath);
+        assertTrue(Files.notExists(commandFile), "Original file should be removed from " + incomingDir);
         assertEquals(1, countFiles(completedDir), "One file should be in completed directory");
     }
 
@@ -107,7 +104,6 @@ class DefaultFileCommanderTest {
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(3600000); // 1 hour
-        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
@@ -142,7 +138,6 @@ class DefaultFileCommanderTest {
 
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(3600000); // 1 hour
-        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setEnabled(true);
 
         daemon = new SimpleDaemon();
@@ -162,7 +157,7 @@ class DefaultFileCommanderTest {
         // The slow command should be moved out of incoming first
         for (int i = 0; i < 5; i++) {
             if (Files.notExists(slowCommandFile)) break;
-            System.out.println("Waiting for slow command to be moved out of " + incomingDirPath + "... " + i);
+            System.out.println("Waiting for slow command to be moved out of " + incomingDir + "... " + i);
             Thread.sleep(100);
         }
 
@@ -184,7 +179,6 @@ class DefaultFileCommanderTest {
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
         pollingConfig.setPollingInterval(1000);
-        pollingConfig.setIncoming(incomingDirPath);
         pollingConfig.setRequeuable(true);
         pollingConfig.setEnabled(true);
 

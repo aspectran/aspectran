@@ -95,9 +95,9 @@ public class DefaultCoreService extends AbstractCoreService {
                         if (value != null) {
                             if (System.getProperty(name) == null) {
                                 System.setProperty(name, value);
-                                if (!reloadNeeded && (PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY.equals(name) ||
-                                        PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY.equals(name) ||
-                                        PBEncryptionUtils.ENCRYPTION_SALT_KEY.equals(name))) {
+                                if (!reloadNeeded && (PBEncryptionUtils.ENCRYPTION_ALGORITHM_PROPERTY.equals(name) ||
+                                        PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY.equals(name) ||
+                                        PBEncryptionUtils.ENCRYPTION_SALT_PROPERTY.equals(name))) {
                                     reloadNeeded = true;
                                 }
                             }

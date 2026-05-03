@@ -24,7 +24,6 @@ daemon: {
     polling: {
         pollingInterval: 1000
         requeuable: false
-        incoming: /cmd/incoming
         enabled: true
     }
     commands: [

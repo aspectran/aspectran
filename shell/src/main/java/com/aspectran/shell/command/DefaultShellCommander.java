@@ -43,7 +43,7 @@ import java.io.File;
 import java.io.IOError;
 import java.io.PrintWriter;
 
-import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY;
 
 /**
  * Default implementation of the {@link ShellCommander} interface.
@@ -296,7 +296,7 @@ public class DefaultShellCommander implements ShellCommander {
      */
     @Nullable
     private File determineWorkingDir() {
-        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY);
         if (StringUtils.hasText(workPath)) {
             return new File(workPath);
         } else {

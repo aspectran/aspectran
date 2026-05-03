@@ -36,11 +36,11 @@ import java.util.Set;
  * <p>Profiles can be activated through system properties or programmatically.
  * The following system properties are used:
  * <ul>
- *     <li>{@link #BASE_PROFILES_PROPERTY_NAME}: Specifies the base profiles, which are
+ *     <li>{@link #BASE_PROFILES_PROPERTY}: Specifies the base profiles, which are
  *         always active.</li>
- *     <li>{@link #DEFAULT_PROFILES_PROPERTY_NAME}: Specifies the default profiles,
+ *     <li>{@link #DEFAULT_PROFILES_PROPERTY}: Specifies the default profiles,
  *         active when no other profiles are explicitly set.</li>
- *     <li>{@link #ACTIVE_PROFILES_PROPERTY_NAME}: Specifies the currently active profiles.</li>
+ *     <li>{@link #ACTIVE_PROFILES_PROPERTY}: Specifies the currently active profiles.</li>
  * </ul>
  *
  * <p>This class also supports complex profile expressions with logical operators,
@@ -58,18 +58,18 @@ public class EnvironmentProfiles {
      * If there is a system property that contains a context name starting with this property name,
      * that takes priority.
      */
-    public static final String BASE_PROFILES_PROPERTY_NAME = "aspectran.profiles.base";
+    public static final String BASE_PROFILES_PROPERTY = "aspectran.profiles.base";
 
     /**
      * Name of property to set to specify profiles active by default: {@value}. Value may
      * be comma-delimited.
      */
-    public static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
+    public static final String DEFAULT_PROFILES_PROPERTY = "aspectran.profiles.default";
 
     /**
      * Name of property to set to specify active profiles: {@value}. Value may be comma-delimited.
      */
-    public static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
+    public static final String ACTIVE_PROFILES_PROPERTY = "aspectran.profiles.active";
 
     private final Set<String> baseProfiles = new LinkedHashSet<>();
 
@@ -108,9 +108,9 @@ public class EnvironmentProfiles {
     private String[] doGetBaseProfilesProperty(String contextName) {
         String propertyName;
         if (contextName == null) {
-            propertyName = BASE_PROFILES_PROPERTY_NAME;
+            propertyName = BASE_PROFILES_PROPERTY;
         } else {
-            propertyName = BASE_PROFILES_PROPERTY_NAME + "." + contextName;
+            propertyName = BASE_PROFILES_PROPERTY + "." + contextName;
         }
         return getProfilesFromSystemProperty(propertyName);
     }
@@ -123,7 +123,7 @@ public class EnvironmentProfiles {
     /**
      * Returns the set of default profiles explicitly set via
      * {@link #setDefaultProfiles(String...)}, then check for the presence of the
-     * {@value #DEFAULT_PROFILES_PROPERTY_NAME} property and assign its value (if any)
+     * {@value #DEFAULT_PROFILES_PROPERTY} property and assign its value (if any)
      * to the set of default profiles.
      */
     private Set<String> doGetDefaultProfiles() {
@@ -139,7 +139,7 @@ public class EnvironmentProfiles {
     }
 
     private String[] doGetDefaultProfilesProperty() {
-        return getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
+        return getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY);
     }
 
     /**
@@ -169,10 +169,10 @@ public class EnvironmentProfiles {
     /**
      * Returns the set of active profiles as explicitly set through
      * {@link #setActiveProfiles} or if the current set of active profiles
-     * is empty, check for the presence of the {@value #ACTIVE_PROFILES_PROPERTY_NAME}
+     * is empty, check for the presence of the {@value #ACTIVE_PROFILES_PROPERTY}
      * property and assign its value to the set of active profiles.
      * @see #getActiveProfiles()
-     * @see #ACTIVE_PROFILES_PROPERTY_NAME
+     * @see #ACTIVE_PROFILES_PROPERTY
      */
     private Set<String> doGetActiveProfiles() {
         synchronized (activeProfiles) {
@@ -187,7 +187,7 @@ public class EnvironmentProfiles {
     }
 
     private String[] doGetActiveProfilesProperty() {
-        return getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME);
+        return getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY);
     }
 
     /**

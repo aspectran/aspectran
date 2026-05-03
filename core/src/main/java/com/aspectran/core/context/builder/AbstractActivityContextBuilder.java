@@ -70,9 +70,19 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
-import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
-import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.ARCHIVED_LOGS_DIR_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.COMMANDS_PATH_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.ENCRYPTION_ALGORITHM_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.ENCRYPTION_PASSWORD_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.ENCRYPTION_SALT_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.LOGS_DIR_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.LOG_CHARSET_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY;
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY;
+import static com.aspectran.core.context.env.EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY;
+import static com.aspectran.core.context.env.EnvironmentProfiles.BASE_PROFILES_PROPERTY;
+import static com.aspectran.core.context.env.EnvironmentProfiles.DEFAULT_PROFILES_PROPERTY;
 import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 
 /**
@@ -145,8 +155,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (masterService != null) {
             this.basePath = masterService.getBasePath();
         }
-        this.useAponToLoadXml = Boolean.parseBoolean(SystemUtils.getProperty(USE_APON_TO_LOAD_XML_PROPERTY_NAME));
-        this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY_NAME));
+        this.useAponToLoadXml = Boolean.parseBoolean(SystemUtils.getProperty(USE_APON_TO_LOAD_XML_PROPERTY));
+        this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY));
     }
 
     @Override
@@ -656,9 +666,19 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     @Override
     public void clear() {
-        SystemUtils.clearProperty(BASE_PATH_PROPERTY_NAME);
-        SystemUtils.clearProperty(WORK_PATH_PROPERTY_NAME);
-        SystemUtils.clearProperty(TEMP_PATH_PROPERTY_NAME);
+        SystemUtils.clearProperty(BASE_PATH_PROPERTY);
+        SystemUtils.clearProperty(WORK_PATH_PROPERTY);
+        SystemUtils.clearProperty(TEMP_PATH_PROPERTY);
+        SystemUtils.clearProperty(COMMANDS_PATH_PROPERTY);
+        SystemUtils.clearProperty(LOGS_DIR_PROPERTY);
+        SystemUtils.clearProperty(ARCHIVED_LOGS_DIR_PROPERTY);
+        SystemUtils.clearProperty(LOG_CHARSET_PROPERTY);
+        SystemUtils.clearProperty(ENCRYPTION_ALGORITHM_PROPERTY);
+        SystemUtils.clearProperty(ENCRYPTION_PASSWORD_PROPERTY);
+        SystemUtils.clearProperty(ENCRYPTION_SALT_PROPERTY);
+        SystemUtils.clearProperty(BASE_PROFILES_PROPERTY);
+        SystemUtils.clearProperty(DEFAULT_PROFILES_PROPERTY);
+        SystemUtils.clearProperty(ACTIVE_PROFILES_PROPERTY);
     }
 
     private void checkDirectoryStructure() throws IOException {
@@ -666,13 +686,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         // Determines the path of the base directory
         if (getBasePath() == null) {
-            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY);
             File baseDir;
             if (StringUtils.hasText(basePath)) {
                 baseDir = new File(basePath);
                 if (!baseDir.isDirectory()) {
                     throw new IOException("Make sure it is a valid base directory; " +
-                        BASE_PATH_PROPERTY_NAME + "=" + basePath);
+                        BASE_PATH_PROPERTY + "=" + basePath);
                 }
             } else {
                 setOwnBasePath(false);
@@ -686,46 +706,141 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             }
             try {
                 setBasePath(baseDir.getCanonicalPath());
-                System.setProperty(BASE_PATH_PROPERTY_NAME, getBasePath());
+                System.setProperty(BASE_PATH_PROPERTY, getBasePath());
             } catch (IOException e) {
                 throw new IOException("Could not verify base directory", e);
             }
         } else {
-            System.setProperty(BASE_PATH_PROPERTY_NAME, getBasePath());
+            System.setProperty(BASE_PATH_PROPERTY, getBasePath());
         }
 
-        // Determines the path of the working directory.
-        // If a 'work' directory exists under the base directory,
-        // set it as the system property 'aspectran.workPath'.
+        // Determines the path of the working directory
         File workDir = null;
-        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY);
         if (StringUtils.hasText(workPath)) {
             workDir = new File(workPath);
         }
-        if (workDir == null || !workDir.isDirectory()) {
+        if (workDir == null) {
             workDir = new File(getBasePath(), "work");
         }
+        if (hasOwnBasePath() && !workDir.isDirectory()) {
+            if (workDir.mkdirs()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created working directory: {}", workDir);
+                }
+            } else if (!workDir.isDirectory()) {
+                workDir = new File(getBasePath(), "work");
+                if (!workDir.isDirectory()) {
+                    workDir.mkdirs();
+                }
+            }
+        }
         try {
-            System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
+            System.setProperty(WORK_PATH_PROPERTY, workDir.getCanonicalPath());
         } catch (Exception e) {
             logger.warn("Could not verify working directory: {}", workDir);
         }
 
-        // Determines the path of the temporary directory.
-        // If a 'temp' directory exists under the base directory,
-        // set it as the system property 'aspectran.tempPath'.
+        // Determines the path of the temporary directory
         File tempDir = null;
-        String tempPath = SystemUtils.getProperty(TEMP_PATH_PROPERTY_NAME);
+        String tempPath = SystemUtils.getProperty(TEMP_PATH_PROPERTY);
         if (StringUtils.hasText(tempPath)) {
             tempDir = new File(tempPath);
         }
-        if (tempDir == null || !tempDir.isDirectory()) {
+        if (tempDir == null) {
             tempDir = new File(getBasePath(), "temp");
         }
+        if (hasOwnBasePath() && !tempDir.isDirectory()) {
+            if (tempDir.mkdirs()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created temporary directory: {}", tempDir);
+                }
+            } else if (!tempDir.isDirectory()) {
+                tempDir = new File(getBasePath(), "temp");
+                if (!tempDir.isDirectory()) {
+                    tempDir.mkdirs();
+                }
+            }
+        }
         try {
-            System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
+            System.setProperty(TEMP_PATH_PROPERTY, tempDir.getCanonicalPath());
         } catch (Exception e) {
             logger.warn("Could not verify temporary directory: {}", tempDir);
+        }
+
+        // Determines the path of the commands directory
+        File cmdDir = null;
+        String cmdPath = SystemUtils.getProperty(COMMANDS_PATH_PROPERTY);
+        if (StringUtils.hasText(cmdPath)) {
+            cmdDir = new File(cmdPath);
+        }
+        if (cmdDir == null) {
+            cmdDir = new File(getBasePath(), "cmd");
+        }
+        if (hasOwnBasePath() && !cmdDir.isDirectory()) {
+            if (cmdDir.mkdirs()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created commands directory: {}", cmdDir);
+                }
+            } else if (!cmdDir.isDirectory()) {
+                cmdDir = new File(getBasePath(), "cmd");
+                if (!cmdDir.isDirectory()) {
+                    cmdDir.mkdirs();
+                }
+            }
+        }
+        try {
+            System.setProperty(COMMANDS_PATH_PROPERTY, cmdDir.getCanonicalPath());
+        } catch (Exception e) {
+            logger.warn("Could not verify commands directory: {}", cmdDir);
+        }
+
+        // Determines the path of the logs directory
+        File logsDir = null;
+        String logsPath = SystemUtils.getProperty(LOGS_DIR_PROPERTY);
+        if (StringUtils.hasText(logsPath)) {
+            logsDir = new File(logsPath);
+        }
+        if (logsDir == null) {
+            logsDir = new File(getBasePath(), "logs");
+        }
+        if (hasOwnBasePath() && !logsDir.isDirectory()) {
+            if (logsDir.mkdirs()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created logs directory: {}", logsDir);
+                }
+            } else if (!logsDir.isDirectory()) {
+                logsDir = new File(getBasePath(), "logs");
+                if (!logsDir.isDirectory()) {
+                    logsDir.mkdirs();
+                }
+            }
+        }
+        try {
+            System.setProperty(LOGS_DIR_PROPERTY, logsDir.getCanonicalPath());
+        } catch (Exception e) {
+            logger.warn("Could not verify logs directory: {}", logsDir);
+        }
+
+        // Determines the path of the archived logs directory
+        File archivedLogsDir = null;
+        String archivedLogsPath = SystemUtils.getProperty(ARCHIVED_LOGS_DIR_PROPERTY);
+        if (StringUtils.hasText(archivedLogsPath)) {
+            archivedLogsDir = new File(archivedLogsPath);
+            if (hasOwnBasePath() && !archivedLogsDir.isDirectory()) {
+                if (archivedLogsDir.mkdirs()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Created archived logs directory: {}", archivedLogsDir);
+                    }
+                } else if (!archivedLogsDir.isDirectory()) {
+                    logger.warn("Could not create archived logs directory: {}", archivedLogsDir);
+                }
+            }
+            try {
+                System.setProperty(ARCHIVED_LOGS_DIR_PROPERTY, archivedLogsDir.getCanonicalPath());
+            } catch (Exception e) {
+                logger.warn("Could not verify archived logs directory: {}", archivedLogsDir);
+            }
         }
     }
 

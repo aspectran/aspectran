@@ -45,6 +45,8 @@
  *       — control shell lifecycle</li>
  *   <li>{@link com.aspectran.shell.command.builtins.VerboseCommand VerboseCommand}
  *       — toggle verbose mode for translet execution</li>
+ *   <li>{@link com.aspectran.shell.command.builtins.EvaluateCommand EvaluateCommand}
+ *       — evaluate an AsEL expression</li>
  *   <li>{@link com.aspectran.shell.command.builtins.PBEncryptCommand PBEncryptCommand}
  *       and {@link com.aspectran.shell.command.builtins.PBDecryptCommand PBDecryptCommand}
  *       — password-based string encryption/decryption helpers</li>

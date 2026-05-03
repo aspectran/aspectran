@@ -38,9 +38,6 @@ public class DaemonPollingConfig extends DefaultParameters {
     /** Determines whether commands that fail to execute should be automatically re-queued. */
     private static final ParameterKey requeuable;
 
-    /** Specifies the path to the directory that the daemon will scan for incoming command files. */
-    private static final ParameterKey incoming;
-
     /** Specifies whether the file polling mechanism is enabled. */
     private static final ParameterKey enabled;
 
@@ -50,14 +47,12 @@ public class DaemonPollingConfig extends DefaultParameters {
         pollingInterval = new ParameterKey("pollingInterval", ValueType.LONG);
         maxThreads = new ParameterKey("maxThreads", ValueType.INT);
         requeuable = new ParameterKey("requeuable", ValueType.BOOLEAN);
-        incoming = new ParameterKey("incoming", ValueType.STRING);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 pollingInterval,
                 maxThreads,
                 requeuable,
-                incoming,
                 enabled
         };
     }
@@ -123,33 +118,6 @@ public class DaemonPollingConfig extends DefaultParameters {
      */
     public DaemonPollingConfig setRequeuable(boolean requeuable) {
         putValue(DaemonPollingConfig.requeuable, requeuable);
-        return this;
-    }
-
-    /**
-     * Returns the path to the directory for incoming command files.
-     * @return the incoming directory path, or {@code null} if not set
-     */
-    public String getIncoming() {
-        return getString(incoming);
-    }
-
-    /**
-     * Returns the path to the directory for incoming command files.
-     * @param defaultIncoming the default incoming directory path if not specified
-     * @return the incoming directory path
-     */
-    public String getIncoming(String defaultIncoming) {
-        return getString(incoming, defaultIncoming);
-    }
-
-    /**
-     * Sets the path to the directory for incoming command files.
-     * @param incoming the incoming directory path
-     * @return this {@code DaemonPollingConfig} instance for method chaining
-     */
-    public DaemonPollingConfig setIncoming(String incoming) {
-        putValue(DaemonPollingConfig.incoming, incoming);
         return this;
     }
 

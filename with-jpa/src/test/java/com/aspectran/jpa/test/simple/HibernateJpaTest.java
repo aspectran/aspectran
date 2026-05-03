@@ -26,7 +26,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HibernateJpaTest {
@@ -37,7 +37,7 @@ class HibernateJpaTest {
     void ready() throws Exception {
         File root = new File("target/app");
         String basePath = root.getCanonicalPath();
-        System.setProperty(BASE_PATH_PROPERTY_NAME, basePath); // for logback
+        System.setProperty(BASE_PATH_PROPERTY, basePath); // for logback
 
         File configFile = ResourceUtils.getResourceAsFile("com/aspectran/jpa/test/simple/aspectran-config-hibernate.apon");
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);

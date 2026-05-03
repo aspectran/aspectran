@@ -32,7 +32,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.io.File;
 import java.io.IOException;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -45,7 +45,7 @@ class JettyServerTest {
     @BeforeAll
     void ready() throws Exception {
         String basePath = baseDir.getCanonicalPath();
-        System.setProperty(BASE_PATH_PROPERTY_NAME, basePath); // for logback
+        System.setProperty(BASE_PATH_PROPERTY, basePath); // for logback
         FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(baseDir, "webroot"));
 
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");

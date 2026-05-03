@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import static com.aspectran.utils.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
+import static com.aspectran.utils.PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY;
 
 /**
  * <p>Created: 2021/05/16</p>
@@ -39,7 +39,7 @@ class JettyCommandTest {
     @BeforeAll
     void saveProperties() {
         // System default
-        System.setProperty(ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+        System.setProperty(ENCRYPTION_PASSWORD_PROPERTY, "encryption-password-for-test");
         PBEncryptionUtils.reload();
     }
 

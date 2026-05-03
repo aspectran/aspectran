@@ -50,7 +50,7 @@ class EmbeddedAspectranTest {
             .touchContextConfig()
             .setContextRules(new String[] {ruleFile});
         aspectranConfig.touchEmbedConfig().touchSessionManagerConfig().setEnabled(true);
-        System.setProperty(ActivityContextBuilder.DEBUG_MODE_PROPERTY_NAME, "true");
+        System.setProperty(ActivityContextBuilder.DEBUG_MODE_PROPERTY, "true");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 

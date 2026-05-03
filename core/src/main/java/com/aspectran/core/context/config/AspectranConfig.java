@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
+import com.aspectran.utils.PBEncryptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.apon.AponParseException;
@@ -48,13 +49,34 @@ import java.nio.file.Paths;
 public class AspectranConfig extends DefaultParameters {
 
     /** The name of the system property that specifies the base path. */
-    public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
-
-    /** The name of the system property that specifies the temporary path. */
-    public static final String TEMP_PATH_PROPERTY_NAME = "aspectran.tempPath";
+    public static final String BASE_PATH_PROPERTY = "aspectran.basePath";
 
     /** The name of the system property that specifies the working path. */
-    public static final String WORK_PATH_PROPERTY_NAME = "aspectran.workPath";
+    public static final String WORK_PATH_PROPERTY = "aspectran.workPath";
+
+    /** The name of the system property that specifies the temporary path. */
+    public static final String TEMP_PATH_PROPERTY = "aspectran.tempPath";
+
+    /** The name of the system property that specifies the commands path. */
+    public static final String COMMANDS_PATH_PROPERTY = "aspectran.commandsPath";
+
+    /** The name of the system property that specifies the logs directory path. */
+    public static final String LOGS_DIR_PROPERTY = "aspectran.logsDir";
+
+    /** The name of the system property that specifies the archived logs directory path. */
+    public static final String ARCHIVED_LOGS_DIR_PROPERTY = "aspectran.archivedLogsDir";
+
+    /** The name of the system property that specifies the log charset. */
+    public static final String LOG_CHARSET_PROPERTY = "aspectran.logCharset";
+
+    /** The name of the system property that specifies the encryption algorithm. */
+    public static final String ENCRYPTION_ALGORITHM_PROPERTY = PBEncryptionUtils.ENCRYPTION_ALGORITHM_PROPERTY;
+
+    /** The name of the system property that specifies the encryption password. */
+    public static final String ENCRYPTION_PASSWORD_PROPERTY = PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY;
+
+    /** The name of the system property that specifies the encryption salt. */
+    public static final String ENCRYPTION_SALT_PROPERTY = PBEncryptionUtils.ENCRYPTION_SALT_PROPERTY;
 
     /** The default name of the Aspectran configuration file. */
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
@@ -309,10 +331,10 @@ public class AspectranConfig extends DefaultParameters {
      * @param args the command line arguments
      * @return the canonical base path, or {@code null} if not found
      */
-    public static String determineBasePath(@Nullable String[] args) {
+    public static String determineBasePath(String @Nullable [] args) {
         String basePath;
         if (args == null || args.length < 2) {
-            basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY);
         } else {
             basePath = args[0];
         }
@@ -335,10 +357,10 @@ public class AspectranConfig extends DefaultParameters {
      * @throws IllegalArgumentException if the configuration file cannot be determined
      */
     @NonNull
-    public static File determineAspectranConfigFile(@Nullable String[] args) {
+    public static File determineAspectranConfigFile(String @Nullable [] args) {
         File file;
         if (args == null || args.length == 0) {
-            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY);
             if (StringUtils.hasText(basePath)) {
                 file = new File(basePath, DEFAULT_ASPECTRAN_CONFIG_FILE);
             } else {
@@ -348,7 +370,7 @@ public class AspectranConfig extends DefaultParameters {
                 throw new IllegalArgumentException("No Aspectran Configuration file provided");
             }
         } else if (args.length == 1) {
-            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY);
             if (baseDir != null) {
                 Path basePath = Paths.get(baseDir);
                 Path filePath = Paths.get(args[0]);

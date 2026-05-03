@@ -46,7 +46,7 @@ class PBTokenIssuerTest {
     @BeforeAll
     static void passwordSetting() {
         // System default password for static methods without explicit password
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, DEFAULT_PASSWORD);
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY, DEFAULT_PASSWORD);
         PBEncryptionUtils.reload();
     }
 

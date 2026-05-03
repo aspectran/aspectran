@@ -34,8 +34,8 @@ class PropertiesLoaderUtilsTest {
 
     @BeforeAll
     void passwordSetting() {
-        //System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, "PBEWithMD5AndTripleDES");
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, PASSWORD);
+        //System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_PROPERTY, "PBEWithMD5AndTripleDES");
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY, PASSWORD);
         PBEncryptionUtils.reload();
         String encryptedPassword = PBEncryptionUtils.encrypt("1234", PASSWORD);
         System.out.println(encryptedPassword);

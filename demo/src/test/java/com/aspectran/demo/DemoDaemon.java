@@ -21,7 +21,7 @@ import com.aspectran.utils.ResourceUtils;
 
 import java.io.File;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
 
 /**
  * Provides the main entry point for running the Aspectran Demo application
@@ -39,9 +39,9 @@ public class DemoDaemon {
      */
     public static void main(String[] args) {
         try {
-            System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
+            System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY, "daemon");
             File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
-            System.setProperty(BASE_PATH_PROPERTY_NAME, root.getCanonicalPath()); // for logback
+            System.setProperty(BASE_PATH_PROPERTY, root.getCanonicalPath()); // for logback
             String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };
             DefaultDaemon.main(args2);
         } catch (Exception e) {

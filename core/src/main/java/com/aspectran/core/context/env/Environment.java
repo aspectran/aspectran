@@ -41,7 +41,7 @@ public interface Environment {
      * @return the set of essential profiles for this environment
      * @see #getActiveProfiles
      * @see EnvironmentProfiles#setBaseProfiles
-     * @see EnvironmentProfiles#BASE_PROFILES_PROPERTY_NAME
+     * @see EnvironmentProfiles#BASE_PROFILES_PROPERTY
      */
     String[] getBaseProfiles();
 
@@ -51,21 +51,21 @@ public interface Environment {
      * @return the set of default profiles
      * @see #getActiveProfiles
      * @see EnvironmentProfiles#setDefaultProfiles
-     * @see EnvironmentProfiles#DEFAULT_PROFILES_PROPERTY_NAME
+     * @see EnvironmentProfiles#DEFAULT_PROFILES_PROPERTY
      */
     String[] getDefaultProfiles();
 
     /**
      * Returns the set of profiles explicitly made active for this environment.
      * <p>Profiles can be activated by setting the
-     * {@link EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME "aspectran.profiles.active"}
+     * {@link EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY "aspectran.profiles.active"}
      * system property or by calling {@link #addActiveProfile(String)}.
      * <p>If no profiles are explicitly active, the {@linkplain #getDefaultProfiles() default
      * profiles} will be used.
      * @return the set of active profiles
      * @see #getDefaultProfiles
      * @see #addActiveProfile(String)
-     * @see EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME
+     * @see EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY
      */
     String[] getActiveProfiles();
 

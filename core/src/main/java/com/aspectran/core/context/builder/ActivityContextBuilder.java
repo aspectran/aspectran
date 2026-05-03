@@ -39,10 +39,10 @@ import java.io.IOException;
 public interface ActivityContextBuilder {
 
     /** The system property name for debug mode */
-    String DEBUG_MODE_PROPERTY_NAME = "com.aspectran.core.context.builder.debugMode";
+    String DEBUG_MODE_PROPERTY = "com.aspectran.core.context.builder.debugMode";
 
     /** The system property name for using APON to load XML configuration */
-    String USE_APON_TO_LOAD_XML_PROPERTY_NAME = "com.aspectran.core.context.builder.useAponToLoadXml";
+    String USE_APON_TO_LOAD_XML_PROPERTY = "com.aspectran.core.context.builder.useAponToLoadXml";
 
     /**
      * Returns the base path for the application.

@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.shell.command.builtins.EvaluateCommand;
 import com.aspectran.shell.command.builtins.HelpCommand;
 import com.aspectran.shell.command.builtins.PBDecryptCommand;
 import com.aspectran.shell.command.builtins.PBEncryptCommand;
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import static com.aspectran.utils.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
+import static com.aspectran.utils.PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY;
 
 /**
  * <p>Created: 2017. 11. 19.</p>
@@ -43,7 +44,7 @@ class CommandTest {
     @BeforeAll
     void saveProperties() {
         // System default
-        System.setProperty(ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+        System.setProperty(ENCRYPTION_PASSWORD_PROPERTY, "encryption-password-for-test");
         PBEncryptionUtils.reload();
     }
 
@@ -57,6 +58,13 @@ class CommandTest {
     @Test
     void testHelpCommand() {
         HelpCommand command = new HelpCommand(runner.getCommandRegistry());
+        getConsole().writeLine(command.getDescriptor().getDescription());
+        command.printHelp(getConsole());
+    }
+
+    @Test
+    void testEvaluateCommand() {
+        EvaluateCommand command = new EvaluateCommand(runner.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
     }

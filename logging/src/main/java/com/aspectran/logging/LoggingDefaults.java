@@ -15,6 +15,8 @@
  */
 package com.aspectran.logging;
 
+import com.aspectran.core.context.config.AspectranConfig;
+
 /**
  * Provides default values for logging-related configuration.
  *
@@ -22,11 +24,11 @@ package com.aspectran.logging;
  */
 public final class LoggingDefaults {
 
-    public static final String LOGS_DIR_PROPERTY = "aspectran.logsDir";
+    public static final String LOGS_DIR_PROPERTY = AspectranConfig.LOGS_DIR_PROPERTY;
 
-    public static final String ARCHIVED_LOGS_DIR_PROPERTY = "aspectran.archivedLogsDir";
+    public static final String ARCHIVED_LOGS_DIR_PROPERTY = AspectranConfig.ARCHIVED_LOGS_DIR_PROPERTY;
 
-    public static final String LOG_CHARSET_PROPERTY = "aspectran.logCharset";
+    public static final String LOG_CHARSET_PROPERTY = AspectranConfig.LOG_CHARSET_PROPERTY;
 
     public static final String DEFAULT_LOGS_DIR = "logs";
 

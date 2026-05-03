@@ -37,7 +37,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
-import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY;
 
 /**
  * A concrete implementation of {@link ResourceManager} that discovers and manages resources
@@ -191,7 +191,7 @@ public class LocalResourceManager extends ResourceManager {
      * @throws IOException if an I/O error occurs
      */
     private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
-        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY);
         File workResourceDir = null;
         if (workPath != null) {
             Path workDir = Path.of(workPath);
@@ -228,7 +228,7 @@ public class LocalResourceManager extends ResourceManager {
      * This prevents disk space leaks from previous runs that may not have shut down cleanly.
      */
     private void sweepWorkResourceFiles() {
-        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY);
         if (workPath != null) {
             Path workDir = Path.of(workPath);
             if (Files.isDirectory(workDir) && Files.exists(workDir)) {

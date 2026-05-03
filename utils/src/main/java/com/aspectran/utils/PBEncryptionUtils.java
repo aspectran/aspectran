@@ -57,7 +57,7 @@ public class PBEncryptionUtils {
      * trade-off for significantly enhanced security. If high security is not a requirement
      * and reducing the length of the encrypted string is a higher priority, you can switch
      * to a legacy algorithm like {@code "PBEWithMD5AndTripleDES"} by setting the
-     * "{@value #ENCRYPTION_ALGORITHM_KEY}" system property. However, be aware that this
+     * "{@value #ENCRYPTION_ALGORITHM_PROPERTY}" system property. However, be aware that this
      * will significantly reduce the security level.
      * @see <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#pbecipher-algorithms">Java Security Standard Algorithm Names</a>
      */
@@ -66,17 +66,17 @@ public class PBEncryptionUtils {
     /**
      * The name of the system property that specifies the encryption algorithm.
      */
-    public static final String ENCRYPTION_ALGORITHM_KEY = "aspectran.encryption.algorithm";
+    public static final String ENCRYPTION_ALGORITHM_PROPERTY = "aspectran.encryption.algorithm";
 
     /**
      * The name of the system property that specifies the encryption password.
      */
-    public static final String ENCRYPTION_PASSWORD_KEY = "aspectran.encryption.password";
+    public static final String ENCRYPTION_PASSWORD_PROPERTY = "aspectran.encryption.password";
 
     /**
      * The name of the system property that specifies the encryption salt.
      */
-    public static final String ENCRYPTION_SALT_KEY = "aspectran.encryption.salt";
+    public static final String ENCRYPTION_SALT_PROPERTY = "aspectran.encryption.salt";
 
     private static final Charset MESSAGE_CHARSET = StandardCharsets.UTF_8;
 
@@ -105,7 +105,7 @@ public class PBEncryptionUtils {
 
     /**
      * Returns the encryption algorithm currently in use.
-     * This value is determined from the "{@value #ENCRYPTION_ALGORITHM_KEY}" system property.
+     * This value is determined from the "{@value #ENCRYPTION_ALGORITHM_PROPERTY}" system property.
      * @return the name of the encryption algorithm
      */
     public static String getAlgorithm() {
@@ -114,7 +114,7 @@ public class PBEncryptionUtils {
 
     /**
      * Returns the encryption password currently in use.
-     * This value is determined from the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
+     * This value is determined from the "{@value #ENCRYPTION_PASSWORD_PROPERTY}" system property.
      * @return the encryption password, or {@code null} if not set
      */
     public static String getPassword() {
@@ -123,7 +123,7 @@ public class PBEncryptionUtils {
 
     /**
      * Returns the encryption salt currently in use.
-     * This value is determined from the "{@value #ENCRYPTION_SALT_KEY}" system property.
+     * This value is determined from the "{@value #ENCRYPTION_SALT_PROPERTY}" system property.
      * @return the encryption salt, or {@code null} if not set
      */
     public static String getSalt() {
@@ -159,7 +159,7 @@ public class PBEncryptionUtils {
 
     /**
      * Encrypts the input string using the default password-based encryptor.
-     * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
+     * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_PROPERTY}" system property.
      * @param inputString the string to encrypt
      * @return the result of encryption, as a URL-safe Base64-encoded string
      * @throws InsufficientEnvironmentException if the default encryption password is not set
@@ -170,7 +170,7 @@ public class PBEncryptionUtils {
 
     /**
      * Decrypts the input string using the default password-based encryptor.
-     * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
+     * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_PROPERTY}" system property.
      * @param encryptedString the URL-safe Base64-encoded string to decrypt
      * @return the result of decryption
      * @throws InsufficientEnvironmentException if the default encryption password is not set
@@ -232,7 +232,7 @@ public class PBEncryptionUtils {
     /**
      * Returns the default {@link StringEncryptor} instance.
      * <p>This encryptor is initialized from the algorithm and password
-     * specified by the "{@value #ENCRYPTION_ALGORITHM_KEY}" and "{@value #ENCRYPTION_PASSWORD_KEY}"
+     * specified by the "{@value #ENCRYPTION_ALGORITHM_PROPERTY}" and "{@value #ENCRYPTION_PASSWORD_PROPERTY}"
      * system properties.</p>
      * @return the default string encryptor
      * @throws InsufficientEnvironmentException if the encryption password is not set
@@ -347,7 +347,7 @@ public class PBEncryptionUtils {
     private static void checkPassword(@Nullable String encryptionPassword) {
         if (!StringUtils.hasText(encryptionPassword)) {
             throw new InsufficientEnvironmentException("A password is required to attempt password-based encryption " +
-                    "or decryption; Make sure the JVM system property \"" + ENCRYPTION_PASSWORD_KEY + "\" is set up; " +
+                    "or decryption; Make sure the JVM system property \"" + ENCRYPTION_PASSWORD_PROPERTY + "\" is set up; " +
                     "(Default algorithm: " + getAlgorithm() + ")");
         }
     }
@@ -363,9 +363,9 @@ public class PBEncryptionUtils {
         private final StringEncryptor encryptor;
 
         private EncryptionConfig() {
-            this.algorithm = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_ALGORITHM_KEY, DEFAULT_ALGORITHM));
-            this.password = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_PASSWORD_KEY));
-            this.salt = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_SALT_KEY));
+            this.algorithm = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_ALGORITHM_PROPERTY, DEFAULT_ALGORITHM));
+            this.password = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_PASSWORD_PROPERTY));
+            this.salt = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_SALT_PROPERTY));
             this.encryptor = (StringUtils.hasText(password) ? getStringEncryptor(algorithm, password, salt) : null);
         }
 

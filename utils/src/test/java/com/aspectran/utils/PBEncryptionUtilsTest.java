@@ -38,9 +38,9 @@ class PBEncryptionUtilsTest {
 
     @AfterAll
     static void restoreProperties() {
-        System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
-        System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-        System.clearProperty(PBEncryptionUtils.ENCRYPTION_SALT_KEY);
+        System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_PROPERTY);
+        System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY);
+        System.clearProperty(PBEncryptionUtils.ENCRYPTION_SALT_PROPERTY);
         PBEncryptionUtils.reload();
     }
 
@@ -52,14 +52,14 @@ class PBEncryptionUtilsTest {
         for (String algo : algorithms) {
             try {
                 StringEncryptor encryptor = PBEncryptionUtils.getStringEncryptor(algo, password, null);
-                
+
                 String encrypted = encryptor.encrypt(original);
                 String decrypted = encryptor.decrypt(encrypted);
 
                 assertEquals(original, decrypted, "Decryption failed for algorithm: " + algo);
-                
+
                 // Random salt should produce different results each time
-                assertNotEquals(encrypted, encryptor.encrypt(original), 
+                assertNotEquals(encrypted, encryptor.encrypt(original),
                         "Random salt should produce different outputs: " + algo);
             } catch (Exception e) {
                 if (algo.contains("256")) {
@@ -113,9 +113,9 @@ class PBEncryptionUtilsTest {
         String password = "system-password";
         String salt = "system-fixed-salt-value";
 
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, "PBEWithMD5AndTripleDES");
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, password);
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_SALT_KEY, salt);
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_PROPERTY, "PBEWithMD5AndTripleDES");
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_PROPERTY, password);
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_SALT_PROPERTY, salt);
         PBEncryptionUtils.reload();
 
         // Now PBEncryptionUtils should use the updated properties.

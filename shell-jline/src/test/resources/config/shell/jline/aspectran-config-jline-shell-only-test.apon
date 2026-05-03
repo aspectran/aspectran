@@ -28,6 +28,7 @@ shell: {
         com.aspectran.shell.command.builtins.PBEncryptCommand
         com.aspectran.shell.command.builtins.PBDecryptCommand
         com.aspectran.shell.command.builtins.EchoCommand
+        com.aspectran.shell.command.builtins.EvaluateCommand
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.ClearCommand
         com.aspectran.shell.command.builtins.QuitCommand

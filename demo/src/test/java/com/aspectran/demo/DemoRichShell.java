@@ -21,7 +21,7 @@ import com.aspectran.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
 
-import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
 
 /**
  * Provides the main entry point for running the Aspectran Demo application
@@ -40,7 +40,7 @@ public class DemoRichShell {
     public static void main(String[] args) {
         try {
             File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
-            System.setProperty(BASE_PATH_PROPERTY_NAME, root.getCanonicalPath()); // for logback
+            System.setProperty(BASE_PATH_PROPERTY, root.getCanonicalPath()); // for logback
             JLineAspectranShell.main(new String[] { root.getCanonicalPath(), "config/aspectran-config.apon" });
         } catch (IOException e) {
             e.printStackTrace(System.err);
