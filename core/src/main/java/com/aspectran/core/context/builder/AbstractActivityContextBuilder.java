@@ -679,6 +679,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         SystemUtils.clearProperty(BASE_PROFILES_PROPERTY);
         SystemUtils.clearProperty(DEFAULT_PROFILES_PROPERTY);
         SystemUtils.clearProperty(ACTIVE_PROFILES_PROPERTY);
+        SystemUtils.clearProperty(DEBUG_MODE_PROPERTY);
+        SystemUtils.clearProperty(USE_APON_TO_LOAD_XML_PROPERTY);
     }
 
     private void checkDirectoryStructure() throws IOException {
