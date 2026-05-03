@@ -82,6 +82,23 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
+     * Finds a session with the given session id.
+     * @param sessionId the session id to search for
+     * @return the session if found, {@code null} if no session was found
+     */
+    protected Session findSession(String sessionId) {
+        Assert.notNull(sessionId, "sessionId must not be null");
+        synchronized (sessions) {
+            for (Session session : sessions) {
+                if (sessionId.equals(session.getId())) {
+                    return session;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Performs the given action for each authorized session.
      * @param action the action to be performed for each session
      */
