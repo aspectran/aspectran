@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.ObjectUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +109,8 @@ public abstract class AbstractScope implements Scope {
     public void destroy() {
         if (logger.isDebugEnabled()) {
             if (!scopedBeanInstances.isEmpty()) {
-                logger.debug("Destroy {} scoped beans from {}", getScopeType(), this);
+                logger.debug("Destroy {} scoped beans from {}", getScopeType(),
+                        ObjectUtils.simpleIdentityToString(this));
             }
         }
 
