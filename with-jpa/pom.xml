@@ -112,7 +112,7 @@
         </dependency>
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
-            <artifactId>apache-el</artifactId>
+            <artifactId>mortbay-apache-el</artifactId>
             <version>${jasper.version}</version>
             <scope>test</scope>
         </dependency>

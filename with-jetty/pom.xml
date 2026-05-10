@@ -79,7 +79,7 @@
         <!-- Apache JSP and JSTL dependencies -->
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
-            <artifactId>apache-jsp</artifactId>
+            <artifactId>mortbay-apache-jsp</artifactId>
             <version>${jasper.version}</version>
         </dependency>
         <dependency>
