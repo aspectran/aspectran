@@ -320,9 +320,9 @@ public class JLineTerminal {
             }
         } else {
             // For dumb terminals, overwrite the line with spaces
-            int width = terminal.getWidth();
-            if (width > 0) {
-                getWriter().write("\r" + " ".repeat(width) + "\r");
+            int columns = terminal.getColumns();
+            if (columns > 0) {
+                getWriter().write("\r" + " ".repeat(columns) + "\r");
             } else {
                 // Fallback for terminals with undefined width (e.g., 80 columns)
                 getWriter().write("\r" +
