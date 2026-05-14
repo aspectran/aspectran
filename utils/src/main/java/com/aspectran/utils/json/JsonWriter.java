@@ -82,7 +82,7 @@ public class JsonWriter {
      * @param writer the character-output stream
      */
     public JsonWriter(Writer writer) {
-        Assert.notNull(writer, "out must not be null");
+        Assert.notNull(writer, "writer must not be null");
         this.writer = writer;
         writtenFlags.push(false);
     }
