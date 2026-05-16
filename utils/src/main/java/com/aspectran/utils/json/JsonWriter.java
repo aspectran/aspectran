@@ -42,8 +42,23 @@ import java.util.Map;
 
 /**
  * Converts an object to a JSON formatted string.
- * <p>If pretty-printing is enabled, the JsonWriter will add newlines and
- * indentation to the written data. Pretty-printing is disabled by default.</p>
+ *
+ * <p>The {@code JsonWriter} provides a flexible way to generate JSON from Java objects.
+ * It supports various data types, including primitive types, strings, collections,
+ * maps, and custom objects. Custom serialization can be registered for specific types.</p>
+ *
+ * <p>If pretty-printing is enabled, the {@code JsonWriter} will add newlines and
+ * indentation to the written data. Pretty-printing is enabled by default.</p>
+ *
+ * <p>Example usage:</p>
+ * <pre>
+ * Writer writer = new StringWriter();
+ * JsonWriter jsonWriter = new JsonWriter(writer);
+ * jsonWriter.beginObject()
+ *           .name("name").value("Aspectran")
+ *           .name("version").value(1.0)
+ *           .endObject();
+ * </pre>
  *
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  *
@@ -76,9 +91,9 @@ public class JsonWriter {
     private Object upperObject;
 
     /**
-     * Instantiates a new JsonWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
+     * Instantiates a new {@code JsonWriter}.
+     * <p>Pretty printing is enabled by default, and the indent string is
+     * set to "  " (two spaces).</p>
      * @param writer the character-output stream
      */
     public JsonWriter(Writer writer) {
@@ -87,6 +102,12 @@ public class JsonWriter {
         writtenFlags.push(false);
     }
 
+    /**
+     * Registers a custom serializer for a specific type.
+     * @param <T> the type of the object to serialize
+     * @param type the class of the type
+     * @param serializer the custom serializer
+     */
     public <T> void registerSerializer(Class<T> type, JsonSerializer<T> serializer) {
         if (serializers == null) {
             serializers = new HashMap<>();
@@ -94,6 +115,10 @@ public class JsonWriter {
         serializers.put(type, serializer);
     }
 
+    /**
+     * Sets the {@code StringifyContext} to be used for serialization.
+     * @param stringifyContext the {@code StringifyContext}
+     */
     public void setStringifyContext(StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
         if (stringifyContext != null) {
@@ -109,12 +134,22 @@ public class JsonWriter {
         }
     }
 
+    /**
+     * Applies the settings from the given {@code StringifyContext}.
+     * @param <T> the type of the {@code JsonWriter}
+     * @param stringifyContext the {@code StringifyContext}
+     * @return this {@code JsonWriter}
+     */
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T apply(StringifyContext stringifyContext) {
         setStringifyContext(stringifyContext);
         return (T)this;
     }
 
+    /**
+     * Sets whether to enable pretty-printing.
+     * @param prettyPrint true to enable pretty-printing, false otherwise
+     */
     public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
@@ -126,26 +161,52 @@ public class JsonWriter {
         }
     }
 
+    /**
+     * Sets whether to enable pretty-printing.
+     * @param <T> the type of the {@code JsonWriter}
+     * @param prettyPrint true to enable pretty-printing, false otherwise
+     * @return this {@code JsonWriter}
+     */
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T prettyPrint(boolean prettyPrint) {
         setPrettyPrint(prettyPrint);
         return (T)this;
     }
 
+    /**
+     * Sets the indent string to be used when pretty-printing is enabled.
+     * @param indentString the indent string
+     */
     public void setIndentString(String indentString) {
         this.indentString = indentString;
     }
 
+    /**
+     * Sets the indent string to be used when pretty-printing is enabled.
+     * @param <T> the type of the {@code JsonWriter}
+     * @param indentString the indent string
+     * @return this {@code JsonWriter}
+     */
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T indentString(String indentString) {
         setIndentString(indentString);
         return (T)this;
     }
 
+    /**
+     * Sets whether null values should be written.
+     * @param nullWritable true if null values should be written, false otherwise
+     */
     public void setNullWritable(boolean nullWritable) {
         this.nullWritable = nullWritable;
     }
 
+    /**
+     * Sets whether null values should be written.
+     * @param <T> the type of the {@code JsonWriter}
+     * @param nullWritable true if null values should be written, false otherwise
+     * @return this {@code JsonWriter}
+     */
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
         setNullWritable(nullWritable);
@@ -154,6 +215,8 @@ public class JsonWriter {
 
     /**
      * Begins encoding a new object.
+     * @param <T> the type of the {@code JsonWriter}
+     * @return this {@code JsonWriter}
      * @throws IOException if an I/O error has occurred
      */
     @SuppressWarnings("unchecked")
@@ -168,6 +231,8 @@ public class JsonWriter {
 
     /**
      * Ends encoding the current object.
+     * @param <T> the type of the {@code JsonWriter}
+     * @return this {@code JsonWriter}
      * @throws IOException if an I/O error has occurred
      */
     @SuppressWarnings("unchecked")
@@ -184,6 +249,8 @@ public class JsonWriter {
 
     /**
      * Begins encoding a new array.
+     * @param <T> the type of the {@code JsonWriter}
+     * @return this {@code JsonWriter}
      * @throws IOException if an I/O error has occurred
      */
     @SuppressWarnings("unchecked")
@@ -198,6 +265,8 @@ public class JsonWriter {
 
     /**
      * Ends encoding the current array.
+     * @param <T> the type of the {@code JsonWriter}
+     * @return this {@code JsonWriter}
      * @throws IOException if an I/O error has occurred
      */
     @SuppressWarnings("unchecked")
@@ -212,12 +281,26 @@ public class JsonWriter {
         return (T)this;
     }
 
+    /**
+     * Sets the name for the next value to be written.
+     * @param <T> the type of the {@code JsonWriter}
+     * @param name the name of the member
+     * @return this {@code JsonWriter}
+     * @throws IOException if an I/O error has occurred
+     */
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T name(String name) throws IOException {
         writeName(name);
         return (T)this;
     }
 
+    /**
+     * Writes a value to the writer.
+     * @param <T> the type of the {@code JsonWriter}
+     * @param value the object to write
+     * @return this {@code JsonWriter}
+     * @throws IOException if an I/O error has occurred
+     */
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T value(Object value) throws IOException {
         writeValue(value);
@@ -226,7 +309,7 @@ public class JsonWriter {
 
     /**
      * Writes a key name to the writer.
-     * @param name the string to write to the writer
+     * @param name the name to write
      */
     public void writeName(String name) {
         pendingName = name;
@@ -255,8 +338,8 @@ public class JsonWriter {
 
     /**
      * Writes an object to the writer.
-     * @param object the object to write to the writer.
-     * @throws IOException if an I/O error has occurred.
+     * @param object the object to write
+     * @throws IOException if an I/O error has occurred
      */
     public void writeValue(Object object) throws IOException {
         if (object == null) {
@@ -412,7 +495,7 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a "null" string to the writer.
+     * Writes a {@code null} value to the writer.
      * @throws IOException if an I/O error has occurred
      */
     public void writeNull() throws IOException {
@@ -420,8 +503,8 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a "null" string to the writer.
-     * @param force true if forces should be written null value
+     * Writes a {@code null} value to the writer.
+     * @param force true if {@code null} value should be written even if {@code nullWritable} is false
      * @throws IOException if an I/O error has occurred
      */
     public void writeNull(boolean force) throws IOException {
@@ -435,9 +518,8 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a string directly to the writer stream without
-     * quoting or escaping.
-     * @param json the string to write to the writer
+     * Writes a JSON string directly to the writer without quoting or escaping.
+     * @param json the JSON string to write
      * @throws IOException if an I/O error has occurred
      */
     public void writeJson(String json) throws IOException {
@@ -465,9 +547,8 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a string to the writer.
-     * If {@code value} is null, write a null string ("").
-     * @param value the string to write to the writer
+     * Writes a string value to the writer.
+     * @param value the string value to write
      * @throws IOException if an I/O error has occurred
      */
     protected void writeString(String value) throws IOException {
@@ -481,8 +562,8 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a {@code Boolean} object to the writer.
-     * @param value a {@code Boolean} object to write to the writer
+     * Writes a boolean value to the writer.
+     * @param value the boolean value to write
      * @throws IOException if an I/O error has occurred
      */
     protected void writeBool(Boolean value) throws IOException {
@@ -496,8 +577,8 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a {@code Number} object to the writer.
-     * @param value a {@code Number} object to write to the writer
+     * Writes a number value to the writer.
+     * @param value the number value to write
      * @throws IOException if an I/O error has occurred
      */
     protected void writeNumber(Number value) throws IOException {
@@ -511,7 +592,7 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a comma character to the writer.
+     * Writes a comma character and a newline to the writer.
      * @throws IOException if an I/O error has occurred
      */
     private void writeComma() throws IOException {
@@ -520,7 +601,7 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a tab character to the writer.
+     * Writes indentation characters to the writer.
      * @throws IOException if an I/O error has occurred
      */
     private void indent() throws IOException {
@@ -532,7 +613,7 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a new line character to the writer.
+     * Writes a newline character to the writer.
      * @throws IOException if an I/O error has occurred
      */
     private void nextLine() throws IOException {
@@ -542,14 +623,17 @@ public class JsonWriter {
     }
 
     /**
-     * Ensures all buffered data is written to the underlying
-     * {@link Writer} and flushes that writer.
+     * Flushes the underlying writer.
      * @throws IOException if an I/O error has occurred
      */
     public void flush() throws IOException {
         writer.flush();
     }
 
+    /**
+     * Closes the underlying writer.
+     * @throws IOException if an I/O error has occurred
+     */
     public void close() throws IOException {
         writer.close();
     }
