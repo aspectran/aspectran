@@ -75,7 +75,7 @@
           scope="prototype">
         <property name="sessionDataStore">
             <bean class="com.aspectran.jetty.server.session.JettyFileSessionDataStoreFactory">
-                <property name="storeDir">/work/_sessions/%{jetty.context.root.name}</property>
+                <property name="storeDir">%{system:aspectran.workPath:/work}/_sessions/%{jetty.context.root.name}</property>
                 <property name="deleteUnrestorableFiles" valueType="boolean">true</property>
             </bean>
         </property>

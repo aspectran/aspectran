@@ -21,7 +21,7 @@
                 <property name="base">/webroot</property>
             </bean>
         </property>
-        <property name="scratchDir">/work/_webroot/%{tow.context.root.name}</property>
+        <property name="scratchDir">%{system:aspectran.workPath:/work}/_webroot/%{tow.context.root.name}</property>
         <property name="sessionManager">#{tow.context.root.sessionManager}</property>
         <property name="servletSessionConfig">
             <bean class="io.undertow.servlet.api.ServletSessionConfig">
@@ -77,7 +77,7 @@
         <properties profile="(!rss-lettuce, !rss-lettuce-primaryreplica, !rss-lettuce-cluster)">
             <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
-                    <property name="storeDir">/work/_sessions/tow</property>
+                    <property name="storeDir">%{system:aspectran.workPath:/work}/_sessions/tow</property>
                 </bean>
             </item>
         </properties>

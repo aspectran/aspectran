@@ -21,7 +21,7 @@
                 <property name="base">/webapps/%{tow.context.root.name}</property>
             </bean>
         </property>
-        <property name="scratchDir">/work/_webapps/%{tow.context.root.name}</property>
+        <property name="scratchDir">%{system:aspectran.workPath:/work}/_webapps/%{tow.context.root.name}</property>
         <property name="sessionManager">#{tow.context.root.sessionManager}</property>
         <property name="servletSessionConfig">
             <bean class="io.undertow.servlet.api.ServletSessionConfig">
