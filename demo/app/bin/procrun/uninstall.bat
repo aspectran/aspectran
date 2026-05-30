@@ -19,9 +19,10 @@ rem If no ServiceName is specified, the default is "AspectranService"
 if "%SERVICE_NAME%" == "" set SERVICE_NAME=AspectranService
 echo Using SERVICE_NAME: %SERVICE_NAME%
 
-rem Detect x86 or amd64 to find the correct prunsrv.exe
-if "%PROCESSOR_ARCHITECTURE%" == "amd64" goto is-amd64
-if "%PROCESSOR_ARCHITEW6432%" == "amd64" goto is-amd64
+rem Detect x86, amd64 or arm64 to find the correct prunsrv.exe
+if /I "%PROCESSOR_ARCHITECTURE%" == "arm64" goto is-arm64
+if /I "%PROCESSOR_ARCHITECTURE%" == "amd64" goto is-amd64
+if /I "%PROCESSOR_ARCHITEW6432%" == "amd64" goto is-amd64
 if defined ProgramFiles(x86) goto is-amd64
 :is-x86
 echo Current System Architecture: x86
@@ -30,6 +31,10 @@ goto is-detected
 :is-amd64
 echo Current System Architecture: amd64
 set PR_INSTALL=%BASE_DIR%\bin\procrun\amd64\prunsrv.exe
+goto is-detected
+:is-arm64
+echo Current System Architecture: arm64
+set PR_INSTALL=%BASE_DIR%\bin\procrun\arm64\prunsrv.exe
 :is-detected
 if not exist "%PR_INSTALL%" goto invalid-installer
 

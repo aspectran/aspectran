@@ -56,17 +56,25 @@ if not "%JVM_MS%" == "" echo Using JVM_MS: %JVM_MS%MB
 if not "%JVM_MX%" == "" echo Using JVM_MX: %JVM_MX%MB
 if not "%JVM_SS%" == "" echo Using JVM_SS: %JVM_SS%KB
 
-rem Detect x86 or amd64
-if "%PROCESSOR_ARCHITECTURE%" == "amd64" goto is-amd64
-if "%PROCESSOR_ARCHITEW6432%" == "amd64" goto is-amd64
+rem Detect x86, amd64 or arm64
+if /I "%PROCESSOR_ARCHITECTURE%" == "arm64" goto is-arm64
+if /I "%PROCESSOR_ARCHITECTURE%" == "amd64" goto is-amd64
+if /I "%PROCESSOR_ARCHITEW6432%" == "amd64" goto is-amd64
 if defined ProgramFiles(x86) goto is-amd64
 :is-x86
 echo Current System Architecture: x86
 set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv.exe
+set PR_MGR=%BASE_DIR%\bin\procrun\prunmgr.exe
 goto is-detected
 :is-amd64
 echo Current System Architecture: amd64
 set PR_INSTALL=%BASE_DIR%\bin\procrun\amd64\prunsrv.exe
+set PR_MGR=%BASE_DIR%\bin\procrun\prunmgr.exe
+goto is-detected
+:is-arm64
+echo Current System Architecture: arm64
+set PR_INSTALL=%BASE_DIR%\bin\procrun\arm64\prunsrv.exe
+set PR_MGR=%BASE_DIR%\bin\procrun\arm64\prunmgr.exe
 :is-detected
 if not exist "%PR_INSTALL%" goto invalid-installer
 
@@ -136,7 +144,7 @@ echo Creating Service...
  
 if not errorlevel 1 (
   echo For easy management, copy the prunmgr.exe file with the same name as the service name.
-  copy /Y "%BASE_DIR%\bin\procrun\prunmgr.exe" "%BASE_DIR%\bin\procrun\%SERVICE_NAME%.exe"
+  copy /Y "%PR_MGR%" "%BASE_DIR%\bin\procrun\%SERVICE_NAME%.exe"
   goto installed
 )
 
