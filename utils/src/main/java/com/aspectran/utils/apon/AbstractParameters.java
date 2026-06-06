@@ -450,78 +450,91 @@ public abstract class AbstractParameters implements Parameters {
         if (value == null && notNullOnly) {
             return;
         }
-        if (value != null && value.getClass().isArray()) {
-            int len = Array.getLength(value);
-            int affected = 0;
-            for (int i = 0; i < len; i++) {
-                Object obj = Array.get(value, i);
-                if (obj != null || !notNullOnly) {
-                    putArrayValue(name, obj);
-                    affected++;
+        if (value != null) {
+            Parameter p = getParameter(name);
+            if (p != null && p.getValueType() == ValueType.OBJECT && !p.isArray()) {
+                putValue(p, name, value);
+                return;
+            }
+
+            if (value.getClass().isArray()) {
+                int len = Array.getLength(value);
+                int affected = 0;
+                for (int i = 0; i < len; i++) {
+                    Object obj = Array.get(value, i);
+                    if (obj != null || !notNullOnly) {
+                        putArrayValue(name, obj);
+                        affected++;
+                    }
                 }
-            }
-            if (affected == 0 && !notNullOnly) {
-                touchEmptyArrayParameter(name);
-            }
-        } else if (value instanceof Collection<?> collection) {
-            int affected = 0;
-            for (Object obj : collection) {
-                if (obj != null || !notNullOnly) {
-                    putArrayValue(name, obj);
-                    affected++;
+                if (affected == 0 && !notNullOnly) {
+                    touchEmptyArrayParameter(name);
                 }
-            }
-            if (affected == 0 && !notNullOnly) {
-                touchEmptyArrayParameter(name);
-            }
-        } else if (value instanceof Iterator<?> iterator) {
-            int affected = 0;
-            while (iterator.hasNext()) {
-                Object obj = iterator.next();
-                if (obj != null || !notNullOnly) {
-                    putArrayValue(name, obj);
-                    affected++;
+            } else if (value instanceof Collection<?> collection) {
+                int affected = 0;
+                for (Object obj : collection) {
+                    if (obj != null || !notNullOnly) {
+                        putArrayValue(name, obj);
+                        affected++;
+                    }
                 }
-            }
-            if (affected == 0 && !notNullOnly) {
-                touchEmptyArrayParameter(name);
-            }
-        } else if (value instanceof Enumeration<?> enumeration) {
-            int affected = 0;
-            while (enumeration.hasMoreElements()) {
-                Object obj = enumeration.nextElement();
-                if (obj != null || !notNullOnly) {
-                    putArrayValue(name, obj);
-                    affected++;
+                if (affected == 0 && !notNullOnly) {
+                    touchEmptyArrayParameter(name);
                 }
-            }
-            if (affected == 0 && !notNullOnly) {
-                touchEmptyArrayParameter(name);
-            }
-        } else if (value instanceof Map<?, ?> map) {
-            int affected = 0;
-            Parameters ps = touchParameters(name);
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                Object obj = entry.getValue();
-                if (obj != null || !notNullOnly) {
-                    ps.putValue(entry.getKey().toString(), obj);
-                    affected++;
+            } else if (value instanceof Iterator<?> iterator) {
+                int affected = 0;
+                while (iterator.hasNext()) {
+                    Object obj = iterator.next();
+                    if (obj != null || !notNullOnly) {
+                        putArrayValue(name, obj);
+                        affected++;
+                    }
                 }
-            }
-            if (affected == 0) {
-                if (notNullOnly) {
-                    removeValue(name);
-                } else {
-                    putValue(name, null, false);
+                if (affected == 0 && !notNullOnly) {
+                    touchEmptyArrayParameter(name);
                 }
+            } else if (value instanceof Enumeration<?> enumeration) {
+                int affected = 0;
+                while (enumeration.hasMoreElements()) {
+                    Object obj = enumeration.nextElement();
+                    if (obj != null || !notNullOnly) {
+                        putArrayValue(name, obj);
+                        affected++;
+                    }
+                }
+                if (affected == 0 && !notNullOnly) {
+                    touchEmptyArrayParameter(name);
+                }
+            } else if (value instanceof Map<?, ?> map) {
+                int affected = 0;
+                Parameters ps = touchParameters(name);
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    Object obj = entry.getValue();
+                    if (obj != null || !notNullOnly) {
+                        ps.putValue(entry.getKey().toString(), obj);
+                        affected++;
+                    }
+                }
+                if (affected == 0) {
+                    if (notNullOnly) {
+                        removeValue(name);
+                    } else {
+                        putValue(name, null, false);
+                    }
+                }
+            } else {
+                if (p == null) {
+                    ValueType valueType = ValueType.resolveFrom(value);
+                    p = attachParameterValue(name, valueType);
+                }
+                putValue(p, name, value);
             }
         } else {
             Parameter p = getParameter(name);
             if (p == null) {
-                ValueType valueType = ValueType.resolveFrom(value);
-                p = attachParameterValue(name, valueType);
+                p = attachParameterValue(name, ValueType.VARIABLE);
             }
-            putValue(p, name, value);
+            putValue(p, name, null);
         }
     }
 

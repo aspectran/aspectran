@@ -17,16 +17,22 @@ package com.aspectran.utils.apon;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.json.JsonBuilder;
 import com.aspectran.utils.json.JsonReader;
 import com.aspectran.utils.json.JsonReaderCloseable;
+import com.aspectran.utils.json.JsonString;
+import com.aspectran.utils.json.JsonToken;
 import com.aspectran.utils.json.MalformedJsonException;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility that converts JSON into {@link Parameters}.
@@ -160,6 +166,19 @@ public class JsonToParameters {
 
     private void read(@NonNull JsonReader reader, Parameters container, String name, List<Object> valueList)
             throws IOException {
+        if (name != null && valueList == null) {
+            Parameter p = container.getParameter(name);
+            if (p != null && p.getValueType() == ValueType.OBJECT && !p.isArray()) {
+                JsonToken peeked = reader.peek();
+                if (peeked == JsonToken.BEGIN_OBJECT || peeked == JsonToken.BEGIN_ARRAY) {
+                    Object obj = readAsObject(reader);
+                    JsonString jsonString = new JsonBuilder().prettyPrint(false).put(obj).toJsonString();
+                    container.putValue(name, jsonString);
+                    return;
+                }
+            }
+        }
+
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();
@@ -238,23 +257,11 @@ public class JsonToParameters {
                 }
 
                 // Fallback for VariableParameters or if type is not specified
-                ValueType valueType;
-                Object number;
-                try {
-                    number = reader.nextInt();
-                    valueType = ValueType.INT;
-                } catch (NumberFormatException e0) {
-                    try {
-                        number = reader.nextLong();
-                        valueType = ValueType.LONG;
-                    } catch (NumberFormatException e1) {
-                        number = reader.nextDouble();
-                        valueType = ValueType.DOUBLE;
-                    }
-                }
+                Object number = readNumber(reader);
                 if (valueList != null) {
                     valueList.add(number);
                 } else {
+                    ValueType valueType = ValueType.resolveFrom(number);
                     touchParameter(container, name, valueType).putValue(number);
                 }
                 return;
@@ -268,6 +275,51 @@ public class JsonToParameters {
                 return;
             default:
                 throw new MalformedJsonException("Unexpected token: " + reader.peek());
+        }
+    }
+
+    @Nullable
+    private Object readAsObject(@NonNull JsonReader reader) throws IOException {
+        switch (reader.peek()) {
+            case BEGIN_OBJECT:
+                Map<String, Object> map = new LinkedHashMap<>();
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    map.put(reader.nextName(), readAsObject(reader));
+                }
+                reader.endObject();
+                return map;
+            case BEGIN_ARRAY:
+                List<Object> list = new ArrayList<>();
+                reader.beginArray();
+                while (reader.hasNext()) {
+                    list.add(readAsObject(reader));
+                }
+                reader.endArray();
+                return list;
+            case STRING:
+                return reader.nextString();
+            case NUMBER:
+                return readNumber(reader);
+            case BOOLEAN:
+                return reader.nextBoolean();
+            case NULL:
+                reader.nextNull();
+                return null;
+            default:
+                throw new MalformedJsonException("Unexpected token: " + reader.peek());
+        }
+    }
+
+    private Object readNumber(@NonNull JsonReader reader) throws IOException {
+        try {
+            return reader.nextInt();
+        } catch (NumberFormatException e0) {
+            try {
+                return reader.nextLong();
+            } catch (NumberFormatException e1) {
+                return reader.nextDouble();
+            }
         }
     }
 

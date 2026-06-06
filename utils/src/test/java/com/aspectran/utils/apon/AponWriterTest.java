@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.json.JsonString;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -226,7 +228,7 @@ class AponWriterTest {
         LocalDateTime ldt = LocalDateTime.of(2026, 3, 29, 16, 30);
         params.putValue("dateTime", ldt);
 
-        com.aspectran.utils.StringifyContext context = new com.aspectran.utils.StringifyContext();
+        StringifyContext context = new StringifyContext();
         context.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
         context.setPrettyPrint(false);
 
@@ -234,6 +236,35 @@ class AponWriterTest {
         String apon = writer.write(params).toString();
 
         assertEquals("dateTime:\"2026-03-29 16:30:00\"", apon);
+    }
+
+    @Test
+    void testValueTypeObject() throws IOException {
+        class ObjectParameters extends DefaultParameters {
+            static final ParameterKey data = new ParameterKey("data", ValueType.OBJECT);
+            static final ParameterKey[] parameterKeys = new ParameterKey[] { data };
+            ObjectParameters() { super(parameterKeys); }
+        }
+
+        ObjectParameters params = new ObjectParameters();
+
+        // 1. Simple string
+        params.putValue("data", "hello");
+        String apon1 = new AponWriter().write(params).toString().trim();
+        assertEquals("data: hello", apon1);
+
+        // 2. List object - should be stringified using its toString() result
+        List<String> list = Arrays.asList("a", "b");
+        params.putValue("data", list);
+        String apon2 = new AponWriter().write(params).toString().trim();
+        // Arrays.asList().toString() is "[a, b]"
+        assertEquals("data: \"[a, b]\"", apon2);
+
+        // 3. JsonString object - should be treated as a string value (with escaping)
+        JsonString js = new JsonString("{\"k\":\"v\"}");
+        params.putValue("data", js);
+        String apon3 = new AponWriter().write(params).toString().trim();
+        assertEquals("data: \"{\\\"k\\\":\\\"v\\\"}\"", apon3);
     }
 
     /**
