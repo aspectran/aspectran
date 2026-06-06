@@ -217,7 +217,6 @@ public class JsonBuilder {
      * Returns the final JSON string built by this builder.
      * @return the JSON string
      */
-    @Nullable
     public String toString() {
         return jsonWriter.toString();
     }
