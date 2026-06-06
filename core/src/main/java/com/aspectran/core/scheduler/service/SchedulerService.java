@@ -106,4 +106,20 @@ public interface SchedulerService extends ServiceLifeCycle {
      */
     void resume(String scheduleId) throws SchedulerServiceException;
 
+    /**
+     * Pauses a specific job in the scheduler.
+     * @param scheduleId the ID of the schedule containing the job
+     * @param jobName the name of the job to pause
+     * @throws SchedulerServiceException if the job cannot be paused
+     */
+    void pauseJob(String scheduleId, String jobName) throws SchedulerServiceException;
+
+    /**
+     * Resumes a specific job in the scheduler.
+     * @param scheduleId the ID of the schedule containing the job
+     * @param jobName the name of the job to resume
+     * @throws SchedulerServiceException if the job cannot be resumed
+     */
+    void resumeJob(String scheduleId, String jobName) throws SchedulerServiceException;
+
 }

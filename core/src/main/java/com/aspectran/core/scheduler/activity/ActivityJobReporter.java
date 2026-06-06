@@ -80,11 +80,19 @@ public class ActivityJobReporter {
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();
                 ScheduledJobRule jobRule = (ScheduledJobRule) jobDataMap.get(DefaultSchedulerService.JOB_RULE_DATA_KEY);
                 SchedulerService service = (SchedulerService) jobDataMap.get(DefaultSchedulerService.SERVICE_DATA_KEY);
-                if (service != null && !service.isActive()) { // service can be null if job is durable
-                    tsb.append("service", "inactive");
+                if (service != null && !service.isActive()) {
+                    if (logger.isTraceEnabled()) {
+                        tsb.append("service", "inactive");
+                        logger.trace(tsb.toString());
+                    }
+                    return;
                 }
-                if (jobRule != null && jobRule.isDisabled()) { // jobRule can be null if job is durable
-                    tsb.append("job", "disabled");
+                if (jobRule != null && (jobRule.isDisabled() || jobRule.getScheduleRule().isDisabled())) {
+                    if (logger.isTraceEnabled()) {
+                        tsb.append("job", "disabled");
+                        logger.trace(tsb.toString());
+                    }
+                    return;
                 }
             }
 
@@ -122,6 +130,16 @@ public class ActivityJobReporter {
                 String response = activity.getResponseAdapter().getWriter().toString();
                 if (StringUtils.hasLength(response)) {
                     tsb.append("response", response);
+                }
+            }
+
+            if (activity == null && jobException == null) {
+                JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                ScheduledJobRule jobRule = (ScheduledJobRule) jobDataMap.get(DefaultSchedulerService.JOB_RULE_DATA_KEY);
+                SchedulerService service = (SchedulerService) jobDataMap.get(DefaultSchedulerService.SERVICE_DATA_KEY);
+                if ((service != null && !service.isActive()) ||
+                        (jobRule != null && (jobRule.isDisabled() || jobRule.getScheduleRule().isDisabled()))) {
+                    return;
                 }
             }
 

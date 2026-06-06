@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
+import com.aspectran.core.context.rule.type.MisfirePolicy;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -101,5 +103,11 @@ public @interface SimpleTrigger {
      * @return {@code true} if the job should repeat forever (default is false)
      */
     boolean repeatForever() default false;
+
+    /**
+     * The misfire policy to apply to this trigger.
+     * @return the misfire policy (default is SMART_POLICY)
+     */
+    MisfirePolicy misfirePolicy() default MisfirePolicy.SMART_POLICY;
 
 }

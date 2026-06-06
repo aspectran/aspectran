@@ -399,6 +399,9 @@ public class ScheduleRule implements BeanReferenceable, Describable {
         if (simpleTriggerAnno.repeatForever()) {
             expressionParameters.setRepeatForever(true);
         }
+        if (simpleTriggerAnno.misfirePolicy() != null) {
+            expressionParameters.setMisfirePolicy(simpleTriggerAnno.misfirePolicy().toString());
+        }
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
@@ -412,6 +415,9 @@ public class ScheduleRule implements BeanReferenceable, Describable {
         scheduleRule.setTriggerType(TriggerType.CRON);
         String expression = StringUtils.emptyToNull(cronTriggerAnno.expression());
         expressionParameters.setExpression(expression);
+        if (cronTriggerAnno.misfirePolicy() != null) {
+            expressionParameters.setMisfirePolicy(cronTriggerAnno.misfirePolicy().toString());
+        }
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 

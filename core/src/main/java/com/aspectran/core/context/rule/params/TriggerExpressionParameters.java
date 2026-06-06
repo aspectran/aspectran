@@ -35,6 +35,7 @@ public class TriggerExpressionParameters extends DefaultParameters {
     public static final ParameterKey intervalInHours;
     public static final ParameterKey repeatCount;
     public static final ParameterKey repeatForever;
+    public static final ParameterKey misfirePolicy;
     public static final ParameterKey expression;
 
     public static final ParameterKey[] parameterKeys;
@@ -47,6 +48,7 @@ public class TriggerExpressionParameters extends DefaultParameters {
         intervalInHours = new ParameterKey("intervalInHours", ValueType.INT);
         repeatCount = new ParameterKey("repeatCount", ValueType.INT);
         repeatForever = new ParameterKey("repeatForever", ValueType.BOOLEAN);
+        misfirePolicy = new ParameterKey("misfirePolicy", ValueType.STRING);
         expression = new ParameterKey("expression", ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
@@ -57,6 +59,7 @@ public class TriggerExpressionParameters extends DefaultParameters {
                 intervalInHours,
                 repeatCount,
                 repeatForever,
+                misfirePolicy,
                 expression
         };
     }
@@ -124,6 +127,14 @@ public class TriggerExpressionParameters extends DefaultParameters {
 
     public void setRepeatForever(boolean repeatForever) {
         putValue(TriggerExpressionParameters.repeatForever, repeatForever);
+    }
+
+    public String getMisfirePolicy() {
+        return getString(misfirePolicy);
+    }
+
+    public void setMisfirePolicy(String misfirePolicy) {
+        putValue(TriggerExpressionParameters.misfirePolicy, misfirePolicy);
     }
 
     public String getExpression() {

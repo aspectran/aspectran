@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
+import com.aspectran.core.context.rule.type.MisfirePolicy;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -55,5 +57,11 @@ public @interface CronTrigger {
      * @return the cron expression string
      */
     String expression();
+
+    /**
+     * The misfire policy to apply to this trigger.
+     * @return the misfire policy (default is SMART_POLICY)
+     */
+    MisfirePolicy misfirePolicy() default MisfirePolicy.SMART_POLICY;
 
 }

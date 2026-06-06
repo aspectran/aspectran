@@ -32,6 +32,36 @@ public class DefaultSchedulerService extends AbstractSchedulerService {
     }
 
     @Override
+    public void pauseJob(String scheduleId, String jobName) throws SchedulerServiceException {
+        synchronized (getLock()) {
+            try {
+                Scheduler scheduler = getScheduler(scheduleId);
+                if (scheduler != null && scheduler.isStarted()) {
+                    scheduler.pauseJob(org.quartz.JobKey.jobKey(jobName, scheduleId));
+                }
+            } catch (Exception e) {
+                throw new SchedulerServiceException("Could not pause job '" + jobName +
+                        "' in scheduler '" + scheduleId + "'", e);
+            }
+        }
+    }
+
+    @Override
+    public void resumeJob(String scheduleId, String jobName) throws SchedulerServiceException {
+        synchronized (getLock()) {
+            try {
+                Scheduler scheduler = getScheduler(scheduleId);
+                if (scheduler != null && scheduler.isStarted()) {
+                    scheduler.resumeJob(org.quartz.JobKey.jobKey(jobName, scheduleId));
+                }
+            } catch (Exception e) {
+                throw new SchedulerServiceException("Could not resume job '" + jobName +
+                        "' in scheduler '" + scheduleId + "'", e);
+            }
+        }
+    }
+
+    @Override
     public void pauseAll() {
         synchronized (getLock()) {
             try {

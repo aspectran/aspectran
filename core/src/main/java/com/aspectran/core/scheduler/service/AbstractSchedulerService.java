@@ -22,6 +22,7 @@ import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
+import com.aspectran.core.context.rule.type.MisfirePolicy;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.scheduler.activity.ActivityJobListener;
 import com.aspectran.core.scheduler.activity.ActivityLauncherJob;
@@ -354,6 +355,23 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 builder.repeatForever();
             }
 
+            MisfirePolicy misfirePolicy = MisfirePolicy.resolve(expressionParameters.getMisfirePolicy());
+            if (misfirePolicy == MisfirePolicy.IGNORE_MISFIRES) {
+                builder.withMisfireHandlingInstructionIgnoreMisfires();
+            } else if (misfirePolicy == MisfirePolicy.FIRE_NOW) {
+                builder.withMisfireHandlingInstructionFireNow();
+            } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT) {
+                builder.withMisfireHandlingInstructionNowWithExistingCount();
+            } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT) {
+                builder.withMisfireHandlingInstructionNowWithRemainingCount();
+            } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NEXT_WITH_REMAINING_COUNT) {
+                builder.withMisfireHandlingInstructionNextWithRemainingCount();
+            } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NEXT_WITH_EXISTING_COUNT) {
+                builder.withMisfireHandlingInstructionNextWithExistingCount();
+            } else {
+                builder.withMisfireHandlingInstructionNextWithRemainingCount();
+            }
+
             return TriggerBuilder.newTrigger()
                     .withIdentity(name, group)
                     .startAt(firstFireTime)
@@ -362,6 +380,17 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         } else {
             String expression = expressionParameters.getExpression();
             CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
+
+            MisfirePolicy misfirePolicy = MisfirePolicy.resolve(expressionParameters.getMisfirePolicy());
+            if (misfirePolicy == MisfirePolicy.IGNORE_MISFIRES) {
+                cronSchedule.withMisfireHandlingInstructionIgnoreMisfires();
+            } else if (misfirePolicy == MisfirePolicy.FIRE_ONCE_NOW) {
+                cronSchedule.withMisfireHandlingInstructionFireAndProceed();
+            } else if (misfirePolicy == MisfirePolicy.DO_NOTHING) {
+                cronSchedule.withMisfireHandlingInstructionDoNothing();
+            } else {
+                cronSchedule.withMisfireHandlingInstructionDoNothing();
+            }
 
             return TriggerBuilder.newTrigger()
                     .withIdentity(name, group)
