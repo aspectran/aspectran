@@ -240,30 +240,33 @@ class AponWriterTest {
 
     @Test
     void testValueTypeObject() throws IOException {
-        class ObjectParameters extends DefaultParameters {
-            static final ParameterKey data = new ParameterKey("data", ValueType.OBJECT);
-            static final ParameterKey[] parameterKeys = new ParameterKey[] { data };
-            ObjectParameters() { super(parameterKeys); }
-        }
-
-        ObjectParameters params = new ObjectParameters();
-
         // 1. Simple string
-        params.putValue("data", "hello");
-        String apon1 = new AponWriter().write(params).toString().trim();
+        Parameters params1 = new VariableParameters();
+        params1.attachParameterValue("data", ValueType.OBJECT);
+        params1.putValue("data", "hello");
+        String apon1 = new AponWriter().write(params1).toString().trim();
         assertEquals("data: hello", apon1);
 
-        // 2. List object - should be stringified using its toString() result
+        // 2. List object - should be rendered as a structured APON array
+        Parameters params2 = new VariableParameters();
+        params2.attachParameterValue("data", ValueType.OBJECT);
         List<String> list = Arrays.asList("a", "b");
-        params.putValue("data", list);
-        String apon2 = new AponWriter().write(params).toString().trim();
-        // Arrays.asList().toString() is "[a, b]"
-        assertEquals("data: \"[a, b]\"", apon2);
+        params2.putValue("data", list);
+        String apon2 = new AponWriter().write(params2).toString().trim();
+        String expectedApon2 = """
+                data: [
+                  a
+                  b
+                ]
+                """.replace("\n", AponFormat.SYSTEM_NEW_LINE).trim();
+        assertEquals(expectedApon2, apon2);
 
         // 3. JsonString object - should be treated as a string value (with escaping)
+        Parameters params3 = new VariableParameters();
+        params3.attachParameterValue("data", ValueType.OBJECT);
         JsonString js = new JsonString("{\"k\":\"v\"}");
-        params.putValue("data", js);
-        String apon3 = new AponWriter().write(params).toString().trim();
+        params3.putValue("data", js);
+        String apon3 = new AponWriter().write(params3).toString().trim();
         assertEquals("data: \"{\\\"k\\\":\\\"v\\\"}\"", apon3);
     }
 
