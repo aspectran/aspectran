@@ -22,15 +22,73 @@ import org.jspecify.annotations.Nullable;
  */
 public enum MisfirePolicy {
 
-    SMART_POLICY("smartPolicy"),
+    /**
+     * Instructs the {@code Scheduler} that the {@code Trigger} should never be considered
+     * to have misfired - that is, it will be fired as soon as it can be.
+     * All misfired executions will be fired.
+     */
     IGNORE_MISFIRES("ignoreMisfires"),
-    FIRE_NOW("fireNow"),
-    RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT("rescheduleNowWithExistingRepeatCount"),
-    RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT("rescheduleNowWithRemainingRepeatCount"),
-    RESCHEDULE_NEXT_WITH_REMAINING_COUNT("rescheduleNextWithRemainingCount"),
-    RESCHEDULE_NEXT_WITH_EXISTING_COUNT("rescheduleNextWithExistingCount"),
+
+    /**
+     * The default misfire policy. The behavior varies depending on the trigger type:
+     * <ul>
+     *   <li>CronTrigger: Same as {@link #FIRE_ONCE_NOW}.</li>
+     *   <li>SimpleTrigger (Fixed Repeat): Same as {@link #RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT}.</li>
+     *   <li>SimpleTrigger (Infinite Repeat): Same as {@link #RESCHEDULE_NEXT_WITH_REMAINING_COUNT}.</li>
+     * </ul>
+     */
+    SMART_POLICY("smartPolicy"),
+
+    /**
+     * Instructs the {@code Scheduler} that the first misfired occurrence should be executed
+     * as soon as possible, and any other misfired occurrences should be discarded.
+     * Compatible with {@code CronTrigger}.
+     */
     FIRE_ONCE_NOW("fireOnceNow"),
-    DO_NOTHING("doNothing");
+
+    /**
+     * Instructs the {@code Scheduler} that all misfired occurrences should be discarded,
+     * and the trigger should wait for the next scheduled fire time.
+     * Compatible with {@code CronTrigger}.
+     */
+    DO_NOTHING("doNothing"),
+
+    /**
+     * Instructs the {@code Scheduler} that the first misfired occurrence should be executed
+     * as soon as possible, and any other misfired occurrences should be discarded.
+     * Compatible with {@code SimpleTrigger}.
+     */
+    FIRE_NOW("fireNow"),
+
+    /**
+     * Instructs the {@code Scheduler} that the {@code Trigger} should be rescheduled to fire
+     * as soon as it can be, with its repeat count remaining unchanged.
+     * Compatible with {@code SimpleTrigger}.
+     */
+    RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT("rescheduleNowWithExistingRepeatCount"),
+
+    /**
+     * Instructs the {@code Scheduler} that the {@code Trigger} should be rescheduled to fire
+     * as soon as it can be, with the first misfired occurrence counting as one of its repeat
+     * counts, and the remaining repeat count used for subsequent fire times.
+     * Compatible with {@code SimpleTrigger}.
+     */
+    RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT("rescheduleNowWithRemainingRepeatCount"),
+
+    /**
+     * Instructs the {@code Scheduler} that the {@code Trigger} should be rescheduled to the
+     * next scheduled fire time after the current time, with its repeat count remaining unchanged.
+     * Compatible with {@code SimpleTrigger}.
+     */
+    RESCHEDULE_NEXT_WITH_EXISTING_COUNT("rescheduleNextWithExistingCount"),
+
+    /**
+     * Instructs the {@code Scheduler} that the {@code Trigger} should be rescheduled to the
+     * next scheduled fire time after the current time, with its repeat count updated to reflect
+     * the number of firings that were missed.
+     * Compatible with {@code SimpleTrigger}.
+     */
+    RESCHEDULE_NEXT_WITH_REMAINING_COUNT("rescheduleNextWithRemainingCount");
 
     private final String alias;
 

@@ -355,7 +355,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 builder.repeatForever();
             }
 
-            MisfirePolicy misfirePolicy = MisfirePolicy.resolve(expressionParameters.getMisfirePolicy());
+            String misfirePolicyAlias = expressionParameters.getMisfirePolicy();
+            MisfirePolicy misfirePolicy = MisfirePolicy.resolve(misfirePolicyAlias);
             if (misfirePolicy == MisfirePolicy.IGNORE_MISFIRES) {
                 builder.withMisfireHandlingInstructionIgnoreMisfires();
             } else if (misfirePolicy == MisfirePolicy.FIRE_NOW) {
@@ -364,12 +365,18 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 builder.withMisfireHandlingInstructionNowWithExistingCount();
             } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT) {
                 builder.withMisfireHandlingInstructionNowWithRemainingCount();
-            } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NEXT_WITH_REMAINING_COUNT) {
-                builder.withMisfireHandlingInstructionNextWithRemainingCount();
             } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NEXT_WITH_EXISTING_COUNT) {
                 builder.withMisfireHandlingInstructionNextWithExistingCount();
-            } else {
+            } else if (misfirePolicy == MisfirePolicy.RESCHEDULE_NEXT_WITH_REMAINING_COUNT) {
                 builder.withMisfireHandlingInstructionNextWithRemainingCount();
+            } else if (misfirePolicy == MisfirePolicy.SMART_POLICY || misfirePolicy == null) {
+                if (misfirePolicyAlias != null && misfirePolicy == null) {
+                    throw new IllegalArgumentException("Unknown misfire policy \"" + misfirePolicyAlias +
+                            "\" for SimpleTrigger; Invalid ScheduleRule " + scheduleRule);
+                }
+            } else {
+                throw new IllegalArgumentException("Unsupported misfire policy \"" + misfirePolicy +
+                        "\" for SimpleTrigger; Invalid ScheduleRule " + scheduleRule);
             }
 
             return TriggerBuilder.newTrigger()
@@ -381,15 +388,22 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
             String expression = expressionParameters.getExpression();
             CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
 
-            MisfirePolicy misfirePolicy = MisfirePolicy.resolve(expressionParameters.getMisfirePolicy());
+            String misfirePolicyAlias = expressionParameters.getMisfirePolicy();
+            MisfirePolicy misfirePolicy = MisfirePolicy.resolve(misfirePolicyAlias);
             if (misfirePolicy == MisfirePolicy.IGNORE_MISFIRES) {
                 cronSchedule.withMisfireHandlingInstructionIgnoreMisfires();
             } else if (misfirePolicy == MisfirePolicy.FIRE_ONCE_NOW) {
                 cronSchedule.withMisfireHandlingInstructionFireAndProceed();
             } else if (misfirePolicy == MisfirePolicy.DO_NOTHING) {
                 cronSchedule.withMisfireHandlingInstructionDoNothing();
+            } else if (misfirePolicy == MisfirePolicy.SMART_POLICY || misfirePolicy == null) {
+                if (misfirePolicyAlias != null && misfirePolicy == null) {
+                    throw new IllegalArgumentException("Unknown misfire policy \"" + misfirePolicyAlias +
+                            "\" for CronTrigger; Invalid ScheduleRule " + scheduleRule);
+                }
             } else {
-                cronSchedule.withMisfireHandlingInstructionDoNothing();
+                throw new IllegalArgumentException("Unsupported misfire policy \"" + misfirePolicy +
+                        "\" for CronTrigger; Invalid ScheduleRule " + scheduleRule);
             }
 
             return TriggerBuilder.newTrigger()
