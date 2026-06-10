@@ -23,6 +23,7 @@ import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandResult;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;
@@ -174,7 +175,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         } catch (Exception e) {
             logger.error("Failed to parse command parameters: {}", apon, e);
             String message = "[FAILED] Malformed command data";
-            String error = com.aspectran.utils.ExceptionUtils.getStacktrace(e);
+            String error = ExceptionUtils.getStacktrace(e);
             return new CommandResult(false, message, error);
         }
     }

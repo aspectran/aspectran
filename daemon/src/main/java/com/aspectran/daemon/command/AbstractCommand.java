@@ -17,6 +17,7 @@ package com.aspectran.daemon.command;
 
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,9 +167,13 @@ public abstract class AbstractCommand implements Command {
      * @param throwable the cause
      * @return a failed result with the throwable's stack trace
      */
-    protected CommandResult failed(Throwable throwable) {
+    protected CommandResult failed(@NonNull Throwable throwable) {
+        String message = throwable.getMessage();
+        if (message == null) {
+            message = throwable.toString();
+        }
         logger.error(throwable.toString(), throwable);
-        return new CommandResult(false, "[FAILED] " + throwable.toString(),
+        return new CommandResult(false, "[FAILED] " + message,
                 ExceptionUtils.getStacktrace(throwable));
     }
 
