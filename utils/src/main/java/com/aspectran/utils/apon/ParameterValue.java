@@ -38,6 +38,8 @@ public class ParameterValue implements Parameter {
 
     private final String name;
 
+    private String altName;
+
     private final ValueType originValueType;
 
     private ValueType valueType;
@@ -152,6 +154,19 @@ public class ParameterValue implements Parameter {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getAltName() {
+        return altName;
+    }
+
+    /**
+     * Sets the alternative name (alias) for this parameter.
+     * @param altName the alternative name
+     */
+    public void setAltName(String altName) {
+        this.altName = altName;
     }
 
     /**

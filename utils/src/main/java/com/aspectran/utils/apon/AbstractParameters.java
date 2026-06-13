@@ -76,7 +76,11 @@ public abstract class AbstractParameters implements Parameters {
                 pv.setContainer(this);
                 valueMap.put(pk.getName(), pv);
                 if (pk.getAltNames() != null) {
-                    for (String altName : pk.getAltNames()) {
+                    String[] altNames = pk.getAltNames();
+                    if (altNames.length == 1) {
+                        pv.setAltName(altNames[0]);
+                    }
+                    for (String altName : altNames) {
                         altValueMap.put(altName, pv);
                     }
                 }

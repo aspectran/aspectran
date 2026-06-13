@@ -38,6 +38,12 @@ public interface Parameter {
     String getName();
 
     /**
+     * Returns the alternative name (alias) if this parameter has a single alternative name.
+     * @return the alternative name, or {@code null} if it has none or multiple alternative names
+     */
+    String getAltName();
+
+    /**
      * Return the fully qualified name (including owner ancestry where applicable).
      */
     String getQualifiedName();

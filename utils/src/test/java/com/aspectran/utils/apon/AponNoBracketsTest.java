@@ -92,4 +92,68 @@ class AponNoBracketsTest {
         assertEquals(apon.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
     }
 
+    @Test
+    void testNoBracketsWithSingleAltName() throws IOException {
+        TestAppConfig config = new TestAppConfig();
+
+        Parameters app1 = config.touchParameters(TestAppConfig.apps);
+        app1.putValue("id", "app1");
+        app1.putValue("name", "Application 1");
+
+        Parameters app2 = config.touchParameters(TestAppConfig.apps);
+        app2.putValue("id", "app2");
+        app2.putValue("name", "Application 2");
+
+        String result = config.toString();
+
+        // Since noBrackets=true and altNames has a single element "app",
+        // it should output "app" instead of the primary name "apps".
+        String expected = """
+                app: {
+                  id: app1
+                  name: Application 1
+                }
+                app: {
+                  id: app2
+                  name: Application 2
+                }
+                """;
+
+        assertEquals(expected.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
+
+        // Round-trip test: Parsing the serialized APON should successfully bind back to "apps" list
+        TestAppConfig parsedConfig = AponReader.read(result, new TestAppConfig());
+        assertEquals(2, parsedConfig.getParametersList(TestAppConfig.apps).size());
+    }
+
+    public static class TestAppConfig extends DefaultParameters {
+        public static final ParameterKey apps;
+        private static final ParameterKey[] parameterKeys;
+
+        static {
+            apps = new ParameterKey("apps", new String[] {"app"}, TestAppInfo.class, true, true);
+            parameterKeys = new ParameterKey[] { apps };
+        }
+
+        public TestAppConfig() {
+            super(parameterKeys);
+        }
+    }
+
+    public static class TestAppInfo extends DefaultParameters {
+        public static final ParameterKey id;
+        public static final ParameterKey name;
+        private static final ParameterKey[] parameterKeys;
+
+        static {
+            id = new ParameterKey("id", ValueType.STRING);
+            name = new ParameterKey("name", ValueType.STRING);
+            parameterKeys = new ParameterKey[] { id, name };
+        }
+
+        public TestAppInfo() {
+            super(parameterKeys);
+        }
+    }
+
 }

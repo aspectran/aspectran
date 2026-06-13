@@ -459,7 +459,12 @@ public class AponWriter implements Flushable {
      */
     private void writeName(@NonNull Parameter parameter) throws IOException {
         indent();
-        String name = parameter.getName();
+        String name;
+        if (parameter.isArray() && !parameter.isBracketed() && parameter.getAltName() != null) {
+            name = parameter.getAltName();
+        } else {
+            name = parameter.getName();
+        }
         if (AponFormat.needsQuoting(name)) {
             write(DOUBLE_QUOTE_CHAR);
             write(AponFormat.escape(name));
