@@ -409,24 +409,24 @@ public interface RequestAdapter {
 
     /**
      * Parses the request body into an object of the specified {@link Parameters} type.
-     * @param <T> the type of the parameters object
-     * @param requiredType the class of the parameters object to return
-     * @return the parsed parameters object
+     * @param <T> the type of the {@code Parameters} object
+     * @param requiredType the class of the {@code Parameters} object to return
+     * @return the parsed {@code Parameters} object
      * @throws RequestParseException if an error occurs during parsing
      */
     <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException;
 
     /**
      * Returns all request parameters (from query string and body) as a {@link Parameters} object.
-     * @return the parameters object
+     * @return the {@code Parameters} object
      */
     Parameters getParameters();
 
     /**
      * Returns all request parameters (from query string and body) as an object of the specified type.
-     * @param <T> the type of the parameters object
-     * @param requiredType the class of the parameters object to return
-     * @return the parameters object
+     * @param <T> the type of the {@code Parameters} object
+     * @param requiredType the class of the {@code Parameters} object to return
+     * @return the {@code Parameters} object
      */
     <T extends Parameters> T getParameters(Class<T> requiredType);
 

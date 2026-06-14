@@ -141,7 +141,7 @@ public final class WebRequestBodyParser {
      * {@code application/apon}, and {@code application/xml}.</p>
      * @param requestAdapter the web request adapter
      * @param requiredType the target {@code Parameters} type
-     * @param <T> the type of the parameters object
+     * @param <T> the type of the {@code Parameters} object
      * @return the parsed {@code Parameters} object, or {@code null} if the content type is not supported
      * @throws RequestParseException if parsing fails
      */

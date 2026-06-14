@@ -665,7 +665,8 @@ public class AponWriter implements Flushable {
             pendingSeparator = false;
             atStartOfLine = false;
         }
-        if (atStartOfLine && currentStyle == AponRenderStyle.PRETTY && indentString != null && !indentString.isEmpty()) {
+        if (atStartOfLine && currentStyle == AponRenderStyle.PRETTY &&
+                indentString != null && !indentString.isEmpty()) {
             for (int i = 0; i < indentDepth; i++) {
                 writer.write(indentString);
             }

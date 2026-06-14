@@ -254,8 +254,7 @@ public class XmlToParameters {
         String location;
         if (valueHandler != null && valueHandler.getLocator() != null) {
             Locator locator = valueHandler.getLocator();
-            location = "Line Number " + locator.getLineNumber() +
-                ", Column " + locator.getColumnNumber();
+            location = "Line Number " + locator.getLineNumber() + ", Column " + locator.getColumnNumber();
             if (locator.getSystemId() != null) {
                 location = "; " + locator.getSystemId() + " " + location;
             } else {

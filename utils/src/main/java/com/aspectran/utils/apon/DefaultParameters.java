@@ -47,7 +47,7 @@ public class DefaultParameters extends AbstractParameters {
 
     /**
      * Creates a new {@code DefaultParameters} instance with a dynamic schema.
-     * <p>This constructor initializes the parameters container without a predefined schema,
+     * <p>This constructor initializes the Parameters container without a predefined schema,
      * allowing parameters to be added dynamically at runtime, similar to {@link VariableParameters}.</p>
      */
     public DefaultParameters() {

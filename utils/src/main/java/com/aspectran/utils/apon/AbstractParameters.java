@@ -38,11 +38,13 @@ import java.util.Map;
 
 /**
  * Abstract base class for {@link Parameters} implementations.
- * <p>This class manages the underlying structure of parameters, which can be either
+ * <p>
+ * This class manages the underlying structure of parameters, which can be either
  * fixed (with predefined {@link ParameterKey}s) or variable (where parameters can be
  * added at runtime). It handles the storage of parameter values and their hierarchical
  * relationships (parent/proprietor) but delegates the implementation of type-safe
- * value accessor methods (e.g., {@code getString}, {@code getInt}) to subclasses.</p>
+ * value accessor methods (e.g., {@code getString}, {@code getInt}) to subclasses.
+ * </p>
  *
  * @see DefaultParameters
  * @see VariableParameters
@@ -64,7 +66,7 @@ public abstract class AbstractParameters implements Parameters {
     private AponRenderStyle renderStyle = AponRenderStyle.PRETTY;
 
     /**
-     * Instantiates a new abstract parameters.
+     * Instantiates a new abstract Parameters.
      * @param parameterKeys the parameter keys
      */
     protected AbstractParameters(ParameterKey[] parameterKeys) {
@@ -97,7 +99,7 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     /**
-     * Instantiates a new abstract parameters.
+     * Instantiates a new abstract Parameters.
      * @param topParameterKeys the top parameter keys
      * @param bottomParameterKeys the bottom parameter keys
      */
@@ -454,13 +456,12 @@ public abstract class AbstractParameters implements Parameters {
         if (value == null && notNullOnly) {
             return;
         }
+        Parameter p = getParameter(name);
         if (value != null) {
-            Parameter p = getParameter(name);
             if (p != null && p.getValueType() == ValueType.OBJECT && !p.isArray()) {
                 putValue(p, name, value);
                 return;
             }
-
             if (value.getClass().isArray()) {
                 int len = Array.getLength(value);
                 int affected = 0;
@@ -534,7 +535,6 @@ public abstract class AbstractParameters implements Parameters {
                 putValue(p, name, value);
             }
         } else {
-            Parameter p = getParameter(name);
             if (p == null) {
                 p = attachParameterValue(name, ValueType.VARIABLE);
             }

@@ -73,7 +73,7 @@ public class AponReader {
 
     /**
      * Reads an APON document and populates the given {@link Parameters} object.
-     * @param <T> the type of the parameters object
+     * @param <T> the type of the {@code Parameters} object
      * @param parameters the {@code Parameters} object to populate
      * @return the populated {@code Parameters} object
      * @throws AponParseException if an error occurs during parsing
@@ -121,7 +121,7 @@ public class AponReader {
 
     /**
      * A static utility method that parses an APON-formatted string into a given {@link Parameters} object.
-     * @param <T> the type of the parameters object
+     * @param <T> the type of the {@code Parameters} object
      * @param apon the APON-formatted string
      * @param parameters the {@code Parameters} object to populate
      * @return the populated {@code Parameters} object
@@ -166,7 +166,7 @@ public class AponReader {
 
     /**
      * A static utility method that parses an APON-formatted file into a given {@link Parameters} object.
-     * @param <T> the type of the parameters object
+     * @param <T> the type of the {@code Parameters} object
      * @param file the file to parse
      * @param parameters the {@code Parameters} object to populate
      * @return the populated {@code Parameters} object
@@ -178,7 +178,7 @@ public class AponReader {
 
     /**
      * A static utility method that parses an APON-formatted file into a given {@link Parameters} object.
-     * @param <T> the type of the parameters object
+     * @param <T> the type of the {@code Parameters} object
      * @param file the file to parse
      * @param encoding the character encoding of the file
      * @param parameters the {@code Parameters} object to populate
@@ -223,7 +223,7 @@ public class AponReader {
 
     /**
      * A static utility method that parses an APON-formatted stream into a given {@link Parameters} object.
-     * @param <T> the type of the parameters object
+     * @param <T> the type of the {@code Parameters} object
      * @param reader the character stream to read from
      * @param parameters the {@code Parameters} object to populate
      * @return the populated {@code Parameters} object
