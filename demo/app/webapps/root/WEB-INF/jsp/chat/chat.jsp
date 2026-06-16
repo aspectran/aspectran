@@ -4,7 +4,7 @@
 <div class="row">
     <div id="chat-title" class="col-12 p-3">
         <h2 class="m-0">Chat <span id="totalPeople"></span></h2>
-        <a class="btn btn-outline-secondary leave" onclick="leaveRoom();"><i class="bi bi-box-arrow-left"></i> Leave</a>
+        <a class="btn btn-outline-warning leave" onclick="leaveRoom();"><i class="bi bi-box-arrow-left"></i> Leave</a>
     </div>
     <div id="chat-contacts" class="col-md-4 col-lg-3 d-none d-md-block p-3"></div>
     <div id="chat-room" class="col-12 col-md-8 col-lg-9 ps-3">

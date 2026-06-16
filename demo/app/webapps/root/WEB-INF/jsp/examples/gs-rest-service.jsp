@@ -5,7 +5,7 @@
         <h2>Customer List</h2>
         <span id="customer-total" class="float-end badge bg-warning"
               style="font-size:2em;position:absolute;top:0;right:10px;border-radius:50%;z-index:1;">0</span>
-        <div id="customer-list-board" class="card card-body bg-primary p-1" style="height:361px;overflow-y:auto;">
+        <div id="customer-list-board" class="card card-body bg-body-secondary p-1" style="height:361px;overflow-y:auto;">
             <div id="customer-list-group" class="list-group w-100" role="button">
                 <!-- Customer list items will be appended here -->
             </div>
