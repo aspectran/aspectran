@@ -11,13 +11,13 @@
             </div>
         </div>
         <div class="d-flex justify-content-between align-items-center">
-        <div class="mt-2">
-            <button type="button" class="btn btn-warning refresh-customers">Refresh</button>
-        </div>
-        <div class="mt-2">
-            <button type="button" class="btn btn-primary add-customer">Add</button>
-            <button type="button" class="btn btn-danger delete-customer">Delete</button>
-        </div>
+            <div class="mt-2">
+                <button type="button" class="btn btn-warning refresh-customers">Refresh</button>
+            </div>
+            <div class="mt-2">
+                <button type="button" class="btn btn-primary add-customer">Add</button>
+                <button type="button" class="btn btn-danger delete-customer">Delete</button>
+            </div>
         </div>
     </div>
     <div class="col-lg-8" style="position:relative;">
