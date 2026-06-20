@@ -62,7 +62,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that an attribute has been replaced in a session.
-     *
      * @param session the session where the attribute was updated
      * @param name the name of the attribute
      * @param newValue the new value of the attribute
@@ -73,7 +72,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that an attribute has been removed from a session.
-     *
      * @param session the session from which the attribute was removed
      * @param name the name of the attribute
      * @param oldValue the old value of the attribute
@@ -83,7 +81,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that a session ID has been changed.
-     *
      * @param session the session whose ID was changed
      * @param oldSessionId the old session ID
      */

@@ -81,9 +81,6 @@ public final class RequestAttributeMap implements Map<String, Object> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int size() {
         if (request == null) {
@@ -92,9 +89,6 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return Collections.list(request.getAttributeNames()).size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         if (request == null) {
@@ -103,9 +97,6 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return !request.getAttributeNames().hasMoreElements();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsKey(Object key) {
         if (request == null) {
@@ -116,9 +107,6 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return Collections.list(request.getAttributeNames()).contains(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsValue(Object value) {
         if (request == null) {

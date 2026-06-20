@@ -89,7 +89,6 @@ public class SessionStatistics {
     /**
      * Records the length of time a session has been active.
      * Called when the session is about to be invalidated.
-     *
      * @param sample the value to record
      */
     protected void recordTime(long sample) {

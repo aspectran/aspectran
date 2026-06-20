@@ -59,7 +59,6 @@ public abstract class LoggingGroupHelper {
      * Associates the given group name with the current thread's MDC under the
      * {@link #LOGGING_GROUP} key. If a value was already present for this key,
      * it will be overwritten.
-     *
      * @param groupName the non-null logical group identifier to associate with
      *                  subsequent log events on the current thread
      */

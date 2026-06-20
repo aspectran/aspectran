@@ -157,7 +157,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Returns the 'unique' Option identifier.
-     *
      * @return the 'unique' Option identifier
      */
     public String getKey() {

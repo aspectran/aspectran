@@ -25,7 +25,6 @@ public interface FileAppendedListener {
 
     /**
      * Invoked when a file has been appended.
-     *
      * @param file the appended file
      */
     void onFileAppended(File file);

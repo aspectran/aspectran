@@ -51,7 +51,6 @@ public class SimpleDaemon extends AbstractDaemon {
      * If preparation fails for any reason, {@link #destroy()} is invoked to clean up partially
      * initialized resources before rethrowing the original exception.
      * </p>
-     *
      * @param basePath optional base path used to resolve resources; may be {@code null}
      * @param daemonConfig the daemon configuration to use; never {@code null}
      * @throws Exception if preparation fails

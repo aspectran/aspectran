@@ -51,7 +51,6 @@ public class SessionIdGenerator {
 
     /**
      * Instantiates a new SessionIdGenerator.
-     *
      * @param workerName the worker name
      */
     public SessionIdGenerator(String workerName) {

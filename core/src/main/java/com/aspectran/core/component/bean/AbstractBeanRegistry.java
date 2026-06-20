@@ -83,9 +83,6 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return beanRuleRegistry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Set<String> getBasePackages() {
         return beanRuleRegistry.getBasePackages();
@@ -114,9 +111,6 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <V> V getPrototypeScopeBean(BeanRule beanRule) {
@@ -351,9 +345,6 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return bean;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasSingleton(@NonNull Object bean) {
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
@@ -365,17 +356,11 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasSingleton(@NonNull Class<?> type) {
         return hasSingleton(type, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasSingleton(@NonNull Class<?> type, @Nullable String id) {
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
@@ -421,9 +406,6 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void destroySingleton(@NonNull Object bean) throws Exception {
         ReadWriteLock scopeLock = singletonScope.getScopeLock();

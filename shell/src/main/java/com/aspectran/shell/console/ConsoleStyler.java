@@ -81,7 +81,6 @@ public interface ConsoleStyler {
 
     /**
      * Returns the style tokens used for danger or error messages.
-     *
      * @return style tokens for danger messages, or {@code null} if not configured
      */
     String[] getDangerStyle();

@@ -29,7 +29,6 @@ public interface TransletScanFilter {
 
     /**
      * Determines whether a scanned file should be included for translet creation.
-     *
      * @param transletName the potential name of the translet that would be generated from the file
      * @param scannedFile the actual file that was discovered by the scanner
      * @return {@code true} to include the file, {@code false} to exclude it
