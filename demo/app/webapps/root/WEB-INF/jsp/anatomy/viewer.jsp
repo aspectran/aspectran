@@ -25,14 +25,14 @@
     </div>
     <div class="col-md-8 right-panel">
         <div class="card h-100 border shadow-sm overflow-hidden">
-            <div class="card-header bg-transparent py-2 d-flex justify-content-between align-items-center">
+            <div class="card-header bg-body-tertiary py-2 d-flex justify-content-between align-items-center">
                 <span class="fw-bold small">Rule Details (APON)</span>
                 <button class="btn btn-sm btn-outline-secondary border-0" id="copy-btn" title="Copy to clipboard">
                     <i class="bi bi-clipboard"></i>
                 </button>
             </div>
-            <div class="card-body scrollable-pane text-body bg-body-tertiary">
-                <pre id="details-content" class="text-body">Select a rule from the left panel to see details.</pre>
+            <div class="card-body scrollable-pane text-body">
+                <pre id="details-content">Select a rule from the left panel to see details.</pre>
             </div>
         </div>
     </div>
