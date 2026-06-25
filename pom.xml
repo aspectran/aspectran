@@ -119,7 +119,7 @@
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
 
-        <logback.version>1.5.35</logback.version>
+        <logback.version>1.5.36</logback.version>
         <slf4j.version>2.0.18</slf4j.version>
         <log4j-to-slf4j.version>2.26.0</log4j-to-slf4j.version>
 
