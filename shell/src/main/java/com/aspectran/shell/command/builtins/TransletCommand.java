@@ -153,8 +153,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     private void listTranslets(
-            @NonNull ShellService shellService, @NonNull ShellConsole console,
-            @Nullable String[] keywords, boolean all) {
+            @NonNull ShellService shellService, @NonNull ShellConsole console, String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         console.writeLine("-%4s-+-%-59s-+-%-5s-",
@@ -201,7 +200,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     private void describeTransletRule(
-            @NonNull ShellService shellService, @NonNull ShellConsole console, @Nullable String[] transletNames,
+            @NonNull ShellService shellService, @NonNull ShellConsole console, String[] transletNames,
             @Nullable MethodType requestMethod, boolean all) throws IOException {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;

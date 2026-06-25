@@ -54,14 +54,28 @@ public class CommandExecutor {
         this.daemonService = daemonService;
     }
 
+    /**
+     * Retrieves the DaemonService instance associated with this CommandExecutor.
+     * @return the DaemonService instance used by this CommandExecutor
+     */
     public DaemonService getDaemonService() {
         return daemonService;
     }
 
+    /**
+     * Checks whether the executor is currently running in an isolated mode.
+     * Isolation mode ensures that certain commands are executed without
+     * interference from others to maintain operation integrity.
+     * @return true if the executor is running in isolated mode; false otherwise
+     */
     public boolean isIsolatedRunning() {
         return isolatedRunning.get();
     }
 
+    /**
+     * Retrieves the current count of active commands being executed.
+     * @return the number of commands currently marked as active
+     */
     public int getActiveCommandCount() {
         return activeCommands.get();
     }
