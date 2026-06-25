@@ -429,11 +429,19 @@ public abstract class AbstractRestResponse implements RestResponse {
         // 2. Check 'Accept' header
         if (!isIgnoreAcceptHeader()) {
             List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(activity.getRequestAdapter());
+            MediaType defaultContentType = getDefaultContentType();
+            if (defaultContentType == null) {
+                String defaultContentTypeSetting = activity.getSetting(RestResponse.RESPONSE_DEFAULT_CONTENT_TYPE);
+                if (StringUtils.hasLength(defaultContentTypeSetting)) {
+                    defaultContentType = MediaType.parseMediaType(defaultContentTypeSetting);
+                    setDefaultContentType(defaultContentType);
+                }
+            }
             for (MediaType contentType : acceptContentTypes) {
-                if (getDefaultContentType() != null &&
-                        getSupportedContentTypes().contains(getDefaultContentType()) &&
+                if (defaultContentType != null &&
+                        getSupportedContentTypes().contains(defaultContentType) &&
                         contentType.equalsTypeAndSubtype(MediaType.ALL)) {
-                    return getDefaultContentType();
+                    return defaultContentType;
                 }
                 for (MediaType supportedContentType : getSupportedContentTypes()) {
                     if (contentType.includes(supportedContentType)) {
@@ -442,9 +450,9 @@ public abstract class AbstractRestResponse implements RestResponse {
                 }
             }
             // 3. Check default content type
-            if (getDefaultContentType() != null &&
-                    getSupportedContentTypes().contains(getDefaultContentType())) {
-                return getDefaultContentType();
+            if (defaultContentType != null &&
+                    getSupportedContentTypes().contains(defaultContentType)) {
+                return defaultContentType;
             }
         }
 

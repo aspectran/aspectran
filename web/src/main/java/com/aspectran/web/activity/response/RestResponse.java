@@ -33,6 +33,9 @@ import com.aspectran.web.support.http.MediaType;
  */
 public interface RestResponse extends CustomTransformer {
 
+    /** Setting key for default content type of REST response. */
+    String RESPONSE_DEFAULT_CONTENT_TYPE = "response.defaultContentType";
+
     /**
      * Returns the name for the response data object.
      * <p>This name can be used as a root key when serializing the data.</p>
