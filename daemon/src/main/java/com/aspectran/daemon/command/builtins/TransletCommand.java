@@ -17,11 +17,13 @@ package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.io.OutputStringWriter;
 import org.jspecify.annotations.NonNull;
 
@@ -63,6 +65,8 @@ public class TransletCommand extends AbstractCommand {
             } else {
                 return success(writer.toString());
             }
+        } catch (CoreServiceException e) {
+            return failed(ExceptionUtils.getCause(e));
         } catch (Exception e) {
             return failed(e);
         }
