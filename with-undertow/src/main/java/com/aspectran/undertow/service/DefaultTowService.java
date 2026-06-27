@@ -24,6 +24,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.activity.TowActivity;
+import com.aspectran.utils.DurationUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -269,8 +270,20 @@ public class DefaultTowService extends AbstractTowService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("{} is paused, so did not respond to requests.", getServiceName());
                 }
-                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE,
-                        "Service is temporarily unavailable. Please try again later.");
+                exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
+                String msg = "Service is temporarily unavailable. Please try again later.";
+                if (pauseTimeout > 0L) {
+                    long remainingMillis = pauseTimeout - System.currentTimeMillis();
+                    if (remainingMillis > 0) {
+                        long remainingSeconds = remainingMillis / 1000L;
+                        if (remainingSeconds > 0) {
+                            exchange.getResponseHeaders().put(Headers.RETRY_AFTER, String.valueOf(remainingSeconds));
+                        }
+                        msg = "Service is temporarily unavailable. Please try again in " +
+                                DurationUtils.toHumanReadableMillis(remainingMillis) + ".";
+                    }
+                }
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, msg);
                 return true;
             } else {
                 // If a temporary pause has expired, reset the timeout and allow requests.
