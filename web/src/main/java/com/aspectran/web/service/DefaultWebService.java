@@ -332,6 +332,13 @@ public class DefaultWebService extends AbstractWebService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("{} is paused, so did not respond to requests", getServiceName());
                 }
+                response.setHeader(HttpHeaders.CONNECTION, "close");
+                if (pauseTimeout > 0L) {
+                    long remainingSeconds = (pauseTimeout - System.currentTimeMillis()) / 1000L;
+                    if (remainingSeconds > 0) {
+                        response.setHeader(HttpHeaders.RETRY_AFTER, String.valueOf(remainingSeconds));
+                    }
+                }
                 sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE,
                         "Service is temporarily unavailable. Please try again later.");
                 return true;
