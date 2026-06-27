@@ -1,15 +1,23 @@
 name: Java CI
+
 on: [workflow_dispatch, push, pull_request]
+
 permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        java: [21, 25, 26-ea]
-        distribution: [temurin]
         cache: [maven]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: [21, 25, 26]
+        distribution: [temurin]
       fail-fast: false
       max-parallel: 4
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
@@ -19,9 +27,9 @@ jobs:
       - name: Set up JDK ${{ matrix.java }} ${{ matrix.distribution }}
         uses: actions/setup-java@v5
         with:
+          cache: ${{ matrix.cache }}
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
-          cache: ${{ matrix.cache }}
       - name: Print JDK Version
         run: java -version
       - name: Test with Maven

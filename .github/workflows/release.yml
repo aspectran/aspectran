@@ -19,6 +19,7 @@ jobs:
   release:
     name: Release to Maven Central
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: sonatype
     if: github.ref_type == 'tag'
     steps:
@@ -44,9 +45,9 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
+          cache: maven
           distribution: temurin
           java-version: 21
-          cache: maven
 
       - name: Import GPG key
         id: import_gpg
