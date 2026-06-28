@@ -363,8 +363,9 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         String oldThreadName = null;
         if (getContextName() != null) {
             oldThreadName = Thread.currentThread().getName();
-            String newContextName = (isRootService() ? getContextName() : oldThreadName + ":" + getContextName());
-            Thread.currentThread().setName(newContextName);
+            String newThreadName = (isRootService() || oldThreadName == null ?
+                    getContextName() : oldThreadName + ":" + getContextName());
+            Thread.currentThread().setName(newThreadName);
         }
         return oldThreadName;
     }
