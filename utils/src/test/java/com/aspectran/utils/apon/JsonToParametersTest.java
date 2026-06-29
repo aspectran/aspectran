@@ -626,4 +626,34 @@ class JsonToParametersTest {
         assertEquals(1, ((Parameters)objList.get(0)).getInt("id"));
     }
 
+    public static class DummyItemParameters extends DefaultParameters {
+
+        private static final ParameterKey value = new ParameterKey("value", ValueType.VARIABLE);
+
+        private static final ParameterKey[] parameterKeys = {value};
+
+        public DummyItemParameters() {
+            super(parameterKeys);
+        }
+
+    }
+
+    @Test
+    void testJsonArrayToVariableScalarParameter() throws IOException {
+        String json = """
+                {
+                  "value": ["mem"]
+                }
+                """;
+
+        DummyItemParameters params = JsonToParameters.from(json, DummyItemParameters.class);
+        assertNotNull(params);
+
+        Object val = params.getValue("value");
+        assertInstanceOf(List.class, val);
+        List<?> valList = (List<?>)val;
+        assertEquals(1, valList.size());
+        assertEquals("mem", valList.get(0));
+    }
+
 }

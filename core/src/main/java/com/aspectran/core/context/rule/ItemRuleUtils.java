@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
 
@@ -199,9 +200,20 @@ public abstract class ItemRuleUtils {
             }
         } else {
             if (itemRule.getValueType() != ItemValueType.BEAN) {
-                List<String> stringList = itemParameters.getStringList(ItemParameters.value);
-                if (stringList != null && !stringList.isEmpty()) {
-                    itemRule.setValue(stringList.getFirst());
+                String val = null;
+                Parameter pv = itemParameters.getParameter(ItemParameters.value);
+                if (pv != null) {
+                    if (pv.isArray()) {
+                        List<String> stringList = pv.getValueAsStringList();
+                        if (stringList != null && !stringList.isEmpty()) {
+                            val = stringList.getFirst();
+                        }
+                    } else {
+                        val = pv.getValueAsString();
+                    }
+                }
+                if (val != null) {
+                    itemRule.setValue(val);
                 }
             }
         }

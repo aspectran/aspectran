@@ -20,6 +20,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,8 +40,6 @@ public class ParameterValue implements Parameter {
     private final String name;
 
     private String altName;
-
-    private final ValueType originValueType;
 
     private ValueType valueType;
 
@@ -122,7 +121,6 @@ public class ParameterValue implements Parameter {
         }
         this.name = name;
         this.valueType = valueType;
-        this.originValueType = valueType;
         this.valueTypeFixed = (valueTypeFixed && valueType != ValueType.VARIABLE);
         this.parametersClass = parametersClass;
         if (array) {
@@ -369,10 +367,13 @@ public class ParameterValue implements Parameter {
      */
     @Override
     public List<?> getValueList() {
-        if (!valueTypeFixed && !array && assigned && originValueType == ValueType.VARIABLE) {
-            arraylize();
+        if (array) {
+            return valueList;
+        } else if (assigned) {
+            return Collections.singletonList(value);
+        } else {
+            return null;
         }
-        return valueList;
     }
 
     /**

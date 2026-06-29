@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test cases for behavior of ParameterValue.
@@ -121,6 +122,70 @@ class ParameterValueBehaviorTest {
         assertEquals(2, resultList.size());
         assertEquals("nested_a", resultList.get(0));
         assertEquals(nestedList.toString(), resultList.toString());
+    }
+
+    /**
+     * A Parameters class with a scalar parameter of VARIABLE type.
+     */
+    public static class VariableScalarParameters extends DefaultParameters {
+
+        private static final ParameterKey value = new ParameterKey("value", ValueType.VARIABLE);
+
+        private static final ParameterKey[] parameterKeys = {value};
+
+        public VariableScalarParameters() {
+            super(parameterKeys);
+        }
+
+        public Object getValue() {
+            return getValue(value);
+        }
+
+    }
+
+    /**
+     * This test verifies that a scalar parameter of VARIABLE type
+     * is automatically promoted to an array (via arraylize) when a list/collection is put into it.
+     */
+    @Test
+    void testVariableScalarToArrayPromotion() {
+        VariableScalarParameters params = new VariableScalarParameters();
+
+        List<String> list = Arrays.asList("mem", "cpu");
+        params.putValue("value", list);
+
+        Object val = params.getValue();
+        assertInstanceOf(List.class, val);
+        List<?> valList = (List<?>)val;
+        assertEquals(2, valList.size());
+        assertEquals("mem", valList.get(0));
+        assertEquals("cpu", valList.get(1));
+    }
+
+    /**
+     * This test verifies that calling getValueList() on a VARIABLE type
+     * scalar parameter does NOT cause side effects (i.e. does not call arraylize
+     * to permanently promote the parameter's internal state to an array).
+     */
+    @Test
+    void testNoSideEffectsOnGetValueListForVariableScalar() {
+        VariableScalarParameters params = new VariableScalarParameters();
+        ParameterValue pv = params.getParameterValue("value");
+
+        // 1. Put a single scalar value
+        pv.putValue("mem");
+
+        // 2. Verify that it is currently a scalar (not an array)
+        assertEquals(false, pv.isArray());
+
+        // 3. Call getValueList() - it should return a singleton list but NOT alter the parameter state
+        List<?> valList = pv.getValueList();
+        assertNotNull(valList);
+        assertEquals(1, valList.size());
+        assertEquals("mem", valList.get(0));
+
+        // 4. Verify that the parameter's internal state remains a scalar
+        assertEquals(false, pv.isArray());
     }
 
 }

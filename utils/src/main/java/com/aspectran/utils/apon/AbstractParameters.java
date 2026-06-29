@@ -677,9 +677,13 @@ public abstract class AbstractParameters implements Parameters {
         Assert.notNull(key, "key must not be null");
     }
 
-    protected void checkArrayType(Parameter parameter) {
-        if (structureFixed && !parameter.isArray()) {
-            throw new IllegalArgumentException("Not an array type parameter: " + parameter);
+    protected void checkArrayType(@NonNull Parameter parameter) {
+        if (!parameter.isArray()) {
+            if (parameter.getValueType() == ValueType.VARIABLE) {
+                parameter.arraylize();
+            } else if (structureFixed) {
+                throw new IllegalArgumentException("Not an array type parameter: " + parameter);
+            }
         }
     }
 
