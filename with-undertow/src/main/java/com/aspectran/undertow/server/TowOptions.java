@@ -270,20 +270,6 @@ public class TowOptions {
     }
 
     /**
-     * @see UndertowOptions#MAX_CACHED_HEADER_SIZE
-     */
-    public void setMaxCachedHeaderSize(int maxCachedHeaderSize) {
-        options.set(UndertowOptions.MAX_CACHED_HEADER_SIZE, maxCachedHeaderSize);
-    }
-
-    /**
-     * @see UndertowOptions#HTTP_HEADERS_CACHE_SIZE
-     */
-    public void setHttpHeadersCacheSize(int httpHeadersCacheSize) {
-        options.set(UndertowOptions.HTTP_HEADERS_CACHE_SIZE, httpHeadersCacheSize);
-    }
-
-    /**
      * @see UndertowOptions#SSL_USER_CIPHER_SUITES_ORDER
      */
     public void setSslUserCipherSuitesOrder(boolean sslUserCipherSuitesOrder) {
