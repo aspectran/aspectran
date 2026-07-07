@@ -199,9 +199,9 @@ public class DefaultSessionManager
         if (getScheduler() == null) {
             String schedulerName;
             if (getWorkerName() != null) {
-                schedulerName = "SM Worker(" + getWorkerName() + ")";
+                schedulerName = "SM worker-" + getWorkerName();
             } else {
-                schedulerName = String.format("SM Worker(@%x)", hashCode());
+                schedulerName = String.format("SM worker-@%x", hashCode());
             }
             Scheduler scheduler = new SessionScheduler(schedulerName, classLoader);
             setScheduler(scheduler);
