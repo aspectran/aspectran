@@ -32,6 +32,7 @@ import org.eclipse.jetty.ee10.websocket.jakarta.server.config.JakartaWebSocketSe
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.util.resource.Resources;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -122,14 +123,15 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         if (path.startsWith(CLASSPATH_URL_PREFIX)) {
             path = path.substring(CLASSPATH_URL_PREFIX.length());
             try {
-                resource = getResourceFactory().newClassLoaderResource(path);
+                ResourceFactory resourceFactory = getResourceFactory();
+                resource = resourceFactory.newClassLoaderResource(path);
                 if (Resources.missing(resource)) {
                     String pkg = WebXmlConfiguration.class.getPackageName().replace(".", "/") + "/";
                     if (path.startsWith(pkg)) {
                         URL url = WebXmlConfiguration.class.getResource(path.substring(pkg.length()));
                         if (url != null) {
                             URI uri = url.toURI();
-                            resource = getResourceFactory().newResource(uri);
+                            resource = resourceFactory.newResource(uri);
                         }
                     }
                 }
@@ -138,7 +140,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             }
         } else {
             path = getActivityContext().getApplicationAdapter().getRealPath(path).toString();
-            resource = newResource(path);
+            resource = getResourceFactory().newResource(path);
         }
         if (Resources.isReadableFile(resource)) {
             super.setDefaultsDescriptor(path);
