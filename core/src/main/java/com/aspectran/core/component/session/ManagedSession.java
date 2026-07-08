@@ -311,7 +311,7 @@ public class ManagedSession implements Session {
 
             // temporarily stop the idle timer
             if (logger.isDebugEnabled()) {
-                logger.debug("Session {} accessed, stopping timer, active requests={}", getId(), requests);
+                logger.debug("Session {} in use, stopping timer, active requests={}", getId(), requests);
             }
             inactivityTimer.cancel();
 
