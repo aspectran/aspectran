@@ -37,7 +37,7 @@ public class TowWebSocketServerContainerInitializer {
 
     private boolean directBuffers = false;
 
-    private int bufferSize = 1024;
+    private int bufferSize = 16384;
 
     private int maximumPoolSize = -1;
 
