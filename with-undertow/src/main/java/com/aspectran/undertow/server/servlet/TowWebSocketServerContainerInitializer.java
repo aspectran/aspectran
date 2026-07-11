@@ -23,19 +23,17 @@ import io.undertow.servlet.api.Deployment;
 import io.undertow.websockets.core.CloseMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
+import io.undertow.websockets.jsr.JsrWebSocketFilter;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 import jakarta.websocket.server.ServerContainer;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Initializer for WebSocket Support in Undertow.
  */
 public class TowWebSocketServerContainerInitializer {
-
-    private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 
     private boolean directBuffers = false;
 
@@ -105,17 +103,6 @@ public class TowWebSocketServerContainerInitializer {
         }
     }
 
-    private static void closeWebSockets(Collection<WebSocketChannel> connections) {
-        if (connections != null && !connections.isEmpty()) {
-            CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
-            for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
-                if (webSocketChannel != null && webSocketChannel.isOpen()) {
-                    WebSockets.sendClose(closeMessage, webSocketChannel, null);
-                }
-            }
-        }
-    }
-
     /**
      * A {@link SessionListener} that closes WebSocket connections associated with a session
      * when the session is destroyed, or when the WebSocket connections attribute in the session
@@ -126,21 +113,27 @@ public class TowWebSocketServerContainerInitializer {
         @Override
         public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
             if (oldValue != null && oldValue != newValue) {
-                closeWebSockets(name, oldValue);
+                closeWebSockets(oldValue);
             }
         }
 
         @Override
         public void attributeRemoved(Session session, String name, Object oldValue) {
             if (oldValue != null) {
-                closeWebSockets(name, oldValue);
+                closeWebSockets(oldValue);
             }
         }
 
-        @SuppressWarnings("unchecked")
-        private void closeWebSockets(@NonNull String name, @NonNull Object value) {
-            if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
-                TowWebSocketServerContainerInitializer.closeWebSockets((Collection<WebSocketChannel>)value);
+        private void closeWebSockets(@NonNull Object value) {
+            if (value instanceof JsrWebSocketFilter.WebSocketChannels connections) {
+                if (!connections.isEmpty()) {
+                    CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
+                    for (WebSocketChannel channel : new ArrayList<>(connections)) {
+                        if (channel != null && channel.isOpen()) {
+                            WebSockets.sendClose(closeMessage, channel, null);
+                        }
+                    }
+                }
             }
         }
 
