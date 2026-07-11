@@ -19,17 +19,16 @@ import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionListener;
-import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.websockets.core.CloseMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
+import jakarta.websocket.server.ServerContainer;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Initializer for WebSocket Support in Undertow.
@@ -95,27 +94,18 @@ public class TowWebSocketServerContainerInitializer {
      * Destroys the web socket server container.
      * @param deployment the deployment
      */
-    @SuppressWarnings("unchecked")
     public static void destroy(@NonNull Deployment deployment) {
-        SessionManager sessionManager = deployment.getSessionManager();
-        if (sessionManager != null) {
-            Set<String> activeSessions = sessionManager.getActiveSessions();
-            if (!activeSessions.isEmpty()) {
-                activeSessions.forEach(sessionId -> {
-                    Session session = sessionManager.getSession(sessionId);
-                    if (session != null) {
-                        Object value = session.getAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
-                        if (value != null) {
-                            closeWebSockets((List<WebSocketChannel>) value);
-                            session.removeAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
-                        }
-                    }
-                });
+        Object container = deployment.getServletContext().getAttribute(ServerContainer.class.getName());
+        if (container instanceof AutoCloseable) {
+            try {
+                ((AutoCloseable)container).close();
+            } catch (Exception e) {
+                // ignore
             }
         }
     }
 
-    private static void closeWebSockets(List<WebSocketChannel> connections) {
+    private static void closeWebSockets(Collection<WebSocketChannel> connections) {
         if (connections != null && !connections.isEmpty()) {
             CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
             for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
@@ -127,7 +117,9 @@ public class TowWebSocketServerContainerInitializer {
     }
 
     /**
-     * A {@link SessionListener} that closes WebSocket connections when a session is destroyed.
+     * A {@link SessionListener} that closes WebSocket connections associated with a session
+     * when the session is destroyed, or when the WebSocket connections attribute in the session
+     * is updated or removed, preventing socket connection leaks.
      */
     public static class WebSocketGracefulCloseListener implements SessionListener {
 
@@ -148,8 +140,7 @@ public class TowWebSocketServerContainerInitializer {
         @SuppressWarnings("unchecked")
         private void closeWebSockets(@NonNull String name, @NonNull Object value) {
             if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
-                List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
-                TowWebSocketServerContainerInitializer.closeWebSockets(connections);
+                TowWebSocketServerContainerInitializer.closeWebSockets((Collection<WebSocketChannel>)value);
             }
         }
 
