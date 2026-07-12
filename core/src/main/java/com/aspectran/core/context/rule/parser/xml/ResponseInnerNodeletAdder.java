@@ -121,6 +121,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                 ForwardRule forwardRule = ForwardRule.newInstance(contentType, transletName, method, defaultResponse);
                 AspectranNodeParsingContext.pushObject(forwardRule);
             })
+            .with(AttributeNodeletAdder.instance())
             .with(AttributesNodeletAdder.instance())
             .endNodelet(text -> {
                 ForwardRule forwardRule = AspectranNodeParsingContext.popObject();
@@ -140,6 +141,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                         excludeEmptyParameters, defaultResponse);
                 AspectranNodeParsingContext.pushObject(redirectRule);
             })
+            .with(ParameterNodeletAdder.instance())
             .with(ParametersNodeletAdder.instance())
             .endNodelet(text -> {
                 RedirectRule redirectRule = AspectranNodeParsingContext.popObject();
