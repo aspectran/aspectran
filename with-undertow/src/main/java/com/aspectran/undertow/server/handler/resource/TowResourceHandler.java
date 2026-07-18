@@ -20,7 +20,6 @@ import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.handlers.resource.ResourceSupplier;
@@ -29,11 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -106,8 +101,12 @@ public class TowResourceHandler extends ResourceHandler {
      * @throws IOException if an I/O error occurs while scanning for resources
      */
     public void autoDetect(String pathPrefix) throws IOException {
-        if (getResourceManager() instanceof PathResourceManager pathResourceManager) {
-            Set<String> staticResources = findStaticResources(pathResourceManager.getBasePath());
+        Set<String> staticResources = null;
+        if (getResourceManager() instanceof StaticResourceResolvable resolvable) {
+            staticResources = resolvable.findStaticResources();
+        }
+
+        if (staticResources != null) {
             Set<WildcardPattern> patterns = new LinkedHashSet<>();
             if (pathPatterns != null && pathPatterns.hasIncludePatterns()) {
                 for (WildcardPattern pattern : pathPatterns.getIncludePatterns()) {
@@ -144,55 +143,6 @@ public class TowResourceHandler extends ResourceHandler {
                 if (excludePatterns != null) {
                     logger.info("TowResourceHandler excludePatterns={}", Arrays.toString(excludePatterns));
                 }
-            }
-        }
-    }
-
-    /**
-     * Finds top-level directories and files that are likely to be static resources.
-     * @param base the base path to scan
-     * @return a set of resource paths
-     * @throws IOException if an I/O error occurs
-     */
-    @NonNull
-    private Set<String> findStaticResources(Path base) throws IOException {
-        Set<String> resources = new HashSet<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(base)) {
-            for (Path child : stream) {
-                String fileName = child.getFileName().toString();
-                if ("WEB-INF".equalsIgnoreCase(fileName) || "META-INF".equalsIgnoreCase(fileName)) {
-                    resources.add("/" + fileName + "/");
-                } else if (Files.isDirectory(child)) {
-                    findStaticResourceDirs(child, "/" + fileName + "/", resources);
-                } else {
-                    resources.add("/" + fileName);
-                }
-            }
-        }
-        return resources;
-    }
-
-    private void findStaticResourceDirs(Path parent, String prefix, Set<String> resources) throws IOException {
-        Set<Path> children = new HashSet<>();
-        boolean found = false;
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(parent)) {
-            for (Path child : stream) {
-                if (Files.isDirectory(child)) {
-                    children.add(child);
-                } else {
-                    // If a directory contains any files, consider it a static resource directory
-                    // and do not scan its subdirectories further.
-                    children.clear();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (found) {
-            resources.add(prefix);
-        } else if (!children.isEmpty()) {
-            for (Path child: children) {
-                findStaticResourceDirs(child, prefix + child.getFileName() + "/", resources);
             }
         }
     }

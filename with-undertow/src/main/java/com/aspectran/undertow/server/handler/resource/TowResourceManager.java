@@ -22,7 +22,9 @@ import io.undertow.server.handlers.resource.PathResourceManager;
 import org.jspecify.annotations.NonNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An extension of Undertow's {@link PathResourceManager} that is aware of the
@@ -30,7 +32,7 @@ import java.util.Map;
  * <p>This allows the base path for resources to be resolved relative to the
  * application's base directory, providing more flexible configuration.</p>
  */
-public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
+public class TowResourceManager extends PathResourceManager implements StaticResourceResolvable, ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
 
@@ -170,6 +172,11 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         }
         super.setBase(base);
         return this;
+    }
+
+    @Override
+    public Set<String> findStaticResources() throws IOException {
+        return findStaticResources(getBasePath());
     }
 
 }
