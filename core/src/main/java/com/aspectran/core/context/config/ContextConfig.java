@@ -123,7 +123,7 @@ public class ContextConfig extends DefaultParameters {
     public ContextConfig setName(String name) {
         if (StringUtils.hasText(name)) {
             putValue(ContextConfig.name, name);
-        } else if (hasValue(name)) {
+        } else if (hasValue(ContextConfig.name)) {
             removeValue(ContextConfig.name);
         }
         return this;
