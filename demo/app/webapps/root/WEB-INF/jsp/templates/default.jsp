@@ -29,27 +29,33 @@
     <meta name="google" content="notranslate">
     <title>${empty page.title ? "Aspectran Demo" : page.title}</title>
     <meta name="description" content="${empty page.description ? "Welcome to the Aspectran Demo Site" : page.description}">
-    <link rel="mask-icon" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/aspectran-logo.svg" color="#4B555A">
-    <link rel="apple-touch-icon" sizes="57x57" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-96x96.png">
-    <meta name="msapplication-TileImage" content="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/ms-icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#4B555A">
-    <link rel="stylesheet" type="text/css" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/bootstrap@5.3.8/css/aspectran.css?v=20260321"/>
+
+    <link rel="mask-icon" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/aspectran-logo.svg" color="#4B555A"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-57x57.png"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-60x60.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/apple-icon-180x180.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/favicon-16x16.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/favicon-96x96.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/android-icon-192x192.png"/>
+    <meta name="msapplication-TileImage" content="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/ms-icon-144x144.png"/>
+    <meta name="msapplication-TileColor" content="#4B555A"/>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/bootstrap@5.3.8/css/aspectran.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/js/navigation.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/js/theme-toggler.js"></script>
 </head>
 <body id="top-of-page" class="${page.style}" itemscope itemtype="https://schema.org/WebPage">
 <nav id="navigation" class="navbar navbar-expand-lg" data-bs-theme="dark">
@@ -69,12 +75,7 @@
     <div class="top-bar collapse navbar-collapse" id="navbarSupportedContent">
         <div class="container d-lg-flex g-0 g-lg-4">
             <div class="top-bar-logo">
-                <aspectran:profile expression="prod">
-                    <a class="navbar-brand logo" href="<aspectran:url value="https://public.aspectran.com/"/>" title="Aspectran"></a>
-                </aspectran:profile>
-                <aspectran:profile expression="!prod">
-                    <a class="navbar-brand logo" href="<aspectran:url value="/"/>" title="Aspectran"></a>
-                </aspectran:profile>
+                <a class="navbar-brand logo" href="<aspectran:url value="/"/>" title="Aspectran"></a>
             </div>
             <div class="top-bar-left me-auto">
                 <ul class="navbar-nav">
@@ -238,149 +239,6 @@
         </div>
     </div>
 </footer>
-<script>
-    $(function () {
-        const getStoredTheme = () => localStorage.getItem('theme');
-        const setStoredTheme = theme => localStorage.setItem('theme', theme);
-
-        const getPreferredTheme = () => {
-            const storedTheme = getStoredTheme();
-            if (storedTheme) {
-                return storedTheme;
-            }
-            return 'auto';
-        };
-
-        const setTheme = theme => {
-            const newTheme = theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
-            $('html').attr('data-bs-theme', newTheme);
-        };
-
-        const showActiveTheme = (theme) => {
-            const $themeToggler = $('.theme-toggler');
-            if (!$themeToggler.length) {
-                return;
-            }
-
-            $themeToggler.find('.dropdown-item.active').removeClass('active');
-            $themeToggler.find('.dropdown-item .bi-check2').addClass('d-none');
-
-            const $activeItem = $themeToggler.find('[data-bs-theme-value="' + theme + '"]');
-            $activeItem.addClass('active');
-            $activeItem.find('.bi-check2').removeClass('d-none');
-
-            const iconClass = $activeItem.find('.bi:first').attr('class').match(/bi-[^\s]+/)[0];
-            $themeToggler.find('.theme-icon-active').attr('class', 'bi theme-icon-active ' + iconClass);
-        };
-
-        const preferredTheme = getPreferredTheme();
-        setTheme(preferredTheme);
-        showActiveTheme(preferredTheme);
-
-        $(window.matchMedia('(prefers-color-scheme: dark)')).on('change', () => {
-            const storedTheme = getStoredTheme();
-            if (storedTheme === 'auto' || !storedTheme) {
-                setTheme('auto');
-            }
-        });
-
-        $('.theme-toggler [data-bs-theme-value]').on('click', function() {
-            const theme = $(this).data('bs-theme-value');
-            setStoredTheme(theme);
-            setTheme(theme);
-            showActiveTheme(theme);
-        });
-    });
-</script>
-<script>
-    const supportedLanguages = ['en', 'ko'];
-    function getPreferredLangCodeFromLocalStorage() {
-        let langCode = localStorage.getItem("preferred-lang-code");
-        if (langCode && supportedLanguages.includes(langCode)) {
-            return langCode;
-        } else {
-            return null;
-        }
-    }
-    function setPreferredLangCodeToLocalStorage(langCode) {
-        localStorage.setItem("preferred-lang-code", langCode);
-    }
-    function getPreferredLangCode() {
-        let langCode = getPreferredLangCodeFromLocalStorage();
-        if (langCode) {
-            return langCode;
-        }
-        const languages = navigator.languages;
-        if (languages && languages.length) {
-            for (const lang of languages) {
-                let code = lang.substring(0, 2);
-                if (supportedLanguages.includes(code)) {
-                    return code;
-                }
-            }
-        }
-        return 'en';
-    }
-    $(function () {
-        $(".choice-preferred-lang").on("click", function (e) {
-            e.preventDefault();
-            let langCode = $(this).attr("lang");
-            if (langCode) {
-                setPreferredLangCodeToLocalStorage(langCode);
-            }
-            location.href = $(this).attr("href");
-        });
-    });
-</script>
-<script>
-    $(function () {
-        let $win = $(window);
-        let $nav = $("#navigation");
-        let navHeight = Math.abs($("#masthead").height() - $nav.height());
-        let lastScrollTop = 0;
-        let scrolled;
-        let navFixed;
-        $win.scroll(function () {
-            scrolled = true;
-        });
-        setInterval(function () {
-            if (scrolled) {
-                let scrollTop = $win.scrollTop();
-                if (Math.abs(lastScrollTop - scrollTop) <= 10) {
-                    return;
-                }
-                if (scrollTop <= navHeight) {
-                    if (navFixed) {
-                        $nav.removeClass("fixed");
-                        navFixed = false;
-                    }
-                } else if (scrollTop > lastScrollTop) {
-                    if (navFixed) {
-                        $nav.removeClass("fixed");
-                        navFixed = false;
-                    }
-                } else {
-                    if (!navFixed) {
-                        if ($nav.hasClass("immediate")) {
-                            $nav.removeClass("immediate")
-                        } else {
-                            $nav.addClass("fixed");
-                            $nav.hide().fadeIn(500);
-                            navFixed = true;
-                        }
-                    }
-                }
-                lastScrollTop = scrollTop;
-                scrolled = false;
-            }
-        }, 200);
-        /* google search */
-        $("form[name=google_quick_search]").submit(function (event) {
-            window.open("https://www.google.com/search?q=" + this.keyword.value + "+site:https%3A%2F%2Faspectran.com");
-            event.preventDefault();
-        });
-    });
-</script>
 <script>
     /* Creating custom :external selector */
     $.expr[':'].external = function (obj) {

@@ -1,41 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://aspectran.com/tags" prefix="aspectran" %>
-<div class="row">
-    <div id="chat-title" class="col-12 p-3">
-        <h2 class="m-0">Chat <span id="totalPeople"></span></h2>
-        <a class="btn btn-outline-warning leave" onclick="leaveRoom();"><i class="bi bi-box-arrow-left"></i> Leave</a>
-    </div>
-    <div id="chat-contacts" class="col-md-4 col-lg-3 d-none d-md-block p-3"></div>
-    <div id="chat-room" class="col-12 col-md-8 col-lg-9 ps-3">
-        <form id="chat-signin" onsubmit="return false;">
-            <h3>Type your username</h3>
-            <input type="text" id="chat-username" class="form-control" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
-            <button class="btn btn-primary" onclick="signIn()">Start Chatting <i class="bi bi-box-arrow-right ms-2"></i></button>
-        </form>
-        <div id="chat-messages" class="pe-3 pb-3"></div>
-        <form id="chat-controls-form">
-            <div class="input-group pe-3">
-                <input class="form-control" type="text" id="chat-message" placeholder="Type a message..."/>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-send-fill"></i> Send</button>
-            </div>
-        </form>
-    </div>
-</div>
 <style>
     #chat-title {
-        background-color: var(--bs-primary);
-        color: var(--bs-light);
+        background-color: var(--bs-dark-bg-subtle);
+        color: var(--bs-dark-text-emphasis);
     }
     #chat-title h2 {
         float: left;
         font-size: 28px;
-        color: var(--bs-light);
+        color: var(--bs-dark-text-emphasis);
     }
     #chat-title a {
         float: right;
         display: none;
-        color: var(--bs-light);
+        color: var(--bs-dark-text-emphasis);
     }
 
     #chat-room {
@@ -147,6 +126,27 @@
         margin-top: 10px;
     }
 </style>
+<div class="row">
+    <div id="chat-title" class="col-12 p-3">
+        <h2 class="m-0">Chat <span id="totalPeople"></span></h2>
+        <a class="btn btn-outline-warning leave" onclick="leaveRoom();"><i class="bi bi-box-arrow-left"></i> Leave</a>
+    </div>
+    <div id="chat-contacts" class="col-md-4 col-lg-3 d-none d-md-block p-3"></div>
+    <div id="chat-room" class="col-12 col-md-8 col-lg-9 ps-3">
+        <form id="chat-signin" onsubmit="return false;">
+            <h3>Type your username</h3>
+            <input type="text" id="chat-username" class="form-control" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
+            <button class="btn btn-primary" onclick="signIn()">Start Chatting <i class="bi bi-box-arrow-right ms-2"></i></button>
+        </form>
+        <div id="chat-messages" class="pe-3 pb-3"></div>
+        <form id="chat-controls-form">
+            <div class="input-group pe-3">
+                <input class="form-control" type="text" id="chat-message" placeholder="Type a message..."/>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send-fill"></i> Send</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script>
     let socket;
     let currentUser;
