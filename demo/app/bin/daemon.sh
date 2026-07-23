@@ -303,14 +303,20 @@ version)
   version
   ;;
 *)
-  echo "Usage: $PRG <command>"
+  echo "Usage: $PRG [options] <command>"
+  echo ""
+  echo "Options:"
+  printf "  %-32s %s\n" "--base-dir <path>" "Set the base directory"
+  printf "  %-32s %s\n" "--java-home <path>" "Set the path to Java home"
+  printf "  %-32s %s\n" "--debug" "Enable debug mode"
+  echo ""
   echo "Commands:"
-  echo "  start             Start Aspectran daemon"
-  echo "  stop              Stop Aspectran daemon"
-  echo "  status            Aspectran daemon status"
-  echo "  restart | reload | force-reload  Restart Aspectran daemon"
-  echo "  try-restart       Restart Aspectran daemon if it is running"
-  echo "  version           Display version information"
+  printf "  %-32s %s\n" "start" "Start Aspectran daemon"
+  printf "  %-32s %s\n" "stop" "Stop Aspectran daemon"
+  printf "  %-32s %s\n" "status" "Aspectran daemon status"
+  printf "  %-32s %s\n" "restart | reload | force-reload" "Restart Aspectran daemon"
+  printf "  %-32s %s\n" "try-restart" "Restart Aspectran daemon if it is running"
+  printf "  %-32s %s\n" "version" "Display version information"
   exit 1
   ;;
 esac
