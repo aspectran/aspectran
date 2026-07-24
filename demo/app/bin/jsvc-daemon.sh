@@ -146,7 +146,15 @@ if [ ! -x "$JSVC" ]; then
 fi
 
 [ -z "$PROC_NAME" ] && PROC_NAME="jsvc-daemon"
-[ -z "$PID_FILE" ] && PID_FILE="$BASE_DIR/.daemon.pid"
+if [ -z "$PID_FILE" ]; then
+  if [ "$PROC_NAME" != "jsvc-daemon" ]; then
+    PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
+  else
+    PID_FILE="$BASE_DIR/.daemon.pid"
+  fi
+elif case "$PID_FILE" in /*) false;; *) true;; esac; then
+  PID_FILE="$BASE_DIR/$PID_FILE"
+fi
 [ -z "$SERVICE_START_WAIT_TIME" ] && SERVICE_START_WAIT_TIME=90
 [ -z "$SERVICE_STOP_WAIT_TIME" ] && SERVICE_STOP_WAIT_TIME=60
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
@@ -271,7 +279,7 @@ start_aspectran() {
 
 stop_aspectran() {
   PID=$(pidof_daemon) || true
-  EXTRA_PIDS=$(pgrep -f "com.aspectran.daemon.JsvcDaemon.*$BASE_DIR" 2>/dev/null || true)
+  EXTRA_PIDS=$(pgrep -f "com.aspectran.daemon.JsvcDaemon.*-pidfile $PID_FILE" 2>/dev/null || true)
 
   if [ -z "$PID" ] && [ -z "$EXTRA_PIDS" ]; then
     echo "Aspectran daemon NOT running."
