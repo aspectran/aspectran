@@ -279,7 +279,7 @@ start_aspectran() {
 
 stop_aspectran() {
   PID=$(pidof_daemon) || true
-  EXTRA_PIDS=$(pgrep -f "-pidfile $PID_FILE.*com.aspectran.daemon.JsvcDaemon" 2>/dev/null || true)
+  EXTRA_PIDS=$(pgrep -f -- "-pidfile $PID_FILE.*com.aspectran.daemon.JsvcDaemon" 2>/dev/null || true)
 
   if [ -z "$PID" ] && [ -z "$EXTRA_PIDS" ]; then
     echo "Aspectran daemon NOT running."
