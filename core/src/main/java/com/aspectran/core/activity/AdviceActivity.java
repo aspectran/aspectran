@@ -408,14 +408,39 @@ public abstract class AdviceActivity extends AbstractActivity {
             }
         }
         if (aspectRule.getHeaders() != null) {
-            for (String header : aspectRule.getHeaders()) {
-                if (getRequestAdapter().containsHeader(header)) {
-                    return true;
+            for (String headerRule : aspectRule.getHeaders()) {
+                if (!isHeaderAcceptable(headerRule)) {
+                    return false;
                 }
             }
-            return false;
         }
         return true;
+    }
+
+    /**
+     * Determines if a header rule matches the current request headers.
+     * Subclasses can override this method to provide environment-specific matching logic.
+     * @param headerRule the header rule to evaluate
+     * @return true if acceptable, false otherwise
+     */
+    protected boolean isHeaderAcceptable(String headerRule) {
+        if (headerRule == null) {
+            return true;
+        }
+        int eqIdx = headerRule.indexOf('=');
+        if (eqIdx > 0) {
+            boolean isNot = (headerRule.charAt(eqIdx - 1) == '!');
+            String headerName = isNot ? headerRule.substring(0, eqIdx - 1).trim() : headerRule.substring(0, eqIdx).trim();
+            String expectedValue = headerRule.substring(eqIdx + 1).trim();
+            String actualValue = getRequestAdapter().getHeader(headerName);
+            if (actualValue == null) {
+                return isNot;
+            }
+            boolean matched = actualValue.contains(expectedValue);
+            return (isNot != matched);
+        } else {
+            return getRequestAdapter().containsHeader(headerRule);
+        }
     }
 
     /**

@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.RequestHeaderParser;
+import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.MediaType;
@@ -114,14 +115,64 @@ public class WebUtils {
     public static boolean isAcceptContentTypes(Translet translet, MediaType... contentTypes) {
         Assert.notNull(translet, "Translet must not be null");
         Assert.notNull(contentTypes, "contentTypes must not be null");
+        return isAcceptContentTypes((WebRequestAdapter)translet.getRequestAdapter(), contentTypes);
+    }
+
+    /**
+     * Checks if any of the specified content types is acceptable according to
+     * the {@code Accept} header sent by the client.
+     * @param translet the current translet
+     * @param mediaTypes an array of media type strings to check
+     * @return {@code true} if acceptable, {@code false} otherwise
+     */
+    public static boolean isAcceptContentTypes(Translet translet, String... mediaTypes) {
+        Assert.notNull(translet, "Translet must not be null");
+        Assert.notNull(mediaTypes, "mediaTypes must not be null");
+        return isAcceptContentTypes((WebRequestAdapter)translet.getRequestAdapter(), mediaTypes);
+    }
+
+    /**
+     * Checks if any of the specified content types is acceptable according to
+     * the {@code Accept} header in the request adapter.
+     * @param requestAdapter the request adapter
+     * @param contentTypes an array of media types to check
+     * @return {@code true} if acceptable, {@code false} otherwise
+     */
+    public static boolean isAcceptContentTypes(WebRequestAdapter requestAdapter, MediaType... contentTypes) {
+        Assert.notNull(requestAdapter, "requestAdapter must not be null");
+        Assert.notNull(contentTypes, "contentTypes must not be null");
         try {
-            List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(translet.getRequestAdapter());
+            List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(requestAdapter);
             for (MediaType mediaType : contentTypes) {
                 if (mediaType.isPresentIn(acceptContentTypes)) {
                     return true;
                 }
             }
         } catch (HttpMediaTypeNotAcceptableException e) {
+            // ignore
+        }
+        return false;
+    }
+
+    /**
+     * Checks if any of the specified content types is acceptable according to
+     * the {@code Accept} header in the request adapter.
+     * @param requestAdapter the request adapter
+     * @param mediaTypes an array of media type strings to check
+     * @return {@code true} if acceptable, {@code false} otherwise
+     */
+    public static boolean isAcceptContentTypes(WebRequestAdapter requestAdapter, String... mediaTypes) {
+        Assert.notNull(requestAdapter, "requestAdapter must not be null");
+        Assert.notNull(mediaTypes, "mediaTypes must not be null");
+        try {
+            List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(requestAdapter);
+            for (String mediaTypeStr : mediaTypes) {
+                MediaType mediaType = MediaType.parseMediaType(mediaTypeStr);
+                if (mediaType.isPresentIn(acceptContentTypes)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
             // ignore
         }
         return false;

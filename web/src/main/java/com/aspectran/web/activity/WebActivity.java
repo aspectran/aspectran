@@ -35,6 +35,7 @@ import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
@@ -290,6 +291,24 @@ public class WebActivity extends CoreActivity {
         }
 
         super.parseRequest();
+    }
+
+    @Override
+    protected boolean isHeaderAcceptable(String headerRule) {
+        if (headerRule == null) {
+            return true;
+        }
+        int eqIdx = headerRule.indexOf('=');
+        if (eqIdx > 0) {
+            boolean isNot = (headerRule.charAt(eqIdx - 1) == '!');
+            String headerName = isNot ? headerRule.substring(0, eqIdx - 1).trim() : headerRule.substring(0, eqIdx).trim();
+            String expectedValue = headerRule.substring(eqIdx + 1).trim();
+            if (HttpHeaders.ACCEPT.equalsIgnoreCase(headerName)) {
+                boolean matched = WebUtils.isAcceptContentTypes(getRequestAdapter(), expectedValue);
+                return (isNot != matched);
+            }
+        }
+        return super.isHeaderAcceptable(headerRule);
     }
 
 }
