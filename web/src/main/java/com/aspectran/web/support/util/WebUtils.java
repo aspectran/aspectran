@@ -68,6 +68,37 @@ public class WebUtils {
     }
 
     /**
+     * Extracts the remote client IP address from the servlet request.
+     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
+     * falling back to the remote address of the underlying servlet request.
+     * @param request the current servlet request
+     * @return the remote IP address
+     */
+    public static String getRemoteAddr(@NonNull HttpServletRequest request) {
+        String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
+        if (StringUtils.hasLength(remoteAddr)) {
+            if (remoteAddr.contains(",")) {
+                remoteAddr = StringUtils.tokenize(remoteAddr, ",", true)[0];
+            }
+        } else {
+            remoteAddr = request.getRemoteAddr();
+        }
+        return remoteAddr;
+    }
+
+    /**
+     * Extracts the remote client IP address from the translet.
+     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
+     * falling back to the remote address of the underlying servlet request.
+     * @param translet the current translet
+     * @return the remote IP address
+     */
+    public static String getRemoteAddr(@NonNull Translet translet) {
+        Assert.notNull(translet, "Translet must not be null");
+        return getRemoteAddr((HttpServletRequest)translet.getRequestAdaptee());
+    }
+
+    /**
      * Retrieve the first cookie with the given name. Note that multiple
      * cookies can have the same name but different paths or domains.
      * @param request current servlet request
