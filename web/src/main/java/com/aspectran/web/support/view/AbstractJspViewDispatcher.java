@@ -24,6 +24,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
+import com.aspectran.web.support.http.HttpStatus;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +41,7 @@ public abstract class AbstractJspViewDispatcher extends AbstractViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractJspViewDispatcher.class);
 
-    protected static final String DEFAULT_CONTENT_TYPE = "text/html;charset=UTF-8";
+    protected static final String DEFAULT_CONTENT_TYPE = "text/html; charset=utf-8";
 
     @Override
     public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
@@ -82,7 +83,6 @@ public abstract class AbstractJspViewDispatcher extends AbstractViewDispatcher {
 
             // Delegate to subclass for actual dispatch
             doDispatch(activity, response, viewName);
-
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
                     dispatchRule.toString(this, viewName), e);
@@ -109,7 +109,7 @@ public abstract class AbstractJspViewDispatcher extends AbstractViewDispatcher {
         }
         requestDispatcher.forward(requestWrapper, response);
 
-        if (response.getStatus() == 404) {
+        if (response.getStatus() == HttpStatus.NOT_FOUND.value()) {
             logger.warn("Resource file {} not found", path);
         }
     }
