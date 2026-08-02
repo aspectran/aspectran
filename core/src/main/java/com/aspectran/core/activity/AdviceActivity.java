@@ -366,10 +366,12 @@ public abstract class AdviceActivity extends AbstractActivity {
                         if (action.getActionId() != null) {
                             getRequestAdapter().setAttribute(action.getActionId(), resultValue);
                         } else {
-                            @SuppressWarnings("unchecked")
-                            Map<String, Object> echos = (Map<String, Object>)resultValue;
-                            for (Map.Entry<String, Object> item : echos.entrySet()) {
-                                getRequestAdapter().setAttribute(item.getKey(), item.getValue());
+                            if (resultValue instanceof Map<?, ?> echos) {
+                                for (Map.Entry<?, ?> entry : echos.entrySet()) {
+                                    getRequestAdapter().setAttribute(entry.getKey().toString(), entry.getValue());
+                                }
+                            } else {
+                                logger.warn("Advice action {} returned a non-Map value", adviceRule);
                             }
                         }
                     }

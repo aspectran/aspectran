@@ -136,19 +136,22 @@ public class AdviceRule implements HasActionRules {
 
     @Override
     public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
-        throw new UnsupportedOperationException("An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
+        throw new UnsupportedOperationException(
+                "An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
                 "Therefore, rules like 'annotated' that imply multiple actions are not supported");
     }
 
     @Override
     public Executable putActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException("An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
+        throw new UnsupportedOperationException(
+                "An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
                 "Therefore, rules like 'include' that imply multiple actions are not supported");
     }
 
     @Override
     public Executable putActionRule(ChooseRule chooseRule) {
-        throw new UnsupportedOperationException("An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
+        throw new UnsupportedOperationException(
+                "An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
                 "Therefore, rules like 'choose' that imply conditional actions are not supported");
     }
 
