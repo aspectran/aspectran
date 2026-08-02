@@ -20,7 +20,7 @@
 
     <aspect id="webTransletSettings">
         <description>
-            This aspect is for injecting default settings into translets running in the web environment.
+            Aspect to inject default settings into translets mapped to web requests.
         </description>
         <joinpoint>
             pointcut: {
