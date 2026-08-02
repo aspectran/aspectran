@@ -65,7 +65,7 @@ public class AselVariableExpressionEvaluator implements IStandardVariableExpress
     private final boolean applyOgnlShortcuts;
 
     /**
-     * Instantiates a new ASELVariableExpressionEvaluator.
+     * Instantiates a new AselVariableExpressionEvaluator.
      * @param applyOgnlShortcuts whether to apply OGNL shortcuts for simple expressions
      */
     public AselVariableExpressionEvaluator(boolean applyOgnlShortcuts) {
