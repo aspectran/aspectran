@@ -1062,7 +1062,7 @@ public class AnnotatedConfigParser {
             if (formatAnno != null) {
                 format = StringUtils.emptyToNull(formatAnno.value());
             }
-            // Translet parameters are injected by the framework, so they are not
+            // The framework automatically injects translet parameter, so they are not
             // treated as required request parameters even if annotated with @NonNull.
             @SuppressWarnings("deprecation")
             boolean required = (param.isAnnotationPresent(Required.class) ||
