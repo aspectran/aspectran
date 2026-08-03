@@ -65,10 +65,6 @@ import java.util.Set;
 /**
  * A central class that holds the state and context during the parsing of Aspectran's
  * configuration rules.
-
-/**
- * A central class that holds the state and context during the parsing of Aspectran's
- * configuration rules.
  * <p>It acts as a temporary container for all discovered rules (e.g., beans, aspects,
  * translets) and provides access to essential services like the {@link ClassLoader} and
  * {@link com.aspectran.core.context.env.EnvironmentProfiles}. The parser populates this
