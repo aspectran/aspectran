@@ -883,34 +883,30 @@ public class RuleParsingContext {
      */
     public DescriptionRule profiling(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr) {
         if (newDr.getProfiles() != null && getEnvironmentProfiles() != null) {
-            if (getEnvironmentProfiles().acceptsProfiles(newDr.getProfiles())) {
-                return mergeDescriptionRule(newDr, oldDr);
-            } else {
-                if (oldDr == null) {
-                    DescriptionRule dr = new DescriptionRule();
-                    dr.addCandidate(newDr);
-                    return dr;
-                } else {
-                    oldDr.addCandidate(newDr);
-                    return oldDr;
-                }
-            }
+            boolean accepted = getEnvironmentProfiles().acceptsProfiles(newDr.getProfiles());
+            return mergeDescriptionRule(newDr, oldDr, accepted);
         } else {
-            return mergeDescriptionRule(newDr, oldDr);
+            return mergeDescriptionRule(newDr, oldDr, true);
         }
     }
 
     @NonNull
-    private DescriptionRule mergeDescriptionRule(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr) {
+    private DescriptionRule mergeDescriptionRule(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr, boolean accepted) {
         if (oldDr == null) {
-            if (newDr.getContent() != null) {
-                String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
-                newDr.setFormattedContent(formatted);
+            if (accepted) {
+                if (newDr.getContent() != null) {
+                    String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
+                    newDr.setFormattedContent(formatted);
+                }
+                return newDr;
+            } else {
+                DescriptionRule dr = new DescriptionRule();
+                dr.addCandidate(newDr);
+                return dr;
             }
-            return newDr;
         }
         DescriptionRule dr = new DescriptionRule();
-        if (newDr.getContent() != null) {
+        if (accepted && newDr.getContent() != null) {
             String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
             if (oldDr.getFormattedContent() != null) {
                 formatted = oldDr.getFormattedContent() + formatted;
@@ -938,28 +934,28 @@ public class RuleParsingContext {
      */
     public ItemRuleMap profiling(@NonNull ItemRuleMap newIrm, @Nullable ItemRuleMap oldIrm) {
         if (newIrm.getProfiles() != null && getEnvironmentProfiles() != null) {
-            if (getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles())) {
-                return mergeItemRuleMap(newIrm, oldIrm);
-            } else if (oldIrm == null) {
-                ItemRuleMap irm = new ItemRuleMap();
-                irm.addCandidate(newIrm);
-                return irm;
-            } else {
-                oldIrm.addCandidate(newIrm);
-                return oldIrm;
-            }
+            boolean accepted = getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles());
+            return mergeItemRuleMap(newIrm, oldIrm, accepted);
         } else {
-            return mergeItemRuleMap(newIrm, oldIrm);
+            return mergeItemRuleMap(newIrm, oldIrm, true);
         }
     }
 
-    private ItemRuleMap mergeItemRuleMap(@NonNull ItemRuleMap newIrm, ItemRuleMap oldIrm) {
+    private ItemRuleMap mergeItemRuleMap(@NonNull ItemRuleMap newIrm, @Nullable ItemRuleMap oldIrm, boolean accepted) {
         if (oldIrm == null) {
-            return newIrm;
+            if (accepted) {
+                return newIrm;
+            } else {
+                ItemRuleMap irm = new ItemRuleMap();
+                irm.addCandidate(newIrm);
+                return irm;
+            }
         }
         ItemRuleMap irm = new ItemRuleMap();
         irm.putAll(oldIrm);
-        irm.putAll(newIrm);
+        if (accepted) {
+            irm.putAll(newIrm);
+        }
         if (oldIrm.getCandidates() == null) {
             irm.addCandidate(oldIrm);
         } else {
