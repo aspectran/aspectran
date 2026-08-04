@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+    <append resource="com/aspectran/core/context/rule/appender/scoped-override-target.xml">
+        <typeAliases>
+            <typeAlias alias="myAlias" type="java.lang.StringBuilder"/>
+        </typeAliases>
+
+        <environment>
+            <property name="app.title">Overridden Title</property>
+        </environment>
+
+        <bean id="testBean" class="com.aspectran.core.context.rule.appender.ScopedOverrideTest$TestBean">
+            <property name="message">Overridden Message</property>
+        </bean>
+
+        <translet name="/hello">
+            <echo>
+                <item name="msg">Overridden Hello</item>
+            </echo>
+        </translet>
+    </append>
+</aspectran>

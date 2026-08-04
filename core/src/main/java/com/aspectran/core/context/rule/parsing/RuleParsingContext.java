@@ -25,6 +25,7 @@ import com.aspectran.core.context.asel.bean.ValueProvider;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.core.context.env.EnvironmentProfiles;
+import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.AutowireTargetRule;
@@ -41,6 +42,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
+import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ItemValueType;
@@ -110,8 +112,12 @@ public class RuleParsingContext {
     private boolean firstFileParsed;
 
     protected RuleParsingContext() {
+        this(Thread.currentThread().getContextClassLoader());
+    }
+
+    protected RuleParsingContext(ClassLoader classLoader) {
         this.shallow = true;
-        this.classLoader = null;
+        this.classLoader = (classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader());
         this.applicationAdapter = null;
         this.environmentProfiles = null;
     }
@@ -270,7 +276,17 @@ public class RuleParsingContext {
      * @param environmentRule the environment rule
      */
     public void addEnvironmentRule(EnvironmentRule environmentRule) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(environmentRule);
+            return;
+        }
         environmentRules.add(environmentRule);
+        if (ruleParsingScope != null && environmentRule != null && environmentRule.getPropertyItemRuleMap() != null) {
+            for (ItemRule itemRule : environmentRule.getPropertyItemRuleMap().values()) {
+                ruleParsingScope.addScopedPropertyKey(itemRule.getName());
+            }
+        }
     }
 
     /**
@@ -287,7 +303,15 @@ public class RuleParsingContext {
      * @param type the type identifier that you are creating an alias for
      */
     public void addTypeAlias(String alias, String type) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(new com.aspectran.core.context.rule.TypeAliasRule(alias, type));
+            return;
+        }
         typeAliases.put(alias, type);
+        if (ruleParsingScope != null) {
+            ruleParsingScope.addScopedTypeAlias(alias);
+        }
     }
 
     /**
@@ -319,8 +343,7 @@ public class RuleParsingContext {
         if (transletName == null) {
             return null;
         }
-        return Namespace.applyTransletNamePattern(
-            ruleParsingScope.getDefaultSettings(), transletName, true);
+        return Namespace.applyTransletNamePattern(ruleParsingScope.getDefaultSettings(), transletName, true);
     }
 
     /**
@@ -726,7 +749,15 @@ public class RuleParsingContext {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public void addAspectRule(AspectRule aspectRule) throws IllegalRuleException {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(aspectRule);
+            return;
+        }
         aspectRuleRegistry.addAspectRule(aspectRule);
+        if (ruleParsingScope != null && aspectRule != null) {
+            ruleParsingScope.addScopedAspectId(aspectRule.getId());
+        }
     }
 
     /**
@@ -735,7 +766,15 @@ public class RuleParsingContext {
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
     public void addBeanRule(BeanRule beanRule) throws IllegalRuleException {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(beanRule);
+            return;
+        }
         beanRuleRegistry.addBeanRule(beanRule);
+        if (ruleParsingScope != null && beanRule != null) {
+            ruleParsingScope.addScopedBeanId(beanRule.getId());
+        }
     }
 
     /**
@@ -753,7 +792,15 @@ public class RuleParsingContext {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public void addScheduleRule(ScheduleRule scheduleRule) throws IllegalRuleException {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(scheduleRule);
+            return;
+        }
         scheduleRuleRegistry.addScheduleRule(scheduleRule);
+        if (ruleParsingScope != null && scheduleRule != null) {
+            ruleParsingScope.addScopedScheduleId(scheduleRule.getId());
+        }
     }
 
     /**
@@ -762,7 +809,15 @@ public class RuleParsingContext {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(transletRule);
+            return;
+        }
         transletRuleRegistry.addTransletRule(transletRule);
+        if (ruleParsingScope != null && transletRule != null) {
+            ruleParsingScope.addScopedTransletName(transletRule.getName());
+        }
     }
 
     /**
@@ -771,7 +826,24 @@ public class RuleParsingContext {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public void addTemplateRule(TemplateRule templateRule) throws IllegalRuleException {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(templateRule);
+            return;
+        }
         templateRuleRegistry.addTemplateRule(templateRule);
+        if (ruleParsingScope != null && templateRule != null) {
+            ruleParsingScope.addScopedTemplateId(templateRule.getId());
+        }
+    }
+
+    @Nullable
+    protected AppendRule getActiveAppendRule() {
+        try {
+            return AspectranNodeParsingContext.peekObject(AppendRule.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

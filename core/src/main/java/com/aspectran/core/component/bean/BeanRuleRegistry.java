@@ -460,7 +460,51 @@ public class BeanRuleRegistry {
         if (beanRule.isImportant()) {
             importantBeanIdSet.add(beanRule.getId());
         }
-        idBasedBeanRuleMap.put(beanId, beanRule);
+        BeanRule oldBeanRule = idBasedBeanRuleMap.put(beanId, beanRule);
+        if (oldBeanRule != null) {
+            removeBeanRule(oldBeanRule);
+        }
+    }
+
+    private void removeBeanRule(@NonNull BeanRule oldBeanRule) {
+        Class<?> targetBeanClass = oldBeanRule.getTargetBeanClass();
+        if (targetBeanClass != null) {
+            removeBeanRule(targetBeanClass, oldBeanRule);
+            removeBeanRuleWithInterfaces(targetBeanClass, oldBeanRule);
+        }
+    }
+
+    private void removeBeanRule(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) {
+        Set<BeanRule> set = typeBasedBeanRuleMap.get(beanClass);
+        if (set != null) {
+            set.remove(beanRule);
+            if (set.isEmpty()) {
+                typeBasedBeanRuleMap.remove(beanClass);
+            }
+        }
+    }
+
+    private void removeBeanRuleWithInterfaces(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) {
+        if (beanClass.isInterface()) {
+            Class<?>[] ifcs = beanClass.getInterfaces();
+            for (Class<?> ifc : ifcs) {
+                if (!ignoredDependencyInterfaces.contains(ifc) && ClassUtils.isVisible(ifc, classLoader)) {
+                    removeBeanRule(ifc, beanRule);
+                }
+            }
+        } else {
+            Class<?> current = beanClass;
+            while (current != null) {
+                Class<?>[] ifcs = current.getInterfaces();
+                for (Class<?> ifc : ifcs) {
+                    if (!ignoredDependencyInterfaces.contains(ifc) && ClassUtils.isVisible(ifc, classLoader)) {
+                        removeBeanRule(ifc, beanRule);
+                        removeBeanRuleWithInterfaces(ifc, beanRule);
+                    }
+                }
+                current = current.getSuperclass();
+            }
+        }
     }
 
     private void saveBeanRule(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {

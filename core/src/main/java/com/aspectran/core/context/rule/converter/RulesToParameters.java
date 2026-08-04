@@ -59,6 +59,7 @@ import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TypeAliasRule;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.params.ActionParameters;
 import com.aspectran.core.context.rule.params.AdviceActionParameters;
@@ -93,6 +94,7 @@ import com.aspectran.core.context.rule.params.TransformParameters;
 import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
+import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.parsing.DefaultSettings;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
@@ -278,7 +280,35 @@ public class RulesToParameters {
         appendParameters.putValueIfNotNull(AppendParameters.url, appendRule.getUrl());
         appendParameters.putValueIfNotNull(AppendParameters.format, appendRule.getFormat());
         appendParameters.putValueIfNotNull(AppendParameters.profile, appendRule.getProfile());
-        appendParameters.putValueIfNotNull(AppendParameters.aspectran, appendRule.getAspectranParameters());
+
+        AspectranParameters aspectranParameters = appendRule.getAspectranParameters();
+        if (appendRule.hasChildRules()) {
+            if (aspectranParameters == null) {
+                aspectranParameters = new AspectranParameters();
+            }
+            for (Object childRule : appendRule.getChildRules()) {
+                if (childRule instanceof EnvironmentRule environmentRule) {
+                    aspectranParameters.putValue(AspectranParameters.environment, toEnvironmentParameters(environmentRule));
+                } else if (childRule instanceof BeanRule beanRule) {
+                    aspectranParameters.putValue(AspectranParameters.bean, toBeanParameters(beanRule));
+                } else if (childRule instanceof TransletRule transletRule) {
+                    aspectranParameters.putValue(AspectranParameters.translet, toTransletParameters(transletRule));
+                } else if (childRule instanceof AspectRule aspectRule) {
+                    aspectranParameters.putValue(AspectranParameters.aspect, toAspectParameters(aspectRule));
+                } else if (childRule instanceof ScheduleRule scheduleRule) {
+                    aspectranParameters.putValue(AspectranParameters.schedule, toScheduleParameters(scheduleRule));
+                } else if (childRule instanceof TemplateRule templateRule) {
+                    aspectranParameters.putValue(AspectranParameters.template, toTemplateParameters(templateRule));
+                } else if (childRule instanceof TypeAliasRule typeAliasRule) {
+                    TypeAliasesParameters typeAliasesParameters = aspectranParameters.getParameters(AspectranParameters.typeAliases);
+                    if (typeAliasesParameters == null) {
+                        typeAliasesParameters = aspectranParameters.attachParameters(AspectranParameters.typeAliases);
+                    }
+                    typeAliasesParameters.putTypeAlias(typeAliasRule.getAlias(), typeAliasRule.getType());
+                }
+            }
+        }
+        appendParameters.putValueIfNotNull(AppendParameters.aspectran, aspectranParameters);
         return appendParameters;
     }
 

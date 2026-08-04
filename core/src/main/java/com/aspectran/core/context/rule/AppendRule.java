@@ -22,6 +22,9 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Defines a rule for importing an external configuration file (XML or APON)
  * into the current context, allowing for modular configuration.
@@ -43,6 +46,8 @@ public class AppendRule {
     private Profiles profiles;
 
     private AspectranParameters aspectranParameters;
+
+    private List<Object> childRules;
 
     /**
      * Gets the path to the local file to append.
@@ -149,6 +154,35 @@ public class AppendRule {
         this.aspectranParameters = aspectranParameters;
     }
 
+    /**
+     * Gets the list of child rules (scoped overrides).
+     * @return the child rules
+     */
+    public List<Object> getChildRules() {
+        return childRules;
+    }
+
+    /**
+     * Adds a child rule for scoped overriding.
+     * @param childRule the child rule to add
+     */
+    public void addChildRule(Object childRule) {
+        if (childRule != null) {
+            if (childRules == null) {
+                childRules = new ArrayList<>();
+            }
+            childRules.add(childRule);
+        }
+    }
+
+    /**
+     * Returns whether this append rule contains child rules.
+     * @return true if child rules exist; false otherwise
+     */
+    public boolean hasChildRules() {
+        return (childRules != null && !childRules.isEmpty());
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -158,6 +192,7 @@ public class AppendRule {
         tsb.append("format", format);
         tsb.append("profile", profile);
         tsb.append("aspectran", aspectranParameters);
+        tsb.append("childRules", childRules);
         return tsb.toString();
     }
 

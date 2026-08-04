@@ -218,15 +218,19 @@ public class ParametersToRules {
         if (appendHandler != null) {
             AspectranParameters aspectran = appendParameters.getParameters(AppendParameters.aspectran);
             String profile = appendParameters.getString(AppendParameters.profile);
-            if (aspectran != null) {
-                AppendRule appendRule = AppendRule.newInstance(aspectran, profile);
-                appendHandler.pending(appendRule);
-            } else {
-                String file = appendParameters.getString(AppendParameters.file);
-                String resource = appendParameters.getString(AppendParameters.resource);
-                String url = appendParameters.getString(AppendParameters.url);
-                String format = appendParameters.getString(AppendParameters.format);
+            String file = appendParameters.getString(AppendParameters.file);
+            String resource = appendParameters.getString(AppendParameters.resource);
+            String url = appendParameters.getString(AppendParameters.url);
+            String format = appendParameters.getString(AppendParameters.format);
+
+            if (file != null || resource != null || url != null) {
                 AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
+                if (aspectran != null) {
+                    toRules(aspectran);
+                }
+                appendHandler.pending(appendRule);
+            } else if (aspectran != null) {
+                AppendRule appendRule = AppendRule.newInstance(aspectran, profile);
                 appendHandler.pending(appendRule);
             }
         }
@@ -257,35 +261,36 @@ public class ParametersToRules {
         }
     }
 
-    private void toEnvironmentRule(EnvironmentParameters environmentParameters) throws IllegalRuleException {
-        if (environmentParameters != null) {
-            String profile = environmentParameters.getString(EnvironmentParameters.profile);
+    @NonNull
+    private EnvironmentRule toEnvironmentRule(@NonNull EnvironmentParameters environmentParameters) throws IllegalRuleException {
+        String profile = environmentParameters.getString(EnvironmentParameters.profile);
 
-            EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
+        EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
 
-            List<DescriptionParameters> descriptionParametersList = environmentParameters.getParametersList(EnvironmentParameters.description);
-            if (descriptionParametersList != null) {
-                for (DescriptionParameters descriptionParameters : descriptionParametersList) {
-                    DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                    descriptionRule = ruleParsingContext.profiling(descriptionRule, environmentRule.getDescriptionRule());
-                    environmentRule.setDescriptionRule(descriptionRule);
-                }
+        List<DescriptionParameters> descriptionParametersList = environmentParameters.getParametersList(EnvironmentParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, environmentRule.getDescriptionRule());
+                environmentRule.setDescriptionRule(descriptionRule);
             }
-
-            List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
-            if (propertyItemHolderParametersList != null) {
-                for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
-                    ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                    irm = ruleParsingContext.profiling(irm, environmentRule.getPropertyItemRuleMap());
-                    environmentRule.setPropertyItemRuleMap(irm);
-                }
-            }
-
-            ruleParsingContext.addEnvironmentRule(environmentRule);
         }
+
+        List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
+        if (propertyItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
+                ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
+                irm = ruleParsingContext.profiling(irm, environmentRule.getPropertyItemRuleMap());
+                environmentRule.setPropertyItemRuleMap(irm);
+            }
+        }
+
+        ruleParsingContext.addEnvironmentRule(environmentRule);
+        return environmentRule;
     }
 
-    private void toAspectRule(@NonNull AspectParameters aspectParameters) throws IllegalRuleException {
+    @NonNull
+    private AspectRule toAspectRule(@NonNull AspectParameters aspectParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
         String order = aspectParameters.getString(AspectParameters.order);
         Boolean isolated = aspectParameters.getBoolean(AspectParameters.isolated);
@@ -387,9 +392,11 @@ public class ParametersToRules {
 
         ruleParsingContext.resolveAdviceBeanClass(aspectRule);
         ruleParsingContext.addAspectRule(aspectRule);
+        return aspectRule;
     }
 
-    private void toBeanRule(@NonNull BeanParameters beanParameters) throws IllegalRuleException {
+    @NonNull
+    private BeanRule toBeanRule(@NonNull BeanParameters beanParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
         String className = StringUtils.emptyToNull(ruleParsingContext.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String scan = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.scan));
@@ -457,8 +464,10 @@ public class ParametersToRules {
         ruleParsingContext.resolveBeanClass(beanRule);
         ruleParsingContext.resolveFactoryBeanClass(beanRule);
         ruleParsingContext.addBeanRule(beanRule);
+        return beanRule;
     }
 
+    @NonNull
     private BeanRule toInnerBeanRule(@NonNull BeanParameters beanParameters) throws IllegalRuleException {
         String className = StringUtils.emptyToNull(ruleParsingContext.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
@@ -509,7 +518,8 @@ public class ParametersToRules {
         return beanRule;
     }
 
-    private void toScheduleRule(@NonNull ScheduleParameters scheduleParameters) throws IllegalRuleException {
+    @NonNull
+    private ScheduleRule toScheduleRule(@NonNull ScheduleParameters scheduleParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(scheduleParameters.getString(AspectParameters.id));
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
@@ -546,9 +556,11 @@ public class ParametersToRules {
         }
 
         ruleParsingContext.addScheduleRule(scheduleRule);
+        return scheduleRule;
     }
 
-    private void toTransletRule(@NonNull TransletParameters transletParameters) throws IllegalRuleException {
+    @NonNull
+    private TransletRule toTransletRule(@NonNull TransletParameters transletParameters) throws IllegalRuleException {
         String name = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.name));
         String scan = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.scan));
         String mask = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.mask));
@@ -671,6 +683,7 @@ public class ParametersToRules {
         }
 
         ruleParsingContext.addTransletRule(transletRule);
+        return transletRule;
     }
 
     private void toRequestRule(@NonNull RequestParameters requestParameters, TransletRule transletRule)
@@ -1087,7 +1100,8 @@ public class ParametersToRules {
         ruleParsingContext.resolveBeanClass(redirectRule.getPathTokens());
     }
 
-    private void toTemplateRule(@NonNull TemplateParameters templateParameters) throws IllegalRuleException {
+    @NonNull
+    private TemplateRule toTemplateRule(@NonNull TemplateParameters templateParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
         String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
         String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
@@ -1102,6 +1116,7 @@ public class ParametersToRules {
 
         TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, style, content, contentType, encoding, noCache);
         ruleParsingContext.addTemplateRule(templateRule);
+        return templateRule;
     }
 
     private ItemRuleMap toItemRuleMap(@NonNull ItemHolderParameters itemHolderParameters) throws IllegalRuleException {

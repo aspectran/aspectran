@@ -19,6 +19,9 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.Replicable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents a local scope within the rule parsing process.
  * <p>This class holds contextual information that is specific to the current
@@ -32,11 +35,25 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
 
     private final RuleParsingContext ruleParsingContext;
 
+    private final int nestingLevel;
+
     private DescriptionRule descriptionRule;
 
     private DefaultSettings defaultSettings;
 
-    private final int nestingLevel;
+    private Set<String> scopedBeanIds;
+
+    private Set<String> scopedTransletNames;
+
+    private Set<String> scopedPropertyKeys;
+
+    private Set<String> scopedTypeAliases;
+
+    private Set<String> scopedAspectIds;
+
+    private Set<String> scopedScheduleIds;
+
+    private Set<String> scopedTemplateIds;
 
     /**
      * Instantiates a new RuleParsingScope.
@@ -57,6 +74,14 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
      */
     public RuleParsingContext getRuleParsingContext() {
         return ruleParsingContext;
+    }
+
+    /**
+     * Returns the nesting level of the current scope.
+     * @return the nesting level
+     */
+    public int getNestingLevel() {
+        return nestingLevel;
     }
 
     @Override
@@ -97,12 +122,95 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
         this.defaultSettings = defaultSettings;
     }
 
-    /**
-     * Returns the nesting level of the current scope.
-     * @return the nesting level
-     */
-    public int getNestingLevel() {
-        return nestingLevel;
+    public void addScopedBeanId(String id) {
+        if (id != null && !id.isEmpty()) {
+            if (scopedBeanIds == null) {
+                scopedBeanIds = new HashSet<>();
+            }
+            scopedBeanIds.add(id);
+        }
+    }
+
+    public boolean hasScopedBeanId(String id) {
+        return (scopedBeanIds != null && id != null && scopedBeanIds.contains(id));
+    }
+
+    public void addScopedTransletName(String name) {
+        if (name != null && !name.isEmpty()) {
+            if (scopedTransletNames == null) {
+                scopedTransletNames = new HashSet<>();
+            }
+            scopedTransletNames.add(name);
+        }
+    }
+
+    public boolean hasScopedTransletName(String name) {
+        return (scopedTransletNames != null && name != null && scopedTransletNames.contains(name));
+    }
+
+    public void addScopedPropertyKey(String name) {
+        if (name != null && !name.isEmpty()) {
+            if (scopedPropertyKeys == null) {
+                scopedPropertyKeys = new HashSet<>();
+            }
+            scopedPropertyKeys.add(name);
+        }
+    }
+
+    public boolean hasScopedPropertyKey(String name) {
+        return (scopedPropertyKeys != null && name != null && scopedPropertyKeys.contains(name));
+    }
+
+    public void addScopedTypeAlias(String alias) {
+        if (alias != null && !alias.isEmpty()) {
+            if (scopedTypeAliases == null) {
+                scopedTypeAliases = new HashSet<>();
+            }
+            scopedTypeAliases.add(alias);
+        }
+    }
+
+    public boolean hasScopedTypeAlias(String alias) {
+        return (scopedTypeAliases != null && alias != null && scopedTypeAliases.contains(alias));
+    }
+
+    public void addScopedAspectId(String id) {
+        if (id != null && !id.isEmpty()) {
+            if (scopedAspectIds == null) {
+                scopedAspectIds = new HashSet<>();
+            }
+            scopedAspectIds.add(id);
+        }
+    }
+
+    public boolean hasScopedAspectId(String id) {
+        return (scopedAspectIds != null && id != null && scopedAspectIds.contains(id));
+    }
+
+    public void addScopedScheduleId(String id) {
+        if (id != null && !id.isEmpty()) {
+            if (scopedScheduleIds == null) {
+                scopedScheduleIds = new HashSet<>();
+            }
+            scopedScheduleIds.add(id);
+        }
+    }
+
+    public boolean hasScopedScheduleId(String id) {
+        return (scopedScheduleIds != null && id != null && scopedScheduleIds.contains(id));
+    }
+
+    public void addScopedTemplateId(String id) {
+        if (id != null && !id.isEmpty()) {
+            if (scopedTemplateIds == null) {
+                scopedTemplateIds = new HashSet<>();
+            }
+            scopedTemplateIds.add(id);
+        }
+    }
+
+    public boolean hasScopedTemplateId(String id) {
+        return (scopedTemplateIds != null && id != null && scopedTemplateIds.contains(id));
     }
 
     @Override

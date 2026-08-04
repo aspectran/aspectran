@@ -99,7 +99,7 @@ public class AspectranNodeParsingContext {
      * @return the object at the top of the stack
      */
     @SuppressWarnings("unchecked")
-    static <T> T peekObject() {
+    public static <T> T peekObject() {
         return (T)current().getObjectStack().peek();
     }
 
@@ -110,7 +110,7 @@ public class AspectranNodeParsingContext {
      * @return the object at the specified depth
      */
     @SuppressWarnings("unchecked")
-    static <T> T peekObject(int n) {
+    public static <T> T peekObject(int n) {
         return (T)current().getObjectStack().peek(n);
     }
 
@@ -122,7 +122,7 @@ public class AspectranNodeParsingContext {
      * @return the object of the specified type, or {@code null} if not found
      */
     @SuppressWarnings("unchecked")
-    static <T> T peekObject(Class<?> target) {
+    public static <T> T peekObject(Class<?> target) {
         return (T)current().getObjectStack().peek(target);
     }
 

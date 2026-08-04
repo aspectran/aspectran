@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+    <append resource="com/aspectran/core/context/rule/appender/scoped-override-target.xml">
+        <translet name="/unknown">
+            <echo><item name="msg">Fail</item></echo>
+        </translet>
+    </append>
+</aspectran>

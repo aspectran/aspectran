@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+    <typeAliases>
+        <typeAlias alias="myAlias" type="java.lang.String"/>
+    </typeAliases>
+
+    <environment>
+        <property name="app.title">Original Title</property>
+    </environment>
+
+    <bean id="testBean" class="com.aspectran.core.context.rule.appender.ScopedOverrideTest$TestBean">
+        <property name="message">Original Message</property>
+    </bean>
+
+    <translet name="/hello">
+        <echo>
+            <item name="msg">Original Hello</item>
+        </echo>
+    </translet>
+</aspectran>

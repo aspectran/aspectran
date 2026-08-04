@@ -56,8 +56,21 @@ class AppendNodeletAdder implements NodeletAdder {
                 RuleAppendHandler appendHandler = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleAppendHandler();
                 if (appendHandler != null) {
                     AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
+                    AspectranNodeParsingContext.pushObject(appendRule);
                     appendHandler.pending(appendRule);
                 }
+            })
+            .with(DiscriptionNodeletAdder.instance())
+            .with(SettingsNodeletAdder.instance())
+            .with(TypeAliasNodeletAdder.instance())
+            .with(EnvironmentNodeletAdder.instance())
+            .with(AspectNodeletAdder.instance())
+            .with(BeanNodeletAdder.instance())
+            .with(ScheduleNodeletAdder.instance())
+            .with(TemplateNodeletAdder.instance())
+            .with(TransletNodeletAdder.instance())
+            .endNodelet(text -> {
+                AspectranNodeParsingContext.popObject();
             });
     }
 

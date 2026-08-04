@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.parsing;
 
 import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -58,6 +59,10 @@ public class ShallowRuleParsingContext extends RuleParsingContext {
         super();
     }
 
+    public ShallowRuleParsingContext(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     public void prepare() {
         super.prepare();
@@ -94,11 +99,21 @@ public class ShallowRuleParsingContext extends RuleParsingContext {
 
     @Override
     public void addAspectRule(AspectRule aspectRule) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(aspectRule);
+            return;
+        }
         aspectRules.add(aspectRule);
     }
 
     @Override
     public void addBeanRule(BeanRule beanRule) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(beanRule);
+            return;
+        }
         beanRules.add(beanRule);
     }
 
@@ -109,16 +124,31 @@ public class ShallowRuleParsingContext extends RuleParsingContext {
 
     @Override
     public void addScheduleRule(ScheduleRule scheduleRule) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(scheduleRule);
+            return;
+        }
         scheduleRules.add(scheduleRule);
     }
 
     @Override
     public void addTransletRule(TransletRule transletRule) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(transletRule);
+            return;
+        }
         transletRules.add(transletRule);
     }
 
     @Override
     public void addTemplateRule(TemplateRule templateRule) {
+        AppendRule appendRule = getActiveAppendRule();
+        if (appendRule != null) {
+            appendRule.addChildRule(templateRule);
+            return;
+        }
         templateRules.add(templateRule);
     }
 

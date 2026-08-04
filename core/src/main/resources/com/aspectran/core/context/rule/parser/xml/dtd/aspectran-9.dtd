@@ -335,7 +335,11 @@
   noCache     (true | false) #IMPLIED
 >
 
-<!ELEMENT append EMPTY>
+<!ELEMENT append (
+  description*,
+  settings?,
+  (typeAliases | environment | aspect | bean | schedule | translet | template)*
+)>
 <!ATTLIST append
   file     CDATA #IMPLIED
   resource CDATA #IMPLIED
