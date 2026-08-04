@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.parser.FileAppendedListener;
+import com.aspectran.core.context.rule.parser.RuleFileAppendedListener;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 import java.util.List;
@@ -27,10 +27,11 @@ import java.util.List;
 public interface RuleAppendHandler {
 
     /**
-     * Sets the file appended listener.
-     * @param listener the file appended listener
+     * Sets the listener for receiving events when a rule file is appended.
+     * @param listener the listener to be notified when a rule file is appended
      */
-    void setFileAppendedListener(FileAppendedListener listener);
+    default void setRuleFileAppendedListener(RuleFileAppendedListener listener) {
+    }
 
     /**
      * Returns the rule parsing context.
@@ -55,7 +56,7 @@ public interface RuleAppendHandler {
      * Returns the list of pending rule appenders.
      * @return the list of pending rule appenders
      */
-    List<RuleAppender> getPendingList();
+    List<RuleAppender> getPendingAppenders();
 
     /**
      * Returns the currently processing rule appender.

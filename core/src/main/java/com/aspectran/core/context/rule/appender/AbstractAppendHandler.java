@@ -38,7 +38,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private final EnvironmentProfiles environmentProfiles;
 
-    private List<RuleAppender> pendingList;
+    private List<RuleAppender> pendingAppenders;
 
     private RuleAppender currentRuleAppender;
 
@@ -82,11 +82,11 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
      * Adds a {@code RuleAppender} to the pending list.
      * @param appender the rule appender to add
      */
-    private void pending(RuleAppender appender) {
-        if (pendingList == null) {
-            pendingList = new ArrayList<>();
+    protected void pending(RuleAppender appender) {
+        if (pendingAppenders == null) {
+            pendingAppenders = new ArrayList<>();
         }
-        pendingList.add(appender);
+        pendingAppenders.add(appender);
 
         if (logger.isTraceEnabled()) {
             logger.trace("pending RuleAppender {}", appender);
@@ -98,11 +98,11 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
      * @throws Exception if an error occurs during handling
      */
     protected void handle() throws Exception {
-        if (pendingList != null) {
-            List<RuleAppender> pendedList = pendingList;
-            pendingList = null;
+        if (pendingAppenders != null) {
+            List<RuleAppender> ruleAppenders = pendingAppenders;
+            pendingAppenders = null;
 
-            for (RuleAppender appender : pendedList) {
+            for (RuleAppender appender : ruleAppenders) {
                 if (environmentProfiles == null ||
                     environmentProfiles.acceptsProfiles(appender.getProfiles())) {
                     if (logger.isDebugEnabled()) {
@@ -115,8 +115,8 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
     }
 
     @Override
-    public List<RuleAppender> getPendingList() {
-        return pendingList;
+    public List<RuleAppender> getPendingAppenders() {
+        return pendingAppenders;
     }
 
     @Override

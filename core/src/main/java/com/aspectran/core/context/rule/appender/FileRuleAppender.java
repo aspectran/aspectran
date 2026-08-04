@@ -52,7 +52,7 @@ public class FileRuleAppender extends AbstractRuleAppender {
         super(AppenderType.FILE);
         this.basePath = basePath;
         this.filePath = filePath;
-        determineAppendedFileFormatType(filePath);
+        determineAppendableFileFormatType(filePath);
     }
 
     /**

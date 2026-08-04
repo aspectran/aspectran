@@ -18,15 +18,16 @@ package com.aspectran.core.context.rule.parser;
 import java.io.File;
 
 /**
- * The listener interface for receiving file appended events.
+ * The listener interface for receiving events when a rule file is appended
+ * during the rule parsing process.
  */
 @FunctionalInterface
-public interface FileAppendedListener {
+public interface RuleFileAppendedListener {
 
     /**
-     * Invoked when a file has been appended.
-     * @param file the appended file
+     * Invoked when a rule file has been appended.
+     * @param file the appended rule file
      */
-    void onFileAppended(File file);
+    void onRuleFileAppended(File file);
 
 }

@@ -162,7 +162,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 beanRuleRegistry.scanConfigurableBeans(getBasePackages());
             }
 
-            List<File> appendedFiles = new ArrayList<>();
+            List<File> appendedRuleFiles = new ArrayList<>();
 
             if (contextRules != null || aspectranParameters != null) {
                 try (ActivityContextRuleParser parser = new HybridActivityContextRuleParser(ruleParsingContext)) {
@@ -170,9 +170,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                     parser.setUseXmlToApon(isUseAponToLoadXml());
                     parser.setDebugMode(isDebugMode());
                     if (isAutoReloadEnabled() && getMasterService() != null) {
-                        parser.setFileAppendedListener(file -> {
-                            if (file != null && !appendedFiles.contains(file)) {
-                                appendedFiles.add(file);
+                        parser.setRuleFileAppendedListener(file -> {
+                            if (file != null && !appendedRuleFiles.contains(file)) {
+                                appendedRuleFiles.add(file);
                             }
                         });
                     }
@@ -204,7 +204,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             if (getMasterService() != null) {
                 // Timer starts only if it is driven by a service
-                startContextReloadingTimer(appendedFiles);
+                startContextReloadingTimer(appendedRuleFiles);
             } else {
                 // If it is driven by a builder without a service
                 registerDestroyTask();

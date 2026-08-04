@@ -915,8 +915,8 @@ public class ParametersToRules {
         }
     }
 
-    private void toChooseWhenRule(@NonNull ChooseWhenParameters chooseWhenParameters,
-                                  @NonNull ChooseWhenRule chooseWhenRule)
+    private void toChooseWhenRule(
+            @NonNull ChooseWhenParameters chooseWhenParameters, @NonNull ChooseWhenRule chooseWhenRule)
             throws IllegalRuleException {
         String expression = StringUtils.emptyToNull(chooseWhenParameters.getString(ChooseWhenParameters.test));
         chooseWhenRule.setExpression(expression);
@@ -950,8 +950,8 @@ public class ParametersToRules {
     }
 
     @NonNull
-    private ExceptionThrownRule toExceptionThrownRule(@NonNull ExceptionThrownParameters exceptionThrownParameters,
-                                                      AdviceRule adviceRule)
+    private ExceptionThrownRule toExceptionThrownRule(
+            @NonNull ExceptionThrownParameters exceptionThrownParameters, AdviceRule adviceRule)
             throws IllegalRuleException {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule(adviceRule);
 
@@ -981,16 +981,18 @@ public class ParametersToRules {
         return exceptionThrownRule;
     }
 
-    private void toTransformRule(@NonNull List<TransformParameters> transformParametersList,
-                                 HasResponseRules responseRuleApplicable)
+    private void toTransformRule(
+            @NonNull List<TransformParameters> transformParametersList,
+            HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         for (TransformParameters transformParameters : transformParametersList) {
             toTransformRule(transformParameters, responseRuleApplicable);
         }
     }
 
-    private void toTransformRule(@NonNull TransformParameters transformParameters,
-                                 HasResponseRules responseRuleApplicable)
+    private void toTransformRule(
+            @NonNull TransformParameters transformParameters,
+            @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String format = transformParameters.getString(TransformParameters.format);
         String contentType = transformParameters.getString(TransformParameters.contentType);
@@ -1022,16 +1024,18 @@ public class ParametersToRules {
         responseRuleApplicable.putResponseRule(transformRule);
     }
 
-    private void toDispatchRule(@NonNull List<DispatchParameters> dispatchParametersList,
-                                HasResponseRules responseRuleApplicable)
+    private void toDispatchRule(
+            @NonNull List<DispatchParameters> dispatchParametersList,
+            HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         for (DispatchParameters dispatchParameters : dispatchParametersList) {
             toDispatchRule(dispatchParameters, responseRuleApplicable);
         }
     }
 
-    private void toDispatchRule(@NonNull DispatchParameters dispatchParameters,
-                                @NonNull HasResponseRules responseRuleApplicable)
+    private void toDispatchRule(
+            @NonNull DispatchParameters dispatchParameters,
+            @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String name = dispatchParameters.getString(DispatchParameters.name);
         String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
@@ -1043,8 +1047,9 @@ public class ParametersToRules {
         responseRuleApplicable.putResponseRule(dispatchRule);
     }
 
-    private void toForwardRule(@NonNull ForwardParameters forwardParameters,
-                               @NonNull HasResponseRules responseRuleApplicable)
+    private void toForwardRule(
+            @NonNull ForwardParameters forwardParameters,
+            @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
@@ -1067,16 +1072,18 @@ public class ParametersToRules {
         responseRuleApplicable.putResponseRule(forwardRule);
     }
 
-    private void toRedirectRule(@NonNull List<RedirectParameters> redirectParametersList,
-                                @NonNull HasResponseRules responseRuleApplicable)
+    private void toRedirectRule(
+            @NonNull List<RedirectParameters> redirectParametersList,
+            @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         for (RedirectParameters redirectParameters : redirectParametersList) {
             toRedirectRule(redirectParameters, responseRuleApplicable);
         }
     }
 
-    private void toRedirectRule(@NonNull RedirectParameters redirectParameters,
-                                @NonNull HasResponseRules responseRuleApplicable)
+    private void toRedirectRule(
+            @NonNull RedirectParameters redirectParameters,
+            @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String path = redirectParameters.getString(RedirectParameters.path);

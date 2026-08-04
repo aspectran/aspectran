@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextRuleParser;
-import com.aspectran.core.context.rule.parser.FileAppendedListener;
+import com.aspectran.core.context.rule.parser.RuleFileAppendedListener;
 import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
@@ -55,7 +55,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private EntityResolver entityResolver;
 
-    private FileAppendedListener fileAppendedListener;
+    private RuleFileAppendedListener ruleFileAppendedListener;
 
     /**
      * Instantiates a new HybridRuleAppendHandler.
@@ -68,12 +68,9 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         this.encoding = encoding;
     }
 
-    /**
-     * Sets the listener for receiving file appended events.
-     * @param listener the listener to be notified when a file is appended
-     */
-    public void setFileAppendedListener(FileAppendedListener listener) {
-        this.fileAppendedListener = listener;
+    @Override
+    public void setRuleFileAppendedListener(RuleFileAppendedListener listener) {
+        this.ruleFileAppendedListener = listener;
     }
 
     @Override
@@ -82,8 +79,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         RuleParsingScope ruleParsingScope = getRuleParsingContext().backupRuleParsingScope();
 
         if (appender != null) {
-            if (fileAppendedListener != null && appender.getAppenderType() == AppenderType.FILE) {
-                fileAppendedListener.onFileAppended(makeFile((FileRuleAppender)appender));
+            if (ruleFileAppendedListener != null && appender.getAppenderType() == AppenderType.FILE) {
+                ruleFileAppendedListener.onRuleFileAppended(makeFile((FileRuleAppender)appender));
             }
 
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
@@ -213,7 +210,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         RuleParsingContext ruleParsingContext = null;
         RootParameters rootParameters;
         try {
-            ruleParsingContext = new ShallowRuleParsingContext(getRuleParsingContext().getClassLoader());
+            ruleParsingContext = new ShallowRuleParsingContext();
             ruleParsingContext.prepare();
 
             AspectranNodeParser parser = new AspectranNodeParser(ruleParsingContext, false, false);

@@ -15,8 +15,9 @@
  */
 package com.aspectran.core.context.rule.appender;
 
-import com.aspectran.core.context.rule.parser.FileAppendedListener;
+import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@link RuleAppendHandler} that does nothing.
@@ -35,8 +36,10 @@ public class ShallowRuleAppendHandler extends AbstractAppendHandler {
     }
 
     @Override
-    public void setFileAppendedListener(FileAppendedListener listener) {
-        // Do Nothing
+    public void pending(@NonNull AppendRule appendRule) {
+        RuleAppender appender = new ShallowRuleAppender();
+        appender.setAppendRule(appendRule);
+        pending(appender);
     }
 
     @Override

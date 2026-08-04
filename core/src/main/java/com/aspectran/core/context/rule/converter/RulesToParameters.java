@@ -94,7 +94,6 @@ import com.aspectran.core.context.rule.params.TransformParameters;
 import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
-import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.parsing.DefaultSettings;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
@@ -195,9 +194,9 @@ public class RulesToParameters {
             aspectranParameters.putValue(AspectranParameters.template, ps);
         }
 
-        List<RuleAppender> appenderList = ruleParsingContext.getRuleAppendHandler().getPendingList();
-        if (appenderList != null) {
-            for (RuleAppender appender : appenderList) {
+        List<RuleAppender> pendingAppenders = ruleParsingContext.getRuleAppendHandler().getPendingAppenders();
+        if (pendingAppenders != null) {
+            for (RuleAppender appender : pendingAppenders) {
                 AppendParameters ps = toAppendParameters(appender);
                 aspectranParameters.putValue(AspectranParameters.append, ps);
             }

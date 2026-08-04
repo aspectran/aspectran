@@ -111,17 +111,12 @@ public class RuleParsingContext {
 
     private boolean firstFileParsed;
 
-    protected RuleParsingContext() {
-        this(Thread.currentThread().getContextClassLoader());
-    }
-
-    protected RuleParsingContext(ClassLoader classLoader) {
-        this.shallow = true;
-        this.classLoader = (classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader());
-        this.applicationAdapter = null;
-        this.environmentProfiles = null;
-    }
-
+    /**
+     * Constructs a new RuleParsingContext with the specified parameters.
+     * @param classLoader the class loader to be used for loading resources and classes; must not be null
+     * @param applicationAdapter the application adapter that provides access to application-specific functionalities; must not be null
+     * @param environmentProfiles the environment profiles that define the active and default profiles; must not be null
+     */
     public RuleParsingContext(
             ClassLoader classLoader,
             ApplicationAdapter applicationAdapter,
@@ -133,6 +128,17 @@ public class RuleParsingContext {
         this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
         this.environmentProfiles = environmentProfiles;
+    }
+
+    /**
+     * Constructs a new instance of RuleParsingContext with the specified class loader.
+     * <p>This constructor is used for shallow parsing.</p>
+     */
+    protected RuleParsingContext() {
+        this.shallow = true;
+        this.classLoader = null;
+        this.applicationAdapter = null;
+        this.environmentProfiles = null;
     }
 
     /**
@@ -189,7 +195,7 @@ public class RuleParsingContext {
      * @return the class loader
      */
     public ClassLoader getClassLoader() {
-        Assert.notNull(classLoader, "ClassLoader is not set");
+        Assert.state(classLoader != null, "ClassLoader is not set");
         return classLoader;
     }
 

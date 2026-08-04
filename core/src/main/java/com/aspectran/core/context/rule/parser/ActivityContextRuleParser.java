@@ -30,10 +30,10 @@ import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 public interface ActivityContextRuleParser extends AutoCloseable {
 
     /**
-     * Sets the file appended listener.
-     * @param listener the file appended listener
+     * Sets the listener for receiving events when a rule file is appended during parsing.
+     * @param listener the listener to be notified when a rule file is appended
      */
-    void setFileAppendedListener(FileAppendedListener listener);
+    void setRuleFileAppendedListener(RuleFileAppendedListener listener);
 
     /**
      * Returns the rule parsing context.
@@ -60,8 +60,8 @@ public interface ActivityContextRuleParser extends AutoCloseable {
     void setDebugMode(boolean debugMode);
 
     /**
-     * Parses the specified configuration files.
-     * @param contextRules the context rules
+     * Parses the specified configuration rules.
+     * @param contextRules an array of configuration rule locations
      * @return the rule parsing context
      * @throws ActivityContextRuleParserException if an error occurs during parsing
      */
@@ -69,7 +69,7 @@ public interface ActivityContextRuleParser extends AutoCloseable {
 
     /**
      * Parses the specified Aspectran parameters.
-     * @param aspectranParameters the aspectran parameters
+     * @param aspectranParameters the Aspectran parameters containing configuration rules
      * @return the rule parsing context
      * @throws ActivityContextRuleParserException if an error occurs during parsing
      */

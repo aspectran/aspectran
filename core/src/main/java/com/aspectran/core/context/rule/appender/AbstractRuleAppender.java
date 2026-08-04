@@ -85,10 +85,10 @@ abstract class AbstractRuleAppender implements RuleAppender {
     }
 
     /**
-     * Determines the appended file format type based on the resource name.
+     * Determines the appendable file format type based on the resource name.
      * @param resourceName the name of the resource
      */
-    protected void determineAppendedFileFormatType(String resourceName) {
+    protected void determineAppendableFileFormatType(String resourceName) {
         if (resourceName != null && resourceName.toLowerCase().endsWith(".apon")) {
             setAppendableFileFormatType(AppendableFileFormatType.APON);
         } else {

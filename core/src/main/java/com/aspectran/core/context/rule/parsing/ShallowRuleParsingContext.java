@@ -55,12 +55,11 @@ public class ShallowRuleParsingContext extends RuleParsingContext {
 
     private List<TemplateRule> templateRules;
 
+    /**
+     * Constructs a new ShallowRuleParsingContext.
+     */
     public ShallowRuleParsingContext() {
         super();
-    }
-
-    public ShallowRuleParsingContext(ClassLoader classLoader) {
-        super(classLoader);
     }
 
     @Override
