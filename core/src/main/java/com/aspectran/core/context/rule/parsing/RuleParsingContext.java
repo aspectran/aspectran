@@ -21,44 +21,29 @@ import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
-import com.aspectran.core.context.asel.bean.ValueProvider;
-import com.aspectran.core.context.asel.token.Token;
-import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AutowireRule;
-import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
-import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.util.Namespace;
-import com.aspectran.core.context.rule.util.TextStyler;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +70,14 @@ public class RuleParsingContext {
 
     private final EnvironmentProfiles environmentProfiles;
 
+    private final RuleProfileEvaluator ruleProfileEvaluator;
+
+    private final BeanClassResolver beanClassResolver;
+
+    private boolean rootAppenderParsed;
+
+    private DescriptionRule descriptionRule;
+
     private Map<DefaultSettingType, String> settings;
 
     private List<EnvironmentRule> environmentRules;
@@ -107,10 +100,6 @@ public class RuleParsingContext {
 
     private RuleAppendHandler ruleAppendHandler;
 
-    private DescriptionRule descriptionRule;
-
-    private boolean firstFileParsed;
-
     /**
      * Constructs a new RuleParsingContext with the specified parameters.
      * @param classLoader the class loader to be used for loading resources and classes; must not be null
@@ -128,6 +117,8 @@ public class RuleParsingContext {
         this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
         this.environmentProfiles = environmentProfiles;
+        this.ruleProfileEvaluator = new RuleProfileEvaluator(environmentProfiles);
+        this.beanClassResolver = new BeanClassResolver(this);
     }
 
     /**
@@ -139,6 +130,8 @@ public class RuleParsingContext {
         this.classLoader = null;
         this.applicationAdapter = null;
         this.environmentProfiles = null;
+        this.ruleProfileEvaluator = new RuleProfileEvaluator(null);
+        this.beanClassResolver = new ShallowBeanClassResolver(this);
     }
 
     /**
@@ -153,8 +146,8 @@ public class RuleParsingContext {
         if (!shallow) {
             aspectRuleRegistry = new AspectRuleRegistry();
             beanRuleRegistry = new BeanRuleRegistry(classLoader);
-            transletRuleRegistry = new TransletRuleRegistry(getBasePath(), classLoader);
             scheduleRuleRegistry = new ScheduleRuleRegistry();
+            transletRuleRegistry = new TransletRuleRegistry(getBasePath(), classLoader);
             templateRuleRegistry = new TemplateRuleRegistry();
 
             transletRuleRegistry.setRuleParsingScope(ruleParsingScope);
@@ -169,11 +162,11 @@ public class RuleParsingContext {
      * Releases all resources used by the rule parsing context.
      */
     public void release() {
+        descriptionRule = null;
         settings = null;
         environmentRules = null;
         typeAliases = null;
         ruleParsingScope = null;
-        descriptionRule = null;
 
         if (!shallow) {
             scheduleRuleRegistry.setRuleParsingScope(null);
@@ -188,6 +181,14 @@ public class RuleParsingContext {
 
             beanReferenceInspector = null;
         }
+    }
+
+    /**
+     * Returns whether the parsing context is used for shallow parsing.
+     * @return true if shallow parsing is used; false otherwise
+     */
+    public boolean isShallow() {
+        return shallow;
     }
 
     /**
@@ -225,6 +226,57 @@ public class RuleParsingContext {
      */
     public EnvironmentProfiles getEnvironmentProfiles() {
         return environmentProfiles;
+    }
+
+    /**
+     * Returns the rule profile evaluator.
+     * @return the rule profile evaluator
+     */
+    public RuleProfileEvaluator getRuleProfileEvaluator() {
+        return ruleProfileEvaluator;
+    }
+
+    /**
+     * Returns the bean class resolver.
+     * @return the bean class resolver
+     */
+    public BeanClassResolver getBeanClassResolver() {
+        return beanClassResolver;
+    }
+
+    /**
+     * Returns the bean reference inspector.
+     * @return the bean reference inspector
+     */
+    public BeanReferenceInspector getBeanReferenceInspector() {
+        return beanReferenceInspector;
+    }
+
+    /**
+     * Sets whether the root rule appender has been parsed.
+     * @param rootAppenderParsed true if the root rule appender has been parsed
+     */
+    public void setRootAppenderParsed(boolean rootAppenderParsed) {
+        this.rootAppenderParsed = rootAppenderParsed;
+    }
+
+    /**
+     * Gets the description rule.
+     * @return the description rule
+     */
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
+    }
+
+    /**
+     * Sets the description rule.
+     * @param descriptionRule the description rule
+     * @param nestingLevel the nesting level
+     */
+    public void setDescriptionRule(DescriptionRule descriptionRule, int nestingLevel) {
+        if (!rootAppenderParsed && nestingLevel == 1) {
+            this.descriptionRule = descriptionRule;
+        }
     }
 
     /**
@@ -267,6 +319,15 @@ public class RuleParsingContext {
     public void applySettings() {
         DefaultSettings defaultSettings = ruleParsingScope.touchDefaultSettings();
         defaultSettings.apply(getSettings());
+    }
+
+    /**
+     * Returns whether the pointcut pattern validation is required.
+     * @return true if pointcut pattern validation is required
+     */
+    public boolean isPointcutPatternVerifiable() {
+        DefaultSettings defaultSettings = ruleParsingScope.getDefaultSettings();
+        return (defaultSettings != null && defaultSettings.isPointcutPatternVerifiable());
     }
 
     /**
@@ -372,6 +433,25 @@ public class RuleParsingContext {
     }
 
     /**
+     * Backup the rule-parsing scope.
+     * @return the rule-parsing scope
+     */
+    public RuleParsingScope backupRuleParsingScope() {
+        RuleParsingScope oldRuleParsingScope = ruleParsingScope;
+        RuleParsingScope newRuleParsingScope = ruleParsingScope.replicate();
+        setRuleParsingScope(newRuleParsingScope);
+        return oldRuleParsingScope;
+    }
+
+    /**
+     * Restore the rule-parsing scope.
+     * @param oldRuleParsingScope the old rule-parsing scope
+     */
+    public void restoreRuleParsingScope(RuleParsingScope oldRuleParsingScope) {
+        setRuleParsingScope(oldRuleParsingScope);
+    }
+
+    /**
      * Returns the rule append handler.
      * @return the rule append handler
      */
@@ -394,359 +474,6 @@ public class RuleParsingContext {
         if (ruleAppendHandler != null) {
             ruleAppendHandler.setCurrentRuleAppender(null);
         }
-    }
-
-    /**
-     * Gets the description rule.
-     * @return the description rule
-     */
-    public DescriptionRule getDescriptionRule() {
-        return descriptionRule;
-    }
-
-    /**
-     * Sets the description rule.
-     * @param descriptionRule the description rule
-     * @param nestingLevel the nesting level
-     */
-    public void setDescriptionRule(DescriptionRule descriptionRule, int nestingLevel) {
-        if (!firstFileParsed && nestingLevel == 1) {
-            this.descriptionRule = descriptionRule;
-        }
-    }
-
-    /**
-     * Sets whether the first file has been parsed.
-     * @param firstFileParsed true if the first file has been parsed
-     */
-    public void setFirstFileParsed(boolean firstFileParsed) {
-        this.firstFileParsed = firstFileParsed;
-    }
-
-    /**
-     * Backup the rule-parsing scope.
-     * @return the rule-parsing scope
-     */
-    public RuleParsingScope backupRuleParsingScope() {
-        RuleParsingScope oldRuleParsingScope = ruleParsingScope;
-        RuleParsingScope newRuleParsingScope = ruleParsingScope.replicate();
-        setRuleParsingScope(newRuleParsingScope);
-        return oldRuleParsingScope;
-    }
-
-    /**
-     * Restore the rule-parsing scope.
-     * @param oldRuleParsingScope the old rule-parsing scope
-     */
-    public void restoreRuleParsingScope(RuleParsingScope oldRuleParsingScope) {
-        setRuleParsingScope(oldRuleParsingScope);
-    }
-
-    /**
-     * Returns whether the pointcut pattern validation is required.
-     * @return true if pointcut pattern validation is required
-     */
-    public boolean isPointcutPatternVerifiable() {
-        DefaultSettings defaultSettings = ruleParsingScope.getDefaultSettings();
-        return (defaultSettings != null && defaultSettings.isPointcutPatternVerifiable());
-    }
-
-    public void resolveBeanClass(BeanRule beanRule) throws IllegalRuleException {
-        if (beanRule != null && !beanRule.isFactoryOffered() && beanRule.getClassName() != null) {
-            Class<?> beanClass = loadClass(beanRule.getClassName(), beanRule);
-            beanRule.setBeanClass(beanClass);
-        }
-    }
-
-    /**
-     * Resolve bean class for factory bean rule.
-     * @param beanRule the bean rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveFactoryBeanClass(BeanRule beanRule) throws IllegalRuleException {
-        if (beanRule != null && beanRule.isFactoryOffered() && beanRule.getFactoryBeanId() != null) {
-            Class<?> beanClass = resolveDirectiveBeanClass(beanRule.getFactoryBeanId(), beanRule);
-            if (beanClass != null) {
-                beanRule.setFactoryBeanClass(beanClass);
-                reserveBeanReference(beanClass, beanRule);
-            } else {
-                reserveBeanReference(beanRule.getFactoryBeanId(), beanRule);
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for the aspect rule.
-     * @param aspectRule the aspect rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveAdviceBeanClass(@NonNull AspectRule aspectRule) throws IllegalRuleException {
-        String beanIdOrClass = aspectRule.getAdviceBeanId();
-        if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveDirectiveBeanClass(beanIdOrClass, aspectRule);
-            if (beanClass != null) {
-                aspectRule.setAdviceBeanClass(beanClass);
-                reserveBeanReference(beanClass, aspectRule);
-            } else {
-                reserveBeanReference(beanIdOrClass, aspectRule);
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for bean method action rule.
-     * @param invokeActionRule the invoke action rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveActionBeanClass(@NonNull InvokeActionRule invokeActionRule) throws IllegalRuleException {
-        String beanIdOrClass = invokeActionRule.getBeanId();
-        if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveDirectiveBeanClass(beanIdOrClass, invokeActionRule);
-            if (beanClass != null) {
-                invokeActionRule.setBeanClass(beanClass);
-                reserveBeanReference(beanClass, invokeActionRule);
-            } else {
-                reserveBeanReference(beanIdOrClass, invokeActionRule);
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class.
-     * @param itemRule the item rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveBeanClass(@Nullable ItemRule itemRule) throws IllegalRuleException {
-        if (itemRule != null) {
-            if (itemRule.getValueType() == ItemValueType.BEAN) {
-                if (itemRule.isListableType()) {
-                    if (itemRule.getBeanRuleList() != null) {
-                        for (BeanRule beanRule : itemRule.getBeanRuleList()) {
-                            resolveBeanClass(beanRule);
-                        }
-                    }
-                } else if (itemRule.isMappableType()) {
-                    if (itemRule.getBeanRuleMap() != null) {
-                        for (BeanRule beanRule : itemRule.getBeanRuleMap().values()) {
-                            resolveBeanClass(beanRule);
-                        }
-                    }
-                } else {
-                    resolveBeanClass(itemRule.getBeanRule());
-                }
-            } else {
-                Iterator<Token[]> it = ItemRuleUtils.tokenIterator(itemRule);
-                if (it != null) {
-                    while (it.hasNext()) {
-                        Token[] tokens = it.next();
-                        if (tokens != null) {
-                            for (Token token : tokens) {
-                                resolveBeanClass(token);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for token.
-     * @param tokens an array of tokens
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveBeanClass(@Nullable Token[] tokens) throws IllegalRuleException {
-        if (tokens != null) {
-            for (Token token : tokens) {
-                resolveBeanClass(token);
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for token.
-     * @param token the token
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveBeanClass(Token token) throws IllegalRuleException {
-        resolveBeanClass(token, token);
-    }
-
-    private void resolveBeanClass(@Nullable Token token, @Nullable BeanReferenceable referenceable)
-            throws IllegalRuleException {
-        if (token != null && token.getType() == TokenType.BEAN) {
-            try {
-                Token.resolveValueProvider(token, getClassLoader());
-            } catch (RuntimeException e) {
-                throw new IllegalRuleException("Failed to resolve value provider for token: " + token, e);
-            }
-
-            ValueProvider provider = token.getValueProvider();
-            if (provider != null) {
-                if (provider.isRequiresBeanInstance()) {
-                    reserveBeanReference(provider.getDependentBeanType(), referenceable);
-                }
-            } else if (token.getDirectiveType() == null) {
-                // This is for simple #{beanId} tokens that don't have a provider
-                reserveBeanReference(token.getName(), referenceable);
-            }
-        }
-    }
-
-    private void resolveBeanClass(Token[] tokens, BeanReferenceable referenceable) throws IllegalRuleException {
-        if (tokens != null) {
-            for (Token token : tokens) {
-                resolveBeanClass(token, referenceable);
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for the autowire rule.
-     * @param autowireRule the autowire rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveBeanClass(@Nullable AutowireRule autowireRule) throws IllegalRuleException {
-        if (autowireRule != null) {
-            if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-                AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
-                if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
-                    resolveBeanClassOrReference(autowireRule, autowireTargetRule, true);
-                }
-            } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
-                if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
-                    resolveBeanClassOrReference(autowireRule, autowireTargetRule, false);
-                }
-            } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
-                autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
-                AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                if (autowireTargetRules != null && autowireRule.isRequired()) {
-                    for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
-                        if (!autowireTargetRule.isOptional() && !autowireTargetRule.isInnerBean()) {
-                            resolveBeanClassOrReference(autowireRule, autowireTargetRule, true);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void resolveBeanClassOrReference(
-            AutowireRule autowireRule, @NonNull AutowireTargetRule autowireTargetRule, boolean forReference)
-            throws IllegalRuleException {
-        ValueExpression valueExpression = autowireTargetRule.getValueExpression();
-        if (valueExpression != null) {
-            Token[] tokens = valueExpression.getTokens();
-            resolveBeanClass(tokens, autowireRule);
-        } else if (forReference) {
-            Class<?> type = autowireTargetRule.getType();
-            String qualifier = autowireTargetRule.getQualifier();
-            reserveBeanReference(qualifier, type, autowireRule);
-        }
-    }
-
-    /**
-     * Resolve bean class for the schedule rule.
-     * @param scheduleRule the schedule rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveBeanClass(ScheduleRule scheduleRule) throws IllegalRuleException {
-        if (scheduleRule != null) {
-            String beanId = scheduleRule.getSchedulerBeanId();
-            if (beanId != null) {
-                Class<?> beanClass = resolveDirectiveBeanClass(beanId, scheduleRule);
-                if (beanClass != null) {
-                    scheduleRule.setSchedulerBeanClass(beanClass);
-                    reserveBeanReference(beanClass, scheduleRule);
-                } else {
-                    reserveBeanReference(beanId, scheduleRule);
-                }
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for the template rule.
-     * @param templateRule the template rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveBeanClass(TemplateRule templateRule) throws IllegalRuleException {
-        if (templateRule != null) {
-            String beanId = templateRule.getEngineBeanId();
-            if (beanId != null) {
-                Class<?> beanClass = resolveDirectiveBeanClass(beanId, templateRule);
-                if (beanClass != null) {
-                    templateRule.setEngineBeanClass(beanClass);
-                    reserveBeanReference(beanClass, templateRule);
-                } else {
-                    reserveBeanReference(beanId, templateRule);
-                }
-            } else {
-                resolveBeanClass(templateRule.getTemplateTokens());
-            }
-        }
-    }
-
-    private Class<?> resolveDirectiveBeanClass(String beanIdOrClass, Object referer) throws IllegalRuleException {
-        if (beanIdOrClass != null && beanIdOrClass.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-            String className = beanIdOrClass.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-            return loadClass(className, referer);
-        } else {
-            return null;
-        }
-    }
-
-    private Class<?> loadClass(String className, Object referer) throws IllegalRuleException {
-        try {
-            return getClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalRuleException("Unable to load class " + className + " for " + referer, e);
-        }
-    }
-
-    /**
-     * Reserves to bean reference inspection.
-     * @param beanId the bean id
-     * @param referenceable the object to be inspected
-     */
-    public void reserveBeanReference(String beanId, BeanReferenceable referenceable) {
-        reserveBeanReference(beanId, null, referenceable);
-    }
-
-    /**
-     * Reserves to bean reference inspection.
-     * @param beanClass the bean class
-     * @param referenceable the object to be inspected
-     */
-    public void reserveBeanReference(Class<?> beanClass, BeanReferenceable referenceable) {
-        reserveBeanReference(null, beanClass, referenceable);
-    }
-
-    /**
-     * Reserves to bean reference inspection.
-     * @param beanId the bean id
-     * @param beanClass the bean class
-     * @param referenceable the object to be inspected
-     */
-    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceable referenceable) {
-        beanReferenceInspector.reserve(beanId, beanClass, referenceable, ruleAppendHandler.getCurrentRuleAppender());
-    }
-
-    /**
-     * Unreserves a bean reference.
-     * @param referenceable the object to be unreserved
-     */
-    public void unreserveBeanReference(BeanReferenceable referenceable) {
-        beanReferenceInspector.unreserve(referenceable);
-    }
-
-    /**
-     * Returns the bean reference inspector.
-     * @return the bean reference inspector
-     */
-    public BeanReferenceInspector getBeanReferenceInspector() {
-        return beanReferenceInspector;
     }
 
     /**
@@ -947,98 +674,6 @@ public class RuleParsingContext {
      */
     public Collection<TemplateRule> getTemplateRules() {
         return templateRuleRegistry.getTemplateRules();
-    }
-
-    /**
-     * Returns a new description rule that is a combination of two description rules.
-     * @param newDr the new description rule
-     * @param oldDr the old description rule
-     * @return the combined description rule
-     */
-    public DescriptionRule profiling(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr) {
-        if (newDr.getProfiles() != null && getEnvironmentProfiles() != null) {
-            boolean accepted = getEnvironmentProfiles().acceptsProfiles(newDr.getProfiles());
-            return mergeDescriptionRule(newDr, oldDr, accepted);
-        } else {
-            return mergeDescriptionRule(newDr, oldDr, true);
-        }
-    }
-
-    @NonNull
-    private DescriptionRule mergeDescriptionRule(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr, boolean accepted) {
-        if (oldDr == null) {
-            if (accepted) {
-                if (newDr.getContent() != null) {
-                    String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
-                    newDr.setFormattedContent(formatted);
-                }
-                return newDr;
-            } else {
-                DescriptionRule dr = new DescriptionRule();
-                dr.addCandidate(newDr);
-                return dr;
-            }
-        }
-        DescriptionRule dr = new DescriptionRule();
-        if (accepted && newDr.getContent() != null) {
-            String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
-            if (oldDr.getFormattedContent() != null) {
-                formatted = oldDr.getFormattedContent() + formatted;
-            }
-            dr.setFormattedContent(formatted);
-        } else if (oldDr.getFormattedContent() != null) {
-            dr.setFormattedContent(oldDr.getFormattedContent());
-        }
-        oldDr.setFormattedContent(null);
-        if (oldDr.getCandidates() == null) {
-            dr.addCandidate(oldDr);
-        } else {
-            dr.setCandidates(oldDr.getCandidates());
-            oldDr.setCandidates(null);
-        }
-        dr.addCandidate(newDr);
-        return dr;
-    }
-
-    /**
-     * Returns a new item rule map that is a combination of two item rule maps.
-     * @param newIrm the new item rule map
-     * @param oldIrm the old item rule map
-     * @return the combined item rule map
-     */
-    public ItemRuleMap profiling(@NonNull ItemRuleMap newIrm, @Nullable ItemRuleMap oldIrm) {
-        if (newIrm.getProfiles() != null && getEnvironmentProfiles() != null) {
-            boolean accepted = getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles());
-            return mergeItemRuleMap(newIrm, oldIrm, accepted);
-        } else {
-            return mergeItemRuleMap(newIrm, oldIrm, true);
-        }
-    }
-
-    private ItemRuleMap mergeItemRuleMap(@NonNull ItemRuleMap newIrm, @Nullable ItemRuleMap oldIrm, boolean accepted) {
-        if (oldIrm == null) {
-            if (accepted) {
-                return newIrm;
-            } else {
-                ItemRuleMap irm = new ItemRuleMap();
-                irm.addCandidate(newIrm);
-                return irm;
-            }
-        }
-        ItemRuleMap irm = new ItemRuleMap();
-        irm.putAll(oldIrm);
-        if (accepted) {
-            irm.putAll(newIrm);
-        }
-        if (oldIrm.getCandidates() == null) {
-            irm.addCandidate(oldIrm);
-        } else {
-            irm.setCandidates(oldIrm.getCandidates());
-            oldIrm.setCandidates(null);
-            oldIrm.clear();
-        }
-        irm.addCandidate(newIrm);
-        return irm;
     }
 
 }

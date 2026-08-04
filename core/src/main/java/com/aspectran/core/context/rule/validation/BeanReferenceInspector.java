@@ -59,6 +59,26 @@ public class BeanReferenceInspector {
     /**
      * Reserves to bean reference inspection.
      * @param beanId the bean id
+     * @param referenceable the object to be inspected
+     * @param ruleAppender the rule appender
+     */
+    public void reserve(String beanId, BeanReferenceable referenceable, RuleAppender ruleAppender) {
+        reserve(beanId, null, referenceable, ruleAppender);
+    }
+
+    /**
+     * Reserves to bean reference inspection.
+     * @param beanClass the bean class
+     * @param referenceable the object to be inspected
+     * @param ruleAppender the rule appender
+     */
+    public void reserve(Class<?> beanClass, BeanReferenceable referenceable, RuleAppender ruleAppender) {
+        reserve(null, beanClass, referenceable, ruleAppender);
+    }
+
+    /**
+     * Reserves to bean reference inspection.
+     * @param beanId the bean id
      * @param beanClass the bean class
      * @param referenceable the object to be inspected
      * @param ruleAppender the rule appender

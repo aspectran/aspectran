@@ -128,7 +128,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         if (ruleParsingScope.getNestingLevel() > 0) {
             getRuleParsingContext().restoreRuleParsingScope(ruleParsingScope);
         } else {
-            getRuleParsingContext().setFirstFileParsed(true);
+            getRuleParsingContext().setRootAppenderParsed(true);
         }
     }
 
@@ -142,8 +142,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                     throw new IllegalRuleException("Target bean '" + beanId +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
-                context.resolveBeanClass(beanRule);
-                context.resolveFactoryBeanClass(beanRule);
+                context.getBeanClassResolver().resolveBeanClass(beanRule);
+                context.getBeanClassResolver().resolveFactoryBeanClass(beanRule);
                 context.getBeanRuleRegistry().addBeanRule(beanRule);
             } else if (childRule instanceof com.aspectran.core.context.rule.EnvironmentRule environmentRule) {
                 if (environmentRule.getPropertyItemRuleMap() != null) {

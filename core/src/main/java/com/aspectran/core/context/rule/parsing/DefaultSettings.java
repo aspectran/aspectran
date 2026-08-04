@@ -34,15 +34,25 @@ public class DefaultSettings {
     /** Suffix to append to each translet name */
     private String transletNameSuffix;
 
+    /** Whether pointcut patterns should be verified */
     private Boolean pointcutPatternVerifiable;
 
+    /** ID of the default template engine bean */
     private String defaultTemplateEngineBean;
 
+    /** ID of the default scheduler bean */
     private String defaultSchedulerBean;
 
+    /**
+     * Constructs a new DefaultSettings instance.
+     */
     public DefaultSettings() {
     }
 
+    /**
+     * Constructs a new DefaultSettings instance by copying settings from another DefaultSettings instance.
+     * @param ds the default settings to copy from
+     */
     public DefaultSettings(@NonNull DefaultSettings ds) {
         this.transletNamePrefix = ds.getTransletNamePrefix();
         this.transletNameSuffix = ds.getTransletNameSuffix();
@@ -51,50 +61,98 @@ public class DefaultSettings {
         this.defaultSchedulerBean = ds.getDefaultSchedulerBean();
     }
 
+    /**
+     * Returns the prefix to append to each translet name.
+     * @return the translet name prefix
+     */
     public String getTransletNamePrefix() {
         return transletNamePrefix;
     }
 
+    /**
+     * Sets the prefix to append to each translet name.
+     * @param transletNamePrefix the translet name prefix to set
+     */
     public void setTransletNamePrefix(String transletNamePrefix) {
         this.transletNamePrefix = transletNamePrefix;
     }
 
+    /**
+     * Returns the suffix to append to each translet name.
+     * @return the translet name suffix
+     */
     public String getTransletNameSuffix() {
         return transletNameSuffix;
     }
 
+    /**
+     * Sets the suffix to append to each translet name.
+     * @param transletNameSuffix the translet name suffix to set
+     */
     public void setTransletNameSuffix(String transletNameSuffix) {
         this.transletNameSuffix = transletNameSuffix;
     }
 
+    /**
+     * Returns whether pointcut patterns should be verified.
+     * @return true if pointcut patterns should be verified; false otherwise
+     */
     public boolean isPointcutPatternVerifiable() {
         return BooleanUtils.toBoolean(pointcutPatternVerifiable, false);
     }
 
+    /**
+     * Returns the raw Boolean value indicating whether pointcut patterns should be verified.
+     * @return the Boolean value for pointcut pattern verifiability, or null if unset
+     */
     public Boolean getPointcutPatternVerifiable() {
         return pointcutPatternVerifiable;
     }
 
+    /**
+     * Sets whether pointcut patterns should be verified.
+     * @param pointcutPatternVerifiable true to verify pointcut patterns; false otherwise
+     */
     public void setPointcutPatternVerifiable(boolean pointcutPatternVerifiable) {
         this.pointcutPatternVerifiable = pointcutPatternVerifiable;
     }
 
+    /**
+     * Returns the bean ID of the default template engine.
+     * @return the default template engine bean ID
+     */
     public String getDefaultTemplateEngineBean() {
         return defaultTemplateEngineBean;
     }
 
+    /**
+     * Sets the bean ID of the default template engine.
+     * @param defaultTemplateEngineBean the default template engine bean ID to set
+     */
     public void setDefaultTemplateEngineBean(String defaultTemplateEngineBean) {
         this.defaultTemplateEngineBean = defaultTemplateEngineBean;
     }
 
+    /**
+     * Returns the bean ID of the default scheduler.
+     * @return the default scheduler bean ID
+     */
     public String getDefaultSchedulerBean() {
         return defaultSchedulerBean;
     }
 
+    /**
+     * Sets the bean ID of the default scheduler.
+     * @param defaultSchedulerBean the default scheduler bean ID to set
+     */
     public void setDefaultSchedulerBean(String defaultSchedulerBean) {
         this.defaultSchedulerBean = defaultSchedulerBean;
     }
 
+    /**
+     * Applies default settings from the specified settings map.
+     * @param settings a map containing default setting types and their string values
+     */
     public void apply(@NonNull Map<DefaultSettingType, String> settings) {
         if (settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX) != null) {
             setTransletNamePrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX));

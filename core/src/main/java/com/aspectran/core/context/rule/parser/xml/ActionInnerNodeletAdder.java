@@ -103,7 +103,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveActionBeanClass(invokeActionRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .with(ArgumentNodeletAdder.instance())
@@ -121,7 +121,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(methodName, hidden);
-                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveActionBeanClass(invokeActionRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .with(ArgumentNodeletAdder.instance())

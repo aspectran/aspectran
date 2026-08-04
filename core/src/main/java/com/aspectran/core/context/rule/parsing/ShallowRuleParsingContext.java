@@ -15,20 +15,13 @@
  */
 package com.aspectran.core.context.rule.parsing;
 
-import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.InvokeActionRule;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.ShallowRuleAppendHandler;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -174,61 +167,6 @@ public class ShallowRuleParsingContext extends RuleParsingContext {
     @Override
     public Collection<TemplateRule> getTemplateRules() {
         return templateRules;
-    }
-
-    @Override
-    public void resolveBeanClass(BeanRule beanRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveFactoryBeanClass(BeanRule beanRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveAdviceBeanClass(@NonNull AspectRule aspectRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveActionBeanClass(@NonNull InvokeActionRule invokeActionRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveBeanClass(@Nullable ItemRule itemRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveBeanClass(@Nullable Token[] tokens) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveBeanClass(Token token) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveBeanClass(@Nullable AutowireRule autowireRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveBeanClass(ScheduleRule scheduleRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveBeanClass(TemplateRule templateRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceable referenceable) {
-        // Do Nothing
     }
 
 }

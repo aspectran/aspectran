@@ -94,7 +94,7 @@ public class TemplateRuleRegistry extends AbstractComponent {
         }
 
         if (ruleParsingScope != null) {
-            ruleParsingScope.getRuleParsingContext().resolveBeanClass(templateRule);
+            ruleParsingScope.getRuleParsingContext().getBeanClassResolver().resolveBeanClass(templateRule);
         }
         templateRuleMap.put(templateRule.getId(), templateRule);
 

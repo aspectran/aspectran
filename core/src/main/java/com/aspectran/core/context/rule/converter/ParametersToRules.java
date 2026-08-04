@@ -137,7 +137,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, ruleParsingContext.getRuleParsingScope().getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, ruleParsingContext.getRuleParsingScope().getDescriptionRule());
                 ruleParsingContext.getRuleParsingScope().setDescriptionRule(descriptionRule);
             }
         }
@@ -271,7 +271,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, environmentRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, environmentRule.getDescriptionRule());
                 environmentRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -280,7 +280,7 @@ public class ParametersToRules {
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, environmentRule.getPropertyItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, environmentRule.getPropertyItemRuleMap());
                 environmentRule.setPropertyItemRuleMap(irm);
             }
         }
@@ -302,7 +302,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, aspectRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, aspectRule.getDescriptionRule());
                 aspectRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -375,7 +375,7 @@ public class ParametersToRules {
             if (descriptionParametersList2 != null) {
                 for (DescriptionParameters descriptionParameters : descriptionParametersList2) {
                     DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                    descriptionRule = ruleParsingContext.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+                    descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, exceptionRule.getDescriptionRule());
                     exceptionRule.setDescriptionRule(descriptionRule);
                 }
             }
@@ -390,7 +390,7 @@ public class ParametersToRules {
             aspectRule.setExceptionRule(exceptionRule);
         }
 
-        ruleParsingContext.resolveAdviceBeanClass(aspectRule);
+        ruleParsingContext.getBeanClassResolver().resolveAdviceBeanClass(aspectRule);
         ruleParsingContext.addAspectRule(aspectRule);
         return aspectRule;
     }
@@ -433,7 +433,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, beanRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, beanRule.getDescriptionRule());
                 beanRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -447,7 +447,7 @@ public class ParametersToRules {
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, beanRule.getArgumentItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, beanRule.getArgumentItemRuleMap());
                 beanRule.setArgumentItemRuleMap(irm);
             }
         }
@@ -456,13 +456,13 @@ public class ParametersToRules {
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, beanRule.getPropertyItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, beanRule.getPropertyItemRuleMap());
                 beanRule.setPropertyItemRuleMap(irm);
             }
         }
 
-        ruleParsingContext.resolveBeanClass(beanRule);
-        ruleParsingContext.resolveFactoryBeanClass(beanRule);
+        ruleParsingContext.getBeanClassResolver().resolveBeanClass(beanRule);
+        ruleParsingContext.getBeanClassResolver().resolveFactoryBeanClass(beanRule);
         ruleParsingContext.addBeanRule(beanRule);
         return beanRule;
     }
@@ -488,7 +488,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, beanRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, beanRule.getDescriptionRule());
                 beanRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -497,7 +497,7 @@ public class ParametersToRules {
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, beanRule.getArgumentItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, beanRule.getArgumentItemRuleMap());
                 beanRule.setArgumentItemRuleMap(irm);
             }
         }
@@ -506,13 +506,13 @@ public class ParametersToRules {
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, beanRule.getPropertyItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, beanRule.getPropertyItemRuleMap());
                 beanRule.setPropertyItemRuleMap(irm);
             }
         }
 
-        ruleParsingContext.resolveBeanClass(beanRule);
-        ruleParsingContext.resolveFactoryBeanClass(beanRule);
+        ruleParsingContext.getBeanClassResolver().resolveBeanClass(beanRule);
+        ruleParsingContext.getBeanClassResolver().resolveFactoryBeanClass(beanRule);
         ruleParsingContext.addInnerBeanRule(beanRule);
 
         return beanRule;
@@ -528,7 +528,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, scheduleRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, scheduleRule.getDescriptionRule());
                 scheduleRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -574,7 +574,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = ruleParsingContext.profiling(descriptionRule, transletRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, transletRule.getDescriptionRule());
                 transletRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -589,7 +589,7 @@ public class ParametersToRules {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
                 RequestRule requestRule = transletRule.touchRequestRule(false);
-                irm = ruleParsingContext.profiling(irm, requestRule.getParameterItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, requestRule.getParameterItemRuleMap());
                 requestRule.setParameterItemRuleMap(irm);
             }
         }
@@ -599,7 +599,7 @@ public class ParametersToRules {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
                 RequestRule requestRule = transletRule.touchRequestRule(false);
-                irm = ruleParsingContext.profiling(irm, requestRule.getAttributeItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }
         }
@@ -666,7 +666,7 @@ public class ParametersToRules {
             if (descriptionParametersList2 != null) {
                 for (DescriptionParameters descriptionParameters : descriptionParametersList2) {
                     DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                    descriptionRule = ruleParsingContext.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+                    descriptionRule = ruleParsingContext.getRuleProfileEvaluator().merge(descriptionRule, exceptionRule.getDescriptionRule());
                     exceptionRule.setDescriptionRule(descriptionRule);
                 }
             }
@@ -697,7 +697,7 @@ public class ParametersToRules {
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, requestRule.getParameterItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, requestRule.getParameterItemRuleMap());
                 requestRule.setParameterItemRuleMap(irm);
             }
         }
@@ -706,7 +706,7 @@ public class ParametersToRules {
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, requestRule.getAttributeItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }
         }
@@ -798,7 +798,7 @@ public class ParametersToRules {
                 if (argumentItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
+                        irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, invokeActionRule.getArgumentItemRuleMap());
                         invokeActionRule.setArgumentItemRuleMap(irm);
                     }
                 }
@@ -806,11 +806,11 @@ public class ParametersToRules {
                 if (propertyItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
+                        irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, invokeActionRule.getPropertyItemRuleMap());
                         invokeActionRule.setPropertyItemRuleMap(irm);
                     }
                 }
-                ruleParsingContext.resolveActionBeanClass(invokeActionRule);
+                ruleParsingContext.getBeanClassResolver().resolveActionBeanClass(invokeActionRule);
                 actionRuleApplicable.putActionRule(invokeActionRule);
                 break;
             }
@@ -822,7 +822,7 @@ public class ParametersToRules {
                 if (argumentItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
+                        irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, invokeActionRule.getArgumentItemRuleMap());
                         invokeActionRule.setArgumentItemRuleMap(irm);
                     }
                 }
@@ -830,11 +830,11 @@ public class ParametersToRules {
                 if (propertyItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
+                        irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, invokeActionRule.getPropertyItemRuleMap());
                         invokeActionRule.setPropertyItemRuleMap(irm);
                     }
                 }
-                ruleParsingContext.resolveActionBeanClass(invokeActionRule);
+                ruleParsingContext.getBeanClassResolver().resolveActionBeanClass(invokeActionRule);
                 actionRuleApplicable.putActionRule(invokeActionRule);
                 break;
             }
@@ -869,7 +869,7 @@ public class ParametersToRules {
                 if (parameterItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = ruleParsingContext.profiling(irm, includeActionRule.getParameterItemRuleMap());
+                        irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, includeActionRule.getParameterItemRuleMap());
                         includeActionRule.setParameterItemRuleMap(irm);
                     }
                 }
@@ -877,7 +877,7 @@ public class ParametersToRules {
                 if (attributeItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = ruleParsingContext.profiling(irm, includeActionRule.getAttributeItemRuleMap());
+                        irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, includeActionRule.getAttributeItemRuleMap());
                         includeActionRule.setAttributeItemRuleMap(irm);
                     }
                 }
@@ -1018,7 +1018,7 @@ public class ParametersToRules {
 
             TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url, style, content, contentType2, encoding2, noCache);
             transformRule.setTemplateRule(templateRule);
-            ruleParsingContext.resolveBeanClass(templateRule.getTemplateTokens());
+            ruleParsingContext.getBeanClassResolver().resolveBeanClass(templateRule.getTemplateTokens());
         }
 
         responseRuleApplicable.putResponseRule(transformRule);
@@ -1064,7 +1064,7 @@ public class ParametersToRules {
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, forwardRule.getAttributeItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, forwardRule.getAttributeItemRuleMap());
                 forwardRule.setAttributeItemRuleMap(irm);
             }
         }
@@ -1098,13 +1098,13 @@ public class ParametersToRules {
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = ruleParsingContext.profiling(irm, redirectRule.getParameterItemRuleMap());
+                irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, redirectRule.getParameterItemRuleMap());
                 redirectRule.setParameterItemRuleMap(irm);
             }
         }
 
         responseRuleApplicable.putResponseRule(redirectRule);
-        ruleParsingContext.resolveBeanClass(redirectRule.getPathTokens());
+        ruleParsingContext.getBeanClassResolver().resolveBeanClass(redirectRule.getPathTokens());
     }
 
     @NonNull
@@ -1137,7 +1137,7 @@ public class ParametersToRules {
         if (itemRuleMap != null) {
             itemRuleMap.setProfile(profile);
             for (ItemRule itemRule : itemRuleMap.values()) {
-                ruleParsingContext.resolveBeanClass(itemRule);
+                ruleParsingContext.getBeanClassResolver().resolveBeanClass(itemRule);
             }
         }
         return itemRuleMap;

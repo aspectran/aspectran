@@ -108,7 +108,7 @@ class AspectNodeletAdder implements NodeletAdder {
                     if (beanIdOrClass != null) {
                         AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                         aspectRule.setAdviceBeanId(beanIdOrClass);
-                        AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveAdviceBeanClass(aspectRule);
+                        AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveAdviceBeanClass(aspectRule);
                     }
                 })
                 .with(AdviceInnerNodeletAdder.instance())

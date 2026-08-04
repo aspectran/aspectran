@@ -59,11 +59,11 @@ class AttributesNodeletAdder implements NodeletAdder {
                 Object object = AspectranNodeParsingContext.peekObject();
                 if (object instanceof TransletRule transletRule) {
                     HasAttributeRules hasAttributeRules = transletRule.touchRequestRule(false);
-                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasAttributeRules.getAttributeItemRuleMap());
+                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleProfileEvaluator().merge(irm, hasAttributeRules.getAttributeItemRuleMap());
                     hasAttributeRules.setAttributeItemRuleMap(irm);
                 } else {
                     HasAttributeRules hasAttributeRules = (HasAttributeRules)object;
-                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasAttributeRules.getAttributeItemRuleMap());
+                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleProfileEvaluator().merge(irm, hasAttributeRules.getAttributeItemRuleMap());
                     hasAttributeRules.setAttributeItemRuleMap(irm);
                 }
             });

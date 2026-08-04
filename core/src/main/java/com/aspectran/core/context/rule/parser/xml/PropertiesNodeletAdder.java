@@ -56,7 +56,7 @@ class PropertiesNodeletAdder implements NodeletAdder {
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 HasPropertyRules hasPropertyRules = AspectranNodeParsingContext.peekObject();
-                irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasPropertyRules.getPropertyItemRuleMap());
+                irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleProfileEvaluator().merge(irm, hasPropertyRules.getPropertyItemRuleMap());
                 hasPropertyRules.setPropertyItemRuleMap(irm);
             });
     }

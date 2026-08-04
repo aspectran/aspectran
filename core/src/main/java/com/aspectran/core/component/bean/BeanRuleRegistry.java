@@ -642,7 +642,7 @@ public class BeanRuleRegistry {
 
             @Override
             public void relate(AutowireRule autowireRule) throws IllegalRuleException {
-                ruleParsingContext.resolveBeanClass(autowireRule);
+                ruleParsingContext.getBeanClassResolver().resolveBeanClass(autowireRule);
             }
 
             @Override
@@ -668,11 +668,11 @@ public class BeanRuleRegistry {
 
             for (BeanRule beanRule : rulesToRemove) {
                 if (beanRule.getConstructorAutowireRule() != null) {
-                    ruleParsingContext.unreserveBeanReference(beanRule.getConstructorAutowireRule());
+                    ruleParsingContext.getBeanReferenceInspector().unreserve(beanRule.getConstructorAutowireRule());
                 }
                 if (beanRule.getAutowireRuleList() != null) {
                     for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
-                        ruleParsingContext.unreserveBeanReference(autowireRule);
+                        ruleParsingContext.getBeanReferenceInspector().unreserve(autowireRule);
                     }
                 }
             }

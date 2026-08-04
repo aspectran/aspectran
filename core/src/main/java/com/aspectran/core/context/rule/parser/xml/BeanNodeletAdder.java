@@ -90,8 +90,8 @@ class BeanNodeletAdder implements NodeletAdder {
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 BeanRule beanRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(beanRule);
-                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveFactoryBeanClass(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveBeanClass(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveFactoryBeanClass(beanRule);
                 AspectranNodeParsingContext.getCurrentRuleParsingContext().addBeanRule(beanRule);
             })
             .child("filter")

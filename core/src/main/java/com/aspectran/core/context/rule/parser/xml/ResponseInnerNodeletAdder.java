@@ -90,7 +90,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     TemplateRule.updateTemplateSource(templateRule, text);
                     transformRule.setTemplateRule(templateRule);
 
-                    AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(templateRule);
+                    AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveBeanClass(templateRule);
                 })
             .parent()
         .parent().child("dispatch")
@@ -153,7 +153,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                 HasResponseRules hasResponseRules = AspectranNodeParsingContext.peekObject();
                 hasResponseRules.putResponseRule(redirectRule);
 
-                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(redirectRule.getPathTokens());
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().getBeanClassResolver().resolveBeanClass(redirectRule.getPathTokens());
             });
     }
 

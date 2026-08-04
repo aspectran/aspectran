@@ -63,7 +63,7 @@ class DiscriptionNodeletAdder  implements NodeletAdder {
                 }
 
                 DescriptionRule oldDescriptionRule = describable.getDescriptionRule();
-                descriptionRule = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(descriptionRule, oldDescriptionRule);
+                descriptionRule = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleProfileEvaluator().merge(descriptionRule, oldDescriptionRule);
                 describable.setDescriptionRule(descriptionRule);
             });
     }

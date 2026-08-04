@@ -99,7 +99,7 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         }
         if (scheduleRule.getSchedulerBeanId() != null) {
             if (scheduleRule.getSchedulerBeanClass() == null) {
-                ruleParsingScope.getRuleParsingContext().resolveBeanClass(scheduleRule);
+                ruleParsingScope.getRuleParsingContext().getBeanClassResolver().resolveBeanClass(scheduleRule);
             }
         } else if (scheduleRule.getSchedulerBeanClass() != null) {
             scheduleRule.setSchedulerBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX +
