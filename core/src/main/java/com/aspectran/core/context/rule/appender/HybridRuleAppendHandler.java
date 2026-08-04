@@ -16,7 +16,15 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TypeAliasRule;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
@@ -136,58 +144,58 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             throws IllegalRuleException {
         RuleParsingContext context = getRuleParsingContext();
         for (Object childRule : appendRule.getChildRules()) {
-            if (childRule instanceof com.aspectran.core.context.rule.BeanRule beanRule) {
+            if (childRule instanceof BeanRule beanRule) {
                 String beanId = beanRule.getId();
-                if (beanId != null && !scope.hasScopedBeanId(beanId)) {
-                    throw new IllegalRuleException("Target bean '" + beanId +
+                if (beanId == null || !scope.hasScopedBeanId(beanId)) {
+                    throw new IllegalRuleException("Target bean '" + (beanId != null ? beanId : "<anonymous>") +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
                 context.getBeanClassResolver().resolveBeanClass(beanRule);
                 context.getBeanClassResolver().resolveFactoryBeanClass(beanRule);
                 context.getBeanRuleRegistry().addBeanRule(beanRule);
-            } else if (childRule instanceof com.aspectran.core.context.rule.EnvironmentRule environmentRule) {
+            } else if (childRule instanceof EnvironmentRule environmentRule) {
                 if (environmentRule.getPropertyItemRuleMap() != null) {
-                    for (com.aspectran.core.context.rule.ItemRule itemRule : environmentRule.getPropertyItemRuleMap().values()) {
+                    for (ItemRule itemRule : environmentRule.getPropertyItemRuleMap().values()) {
                         String key = itemRule.getName();
-                        if (key != null && !scope.hasScopedPropertyKey(key)) {
-                            throw new IllegalRuleException("Target environment property '" + key +
+                        if (key == null || !scope.hasScopedPropertyKey(key)) {
+                            throw new IllegalRuleException("Target environment property '" + (key != null ? key : "<unnamed>") +
                                     "' to override was not found in the appended scope [" + appender + "]");
                         }
                     }
                 }
                 context.getEnvironmentRules().add(environmentRule);
-            } else if (childRule instanceof com.aspectran.core.context.rule.TypeAliasRule typeAliasRule) {
+            } else if (childRule instanceof TypeAliasRule typeAliasRule) {
                 String alias = typeAliasRule.getAlias();
-                if (alias != null && !scope.hasScopedTypeAlias(alias)) {
-                    throw new IllegalRuleException("Target typeAlias '" + alias +
+                if (alias == null || !scope.hasScopedTypeAlias(alias)) {
+                    throw new IllegalRuleException("Target typeAlias '" + (alias != null ? alias : "<unnamed>") +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
                 context.getTypeAliases().put(alias, typeAliasRule.getType());
-            } else if (childRule instanceof com.aspectran.core.context.rule.TransletRule transletRule) {
+            } else if (childRule instanceof TransletRule transletRule) {
                 String name = transletRule.getName();
-                if (name != null && !scope.hasScopedTransletName(name)) {
-                    throw new IllegalRuleException("Target translet '" + name +
+                if (name == null || !scope.hasScopedTransletName(name)) {
+                    throw new IllegalRuleException("Target translet '" + (name != null ? name : "<unnamed>") +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
                 context.getTransletRuleRegistry().addTransletRule(transletRule);
-            } else if (childRule instanceof com.aspectran.core.context.rule.AspectRule aspectRule) {
+            } else if (childRule instanceof AspectRule aspectRule) {
                 String id = aspectRule.getId();
-                if (id != null && !scope.hasScopedAspectId(id)) {
-                    throw new IllegalRuleException("Target aspect '" + id +
+                if (id == null || !scope.hasScopedAspectId(id)) {
+                    throw new IllegalRuleException("Target aspect '" + (id != null ? id : "<anonymous>") +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
                 context.getAspectRuleRegistry().addAspectRule(aspectRule);
-            } else if (childRule instanceof com.aspectran.core.context.rule.ScheduleRule scheduleRule) {
+            } else if (childRule instanceof ScheduleRule scheduleRule) {
                 String id = scheduleRule.getId();
-                if (id != null && !scope.hasScopedScheduleId(id)) {
-                    throw new IllegalRuleException("Target schedule '" + id +
+                if (id == null || !scope.hasScopedScheduleId(id)) {
+                    throw new IllegalRuleException("Target schedule '" + (id != null ? id : "<anonymous>") +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
                 context.getScheduleRuleRegistry().addScheduleRule(scheduleRule);
-            } else if (childRule instanceof com.aspectran.core.context.rule.TemplateRule templateRule) {
+            } else if (childRule instanceof TemplateRule templateRule) {
                 String id = templateRule.getId();
-                if (id != null && !scope.hasScopedTemplateId(id)) {
-                    throw new IllegalRuleException("Target template '" + id +
+                if (id == null || !scope.hasScopedTemplateId(id)) {
+                    throw new IllegalRuleException("Target template '" + (id != null ? id : "<anonymous>") +
                             "' to override was not found in the appended scope [" + appender + "]");
                 }
                 context.getTemplateRuleRegistry().addTemplateRule(templateRule);
