@@ -85,14 +85,20 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     @Override
     public void setWar(String war) {
         try {
-            Path path = getActivityContext().getApplicationAdapter().getRealPath(war);
-            if (Files.isDirectory(path)) {
-                Files.createDirectories(path);
-                if (!Files.exists(path)) {
-                    throw new IOException("Could not create WAR directory: " + path);
+            if (war != null && war.startsWith(CLASSPATH_URL_PREFIX)) {
+                String path = war.substring(CLASSPATH_URL_PREFIX.length());
+                Resource resource = getResourceFactory().newClassLoaderResource(path);
+                setBaseResource(resource);
+            } else {
+                Path path = getActivityContext().getApplicationAdapter().getRealPath(war);
+                if (Files.isDirectory(path)) {
+                    Files.createDirectories(path);
+                    if (!Files.exists(path)) {
+                        throw new IOException("Could not create WAR directory: " + path);
+                    }
                 }
+                super.setWar(path.toString());
             }
-            super.setWar(path.toString());
         } catch (Exception e) {
             logger.error("Failed to establish WAR for webapp: {}", war, e);
         }
