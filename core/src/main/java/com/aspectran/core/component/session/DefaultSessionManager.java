@@ -223,7 +223,7 @@ public class DefaultSessionManager
                 if (fileStoreConfig != null) {
                     FileSessionStoreFactory fileSessionStoreFactory = new FileSessionStoreFactory();
                     fileSessionStoreFactory.setApplicationAdapter(getApplicationAdapter());
-                    String storeDir = fileStoreConfig.getStoreDir();
+                    String storeDir = fileStoreConfig.getStoreDirEvaluated();
                     if (StringUtils.hasText(storeDir)) {
                         fileSessionStoreFactory.setStoreDir(storeDir);
                     }

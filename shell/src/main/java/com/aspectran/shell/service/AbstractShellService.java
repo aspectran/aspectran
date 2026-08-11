@@ -23,6 +23,7 @@ import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.service.CoreServiceException;
@@ -166,6 +167,19 @@ public abstract class AbstractShellService extends DefaultCoreService implements
         if (shellConfig != null) {
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();
             if (sessionManagerConfig != null && sessionManagerConfig.isEnabled()) {
+                SessionFileStoreConfig sessionFileStoreConfig = sessionManagerConfig.getFileStoreConfig();
+                if (sessionFileStoreConfig != null) {
+                    String storeDir = sessionFileStoreConfig.getStoreDir();
+                    if (storeDir != null && Token.hasToken(storeDir)) {
+                        InstantActivity activity = new InstantActivity(getActivityContext());
+                        Token[] tokens = TokenParser.parse(storeDir);
+                        Object result = activity.getTokenEvaluator().evaluate(tokens);
+                        if (result != null) {
+                            String storeDirEvaluated = result.toString();
+                            sessionFileStoreConfig.setStoreDirEvaluated(storeDirEvaluated);
+                        }
+                    }
+                }
                 try {
                     DefaultSessionManager sessionManager = new DefaultSessionManager();
                     sessionManager.setActivityContext(getActivityContext());

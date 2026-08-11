@@ -58,6 +58,8 @@ public class SessionFileStoreConfig extends DefaultParameters {
         };
     }
 
+    private String storeDirEvaluated;
+
     /**
      * Instantiates a new SessionFileStoreConfig.
      */
@@ -81,6 +83,22 @@ public class SessionFileStoreConfig extends DefaultParameters {
     public SessionFileStoreConfig setStoreDir(String storeDir) {
         putValue(SessionFileStoreConfig.storeDir, storeDir);
         return this;
+    }
+
+    /**
+     * Retrieves the evaluated directory path where session data is stored.
+     * @return the evaluated store directory path
+     */
+    public String getStoreDirEvaluated() {
+        return (storeDirEvaluated != null ? storeDirEvaluated : getStoreDir());
+    }
+
+    /**
+     * Sets the evaluated directory path where session data is stored.
+     * @param storeDirEvaluated the evaluated store directory path
+     */
+    public void setStoreDirEvaluated(String storeDirEvaluated) {
+        this.storeDirEvaluated = storeDirEvaluated;
     }
 
     /**
