@@ -26,6 +26,7 @@ import io.lettuce.core.masterreplica.MasterReplica;
 import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
 import org.jspecify.annotations.NonNull;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 /**
@@ -50,6 +51,13 @@ public class RedisPrimaryReplicaConnectionPool
         RedisURI[] redisURIs = poolConfig.getRedisURIs();
         if (redisURIs == null || redisURIs.length == 0) {
             throw new IllegalArgumentException("redisURIs must not be null or empty");
+        }
+
+        for (RedisURI redisURI : redisURIs) {
+            if (redisURI.getTimeout() == null || redisURI.getTimeout().isZero() ||
+                    redisURI.getTimeout() == RedisURI.DEFAULT_TIMEOUT_DURATION) {
+                redisURI.setTimeout(Duration.ofSeconds(5));
+            }
         }
 
         RedisClient client;

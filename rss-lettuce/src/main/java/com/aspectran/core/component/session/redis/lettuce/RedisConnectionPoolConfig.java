@@ -18,39 +18,41 @@ package com.aspectran.core.component.session.redis.lettuce;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.resource.ClientResources;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+
+import java.time.Duration;
 
 /**
- * Configuration holder for a Lettuce-backed Redis connection pool for a single, standalone node.
- * <p>
- * Extends Apache Commons Pool's {@link org.apache.commons.pool2.impl.GenericObjectPoolConfig}
- * to expose Redis-specific properties:
- * </p>
- * <ul>
- *   <li>{@link #getRedisURI() redisURI} — target Redis endpoint used to create connections</li>
- *   <li>{@link #getClientOptions() clientOptions} — optional {@link io.lettuce.core.ClientOptions}
- *       applied to the underlying Lettuce {@code RedisClient}</li>
- * </ul>
- * The remaining pooling knobs (maxTotal, maxIdle, minIdle, etc.) are inherited from
- * {@code GenericObjectPoolConfig}.
+ * Configuration holder for a Lettuce-backed Redis connection pool targeting a single, standalone node.
+ * <p>Extends {@link AbstractConnectionPoolConfig} to manage Redis endpoint URIs, timeouts,
+ * client options, and pooling parameters for single-node Redis deployments.</p>
  *
- * <p>Typical usage: populate this config (either with {@link #setRedisURI(RedisURI)} or
- * {@link #setUri(String)} and optional {@link #setClientOptions(ClientOptions)}), then supply it to
- * {@link RedisConnectionPool} which will create/configure the actual pool.</p>
+ * <h2>Example Configuration (Aspectran XML)</h2>
+ * <pre>{@code
+ * <bean id="redisConnectionPoolConfig" class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
+ *     <property name="uri" value="redis://localhost:6379/0"/>
+ *     <property name="timeout" value="5s"/>
+ *     <property name="maxTotal" value="20"/>
+ *     <property name="maxIdle" value="10"/>
+ *     <property name="minIdle" value="5"/>
+ * </bean>
+ * }</pre>
+ *
+ * <h2>Example Configuration (Java Programmatic)</h2>
+ * <pre>{@code
+ * RedisConnectionPoolConfig config = new RedisConnectionPoolConfig();
+ * config.setUri("redis://localhost:6379/0");
+ * config.setTimeout("5s");
+ * config.setMaxTotal(20);
+ * }</pre>
  *
  * <p>Created: 2019/12/07</p>
  */
-public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulRedisConnection<String, SessionData>> {
+public class RedisConnectionPoolConfig
+        extends AbstractConnectionPoolConfig<StatefulRedisConnection<String, SessionData>> {
 
     private RedisURI redisURI;
-
-    private ClientOptions clientOptions;
-
-    private ClientResources clientResources;
 
     /**
      * Creates a new config with default pooling parameters.
@@ -92,46 +94,19 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
         this.redisURI = RedisURI.create(uri);
     }
 
-    /**
-     * Returns optional Lettuce client options to tune connection behavior.
-     * @return the client options, or {@code null} if none set
-     */
-    public ClientOptions getClientOptions() {
-        return clientOptions;
-    }
-
-    /**
-     * Sets optional Lettuce client options to apply to the {@code RedisClient} created
-     * by the pool.
-     * @param clientOptions the client options
-     */
-    public void setClientOptions(ClientOptions clientOptions) {
-        this.clientOptions = clientOptions;
-    }
-
-    /**
-     * Returns the custom {@link ClientResources} for the Lettuce client.
-     * @return the client resources
-     */
-    public ClientResources getClientResources() {
-        return clientResources;
-    }
-
-    /**
-     * Sets custom {@link ClientResources} for the Lettuce client, allowing for advanced
-     * configuration like a {@code SocketAddressResolver}.
-     * @param clientResources the client resources
-     */
-    public void setClientResources(ClientResources clientResources) {
-        this.clientResources = clientResources;
+    @Override
+    public void setTimeout(Duration timeout) {
+        if (this.redisURI != null && timeout != null) {
+            this.redisURI.setTimeout(timeout);
+        }
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURI", redisURI);
-        tsb.append("clientOptions", clientOptions);
-        tsb.append("clientResources", clientResources);
+        tsb.append("clientOptions", getClientOptions());
+        tsb.append("clientResources", getClientResources());
         return tsb.toString();
     }
 

@@ -21,6 +21,8 @@ import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import org.jspecify.annotations.NonNull;
 
+import java.time.Duration;
+
 /**
  * Redis connection pool based on Lettuce and Apache Commons Pool.
  *
@@ -42,6 +44,10 @@ public class RedisConnectionPool extends AbstractConnectionPool<StatefulRedisCon
         RedisURI redisURI = poolConfig.getRedisURI();
         if (redisURI == null) {
             throw new IllegalArgumentException("redisURI must not be null");
+        }
+        if (redisURI.getTimeout() == null || redisURI.getTimeout().isZero() ||
+                redisURI.getTimeout() == RedisURI.DEFAULT_TIMEOUT_DURATION) {
+            redisURI.setTimeout(Duration.ofSeconds(5));
         }
         RedisClient client;
         if (poolConfig.getClientResources() != null) {

@@ -16,56 +16,53 @@
 package com.aspectran.core.component.session.redis.lettuce.cluster;
 
 import com.aspectran.core.component.session.SessionData;
+import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPoolConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.RedisClusterURIUtil;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
-import io.lettuce.core.resource.ClientResources;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Configuration holder for a Lettuce-backed Redis Cluster connection pool.
- * <p>
- * Extends Apache Commons Pool's {@link org.apache.commons.pool2.impl.GenericObjectPoolConfig}
- * to expose Redis Cluster–specific properties:
- * </p>
- * <ul>
- *   <li>{@link #getRedisURIs() redisURIs} — target cluster node endpoints used to create connections</li>
- *   <li>{@link #getClusterClientOptions() clusterClientOptions} — optional
- *       {@link io.lettuce.core.cluster.ClusterClientOptions} applied to the underlying
- *       {@link io.lettuce.core.cluster.RedisClusterClient}</li>
- *   <li>{@link #getClientResources() clientResources} — optional
- *       {@link io.lettuce.core.resource.ClientResources} for advanced configuration like
- *       a {@code SocketAddressResolver}</li>
- * </ul>
- * The remaining pooling knobs (maxTotal, maxIdle, minIdle, etc.) are inherited from
- * {@code GenericObjectPoolConfig}.
+ * <p>Extends {@link AbstractConnectionPoolConfig} to manage multi-node cluster URIs,
+ * timeouts, cluster-specific client options, and pooling parameters.</p>
  *
- * <p>Typical usage: populate this config (either with {@link #setRedisURIs(RedisURI...)}
- * or {@link #setUri(String)}), optionally set {@link #setClusterClientOptions(ClusterClientOptions)}
- * or {@link #setClientResources(ClientResources)}, then supply it to {@link RedisClusterConnectionPool}
- * which will create/configure the actual pool.</p>
+ * <h2>Example Configuration (Aspectran XML)</h2>
+ * <pre>{@code
+ * <bean id="redisClusterConnectionPoolConfig" class="com.aspectran.core.component.session.redis.lettuce.cluster.RedisClusterConnectionPoolConfig">
+ *     <property name="uri" value="redis://node1:6379,node2:6379,node3:6379"/>
+ *     <property name="timeout" value="5s"/>
+ *     <property name="maxTotal" value="50"/>
+ *     <property name="maxIdle" value="20"/>
+ * </bean>
+ * }</pre>
+ *
+ * <h2>Example Configuration (Java Programmatic)</h2>
+ * <pre>{@code
+ * RedisClusterConnectionPoolConfig config = new RedisClusterConnectionPoolConfig();
+ * config.setNodes("redis://node1:6379", "redis://node2:6379", "redis://node3:6379");
+ * config.setTimeout(Duration.ofSeconds(5));
+ * config.setMaxTotal(50);
+ * }</pre>
  *
  * <p>Created: 2019/12/07</p>
  */
 public class RedisClusterConnectionPoolConfig
-        extends GenericObjectPoolConfig<StatefulRedisClusterConnection<String, SessionData>> {
+        extends AbstractConnectionPoolConfig<StatefulRedisClusterConnection<String, SessionData>> {
 
     private RedisURI[] redisURIs;
 
     private ClusterClientOptions clusterClientOptions;
 
-    private ClientResources clientResources;
-
     /**
-     * Creates a new config with default pooling parameters inherited from
-     * {@link GenericObjectPoolConfig}.
+     * Creates a new config with default pooling parameters.
      */
     public RedisClusterConnectionPoolConfig() {
         super();
@@ -121,12 +118,21 @@ public class RedisClusterConnectionPoolConfig
         this.redisURIs = redisURIs.toArray(new RedisURI[0]);
     }
 
+    @Override
+    public void setTimeout(Duration timeout) {
+        if (this.redisURIs != null && timeout != null) {
+            for (RedisURI redisURI : this.redisURIs) {
+                redisURI.setTimeout(timeout);
+            }
+        }
+    }
+
     /**
      * Returns optional Lettuce cluster client options to tune connection behavior.
      * @return the cluster client options, or {@code null} if none set
      */
     public ClusterClientOptions getClusterClientOptions() {
-        return clusterClientOptions;
+        return (clusterClientOptions != null ? clusterClientOptions : (ClusterClientOptions)getClientOptions());
     }
 
     /**
@@ -136,31 +142,15 @@ public class RedisClusterConnectionPoolConfig
      */
     public void setClusterClientOptions(ClusterClientOptions clusterClientOptions) {
         this.clusterClientOptions = clusterClientOptions;
-    }
-
-    /**
-     * Returns the custom {@link ClientResources} for the Lettuce client.
-     * @return the client resources
-     */
-    public ClientResources getClientResources() {
-        return clientResources;
-    }
-
-    /**
-     * Sets custom {@link ClientResources} for the Lettuce client, allowing for advanced
-     * configuration like a {@code SocketAddressResolver}.
-     * @param clientResources the client resources
-     */
-    public void setClientResources(ClientResources clientResources) {
-        this.clientResources = clientResources;
+        setClientOptions(clusterClientOptions);
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURIs", redisURIs);
-        tsb.append("clusterClientOptions", clusterClientOptions);
-        tsb.append("clientResources", clientResources);
+        tsb.append("clusterClientOptions", getClusterClientOptions());
+        tsb.append("clientResources", getClientResources());
         return tsb.toString();
     }
 

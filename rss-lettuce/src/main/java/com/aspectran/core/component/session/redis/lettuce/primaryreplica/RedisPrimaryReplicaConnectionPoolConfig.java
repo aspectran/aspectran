@@ -16,50 +16,46 @@
 package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
 import com.aspectran.core.component.session.SessionData;
+import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPoolConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.cluster.RedisClusterURIUtil;
-import io.lettuce.core.resource.ClientResources;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Configuration holder for a Lettuce-backed Redis Primary-Replica connection pool.
- * <p>
- * Extends Apache Commons Pool's {@link org.apache.commons.pool2.impl.GenericObjectPoolConfig}
- * to expose Redis Primary-Replica–specific properties:
- * </p>
- * <ul>
- *   <li>{@link #getRedisURIs() redisURIs} — target Primary-Replica node endpoints used to create connections</li>
- *   <li>{@link #getClientOptions() clientOptions} — optional
- *       {@link io.lettuce.core.ClientOptions} applied to the underlying
- *       {@link io.lettuce.core.RedisClient}</li>
- *   <li>{@link #getClientResources() clientResources} — optional
- *       {@link io.lettuce.core.resource.ClientResources} for advanced configuration</li>
- * </ul>
- * The remaining pooling knobs (maxTotal, maxIdle, minIdle, etc.) are inherited from
- * {@code GenericObjectPoolConfig}.
+ * <p>Extends {@link AbstractConnectionPoolConfig} to manage Primary-Replica node URIs,
+ * timeouts, client options, and pooling parameters.</p>
  *
- * <p>Typical usage: populate this config (e.g., with {@link #setUri(String)}),
- * optionally set {@link #setClientOptions(ClientOptions)} or {@link #setClientResources(ClientResources)},
- * then supply it to {@link RedisPrimaryReplicaConnectionPool} which will create/configure the actual pool.</p>
+ * <h2>Example Configuration (Aspectran XML)</h2>
+ * <pre>{@code
+ * <bean id="redisPrimaryReplicaConfig" class="com.aspectran.core.component.session.redis.lettuce.primaryreplica.RedisPrimaryReplicaConnectionPoolConfig">
+ *     <property name="uri" value="redis://primary:6379,replica1:6379"/>
+ *     <property name="timeout" value="5s"/>
+ *     <property name="maxTotal" value="30"/>
+ * </bean>
+ * }</pre>
+ *
+ * <h2>Example Configuration (Java Programmatic)</h2>
+ * <pre>{@code
+ * RedisPrimaryReplicaConnectionPoolConfig config = new RedisPrimaryReplicaConnectionPoolConfig();
+ * config.setNodes("redis://primary:6379", "redis://replica1:6379");
+ * config.setTimeout("5s");
+ * config.setMaxTotal(30);
+ * }</pre>
  *
  * <p>Created: 2019/12/08</p>
  */
 public class RedisPrimaryReplicaConnectionPoolConfig
-        extends GenericObjectPoolConfig<StatefulRedisConnection<String, SessionData>> {
+        extends AbstractConnectionPoolConfig<StatefulRedisConnection<String, SessionData>> {
 
     private RedisURI[] redisURIs;
-
-    private ClientOptions clientOptions;
-
-    private ClientResources clientResources;
 
     public RedisPrimaryReplicaConnectionPoolConfig() {
         super();
@@ -115,45 +111,21 @@ public class RedisPrimaryReplicaConnectionPoolConfig
         this.redisURIs = redisURIs.toArray(new RedisURI[0]);
     }
 
-    /**
-     * Returns the Lettuce client options.
-     * @return the {@link ClientOptions}
-     */
-    public ClientOptions getClientOptions() {
-        return clientOptions;
-    }
-
-    /**
-     * Sets the Lettuce client options.
-     * @param clientOptions the {@link ClientOptions}
-     */
-    public void setClientOptions(ClientOptions clientOptions) {
-        this.clientOptions = clientOptions;
-    }
-
-    /**
-     * Returns the custom {@link ClientResources} for the Lettuce client.
-     * @return the client resources
-     */
-    public ClientResources getClientResources() {
-        return clientResources;
-    }
-
-    /**
-     * Sets custom {@link ClientResources} for the Lettuce client, allowing for advanced
-     * configuration like a {@code SocketAddressResolver}.
-     * @param clientResources the client resources
-     */
-    public void setClientResources(ClientResources clientResources) {
-        this.clientResources = clientResources;
+    @Override
+    public void setTimeout(Duration timeout) {
+        if (this.redisURIs != null && timeout != null) {
+            for (RedisURI redisURI : this.redisURIs) {
+                redisURI.setTimeout(timeout);
+            }
+        }
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURIs", redisURIs);
-        tsb.append("clientOptions", clientOptions);
-        tsb.append("clientResources", clientResources);
+        tsb.append("clientOptions", getClientOptions());
+        tsb.append("clientResources", getClientResources());
         return tsb.toString();
     }
 
