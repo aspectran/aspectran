@@ -44,8 +44,17 @@ public class RestartCommand extends AbstractCommand {
 
         try {
             info("Restarting the daemon service...");
-            daemonService.getRootService().getServiceLifeCycle().restart();
-            return success(info("The daemon service has been restarted successfully."));
+            Thread restartThread = new Thread(() -> {
+                try {
+                    Thread.sleep(100L);
+                    daemonService.getRootService().getServiceLifeCycle().restart();
+                } catch (Exception e) {
+                    logger.error("Failed to restart daemon service asynchronously", e);
+                }
+            }, "daemon-restart-thread");
+            restartThread.setDaemon(true);
+            restartThread.start();
+            return success(info("The daemon service is restarting..."));
         } catch (Exception e) {
             return failed(e);
         }

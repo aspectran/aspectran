@@ -149,20 +149,14 @@ public class AsyncCommandExecutor {
         }
 
         executorService.shutdown();
-        if (!executorService.isTerminated()) {
-            while (true) {
-                logger.info("Waiting for the async command executor to terminate...");
-                if (executorService.isTerminated()) {
-                    break;
-                }
-                try {
-                    if (executorService.awaitTermination(3000L, TimeUnit.MILLISECONDS)) {
-                        break;
-                    }
-                } catch (InterruptedException ignored) {
-                    break;
-                }
+        try {
+            if (!executorService.awaitTermination(3000L, TimeUnit.MILLISECONDS)) {
+                logger.warn("Async command executor did not terminate within 3 seconds; forcing shutdown");
+                executorService.shutdownNow();
             }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 
