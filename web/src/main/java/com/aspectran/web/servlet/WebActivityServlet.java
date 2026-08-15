@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.servlet;
 
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
@@ -98,7 +99,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             throw new UnavailableException(e.getMessage());
         }
 
-        logger.info("WebActivityServlet '{}' has been initialized.", getServletName());
+        logger.info("WebActivityServlet '{}' on context path '{}' has been initialized.",
+                getServletName(), getContextName());
     }
 
     @Override
@@ -138,7 +140,13 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             webService.withdraw();
         }
 
-        logger.info("WebActivityServlet '{}' has been destroyed.", getServletName());
+        logger.info("WebActivityServlet '{}' on context path '{}' has been destroyed.",
+                getServletName(), getContextName());
+    }
+
+    private String getContextName() {
+        String contextPath = getServletContext().getContextPath();
+        return (StringUtils.hasLength(contextPath) ? contextPath : "/");
     }
 
 }
