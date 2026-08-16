@@ -17,15 +17,110 @@ package com.aspectran.utils.net;
 
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.net.InetAddress;
 
 /**
- * Utility class for IP address pattern matching, octet-level wildcards, and CIDR checks.
+ * Utility class for IP address pattern matching, octet-level wildcards,
+ * CIDR checks, and IPv6 validation and normalization.
  *
  * @since 9.6.5
  */
 public abstract class IpAddressUtils {
+
+    /**
+     * Determines whether the specified string represents a valid IPv6 address.
+     * @param ipAddress the IP address string to validate
+     * @return true if valid IPv6, false otherwise
+     */
+    public static boolean isValidIPv6(String ipAddress) {
+        if (!StringUtils.hasText(ipAddress)) {
+            return false;
+        }
+        if (ipAddress.endsWith(":") && !ipAddress.endsWith("::")) {
+            return false;
+        }
+        if (ipAddress.startsWith(":") && !ipAddress.startsWith("::")) {
+            return false;
+        }
+        int doubleIdx = ipAddress.indexOf("::");
+        boolean compressed = (doubleIdx != -1);
+        if (compressed && ipAddress.indexOf("::", doubleIdx + 1) != -1) {
+            return false; // only one "::" is allowed
+        }
+        String[] arr = ipAddress.split(":", -1);
+        if (compressed) {
+            if (arr.length < 3 || arr.length > 8) {
+                return false;
+            }
+        } else {
+            if (arr.length != 8) {
+                return false;
+            }
+        }
+        for (String str : arr) {
+            if (!compressed && str.isEmpty()) {
+                return false;
+            }
+            if (str.length() > 4) {
+                return false;
+            }
+            for (int i = 0; i < str.length(); i++) {
+                char ch = str.charAt(i);
+                if (!isHexDigit(ch)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Normalizes an IPv6 address string into standard 8-group full hexadecimal format
+     * (e.g. {@code 0000:0000:0000:0000:0000:0000:0000:0001}).
+     * @param ipAddress the IPv6 address to normalize
+     * @return normalized 39-character IPv6 string, or null if invalid
+     */
+    @Nullable
+    public static String normalizeIPv6(String ipAddress) {
+        if (!isValidIPv6(ipAddress)) {
+            return null;
+        }
+        String[] arr = ipAddress.split(":", -1);
+        short[] addr = new short[8];
+        try {
+            int idx = 0;
+            for (String str : arr) {
+                if (str.isEmpty()) {
+                    if (idx == 0) {
+                        idx++;
+                    } else {
+                        idx = 8 - (arr.length - (idx + 1));
+                    }
+                } else {
+                    addr[idx++] = (short)Integer.parseUnsignedInt(str, 16);
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return String.format("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
+                addr[0] & 0xffff,
+                addr[1] & 0xffff,
+                addr[2] & 0xffff,
+                addr[3] & 0xffff,
+                addr[4] & 0xffff,
+                addr[5] & 0xffff,
+                addr[6] & 0xffff,
+                addr[7] & 0xffff);
+    }
+
+    private static boolean isHexDigit(char ch) {
+        return (ch >= '0' && ch <= '9') ||
+                (ch >= 'a' && ch <= 'f') ||
+                (ch >= 'A' && ch <= 'F');
+    }
 
     /**
      * Checks if the given client IP matches the allowed IPs pattern list.
