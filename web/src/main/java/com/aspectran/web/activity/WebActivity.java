@@ -75,12 +75,23 @@ public class WebActivity extends CoreActivity {
     /**
      * Instantiates a new WebActivity.
      * @param webService the {@link WebService} instance
+     * @param request the HTTP request
+     * @param response the HTTP response
+     */
+    public WebActivity(@NonNull WebService webService,
+                       HttpServletRequest request, HttpServletResponse response) {
+        this(webService, StringUtils.EMPTY, null, request, response);
+    }
+
+    /**
+     * Instantiates a new WebActivity.
+     * @param webService the {@link WebService} instance
      * @param contextPath the context path of the web application
      * @param reverseContextPath the reverse context path for URL generation
      * @param request the HTTP request
      * @param response the HTTP response
      */
-    public WebActivity(@NonNull WebService webService, String contextPath, String reverseContextPath,
+    public WebActivity(@NonNull WebService webService, @NonNull String contextPath, String reverseContextPath,
                        HttpServletRequest request, HttpServletResponse response) {
         super(webService.getActivityContext(), contextPath);
         this.webService = webService;

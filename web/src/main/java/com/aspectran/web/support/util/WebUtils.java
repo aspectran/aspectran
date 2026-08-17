@@ -18,7 +18,6 @@ package com.aspectran.web.support.util;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.RedirectTarget;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -237,9 +236,9 @@ public class WebUtils {
     public static String getReverseContextPath(@NonNull HttpServletRequest request) {
         String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
         if (forwardedPath != null) {
-            if (forwardedPath.equals(ActivityContext.NAME_SEPARATOR)) {
+            if (forwardedPath.equals("/")) {
                 return StringUtils.EMPTY;
-            } else if (forwardedPath.endsWith(ActivityContext.NAME_SEPARATOR)) {
+            } else if (forwardedPath.endsWith("/")) {
                 return forwardedPath.substring(0, forwardedPath.length() - 1);
             } else {
                 return forwardedPath;

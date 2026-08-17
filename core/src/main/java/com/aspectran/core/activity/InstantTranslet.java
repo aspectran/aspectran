@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
+import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
@@ -68,7 +69,7 @@ public class InstantTranslet implements Translet {
 
     @Override
     public String getContextPath() {
-        return activity.getContextPath();
+        return StringUtils.nullToEmpty(activity.getContextPath());
     }
 
     @Override

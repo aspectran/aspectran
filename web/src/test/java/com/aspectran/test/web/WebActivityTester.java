@@ -108,7 +108,7 @@ public class WebActivityTester {
         MockHttpServletResponse response = new MockHttpServletResponse();
         this.lastResponse = response;
 
-        WebActivity activity = new WebActivity(webService, null, null, request, response);
+        WebActivity activity = new WebActivity(webService, request, response);
         try {
             activity.prepare(requestURI, requestMethod);
             activity.perform();

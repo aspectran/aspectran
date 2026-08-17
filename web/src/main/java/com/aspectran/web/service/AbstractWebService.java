@@ -56,12 +56,16 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
         super(parentService, derived);
-        this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
+        this.contextPath = StringUtils.nullToEmpty(servletContext.getContextPath());
         this.servletContext = servletContext;
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext, this);
     }
 
-    @Nullable
+    /**
+     * Returns the context path of the web application.
+     * @return The context path of the web application, or {@code ""} for the root context
+     */
+    @NonNull
     public String getContextPath() {
         return contextPath;
     }

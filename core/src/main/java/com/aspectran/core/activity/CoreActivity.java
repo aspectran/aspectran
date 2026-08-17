@@ -114,16 +114,11 @@ public class CoreActivity extends AdviceActivity {
      */
     protected CoreActivity(ActivityContext context, String contextPath) {
         super(context);
-        this.contextPath = StringUtils.emptyToNull(contextPath);
+        this.contextPath = contextPath;
     }
 
     @Override
     public String getContextPath() {
-        return contextPath;
-    }
-
-    @Override
-    public String getReverseContextPath() {
         return contextPath;
     }
 
