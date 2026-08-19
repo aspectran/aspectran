@@ -292,7 +292,7 @@ stop_aspectran() {
 
   CHILD_PID=""
   if [ -n "$PID" ]; then
-    CHILD_PID=$(pgrep -P "$PID" 2>/dev/null || true)
+    CHILD_PID=$(pgrep -P "$PID" -f -- "com.aspectran.daemon.JsvcDaemon" 2>/dev/null || true)
   fi
 
   ALL_PIDS=$(echo "$PID $CHILD_PID $EXTRA_PIDS" | tr ' ' '\n' | grep -v '^$' | sort -u | xargs)
