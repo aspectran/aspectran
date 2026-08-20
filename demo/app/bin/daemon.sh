@@ -130,6 +130,23 @@ fi
 
 [ -z "$LOGS_DIR" ] && LOGS_DIR="$BASE_DIR/logs"
 [ -z "$TMP_DIR" ] && TMP_DIR="$BASE_DIR/temp"
+
+case "$LOGS_DIR" in
+  /*) ;;
+  *)
+    mkdir -p "$LOGS_DIR"
+    LOGS_DIR="$(cd "$LOGS_DIR" && pwd)"
+    ;;
+esac
+
+case "$TMP_DIR" in
+  /*) ;;
+  *)
+    mkdir -p "$TMP_DIR"
+    TMP_DIR="$(cd "$TMP_DIR" && pwd)"
+    ;;
+esac
+
 DAEMON_OUT="$LOGS_DIR/daemon-stdout.log"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 PID_FILE="$BASE_DIR/.daemon.pid"
