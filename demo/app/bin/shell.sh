@@ -97,6 +97,8 @@ if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
   LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 fi
 
+[ -d "$TMP_DIR" ] || mkdir -p "$TMP_DIR"
+
 # Run Aspectran Shell
 "$JAVA_BIN" \
   $JVM_MS_OPT \

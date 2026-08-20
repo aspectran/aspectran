@@ -62,6 +62,16 @@ while [ ".$1" != . ]; do
     shift; shift;
     continue
     ;;
+  --logs-dir)
+    LOGS_DIR="$2"
+    shift; shift;
+    continue
+    ;;
+  --temp-dir)
+    TMP_DIR="$2"
+    shift; shift;
+    continue
+    ;;
   --user)
     DAEMON_USER="-user $2"
     shift; shift;
@@ -157,15 +167,18 @@ elif case "$PID_FILE" in /*) false;; *) true;; esac; then
 fi
 [ -z "$SERVICE_START_WAIT_TIME" ] && SERVICE_START_WAIT_TIME=90
 [ -z "$SERVICE_STOP_WAIT_TIME" ] && SERVICE_STOP_WAIT_TIME=60
-DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
-DAEMON_ERR="$BASE_DIR/logs/daemon-stderr.log"
+[ -z "$LOGS_DIR" ] && LOGS_DIR="$BASE_DIR/logs"
+[ -z "$TMP_DIR" ] && TMP_DIR="$BASE_DIR/temp"
+DAEMON_OUT="$LOGS_DIR/daemon-stdout.log"
+DAEMON_ERR="$LOGS_DIR/daemon-stderr.log"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 CLASSPATH="$BASE_DIR/lib/*"
-TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 
 start_daemon() {
+  [ -d "$LOGS_DIR" ] || mkdir -p "$LOGS_DIR"
+  [ -d "$TMP_DIR" ] || mkdir -p "$TMP_DIR"
   : >"$DAEMON_OUT"
   : >"$DAEMON_ERR"
   "$JSVC" \
@@ -396,6 +409,8 @@ version)
   printf "  %-30s %s\n" "--java-home <path>" "Set the path to Java home"
   printf "  %-30s %s\n" "--proc-name <name>" "Set the process name"
   printf "  %-30s %s\n" "--pid-file <path>" "Set the path to the PID file"
+  printf "  %-30s %s\n" "--logs-dir <path>" "Set the path to the logs directory"
+  printf "  %-30s %s\n" "--temp-dir <path>" "Set the path to the temporary directory"
   printf "  %-30s %s\n" "--user <user>" "Set the user to run as"
   printf "  %-30s %s\n" "--service-start-wait-time <sec>" "Set the wait time for service startup"
   printf "  %-30s %s\n" "--service-stop-wait-time <sec>" "Set the wait time for service stop"

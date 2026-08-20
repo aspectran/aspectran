@@ -54,6 +54,18 @@ while [ ".$1" != . ]; do
     shift
     continue
     ;;
+  --logs-dir)
+    LOGS_DIR="$2"
+    shift
+    shift
+    continue
+    ;;
+  --temp-dir)
+    TMP_DIR="$2"
+    shift
+    shift
+    continue
+    ;;
   --debug)
     DEBUG_MODE=true
     shift
@@ -116,11 +128,12 @@ if [ ! -z "$JVM_SS" ]; then
   JVM_SS_OPT="-Xss${JVM_SS}k"
 fi
 
-DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
+[ -z "$LOGS_DIR" ] && LOGS_DIR="$BASE_DIR/logs"
+[ -z "$TMP_DIR" ] && TMP_DIR="$BASE_DIR/temp"
+DAEMON_OUT="$LOGS_DIR/daemon-stdout.log"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 PID_FILE="$BASE_DIR/.daemon.pid"
 CLASSPATH="$BASE_DIR/lib/*"
-TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 if [ "$DEBUG_MODE" = true ]; then
@@ -144,6 +157,8 @@ fi
 [ -z "$SERVICE_STOP_WAIT_TIME" ] && SERVICE_STOP_WAIT_TIME=60
 
 start_daemon() {
+  [ -d "$LOGS_DIR" ] || mkdir -p "$LOGS_DIR"
+  [ -d "$TMP_DIR" ] || mkdir -p "$TMP_DIR"
   rm -f "$DAEMON_OUT"
   nohup "$JAVA_BIN" \
     $JVM_MS_OPT \
@@ -308,6 +323,8 @@ version)
   echo "Options:"
   printf "  %-32s %s\n" "--base-dir <path>" "Set the base directory"
   printf "  %-32s %s\n" "--java-home <path>" "Set the path to Java home"
+  printf "  %-32s %s\n" "--logs-dir <path>" "Set the path to the logs directory"
+  printf "  %-32s %s\n" "--temp-dir <path>" "Set the path to the temporary directory"
   printf "  %-32s %s\n" "--debug" "Enable debug mode"
   echo ""
   echo "Commands:"
