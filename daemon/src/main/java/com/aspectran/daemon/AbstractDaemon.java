@@ -50,6 +50,8 @@ public class AbstractDaemon implements Daemon {
 
     private DefaultDaemonService daemonService;
 
+    private Thread waitingThread;
+
     private boolean waiting;
 
     private volatile boolean active;
@@ -155,7 +157,7 @@ public class AbstractDaemon implements Daemon {
                 if (name == null) {
                     name = getClass().getSimpleName();
                 }
-                Thread thread = new Thread(() -> {
+                waitingThread = new Thread(() -> {
                     while (active) {
                         try {
                             Thread.sleep(Long.MAX_VALUE);
@@ -164,8 +166,8 @@ public class AbstractDaemon implements Daemon {
                         }
                     }
                 }, name);
-                thread.start();
-                thread.join(waitTimeoutMillis);
+                waitingThread.start();
+                waitingThread.join(waitTimeoutMillis);
             }
         }
     }
@@ -174,6 +176,10 @@ public class AbstractDaemon implements Daemon {
     public void stop() {
         if (active) {
             active = false;
+            if (waitingThread != null) {
+                waitingThread.interrupt();
+                waitingThread = null;
+            }
             if (daemonService != null && daemonService.isActive()) {
                 daemonService.stop();
             }
@@ -183,6 +189,11 @@ public class AbstractDaemon implements Daemon {
     @Override
     public void destroy() {
         stop();
+
+        if (waitingThread != null) {
+            waitingThread.interrupt();
+            waitingThread = null;
+        }
 
         if (daemonService != null) {
             daemonService.withdraw();
