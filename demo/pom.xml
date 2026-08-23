@@ -134,12 +134,6 @@
                                 <include>**/*</include>
                             </includes>
                         </fileset>
-                        <fileset>
-                            <directory>app/webapps/console/assets/appmon</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
