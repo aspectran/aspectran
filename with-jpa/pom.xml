@@ -63,7 +63,7 @@
         <dependency>
             <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>7.5</version>
+            <version>7.6</version>
             <optional>true</optional>
         </dependency>
         <!-- Additional testing dependencies -->
