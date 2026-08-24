@@ -62,7 +62,7 @@ class FreeMarkerTemplateEngineTest {
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");
 
-        String result1 = aspectran.render("select-template", params.extractAsMap());
+        String result1 = aspectran.render("select-template", params.toFlatMap());
         Translet translet = aspectran.translate("select-translet", params);
 
         assertEquals(result1, translet.getWrittenResponse());
@@ -74,7 +74,7 @@ class FreeMarkerTemplateEngineTest {
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");
 
-        String result1 = aspectran.render("update-template", params.extractAsMap());
+        String result1 = aspectran.render("update-template", params.toFlatMap());
         String result2 = aspectran.translate("update-translet-1", params).getWrittenResponse();
         String result3 = aspectran.translate("update-translet-2", params).getWrittenResponse();
 

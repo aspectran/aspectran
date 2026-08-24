@@ -225,8 +225,8 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public void extractParameters(Map<String, Object> targetParameters) {
-        getRequestAdapter().extractParameters(targetParameters);
+    public void copyParametersTo(Map<String, Object> targetParameters) {
+        getRequestAdapter().copyParametersTo(targetParameters);
     }
 
     @Override
@@ -277,6 +277,11 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public void removeAttribute(String name) {
         getRequestAdapter().removeAttribute(name);
+    }
+
+    @Override
+    public void copyAttributesTo(Map<String, Object> targetAttributes) {
+        getRequestAdapter().copyAttributesTo(targetAttributes);
     }
 
     @Override

@@ -245,10 +245,10 @@ public interface Translet {
     Map<String, Object> getAllParameters();
 
     /**
-     * Extracts all request parameters into a provided target map.
+     * Copies all request parameters into the provided target map.
      * @param targetParameters the map to populate with parameters
      */
-    void extractParameters(Map<String, Object> targetParameters);
+    void copyParametersTo(Map<String, Object> targetParameters);
 
     /**
      * Returns a {@link FileParameter} for a given file upload parameter name.
@@ -316,6 +316,12 @@ public interface Translet {
      * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
+
+    /**
+     * Copies all request attributes into the provided target map.
+     * @param targetAttributes the map to populate with attributes
+     */
+    void copyAttributesTo(Map<String, Object> targetAttributes);
 
     /**
      * Checks if the current translet name contains path variables to be extracted.

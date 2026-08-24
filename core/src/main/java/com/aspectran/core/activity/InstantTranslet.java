@@ -213,8 +213,8 @@ public class InstantTranslet implements Translet {
     }
 
     @Override
-    public void extractParameters(Map<String, Object> targetParameters) {
-        getRequestAdapter().extractParameters(targetParameters);
+    public void copyParametersTo(Map<String, Object> targetParameters) {
+        getRequestAdapter().copyParametersTo(targetParameters);
     }
 
     @Override
@@ -265,6 +265,11 @@ public class InstantTranslet implements Translet {
     @Override
     public void removeAttribute(String name) {
         getRequestAdapter().removeAttribute(name);
+    }
+
+    @Override
+    public void copyAttributesTo(Map<String, Object> targetAttributes) {
+        getRequestAdapter().copyAttributesTo(targetAttributes);
     }
 
     @Override

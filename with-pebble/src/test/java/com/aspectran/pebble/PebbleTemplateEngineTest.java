@@ -63,7 +63,7 @@ class PebbleTemplateEngineTest {
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");
 
-        String result1 = aspectran.render("template-1", params.extractAsMap());
+        String result1 = aspectran.render("template-1", params.toFlatMap());
         String result2 = aspectran.translate("translet-1", params).getWrittenResponse();
         String result3 = aspectran.translate("translet-2", params).getWrittenResponse();
 

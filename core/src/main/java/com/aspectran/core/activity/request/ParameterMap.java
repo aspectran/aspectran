@@ -18,7 +18,6 @@ package com.aspectran.core.activity.request;
 import com.aspectran.utils.Assert;
 
 import java.io.Serial;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -127,26 +126,24 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     }
 
     /**
-     * Extracts the parameters into a new map structure.
-     * <p>The resulting map may flatten multi-value arrays into single objects
-     * depending on the implementation strategy.</p>
-     * @return a new map containing parameter names and values
+     * Returns a new map containing all parameters with single values flattened to {@code String}
+     * and multiple values kept as {@code String[]}.
+     * @return a new map containing flattened parameters
      */
-    public Map<String, Object> extractAsMap() {
-        Map<String, Object> map = new HashMap<>();
-        return extractAsMap(map);
+    public Map<String, Object> toFlatMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        copyTo(map);
+        return map;
     }
 
     /**
-     * Extracts the parameters and populates the specified target map.
-     * <p>This method is useful when merging parameters into an existing data model
-     * (e.g., for use in templates or translets).</p>
+     * Copies all parameters into the specified target map, flattening single values to {@code String}
+     * and keeping multiple values as {@code String[]}.
      * @param targetMap the map into which parameters should be inserted
-     * @return the updated {@code targetMap} containing parameters
      */
-    public Map<String, Object> extractAsMap(Map<String, Object> targetMap) {
+    public void copyTo(Map<String, Object> targetMap) {
         Assert.notNull(targetMap, "targetMap must not be null");
-        for (Map.Entry<String, String[]> entry : this.entrySet()) {
+        for (Map.Entry<String, String[]> entry : entrySet()) {
             String name = entry.getKey();
             String[] values = entry.getValue();
             if (values.length == 1) {
@@ -155,7 +152,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
                 targetMap.put(name, values);
             }
         }
-        return targetMap;
     }
 
 }

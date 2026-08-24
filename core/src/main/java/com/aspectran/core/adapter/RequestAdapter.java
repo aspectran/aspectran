@@ -157,10 +157,10 @@ public interface RequestAdapter {
     void putAllAttributes(Map<String, Object> attributes);
 
     /**
-     * Extracts all attributes from this request and populates the given map.
+     * Copies all attributes from this request and populates the given map.
      * @param targetAttributes the map to populate with attributes
      */
-    void extractAttributes(Map<String, Object> targetAttributes);
+    void copyAttributesTo(Map<String, Object> targetAttributes);
 
     /**
      * Returns a mutable map of all request-scoped attributes.
@@ -242,10 +242,10 @@ public interface RequestAdapter {
     void putAllParameters(MultiValueMap<String, String> multiValueMap);
 
     /**
-     * Extracts all parameters from this request and populates the given map.
+     * Copies all parameters from this request and populates the given map.
      * @param targetParameters the map to populate with parameters
      */
-    void extractParameters(Map<String, Object> targetParameters);
+    void copyParametersTo(Map<String, Object> targetParameters);
 
     /**
      * Returns a mutable {@link ParameterMap} of all request parameters.

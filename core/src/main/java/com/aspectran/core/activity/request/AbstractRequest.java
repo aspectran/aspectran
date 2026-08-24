@@ -222,9 +222,10 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Extracts attributes into the provided target map.
+     * Copies all request attributes into the provided target map.
+     * @param targetMap the map into which attributes should be inserted
      */
-    public void extractAttributes(Map<String, Object> targetMap) {
+    public void copyAttributesTo(Map<String, Object> targetMap) {
         if (targetMap == null) {
             throw new IllegalArgumentException("targetMap must not be null");
         }
@@ -310,7 +311,7 @@ public abstract class AbstractRequest {
      * @return an {@code Map<String, Object>} object, must not be {@code null}
      */
     public Map<String, Object> getAllParameters() {
-        return getParameterMap().extractAsMap();
+        return getParameterMap().toFlatMap();
     }
 
     /**
@@ -335,11 +336,12 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Extracts parameters into the provided target map.
+     * Copies all request parameters into the provided target map.
+     * @param targetMap the map into which parameters should be inserted
      */
-    public void extractParameters(Map<String, Object> targetMap) {
+    public void copyParametersTo(Map<String, Object> targetMap) {
         if (hasParameters()) {
-            getParameterMap().extractAsMap(targetMap);
+            getParameterMap().copyTo(targetMap);
         }
     }
 
