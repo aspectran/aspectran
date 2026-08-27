@@ -38,7 +38,7 @@ if not exist "%JAVA_EXE%" (
 
 if not "%JVM_MS%" == "" set JVM_MS_OPT=-Xms%JVM_MS%m
 if not "%JVM_MX%" == "" set JVM_MX_OPT=-Xmx%JVM_MX%m
-if not "%JVM_SS%" == "" set JVM_SS_OPT=-Xms%JVM_SS%k
+if not "%JVM_SS%" == "" set JVM_SS_OPT=-Xss%JVM_SS%k
 
 set BASE_DIR=%~dp0..
 set TMP_DIR=%BASE_DIR%\temp
