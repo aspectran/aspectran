@@ -47,6 +47,10 @@ function command_rebuild() {
 
 # Run the demo application
 function command_demo() {
+  if [ ! -d "demo/app/lib" ] || ! ls demo/app/lib/*.jar >/dev/null 2>&1; then
+    echo "Demo dependencies not found in demo/app/lib. Rebuilding project..."
+    command_rebuild "$@"
+  fi
   exec demo/app/bin/shell.sh "$@"
 }
 
