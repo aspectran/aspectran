@@ -6,7 +6,7 @@
 [![javadoc](https://javadoc.io/badge2/com.aspectran/aspectran-all/javadoc.svg)](https://javadoc.io/doc/com.aspectran/aspectran-all)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-[![asciicast](https://asciinema.org/a/325210.png)](https://asciinema.org/a/325210)
+[![asciicast](https://asciinema.org/a/1264203.png)](https://asciinema.org/a/1264203)
 
 Aspectran is a lightweight, high‑performance framework for building both simple shell applications and
 large enterprise web services on the JVM. It emphasizes an intuitive POJO‑centric programming model while
