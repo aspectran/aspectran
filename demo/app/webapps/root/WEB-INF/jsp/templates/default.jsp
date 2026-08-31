@@ -119,7 +119,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="settings d-flex align-items-center justify-content-end gap-2 m-2 mx-md-3 m-lg-0">
+                <div class="settings d-flex justify-content-end align-items-center gap-2 m-2 mx-md-3 m-lg-0">
                     <div class="theme-toggler dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
                             <i class="bi theme-icon-active"></i>
