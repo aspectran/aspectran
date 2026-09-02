@@ -1,0 +1,4 @@
+context: {
+    name: admin
+    rules: classpath:config/aspectran-admin-rules.xml
+}

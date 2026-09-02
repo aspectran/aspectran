@@ -1,0 +1,10 @@
+context: {
+    name: root
+    rules: classpath:config/aspectran-multi-context-rules.xml
+}
+web: {
+    uriDecoding: utf-8
+    acceptable: {
+        +: /**
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>
+        Aspectran configuration for setting up a Netty server.
+    </description>
+
+    <environment>
+        <property name="netty.server.startup" valueType="boolean">false</property>
+        <property name="netty.server.listener.http.port" valueType="int">0</property>
+        <property name="netty.server.listener.http.host">127.0.0.1</property>
+    </environment>
+
+    <bean id="netty.sessionManager" class="com.aspectran.netty.server.session.NettySessionManager"/>
+
+    <bean id="netty.server" class="com.aspectran.netty.server.DefaultNettyServer">
+        <property name="autoStart">%{netty.server.startup}</property>
+        <property name="virtualThreads" valueType="boolean">true</property>
+        <property name="sessionManager">#{netty.sessionManager}</property>
+        <property name="listeners" type="array">
+            <bean class="com.aspectran.netty.server.NettyListenerConfig">
+                <property name="port" valueType="int">%{netty.server.listener.http.port}</property>
+                <property name="host">%{netty.server.listener.http.host}</property>
+            </bean>
+        </property>
+    </bean>
+
+</aspectran>

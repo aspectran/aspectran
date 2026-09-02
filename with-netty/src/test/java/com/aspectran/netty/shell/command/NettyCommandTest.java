@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.netty.shell.command;
+
+import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
+import com.aspectran.shell.command.ShellCommander;
+import com.aspectran.shell.console.DefaultShellConsole;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.service.ShellService;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * Tests for {@link NettyCommand}.
+ *
+ * <p>Created: 2026-09-02</p>
+ */
+class NettyCommandTest {
+
+    @Test
+    void testCommandDescriptor() {
+        ShellCommander commander = new ShellCommander() {
+            private final ShellConsole console = new DefaultShellConsole();
+            private final CommandRegistry commandRegistry = new ShellCommandRegistry(this);
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public <T extends ShellConsole> T getConsole() {
+                return (T)console;
+            }
+
+            @Override
+            public CommandRegistry getCommandRegistry() {
+                return commandRegistry;
+            }
+
+            @Override
+            public ShellService getShellService() {
+                return null;
+            }
+        };
+        CommandRegistry registry = commander.getCommandRegistry();
+
+        NettyCommand command = new NettyCommand(registry);
+        assertNotNull(command.getDescriptor());
+        assertEquals("netty", command.getDescriptor().getName());
+        assertEquals("builtins", command.getDescriptor().getNamespace());
+        assertTrue(command.getDescriptor().getDescription().contains("Netty"));
+        assertTrue(command.getOptions().hasOption("server"));
+        assertTrue(command.getOptions().hasOption("help"));
+    }
+
+}

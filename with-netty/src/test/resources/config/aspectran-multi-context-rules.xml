@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>
+        Master bootstrap rules for Netty multi-context test.
+    </description>
+
+    <append resource="config/netty/netty-multi-server.xml"/>
+
+    <translet name="/hello">
+        <echo>
+            <item name="message">Hello from Root!</item>
+        </echo>
+        <transform format="json"/>
+    </translet>
+
+    <translet name="/session">
+        <action bean="rootSessionBean" method="process"/>
+        <transform format="json"/>
+    </translet>
+
+    <bean id="rootSessionBean" class="com.aspectran.netty.server.TestSessionBean"/>
+
+    <bean id="loggingGroupInspector" class="com.aspectran.netty.server.handler.logging.LoggingGroupInspector"/>
+
+    <translet name="/logging-group">
+        <action bean="loggingGroupInspector" method="getCurrentLoggingGroup"/>
+        <transform format="text"/>
+    </translet>
+
+</aspectran>

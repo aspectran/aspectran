@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.netty.server;
+
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.adapter.SessionAdapter;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Helper bean for testing session handling and virtual thread dispatching.
+ */
+public class TestSessionBean {
+
+    public Map<String, Object> process(Translet translet) {
+        SessionAdapter sessionAdapter = translet.getSessionAdapter();
+        Integer count = sessionAdapter.getAttribute("count");
+        if (count == null) {
+            count = 1;
+        } else {
+            count++;
+        }
+        sessionAdapter.setAttribute("count", count);
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("count", count);
+        result.put("sessionId", sessionAdapter.getId());
+        return result;
+    }
+
+    public Map<String, Object> checkVirtualThread(Translet translet) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("isVirtual", Thread.currentThread().isVirtual());
+        result.put("threadName", Thread.currentThread().getName());
+        return result;
+    }
+
+}

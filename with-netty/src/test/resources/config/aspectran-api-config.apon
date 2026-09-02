@@ -1,0 +1,4 @@
+context: {
+    name: api
+    rules: classpath:config/aspectran-api-rules.xml
+}

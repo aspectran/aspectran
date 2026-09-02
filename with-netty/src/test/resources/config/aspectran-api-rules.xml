@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>
+        Test configuration for Netty API context.
+    </description>
+
+    <translet name="/ping">
+        <echo>
+            <item name="status">ok</item>
+            <item name="service">api</item>
+        </echo>
+        <transform format="json"/>
+    </translet>
+
+    <translet name="/info">
+        <echo>
+            <item name="version">1.0.0</item>
+        </echo>
+        <transform format="json"/>
+    </translet>
+
+    <bean id="loggingGroupInspector" class="com.aspectran.netty.server.handler.logging.LoggingGroupInspector"/>
+
+    <translet name="/logging-group">
+        <action bean="loggingGroupInspector" method="getCurrentLoggingGroup"/>
+        <transform format="text"/>
+    </translet>
+
+    <translet name="/special/logging-group">
+        <action bean="loggingGroupInspector" method="getCurrentLoggingGroup"/>
+        <transform format="text"/>
+    </translet>
+
+</aspectran>
