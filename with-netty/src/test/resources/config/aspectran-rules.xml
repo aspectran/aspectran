@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>
+        Test configuration for Netty server integration.
+    </description>
+
+    <append resource="config/netty/netty-server.xml"/>
+
+    <translet name="/hello">
+        <echo>
+            <item name="message">Hello Netty World!</item>
+        </echo>
+        <transform format="json"/>
+    </translet>
+
+    <translet name="/echo" method="POST">
+        <transform format="text">
+            <template>Echo: ${msg}</template>
+        </transform>
+    </translet>
+
+    <translet name="/session">
+        <action bean="testSessionBean" method="process"/>
+        <transform format="json"/>
+    </translet>
+
+    <translet name="/virtual-thread">
+        <action bean="testSessionBean" method="checkVirtualThread"/>
+        <transform format="json"/>
+    </translet>
+
+    <bean id="testSessionBean" class="com.aspectran.netty.server.TestSessionBean"/>
+
+</aspectran>

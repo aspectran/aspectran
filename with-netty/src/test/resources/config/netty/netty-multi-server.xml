@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>
+        Multi-context configuration for Netty server integration.
+    </description>
+
+    <environment>
+        <property name="netty.server.startup" valueType="boolean">false</property>
+        <property name="netty.server.listener.http.port" valueType="int">0</property>
+        <property name="netty.server.listener.http.host">127.0.0.1</property>
+    </environment>
+
+    <bean id="netty.server" class="com.aspectran.netty.server.DefaultNettyServer">
+        <property name="autoStart">%{netty.server.startup}</property>
+        <property name="virtualThreads" valueType="boolean">true</property>
+        <property name="listeners" type="array">
+            <bean class="com.aspectran.netty.server.NettyListenerConfig">
+                <property name="port" valueType="int">%{netty.server.listener.http.port}</property>
+                <property name="host">%{netty.server.listener.http.host}</property>
+            </bean>
+        </property>
+        <property name="contexts" type="array">
+            <bean class="com.aspectran.netty.server.NettyContext">
+                <property name="contextPath">/</property>
+                <property name="sessionManager">
+                    <bean class="com.aspectran.netty.server.session.NettySessionManager"/>
+                </property>
+            </bean>
+            <bean class="com.aspectran.netty.server.NettyContext">
+                <property name="contextPath">/api</property>
+                <property name="aspectranConfigFile">classpath:config/aspectran-api-config.apon</property>
+                <property name="sessionAdaptable" valueType="boolean">false</property>
+            </bean>
+            <bean class="com.aspectran.netty.server.NettyContext">
+                <property name="contextPath">/admin</property>
+                <property name="aspectranConfigFile">classpath:config/aspectran-admin-config.apon</property>
+                <property name="sessionManager">
+                    <bean class="com.aspectran.netty.server.session.NettySessionManager">
+                        <property name="sessionConfig">
+                            <bean class="com.aspectran.netty.server.session.NettySessionConfig">
+                                <property name="cookieName">ADMIN_SESSION_ID</property>
+                                <property name="cookiePath">/admin</property>
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+</aspectran>
