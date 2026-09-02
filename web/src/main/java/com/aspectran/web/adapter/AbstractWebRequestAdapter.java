@@ -43,12 +43,6 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
 
     private boolean bodyObtained;
 
-    private String requestURI;
-
-    private String queryString;
-
-    private String contextPath;
-
     /**
      * Creates a new {@code AbstractWebRequestAdapter}.
      * @param requestMethod the request method
@@ -151,31 +145,13 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
     }
 
     @Override
-    public String getRequestURI() {
-        return requestURI;
-    }
-
-    public void setRequestURI(String requestURI) {
-        this.requestURI = requestURI;
-    }
+    public abstract String getContextPath();
 
     @Override
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public void setQueryString(String queryString) {
-        this.queryString = queryString;
-    }
+    public abstract String getRequestURI();
 
     @Override
-    public String getContextPath() {
-        return (contextPath != null ? contextPath : StringUtils.EMPTY);
-    }
-
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
-    }
+    public abstract String getQueryString();
 
     @Override
     public void preparse(WebRequestAdapter requestAdapter) {
@@ -186,9 +162,6 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
         getParameterMap().putAll(requestAdapter.getParameterMap());
         setMediaType(requestAdapter.getMediaType());
         setLocale(requestAdapter.getLocale());
-        setRequestURI(requestAdapter.getRequestURI());
-        setQueryString(requestAdapter.getQueryString());
-        setContextPath(requestAdapter.getContextPath());
     }
 
 }

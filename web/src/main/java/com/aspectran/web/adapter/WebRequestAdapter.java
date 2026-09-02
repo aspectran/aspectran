@@ -29,25 +29,6 @@ import com.aspectran.web.support.http.MediaType;
 public interface WebRequestAdapter extends RequestAdapter {
 
     /**
-     * Returns the {@link MediaType} of the request body.
-     * @return the media type, or {@code null} if not specified
-     */
-    MediaType getMediaType();
-
-    /**
-     * Pre-parses the native request to initialize this adapter.
-     * <p>This typically involves extracting parameters, attributes, and headers.</p>
-     */
-    void preparse();
-
-    /**
-     * Pre-parses this adapter using data from another {@code WebRequestAdapter}.
-     * <p>This is useful for replicating request data.</p>
-     * @param requestAdapter the source request adapter
-     */
-    void preparse(WebRequestAdapter requestAdapter);
-
-    /**
      * Returns the name of the scheme used to make this request,
      * for example, {@code http} or {@code https}.
      * @return a string specifying the name of the scheme
@@ -67,6 +48,12 @@ public interface WebRequestAdapter extends RequestAdapter {
     int getServerPort();
 
     /**
+     * Returns the portion of the request URI that indicates the context of the request.
+     * @return a string specifying the context path, or an empty string if in default context
+     */
+    String getContextPath();
+
+    /**
      * Returns the part of this request's URL from the protocol
      * name up to the query string in the first line of the HTTP request.
      * @return a string specifying the request URI
@@ -80,9 +67,22 @@ public interface WebRequestAdapter extends RequestAdapter {
     String getQueryString();
 
     /**
-     * Returns the portion of the request URI that indicates the context of the request.
-     * @return a string specifying the context path, or an empty string if in default context
+     * Returns the {@link MediaType} of the request body.
+     * @return the media type, or {@code null} if not specified
      */
-    String getContextPath();
+    MediaType getMediaType();
+
+    /**
+     * Pre-parses the native request to initialize this adapter.
+     * <p>This typically involves extracting parameters, attributes, and headers.</p>
+     */
+    void preparse();
+
+    /**
+     * Pre-parses this adapter using data from another {@code WebRequestAdapter}.
+     * <p>This is useful for replicating request data.</p>
+     * @param requestAdapter the source request adapter
+     */
+    void preparse(WebRequestAdapter requestAdapter);
 
 }

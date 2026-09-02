@@ -54,6 +54,14 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
     }
 
     /**
+     * Returns the underlying {@link HttpServerExchange}.
+     * @return the native Undertow exchange
+     */
+    private HttpServerExchange getHttpServerExchange() {
+        return getAdaptee();
+    }
+
+    /**
      * {@inheritDoc}
      * <p>This implementation lazily populates the header map from the underlying
      * {@link HttpServerExchange} on first access.</p>
@@ -88,12 +96,46 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
         return getHttpServerExchange().getInputStream();
     }
 
-    /**
-     * Returns the underlying {@link HttpServerExchange}.
-     * @return the native Undertow exchange
-     */
-    private HttpServerExchange getHttpServerExchange() {
-        return getAdaptee();
+    @Override
+    public String getScheme() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getRequestScheme();
+    }
+
+    @Override
+    public String getServerName() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getHostName();
+    }
+
+    @Override
+    public int getServerPort() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getHostPort();
+    }
+
+    @Override
+    public String getContextPath() {
+        HttpServerExchange exchange = getAdaptee();
+        if (exchange != null) {
+            String resolvedPath = exchange.getResolvedPath();
+            if (resolvedPath != null) {
+                return resolvedPath;
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    @Override
+    public String getRequestURI() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getRequestURI();
+    }
+
+    @Override
+    public String getQueryString() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getQueryString();
     }
 
     /**
@@ -126,57 +168,6 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
         if (!locales.isEmpty()) {
             setLocale(locales.getFirst());
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws IllegalStateException if attempting to replicate from itself
-     */
-    @Override
-    public void preparse(WebRequestAdapter requestAdapter) {
-        super.preparse(requestAdapter);
-    }
-
-    @Override
-    public String getScheme() {
-        HttpServerExchange exchange = getAdaptee();
-        return exchange.getRequestScheme();
-    }
-
-    @Override
-    public String getServerName() {
-        HttpServerExchange exchange = getAdaptee();
-        return exchange.getHostName();
-    }
-
-    @Override
-    public int getServerPort() {
-        HttpServerExchange exchange = getAdaptee();
-        return exchange.getHostPort();
-    }
-
-    @Override
-    public String getRequestURI() {
-        HttpServerExchange exchange = getAdaptee();
-        return exchange.getRequestURI();
-    }
-
-    @Override
-    public String getQueryString() {
-        HttpServerExchange exchange = getAdaptee();
-        return exchange.getQueryString();
-    }
-
-    @Override
-    public String getContextPath() {
-        HttpServerExchange exchange = getAdaptee();
-        if (exchange != null) {
-            String resolvedPath = exchange.getResolvedPath();
-            if (resolvedPath != null) {
-                return resolvedPath;
-            }
-        }
-        return super.getContextPath();
     }
 
 }
