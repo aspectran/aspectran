@@ -26,7 +26,11 @@ import com.aspectran.netty.server.session.NettySessionConfig;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract base class for {@link NettyService} implementations.
@@ -38,6 +42,8 @@ import java.util.List;
 public abstract class AbstractNettyService extends DefaultCoreService implements NettyService {
 
     private boolean sessionAdaptable = true;
+
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     private SessionManager sessionManager;
 
@@ -60,6 +66,27 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
     public void setSessionAdaptable(boolean sessionAdaptable) {
         this.sessionAdaptable = sessionAdaptable;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)attributes.get(name);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
+
+    @Override
+    public Set<String> getAttributeNames() {
+        return Collections.unmodifiableSet(attributes.keySet());
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        attributes.remove(name);
     }
 
     public SessionManager getSessionManager() {

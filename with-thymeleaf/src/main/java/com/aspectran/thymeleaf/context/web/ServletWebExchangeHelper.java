@@ -17,10 +17,12 @@ package com.aspectran.thymeleaf.context.web;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jspecify.annotations.NonNull;
 import org.thymeleaf.web.servlet.IServletWebApplication;
+import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 /**
- * Internal helper to create {@link ServletWebActivityApplication} in a Servlet environment,
+ * Internal helper to create {@link JakartaServletWebApplication} in a Servlet environment,
  * isolated in its own class so that {@link WebActivityExchange} does not reference
  * {@link HttpServletRequest} or {@link ServletContext} directly.
  *
@@ -35,9 +37,10 @@ final class ServletWebExchangeHelper {
         return (adaptee instanceof HttpServletRequest);
     }
 
+    @NonNull
     static IServletWebApplication createApplication(Object adaptee) {
-        ServletContext servletContext = ((HttpServletRequest) adaptee).getServletContext();
-        return new ServletWebActivityApplication(servletContext);
+        ServletContext servletContext = ((HttpServletRequest)adaptee).getServletContext();
+        return JakartaServletWebApplication.buildApplication(servletContext);
     }
 
 }
