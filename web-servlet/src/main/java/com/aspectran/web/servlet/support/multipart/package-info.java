@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Support for parsing Multi-part form data that use Apache Commons FileUpload 1.3 or above.
- * It is designed to store uploaded data items in memory, such as GAE, where the file system is not available.
+ * Provides support for multipart file uploads.
  */
-package com.aspectran.web.support.multipart.inmemory;
+package com.aspectran.web.servlet.support.multipart;

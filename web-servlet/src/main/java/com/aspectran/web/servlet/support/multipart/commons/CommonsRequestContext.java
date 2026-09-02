@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.support.multipart.commons;
+package com.aspectran.web.servlet.support.multipart.commons;
 
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;

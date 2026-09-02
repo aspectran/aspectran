@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.support.multipart.inmemory;
+package com.aspectran.web.servlet.support.multipart.inmemory;
 
 import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;

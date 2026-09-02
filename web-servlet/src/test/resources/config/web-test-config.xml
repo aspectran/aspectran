@@ -71,7 +71,7 @@
     </translet>
 
     <bean id="multipartFormDataParser"
-          class="com.aspectran.web.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
+          class="com.aspectran.web.servlet.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
         <property name="maxRequestSize" value="1M"/>
         <property name="maxFileSize" value="500KB"/>
     </bean>
