@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.support.multipart.commons;
+package com.aspectran.web.servlet.support.multipart.inmemory;
 
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
@@ -25,33 +25,30 @@ import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
+import com.aspectran.web.servlet.support.multipart.commons.CommonsRequestContext;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.RequestContext;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A {@link MultipartFormDataParser} implementation that uses the Apache Commons
- * FileUpload library to parse multipart/form-data requests.
- * <p>This parser handles file uploads and form fields, making them accessible
- * through the {@link RequestAdapter}.
+ * A {@link MultipartFormDataParser} implementation that stores all uploaded file data
+ * in memory. This is designed for environments where file system access is restricted,
+ * such as Google App Engine.
+ * <p>This parser does not support temporary file storage, so methods related to
+ * file-based operations (e.g., {@code setTempFileDir}) are not supported.
  */
-public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
+public class InMemoryMultipartFormDataParser implements MultipartFormDataParser {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommonsMultipartFormDataParser.class);
-
-    private String tempFileDir;
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryMultipartFormDataParser.class);
 
     private long maxRequestSize = -1L;
 
@@ -64,39 +61,27 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     private String deniedFileExtensions;
 
     /**
-     * Instantiates a new CommonsMultipartFormDataParser.
+     * Instantiates a new InMemoryMultipartFormDataParser.
      */
-    public CommonsMultipartFormDataParser() {
-    }
-
-    @Override
-    public String getTempFileDir() {
-        return tempFileDir;
+    public InMemoryMultipartFormDataParser() {
     }
 
     /**
-     * Sets the temporary directory where uploaded files will be stored.
-     * @param tempFileDir the path to the temporary directory
-     * @throws IOException if the directory cannot be created
+     * This operation is not supported by the in-memory parser.
+     * @throws UnsupportedOperationException always
      */
     @Override
-    public void setTempFileDir(String tempFileDir) throws IOException {
-        if (tempFileDir == null) {
-            throw new IllegalArgumentException("tempFileDir must not be null");
-        }
-        File dir = new File(tempFileDir);
-        if (dir.exists()) {
-            if (!dir.isDirectory()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir +
-                        "] exists but is not a directory");
-            }
-        } else {
-            if (!dir.mkdirs()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir +
-                        "] could not be created");
-            }
-        }
-        this.tempFileDir = tempFileDir;
+    public String getTempFileDir() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * This operation is not supported by the in-memory parser.
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public void setTempFileDir(String tempFileDir) {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -111,23 +96,29 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
     /**
      * Sets the maximum size of a single uploaded file, in bytes.
+     * For in-memory storage, this value cannot exceed {@link Integer#MAX_VALUE}.
      * A value of -1 indicates no limit.
      * @param maxFileSize the maximum file size
      */
     @Override
     public void setMaxFileSize(long maxFileSize) {
+        if (maxFileSize > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("In the In-Memory file uploads," +
+                    "the maximum file size is up to 2147483648 bytes");
+        }
+
         this.maxFileSize = maxFileSize;
+        this.maxInMemorySize = (int)maxFileSize;
     }
 
     /**
-     * Sets the maximum size of a file that will be stored in memory.
-     * Files larger than this threshold will be written to disk.
-     * A value of -1 indicates the system default.
-     * @param maxInMemorySize the maximum memory size
+     * This operation is not supported by the in-memory parser.
+     * The max in-memory size is implicitly set by {@link #setMaxFileSize(long)}.
+     * @throws UnsupportedOperationException always
      */
     @Override
     public void setMaxInMemorySize(int maxInMemorySize) {
-        this.maxInMemorySize = maxInMemorySize;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -157,26 +148,17 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     @Override
     public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {
-            DiskFileItemFactory factory = new DiskFileItemFactory();
+            InMemoryFileItemFactory factory = new InMemoryFileItemFactory();
             if (maxInMemorySize > -1) {
                 factory.setSizeThreshold(maxInMemorySize);
             }
 
-            if (tempFileDir != null) {
-                File dir = new File(tempFileDir);
-                if (!dir.exists() && !dir.mkdirs()) {
-                    throw new IllegalArgumentException("Given tempFileDir [" +
-                            tempFileDir + "] could not be created");
-                }
-                factory.setRepository(dir);
-            }
-
             FileUpload upload = new ServletFileUpload(factory);
             upload.setHeaderEncoding(requestAdapter.getEncoding());
-            if (maxRequestSize > -1L) {
+            if (maxRequestSize > -1) {
                 upload.setSizeMax(maxRequestSize);
             }
-            if (maxFileSize > -1L) {
+            if (maxFileSize > -1) {
                 upload.setFileSizeMax(maxFileSize);
             }
 
@@ -215,7 +197,6 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
         for (Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
             String fieldName = entry.getKey();
             List<FileItem> fileItemList = entry.getValue();
-
             if (fileItemList != null && !fileItemList.isEmpty()) {
                 for (FileItem fileItem : fileItemList) {
                     if (fileItem.isFormField()) {
@@ -236,7 +217,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                             continue;
                         }
 
-                        CommonsMultipartFileParameter fileParameter = new CommonsMultipartFileParameter(fileItem);
+                        InMemoryMultipartFileParameter fileParameter = new InMemoryMultipartFileParameter(fileItem);
                         fileParameterMap.add(fieldName, fileParameter);
 
                         if (logger.isDebugEnabled()) {
