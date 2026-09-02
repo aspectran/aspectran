@@ -204,9 +204,6 @@ public class NettyListenerConfig {
         char[] keyPass = (keyPassword != null ? keyPassword.toCharArray() : storePass);
 
         try (InputStream in = ResourceUtils.getResourceAsStream(keyStorePath)) {
-            if (in == null) {
-                throw new IllegalArgumentException("Cannot find keystore resource: " + keyStorePath);
-            }
             keyStore.load(in, storePass);
         }
 

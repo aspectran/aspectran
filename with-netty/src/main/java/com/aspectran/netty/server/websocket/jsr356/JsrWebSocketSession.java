@@ -17,7 +17,6 @@ package com.aspectran.netty.server.websocket.jsr356;
 
 import com.aspectran.netty.server.websocket.NettyWebSocketSession;
 import com.aspectran.utils.Assert;
-import io.netty.channel.ChannelFuture;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Decoder;
 import jakarta.websocket.EncodeException;
@@ -37,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.nio.ByteBuffer;

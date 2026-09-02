@@ -22,6 +22,7 @@ import io.netty.handler.codec.http.cookie.CookieHeaderNames;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 
@@ -117,7 +118,7 @@ public class NettySessionConfig {
      * @param request the HTTP request
      * @return the extracted session ID, or null if not found
      */
-    public String findSessionId(FullHttpRequest request) {
+    public String findSessionId(@NonNull FullHttpRequest request) {
         String cookieHeader = request.headers().get(HttpHeaderNames.COOKIE);
         if (cookieHeader != null) {
             Set<Cookie> cookies = ServerCookieDecoder.STRICT.decode(cookieHeader);

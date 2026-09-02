@@ -477,8 +477,7 @@ public class ResourceUtils {
     /**
      * Returns a resource on the classpath as a Stream object.
      * @param resource the resource to find
-     * @return an input stream for reading the resource;
-     *      {@code null} if the resource could not be found
+     * @return an input stream for reading the resource
      * @throws IOException if the resource cannot be found or read
      */
     @NonNull

@@ -27,7 +27,6 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.netty.server.NettyServer;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.lifecycle.LifeCycle;
 import org.jspecify.annotations.NonNull;
 
 import java.net.BindException;
