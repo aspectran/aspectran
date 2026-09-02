@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.service;
 
-import com.aspectran.core.service.CoreService;
+import com.aspectran.web.service.WebService;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.resource.ResourceManager;
 
@@ -23,24 +23,18 @@ import java.io.IOException;
 
 /**
  * The main interface for the Aspectran Undertow service.
- * <p>This service extends the {@link CoreService} to provide web functionality using an
+ * <p>This service extends the {@link WebService} to provide web functionality using an
  * embedded Undertow server. It defines the contract for handling web requests directly
  * using Undertow's native {@link io.undertow.server.HttpServerExchange} objects,
  * enabling a high-performance, servlet-less web environment.</p>
  */
-public interface TowService extends CoreService {
+public interface TowService extends WebService {
 
     /**
      * Returns the resource manager for serving static files.
      * @return the static resource manager
      */
     ResourceManager getResourceManager();
-
-    /**
-     * Returns whether session adaptation is enabled for this Undertow service.
-     * @return {@code true} if session adaptation is enabled, {@code false} otherwise
-     */
-    boolean isSessionAdaptable();
 
     /**
      * Processes an incoming HTTP request using the Undertow {@link HttpServerExchange}.

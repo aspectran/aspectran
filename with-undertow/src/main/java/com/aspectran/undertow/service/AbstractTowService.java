@@ -25,7 +25,9 @@ import io.undertow.server.handlers.resource.ResourceManager;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract base class for {@link TowService} implementations.
@@ -77,6 +79,30 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
      */
     public void setSessionAdaptable(boolean sessionAdaptable) {
         this.sessionAdaptable = sessionAdaptable;
+    }
+
+    @Override
+    public <T> T getAttribute(String name) {
+        return (getApplicationAdapter() != null ? getApplicationAdapter().getAttribute(name) : null);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        if (getApplicationAdapter() != null) {
+            getApplicationAdapter().setAttribute(name, value);
+        }
+    }
+
+    @Override
+    public Set<String> getAttributeNames() {
+        return (getApplicationAdapter() != null ? getApplicationAdapter().getAttributeNames() : Collections.emptySet());
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        if (getApplicationAdapter() != null) {
+            getApplicationAdapter().removeAttribute(name);
+        }
     }
 
     /**

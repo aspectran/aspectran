@@ -16,7 +16,7 @@
 package com.aspectran.netty.service;
 
 import com.aspectran.core.component.session.SessionManager;
-import com.aspectran.core.service.CoreService;
+import com.aspectran.web.service.WebService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import org.jspecify.annotations.NonNull;
@@ -25,12 +25,12 @@ import java.io.IOException;
 
 /**
  * The main interface for the Aspectran Netty service.
- * <p>This service extends {@link CoreService} to handle HTTP requests in a high-performance,
+ * <p>This service extends {@link WebService} to handle HTTP requests in a high-performance,
  * non-blocking, servlet-less Netty environment.</p>
  *
  * <p>Created: 2026-09-02</p>
  */
-public interface NettyService extends CoreService {
+public interface NettyService extends WebService {
 
     /**
      * Returns whether session adaptation is enabled for this Netty service.

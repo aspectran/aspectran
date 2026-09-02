@@ -15,7 +15,8 @@
  */
 package com.aspectran.thymeleaf.context.web;
 
-import jakarta.servlet.ServletContext;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.web.service.WebService;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Proxy;
@@ -24,24 +25,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test cases for {@link ServletWebActivityApplication}.
+ * Test cases for {@link WebActivityApplication}.
  *
  * <p>Created: 2026-09-02</p>
  */
-class ServletWebActivityApplicationTest {
+class WebActivityApplicationTest {
 
     @Test
-    void testServletContextAttributes() {
+    void testWebServiceAttributes() {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("appTitle", "Aspectran Web Application");
 
-        ServletContext servletContext = (ServletContext) Proxy.newProxyInstance(
-                ServletContext.class.getClassLoader(),
-                new Class<?>[] { ServletContext.class },
+        WebService webService = (WebService) Proxy.newProxyInstance(
+                WebService.class.getClassLoader(),
+                new Class<?>[] { WebService.class },
                 (proxy, method, args) -> switch (method.getName()) {
                     case "getAttribute" -> attributes.get(args[0]);
                     case "setAttribute" -> {
@@ -52,16 +52,25 @@ class ServletWebActivityApplicationTest {
                         attributes.remove(args[0]);
                         yield null;
                     }
-                    case "getAttributeNames" -> Collections.enumeration(attributes.keySet());
+                    case "getAttributeNames" -> Collections.unmodifiableSet(attributes.keySet());
                     default -> null;
                 }
         );
 
-        ServletWebActivityApplication app = new ServletWebActivityApplication(servletContext);
+        ActivityContext activityContext = (ActivityContext) Proxy.newProxyInstance(
+                ActivityContext.class.getClassLoader(),
+                new Class<?>[] { ActivityContext.class },
+                (proxy, method, args) -> switch (method.getName()) {
+                    case "getMasterService" -> webService;
+                    default -> null;
+                }
+        );
+
+        WebActivityApplication app = new WebActivityApplication(activityContext, webService);
         assertEquals(1, app.getAttributeCount());
         assertTrue(app.containsAttribute("appTitle"));
         assertEquals("Aspectran Web Application", app.getAttributeValue("appTitle"));
-        assertSame(servletContext, app.getNativeServletContextObject());
+        assertEquals(1, app.getAttributeMap().size());
 
         app.setAttributeValue("version", "9.7.0");
         assertEquals(2, app.getAttributeCount());

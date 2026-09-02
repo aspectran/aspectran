@@ -30,7 +30,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract base class for {@link WebService} implementations.
@@ -89,6 +91,27 @@ public abstract class AbstractServletWebService extends DefaultCoreService imple
 
     public void setSessionAdaptable(boolean sessionAdaptable) {
         this.sessionAdaptable = sessionAdaptable;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)servletContext.getAttribute(name);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        servletContext.setAttribute(name, value);
+    }
+
+    @Override
+    public Set<String> getAttributeNames() {
+        return Set.copyOf(Collections.list(servletContext.getAttributeNames()));
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        servletContext.removeAttribute(name);
     }
 
     public String getUriDecoding() {
