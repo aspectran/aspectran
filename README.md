@@ -41,9 +41,11 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 - **`aspectran-shell-jline`**: Enhances Aspectran-based interactive shell applications with the feature-rich JLine 3 library.
 - **`aspectran-test`**: Provides a specialized testing infrastructure for Aspectran, including a JUnit 5 extension and declarative context bootstrapping for both core and web environments.
 - **`aspectran-utils`**: A collection of miscellaneous utility classes used across the Aspectran framework.
-- **`aspectran-web`**: Provides support for building web applications, compatible with Jakarta EE.
+- **`aspectran-web`**: Provides foundational web infrastructure and container-agnostic abstractions for building web applications and RESTful services without a direct dependency on the Servlet API. It includes generic HTTP request and response adapters, RFC 6265-compliant cookie management, CORS processing, ETag caching interceptor, and locale resolution mechanisms, designed to run seamlessly across diverse runtimes such as Netty, Undertow, and Servlet containers.
+- **`aspectran-web-servlet`**: Specializes the Aspectran web infrastructure for Jakarta Servlet environments (such as Apache Tomcat, Jetty, WildFly, and standard WAR deployments). It provides comprehensive integration with the Servlet API, including `ServletWebService`, `WebActivityServlet`, request and response adapters, HTTP session management, servlet filters, lifecycle listeners, and JSP custom tag libraries (`aspectran.tld`).
 - **`aspectran-rss-lettuce`**: Provides a Redis-based session store implementation for Aspectran, using the high-performance Lettuce client.
 - **`aspectran-with-jetty`**: Provides an embedded Jetty web server, allowing Aspectran to run as a self-contained, flexible, and mature web application.
+- **`aspectran-with-netty`**: Provides an embedded Netty server, allowing Aspectran to run as a high-performance, non-blocking, servlet-less microservice and REST API runtime with multi-context routing and WebSocket support.
 - **`aspectran-with-undertow`**: Provides an embedded Undertow web server, allowing Aspectran to run as a self-contained, high-performance web application.
 - **`aspectran-with-freemarker`**: Provides support for the FreeMarker template engine.
 - **`aspectran-with-pebble`**: Provides support for the Pebble template engine.
@@ -55,7 +57,7 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 ## Supported Execution Environments
 
 - Command‑line shell (interactive & background modes)
-- Embedded web servers: Undertow, Jetty
+- Embedded web servers: Netty, Undertow, Jetty
 - Servlet containers: Apache Tomcat, WildFly
 
 ## Building
