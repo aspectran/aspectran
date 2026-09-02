@@ -61,6 +61,8 @@ class DefaultNettyServerTest {
         staticDir.mkdirs();
         File staticFile = new File(staticDir, "test.txt");
         java.nio.file.Files.writeString(staticFile.toPath(), "Static content from Netty");
+        File indexFile = new File(staticDir, "index.html");
+        java.nio.file.Files.writeString(indexFile.toPath(), "Welcome to Netty Static");
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
         nettyServer = aspectran.getBean("netty.server");
@@ -184,6 +186,22 @@ class DefaultNettyServerTest {
                 }
             });
             assertEquals("Static content from Netty", content);
+        }
+    }
+
+    @Test
+    void testDirectoryIndex() throws Exception {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet("http://127.0.0.1:" + port + "/static/");
+            String content = httpClient.execute(request, res -> {
+                assertEquals(200, res.getCode());
+                try {
+                    return EntityUtils.toString(res.getEntity()).trim();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            assertEquals("Welcome to Netty Static", content);
         }
     }
 

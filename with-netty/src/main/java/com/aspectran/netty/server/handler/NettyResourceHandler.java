@@ -18,8 +18,6 @@ package com.aspectran.netty.server.handler;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
-import com.aspectran.utils.wildcard.WildcardPattern;
-import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -42,8 +40,8 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,17 +67,19 @@ import java.util.TimeZone;
 @ChannelHandler.Sharable
 public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final Logger logger = LoggerFactory.getLogger(NettyResourceHandler.class);
-
     private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
     private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
 
     private static final int HTTP_CACHE_SECONDS = 60;
 
+    private static final String[] DEFAULT_INDEX_FILES = new String[] { "index.html", "index.htm" };
+
     private final File baseDir;
 
     private volatile IncludeExcludeWildcardPatterns pathPatterns;
+
+    private String[] indexFiles = DEFAULT_INDEX_FILES;
 
     public NettyResourceHandler(File baseDir) {
         this(baseDir, (String[])null);
@@ -113,6 +113,22 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         this.pathPatterns = pathPatterns;
     }
 
+    /**
+     * Returns the index files to serve when a directory is requested.
+     * @return the array of index file names
+     */
+    public String[] getIndexFiles() {
+        return indexFiles;
+    }
+
+    /**
+     * Sets the index files to serve when a directory is requested.
+     * @param indexFiles the index file names, or {@code null} to disable directory index resolution
+     */
+    public void setIndexFiles(String... indexFiles) {
+        this.indexFiles = indexFiles;
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         if (!handle(ctx, request)) {
@@ -120,7 +136,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
-    public boolean handle(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
+    public boolean handle(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) throws Exception {
         if (!request.decoderResult().isSuccess()) {
             return false;
         }
@@ -163,8 +179,8 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
 
         if (file.isDirectory()) {
-            File indexFile = new File(file, "index.html");
-            if (indexFile.exists() && indexFile.isFile()) {
+            File indexFile = findIndexFile(file);
+            if (indexFile != null) {
                 file = indexFile;
             } else {
                 return false;
@@ -238,6 +254,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         return true;
     }
 
+    @Nullable
     private static String sanitizePath(String path) {
         path = path.replace('/', File.separatorChar);
         while (path.startsWith(File.separator)) {
@@ -249,6 +266,19 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
             return null;
         }
         return path;
+    }
+
+    @Nullable
+    private File findIndexFile(File dir) {
+        if (indexFiles != null && indexFiles.length > 0) {
+            for (String indexFileName : indexFiles) {
+                File indexFile = new File(dir, indexFileName);
+                if (indexFile.isFile() && !indexFile.isHidden()) {
+                    return indexFile;
+                }
+            }
+        }
+        return null;
     }
 
     private static void sendNotModified(ChannelHandlerContext ctx, FullHttpRequest request) {
@@ -264,14 +294,14 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
-    private static void setDateHeader(FullHttpResponse response) {
+    private static void setDateHeader(@NonNull FullHttpResponse response) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
         dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
         Calendar time = new GregorianCalendar();
         response.headers().set(HttpHeaderNames.DATE, dateFormatter.format(time.getTime()));
     }
 
-    private static void setDateAndCacheHeaders(HttpResponse response, File fileToCache) {
+    private static void setDateAndCacheHeaders(@NonNull HttpResponse response, @NonNull File fileToCache) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
         dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
 
@@ -286,7 +316,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         response.headers().set(HttpHeaderNames.LAST_MODIFIED, dateFormatter.format(new Date(fileToCache.lastModified())));
     }
 
-    private static void setContentTypeHeader(HttpResponse response, File file) {
+    private static void setContentTypeHeader(HttpResponse response, @NonNull File file) {
         String mimeType = null;
         try {
             mimeType = java.nio.file.Files.probeContentType(file.toPath());
@@ -296,20 +326,20 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         if (mimeType == null) {
             String ext = FilenameUtils.getExtension(file.getName());
             if (ext != null) {
-                switch (ext.toLowerCase()) {
-                    case "html": case "htm": mimeType = "text/html; charset=UTF-8"; break;
-                    case "css": mimeType = "text/css; charset=UTF-8"; break;
-                    case "js": mimeType = "application/javascript; charset=UTF-8"; break;
-                    case "json": mimeType = "application/json; charset=UTF-8"; break;
-                    case "png": mimeType = "image/png"; break;
-                    case "jpg": case "jpeg": mimeType = "image/jpeg"; break;
-                    case "gif": mimeType = "image/gif"; break;
-                    case "svg": mimeType = "image/svg+xml"; break;
-                    case "ico": mimeType = "image/x-icon"; break;
-                    case "txt": mimeType = "text/plain; charset=UTF-8"; break;
-                    case "xml": mimeType = "application/xml; charset=UTF-8"; break;
-                    default: mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; break;
-                }
+                mimeType = switch (ext.toLowerCase()) {
+                    case "html", "htm" -> "text/html; charset=UTF-8";
+                    case "css" -> "text/css; charset=UTF-8";
+                    case "js" -> "application/javascript; charset=UTF-8";
+                    case "json" -> "application/json; charset=UTF-8";
+                    case "png" -> "image/png";
+                    case "jpg", "jpeg" -> "image/jpeg";
+                    case "gif" -> "image/gif";
+                    case "svg" -> "image/svg+xml";
+                    case "ico" -> "image/x-icon";
+                    case "txt" -> "text/plain; charset=UTF-8";
+                    case "xml" -> "application/xml; charset=UTF-8";
+                    default -> MediaType.APPLICATION_OCTET_STREAM_VALUE;
+                };
             } else {
                 mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
             }

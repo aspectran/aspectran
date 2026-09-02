@@ -26,10 +26,10 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.netty.server.handler.NettyResourceHandler;
 import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.session.NettySessionManager;
-import com.aspectran.netty.service.DefaultNettyService;
-import com.aspectran.netty.service.DefaultNettyServiceBuilder;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
 import com.aspectran.netty.server.websocket.jsr356.NettyServerEndpointExporter;
+import com.aspectran.netty.service.DefaultNettyService;
+import com.aspectran.netty.service.DefaultNettyServiceBuilder;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ResourceUtils;
@@ -207,7 +207,7 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         webSocketEndpoints.put(normalizedPath, listener);
     }
 
-    public NettyWebSocketListener getWebSocketEndpoint(String path) {
+    public NettyWebSocketListener getWebSocketEndpoint(@NonNull String path) {
         String normalizedPath = (path.startsWith("/") ? path : "/" + path);
         return webSocketEndpoints.get(normalizedPath);
     }

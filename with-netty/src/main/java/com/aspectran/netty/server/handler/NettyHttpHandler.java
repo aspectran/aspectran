@@ -98,7 +98,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) {
+    protected void channelRead0(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
         request.retain();
         if (requestExecutor != null) {
             requestExecutor.execute(() -> processRequest(ctx, request));
@@ -107,7 +107,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         }
     }
 
-    private void processRequest(ChannelHandlerContext ctx, FullHttpRequest request) {
+    private void processRequest(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
         String uri = request.uri();
         int queryIndex = uri.indexOf('?');
         String path = (queryIndex != -1 ? uri.substring(0, queryIndex) : uri);
@@ -180,7 +180,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         return groupName;
     }
 
-    private boolean isWebSocketUpgrade(FullHttpRequest request) {
+    private boolean isWebSocketUpgrade(@NonNull FullHttpRequest request) {
         HttpHeaders headers = request.headers();
         return headers.contains(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET, true)
                 && headers.containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true);
@@ -241,7 +241,8 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         });
     }
 
-    private String getWebSocketLocation(FullHttpRequest req) {
+    @NonNull
+    private String getWebSocketLocation(@NonNull FullHttpRequest req) {
         String host = req.headers().get(HttpHeaderNames.HOST);
         return "ws://" + (host != null ? host : "localhost") + req.uri();
     }
@@ -259,7 +260,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         }
     }
 
-    private void sendInternalServerError(ChannelHandlerContext ctx, FullHttpRequest request) {
+    private void sendInternalServerError(@NonNull ChannelHandlerContext ctx, FullHttpRequest request) {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);
         HttpUtil.setContentLength(response, 0);
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
@@ -267,7 +268,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(@NonNull ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Netty pipeline exception caught", cause);
         ctx.close();
     }

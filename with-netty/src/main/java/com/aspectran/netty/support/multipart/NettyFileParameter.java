@@ -21,6 +21,7 @@ import com.aspectran.utils.FilenameUtils;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.handler.codec.http.multipart.FileUpload;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +42,7 @@ public class NettyFileParameter extends FileParameter {
         this.fileUpload = fileUpload;
     }
 
+    @Nullable
     private static File determineFile(FileUpload fileUpload) {
         if (!fileUpload.isInMemory()) {
             try {

@@ -29,6 +29,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.ExecutorService;
 
@@ -96,6 +97,7 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
         this(listenerConfig, createContextRouter(nettyService), requestExecutor, resourceHandler, accessLogHandler, null, maxContentLength, contentCompression);
     }
 
+    @NonNull
     private static NettyContextRouter createContextRouter(NettyService nettyService) {
         NettyContextRouter router = new NettyContextRouter();
         if (nettyService instanceof DefaultNettyService defaultNettyService) {
@@ -105,7 +107,7 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
     }
 
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
+    protected void initChannel(@NonNull SocketChannel ch) throws Exception {
         ChannelPipeline p = ch.pipeline();
 
         if (listenerConfig != null && listenerConfig.isSsl()) {

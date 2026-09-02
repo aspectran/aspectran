@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;

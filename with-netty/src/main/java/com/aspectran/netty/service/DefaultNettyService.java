@@ -31,7 +31,6 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -91,7 +90,7 @@ public class DefaultNettyService extends AbstractNettyService {
         if (StringUtils.hasLength(contextPath)) {
             if (decodedPath.startsWith(contextPath)) {
                 String relPath = decodedPath.substring(contextPath.length());
-                requestName = (relPath.isEmpty() || !relPath.startsWith("/") ? "/" + relPath : relPath);
+                requestName = (!relPath.startsWith("/") ? "/" + relPath : relPath);
             } else {
                 requestName = decodedPath;
             }
@@ -232,7 +231,7 @@ public class DefaultNettyService extends AbstractNettyService {
         return false;
     }
 
-    private String getRequestInfo(FullHttpRequest request, String requestName, MethodType requestMethod) {
+    private String getRequestInfo(@NonNull FullHttpRequest request, String requestName, MethodType requestMethod) {
         ToStringBuilder tsb = new ToStringBuilder("Request");
         tsb.append("method", requestMethod);
         tsb.append("name", requestName);
