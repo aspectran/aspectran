@@ -18,11 +18,11 @@ package com.aspectran.web.support.etag;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.ResponseTemplate;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.DigestUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
-import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -91,7 +91,7 @@ public class ETagInterceptor {
         if (translet == null) {
             throw new IllegalArgumentException("Translet cannot be null");
         }
-        HttpServletResponse response = translet.getResponseAdaptee();
+        ResponseAdapter response = translet.getResponseAdapter();
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
             String token = response.getHeader(HttpHeaders.ETAG);

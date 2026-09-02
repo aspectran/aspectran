@@ -153,6 +153,7 @@ public class NettyActivity extends CoreActivity {
             }
 
             NettyRequestAdapter requestAdapter = new NettyRequestAdapter(getTranslet().getRequestMethod(), ctx, request);
+            requestAdapter.setContextPath(getContextPath());
             if (getPendingActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (StringUtils.hasLength(maxRequestSizeSetting)) {

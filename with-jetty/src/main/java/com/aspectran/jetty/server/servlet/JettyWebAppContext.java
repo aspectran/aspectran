@@ -20,8 +20,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.web.service.DefaultWebService;
-import com.aspectran.web.service.DefaultWebServiceBuilder;
+import com.aspectran.web.servlet.service.DefaultServletWebService;
+import com.aspectran.web.servlet.service.DefaultServletWebServiceBuilder;
 import jakarta.servlet.ServletContainerInitializer;
 import org.eclipse.jetty.ee.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
@@ -69,7 +69,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private JettyWebSocketServerContainerInitializer webSocketServerContainerInitializer;
 
-    private DefaultWebService rootWebService;
+    private DefaultServletWebService rootWebService;
 
     @NonNull
     private ActivityContext getActivityContext() {
@@ -296,7 +296,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
         // Create a root web service
         CoreService masterService = getActivityContext().getMasterService();
-        rootWebService = DefaultWebServiceBuilder.build(getServletContext(), masterService);
+        rootWebService = DefaultServletWebServiceBuilder.build(getServletContext(), masterService);
         if (rootWebService.isOrphan()) {
             server.addEventListener(new LifeCycle.Listener() {
                 @Override

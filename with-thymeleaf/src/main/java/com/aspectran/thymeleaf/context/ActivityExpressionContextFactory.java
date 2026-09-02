@@ -16,12 +16,10 @@
 package com.aspectran.thymeleaf.context;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.thymeleaf.context.tow.TowActivityExchange;
 import com.aspectran.thymeleaf.context.web.WebActivityExchange;
 import com.aspectran.thymeleaf.context.web.WebActivityExpressionContext;
-import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
-import com.aspectran.web.activity.WebActivity;
+import com.aspectran.web.adapter.WebRequestAdapter;
 import org.jspecify.annotations.NonNull;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.web.IWebExchange;
@@ -37,10 +35,8 @@ import java.util.Locale;
  * context to bridge Aspectran's environment with Thymeleaf's expression processing.
  * It distinguishes between:
  * <ul>
- *   <li>Servlet-based web activities ({@link WebActivity}), for which it creates a
- *       {@link WebActivityExpressionContext} with a servlet-aware exchange.</li>
- *   <li>Non-servlet web activities ({@link TowActivity}), for which it also creates a
- *       {@link WebActivityExpressionContext}, but with a non-servlet-aware exchange.</li>
+ *   <li>Web activities (where {@link Activity#getRequestAdapter()} is a {@link WebRequestAdapter}),
+ *       for which it creates a {@link WebActivityExpressionContext} with a web-aware exchange.</li>
  *   <li>Non-web activities, for which it creates a basic {@link ActivityExpressionContext}.</li>
  * </ul>
  *
@@ -51,8 +47,8 @@ public abstract class ActivityExpressionContextFactory {
     /**
      * Creates a new {@link ActivityExpressionContext} appropriate for the given activity type.
      * <p>This method inspects the activity and creates a web-enabled context
-     * ({@link WebActivityExpressionContext}) for web activities (both servlet and non-servlet)
-     * or a basic context for non-web activities. The created context provides the necessary
+     * ({@link WebActivityExpressionContext}) for web activities or a basic context
+     * for non-web activities. The created context provides the necessary
      * variables and expression objects for Thymeleaf template processing.</p>
      * @param activity      the current Aspectran {@link Activity}
      * @param configuration the active {@link IEngineConfiguration} for the Thymeleaf engine
@@ -63,12 +59,9 @@ public abstract class ActivityExpressionContextFactory {
     public static ActivityExpressionContext create(
             Activity activity, IEngineConfiguration configuration, Locale locale) {
         Assert.notNull(activity, "activity cannot be null");
-        if (activity instanceof WebActivity) {
+        if (activity.getRequestAdapter() instanceof WebRequestAdapter) {
             IWebExchange webExchange = WebActivityExchange.buildExchange(activity);
             return new WebActivityExpressionContext(activity, configuration, webExchange, locale);
-        } else if (activity instanceof TowActivity towActivity) {
-            IWebExchange webExchange = TowActivityExchange.buildExchange(towActivity);
-            return new WebActivityExpressionContext(towActivity, configuration, webExchange, locale);
         } else {
             return new ActivityExpressionContext(activity, configuration, locale);
         }

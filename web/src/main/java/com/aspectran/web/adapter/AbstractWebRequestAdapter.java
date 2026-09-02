@@ -18,8 +18,10 @@ package com.aspectran.web.adapter;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,12 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
     private MediaType mediaType;
 
     private boolean bodyObtained;
+
+    private String requestURI;
+
+    private String queryString;
+
+    private String contextPath;
 
     /**
      * Creates a new {@code AbstractWebRequestAdapter}.
@@ -99,4 +107,89 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
         }
     }
 
+    @Override
+    public String getScheme() {
+        String scheme = getHeader(HttpHeaders.X_FORWARDED_PROTO);
+        if (StringUtils.hasLength(scheme)) {
+            return scheme;
+        }
+        return "http";
+    }
+
+    @Override
+    public String getServerName() {
+        String host = getHeader(HttpHeaders.HOST);
+        if (StringUtils.hasLength(host)) {
+            int idx = host.indexOf(':');
+            return (idx > -1 ? host.substring(0, idx) : host);
+        }
+        return "localhost";
+    }
+
+    @Override
+    public int getServerPort() {
+        String forwardedPort = getHeader(HttpHeaders.X_FORWARDED_PORT);
+        if (StringUtils.hasLength(forwardedPort)) {
+            try {
+                return Integer.parseInt(forwardedPort);
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+        String host = getHeader(HttpHeaders.HOST);
+        if (StringUtils.hasLength(host)) {
+            int idx = host.indexOf(':');
+            if (idx > -1) {
+                try {
+                    return Integer.parseInt(host.substring(idx + 1));
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+        }
+        return ("https".equalsIgnoreCase(getScheme()) ? 443 : 80);
+    }
+
+    @Override
+    public String getRequestURI() {
+        return requestURI;
+    }
+
+    public void setRequestURI(String requestURI) {
+        this.requestURI = requestURI;
+    }
+
+    @Override
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
+
+    @Override
+    public String getContextPath() {
+        return (contextPath != null ? contextPath : StringUtils.EMPTY);
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    @Override
+    public void preparse(WebRequestAdapter requestAdapter) {
+        if (requestAdapter == this) {
+            throw new IllegalStateException("Unable To Replicate");
+        }
+        setAttributeMap(requestAdapter.getAttributeMap());
+        getParameterMap().putAll(requestAdapter.getParameterMap());
+        setMediaType(requestAdapter.getMediaType());
+        setLocale(requestAdapter.getLocale());
+        setRequestURI(requestAdapter.getRequestURI());
+        setQueryString(requestAdapter.getQueryString());
+        setContextPath(requestAdapter.getContextPath());
+    }
+
 }
+

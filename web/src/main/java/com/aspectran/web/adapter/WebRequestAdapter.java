@@ -47,4 +47,42 @@ public interface WebRequestAdapter extends RequestAdapter {
      */
     void preparse(WebRequestAdapter requestAdapter);
 
+    /**
+     * Returns the name of the scheme used to make this request,
+     * for example, {@code http} or {@code https}.
+     * @return a string specifying the name of the scheme
+     */
+    String getScheme();
+
+    /**
+     * Returns the host name of the server to which the request was sent.
+     * @return a string containing the name of the server
+     */
+    String getServerName();
+
+    /**
+     * Returns the port number to which the request was sent.
+     * @return an integer specifying the port number
+     */
+    int getServerPort();
+
+    /**
+     * Returns the part of this request's URL from the protocol
+     * name up to the query string in the first line of the HTTP request.
+     * @return a string specifying the request URI
+     */
+    String getRequestURI();
+
+    /**
+     * Returns the query string that is contained in the request URL after the path.
+     * @return a string containing the query string, or {@code null} if the URL contains no query string
+     */
+    String getQueryString();
+
+    /**
+     * Returns the portion of the request URI that indicates the context of the request.
+     * @return a string specifying the context path, or an empty string if in default context
+     */
+    String getContextPath();
+
 }

@@ -134,13 +134,49 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
      */
     @Override
     public void preparse(WebRequestAdapter requestAdapter) {
-        if (requestAdapter == this) {
-            throw new IllegalStateException("Unable To Replicate");
+        super.preparse(requestAdapter);
+    }
+
+    @Override
+    public String getScheme() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getRequestScheme();
+    }
+
+    @Override
+    public String getServerName() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getHostName();
+    }
+
+    @Override
+    public int getServerPort() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getHostPort();
+    }
+
+    @Override
+    public String getRequestURI() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getRequestURI();
+    }
+
+    @Override
+    public String getQueryString() {
+        HttpServerExchange exchange = getAdaptee();
+        return exchange.getQueryString();
+    }
+
+    @Override
+    public String getContextPath() {
+        HttpServerExchange exchange = getAdaptee();
+        if (exchange != null) {
+            String resolvedPath = exchange.getResolvedPath();
+            if (resolvedPath != null) {
+                return resolvedPath;
+            }
         }
-        setAttributeMap(requestAdapter.getAttributeMap());
-        getParameterMap().putAll(requestAdapter.getParameterMap());
-        setMediaType(requestAdapter.getMediaType());
-        setLocale(requestAdapter.getLocale());
+        return super.getContextPath();
     }
 
 }

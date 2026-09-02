@@ -15,9 +15,9 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -64,7 +64,6 @@ public class CookieGenerator {
 
     /**
      * Use the given name for cookies created by this generator.
-     * @see jakarta.servlet.http.Cookie#getName()
      */
     public void setCookieName(@Nullable String cookieName) {
         this.cookieName = cookieName;
@@ -81,7 +80,6 @@ public class CookieGenerator {
     /**
      * Use the given domain for cookies created by this generator.
      * The cookie is only visible to servers in this domain.
-     * @see jakarta.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(@Nullable String cookieDomain) {
         this.cookieDomain = cookieDomain;
@@ -98,7 +96,6 @@ public class CookieGenerator {
     /**
      * Use the given path for cookies created by this generator.
      * The cookie is only visible to URLs in this path and below.
-     * @see jakarta.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
         this.cookiePath = cookiePath;
@@ -115,7 +112,6 @@ public class CookieGenerator {
      * Use the given maximum age (in seconds) for cookies created by this generator.
      * Useful special value: -1 ... not persistent, deleted when client shuts down.
      * <p>Default is no specific maximum age at all, using the Servlet container's default.</p>
-     * @see jakarta.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(@Nullable Integer cookieMaxAge) {
         this.cookieMaxAge = cookieMaxAge;
@@ -134,7 +130,6 @@ public class CookieGenerator {
      * such as HTTPS (SSL). This is an indication to the receiving browser,
      * not processed by the HTTP server itself.
      * <p>Default is "false".</p>
-     * @see jakarta.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
         this.cookieSecure = cookieSecure;
@@ -151,7 +146,6 @@ public class CookieGenerator {
     /**
      * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      * <p>Default is "false".</p>
-     * @see jakarta.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
         this.cookieHttpOnly = cookieHttpOnly;
@@ -184,7 +178,7 @@ public class CookieGenerator {
      * Add a cookie with the given value to the response,
      * using the cookie descriptor settings of this generator.
      * This method constructs and adds the "Set-Cookie" header directly to the response.
-     * @param response the HTTP response to add the cookie to
+     * @param responseAdapter the response adpapter to add the cookie to
      * @param cookieValue the value of the cookie to add
      * @see #setCookieName
      * @see #setCookieDomain
@@ -192,11 +186,11 @@ public class CookieGenerator {
      * @see #setCookieMaxAge
      * @see #setSameSite
      */
-    public void addCookie(HttpServletResponse response, String cookieValue) {
-        Assert.notNull(response, "HttpServletResponse must not be null");
+    public void addCookie(ResponseAdapter responseAdapter, String cookieValue) {
+        Assert.notNull(responseAdapter, "ResponseAdapter must not be null");
         Assert.state(StringUtils.hasText(getCookieName()), "Cookie name must not be null or empty");
         String header = buildCookieHeader(cookieValue, getCookieMaxAge());
-        response.addHeader("Set-Cookie", header);
+        responseAdapter.addHeader("Set-Cookie", header);
         if (logger.isTraceEnabled()) {
             logger.trace("Added cookie [{}={}]", getCookieName(), cookieValue);
         }
@@ -206,17 +200,17 @@ public class CookieGenerator {
      * Remove the cookie that this generator describes from the response.
      * Will generate a cookie with empty value and max age 0.
      * This method constructs and adds the "Set-Cookie" header directly to the response.
-     * @param response the HTTP response to remove the cookie from
+     * @param responseAdapter the response adpapter to add the cookie to
      * @see #setCookieName
      * @see #setCookieDomain
      * @see #setCookiePath
      * @see #setSameSite
      */
-    public void removeCookie(HttpServletResponse response) {
-        Assert.notNull(response, "HttpServletResponse must not be null");
+    public void removeCookie(ResponseAdapter responseAdapter) {
+        Assert.notNull(responseAdapter, "ResponseAdapter must not be null");
         Assert.state(StringUtils.hasText(getCookieName()), "Cookie name must not be null or empty");
         String header = buildCookieHeader("", 0);
-        response.addHeader("Set-Cookie", header);
+        responseAdapter.addHeader("Set-Cookie", header);
         if (logger.isTraceEnabled()) {
             logger.trace("Removed cookie '{}'", getCookieName());
         }

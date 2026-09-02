@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.web.servlet.listener;
+
+import com.aspectran.web.service.WebService;
+import com.aspectran.web.servlet.service.DefaultServletWebService;
+import com.aspectran.web.servlet.service.DefaultServletWebServiceBuilder;
+import com.aspectran.web.servlet.service.ServletWebService;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * A {@link jakarta.servlet.ServletContextListener} that bootstraps and tears down
+ * the Aspectran framework as part of the web application's lifecycle.
+ * <p>This listener is responsible for initializing the root {@link WebService}
+ * when the servlet context is created and destroying it when the context is
+ * shut down. It ensures that Aspectran is properly started before any requests
+ * are handled and gracefully stopped upon application undeployment.
+ * </p>
+ * <p>This listener should be registered in the {@code web.xml} deployment descriptor
+ * or programmatically via a {@code ServletContainerInitializer}.</p>
+ */
+public class WebServiceListener implements ServletContextListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(WebServiceListener.class);
+
+    private DefaultServletWebService webService;
+
+    @Override
+    public void contextInitialized(@NonNull ServletContextEvent event) {
+        try {
+            ServletWebService.findWebService(event.getServletContext());
+            logger.warn("A Root WebService already exists. The WebServiceListener is not necessary and will be ignored.");
+            return;
+        } catch (IllegalStateException ignored) {
+            // ignore
+        }
+
+        logger.info("Initializing Root WebService...");
+
+        try {
+            webService = DefaultServletWebServiceBuilder.build(event.getServletContext());
+            webService.start();
+
+            logger.info("Root WebService has been initialized");
+        } catch (Exception e) {
+            logger.error("Failed to create root web service", e);
+        }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        if (webService != null) {
+            webService.stop();
+            webService = null;
+
+            logger.info("Root WebService has been destroyed");
+        }
+    }
+
+}

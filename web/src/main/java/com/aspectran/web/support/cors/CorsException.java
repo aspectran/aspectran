@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.cors;
 
-import jakarta.servlet.http.HttpServletResponse;
+import com.aspectran.web.support.http.HttpStatus;
 
 import java.io.Serial;
 
@@ -38,38 +38,38 @@ public class CorsException extends Exception {
      * CORS origin denied exception.
      */
     public static final CorsException ORIGIN_DENIED =
-            new CorsException("CORS origin denied", HttpServletResponse.SC_FORBIDDEN);
+            new CorsException("CORS origin denied", HttpStatus.FORBIDDEN.value());
 
     /**
      * Unsupported HTTP method.
      */
     public static final CorsException UNSUPPORTED_METHOD =
-            new CorsException("Unsupported HTTP method", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            new CorsException("Unsupported HTTP method", HttpStatus.METHOD_NOT_ALLOWED.value());
 
     /**
      * Unsupported HTTP request header.
      */
     public static final CorsException UNSUPPORTED_REQUEST_HEADER =
-            new CorsException("Unsupported HTTP request header", HttpServletResponse.SC_FORBIDDEN);
+            new CorsException("Unsupported HTTP request header", HttpStatus.FORBIDDEN.value());
 
     /**
      * Invalid simple / actual request.
      */
     public static final CorsException INVALID_ACTUAL_REQUEST =
-            new CorsException("Invalid simple/actual CORS request", HttpServletResponse.SC_BAD_REQUEST);
+            new CorsException("Invalid simple/actual CORS request", HttpStatus.BAD_REQUEST.value());
 
     /**
      * Invalid preflight request.
      */
     public static final CorsException INVALID_PREFLIGHT_REQUEST =
-            new CorsException("Invalid preflight CORS request", HttpServletResponse.SC_BAD_REQUEST);
+            new CorsException("Invalid preflight CORS request", HttpStatus.BAD_REQUEST.value());
 
     /**
      * Missing Access-Control-Request-Method header.
      */
     public static final CorsException MISSING_ACCESS_CONTROL_REQUEST_METHOD_HEADER =
             new CorsException("Invalid preflight CORS request: Missing Access-Control-Request-Method header",
-                    HttpServletResponse.SC_BAD_REQUEST);
+                    HttpStatus.BAD_REQUEST.value());
 
     /**
      * The HTTP status code, zero if not specified.

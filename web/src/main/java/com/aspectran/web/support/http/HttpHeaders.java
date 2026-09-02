@@ -427,4 +427,10 @@ public interface HttpHeaders {
      */
     String X_FORWARDED_PATH = "X-Forwarded-Path";
 
+    /**
+     * The X-Forwarded-Port header is a de-facto standard header for identifying
+     * the port that a client used to connect to your proxy or load balancer.
+     */
+    String X_FORWARDED_PORT = "X-Forwarded-Port";
+
 }

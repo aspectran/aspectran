@@ -16,10 +16,10 @@
 package com.aspectran.web.support.cors;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,8 +53,8 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
     @Override
     public void processActualRequest(Translet translet) throws CorsException {
-        HttpServletRequest req = translet.getRequestAdaptee();
-        HttpServletResponse res = translet.getResponseAdaptee();
+        RequestAdapter req = translet.getRequestAdapter();
+        ResponseAdapter res = translet.getResponseAdapter();
 
         if (!isCorsRequest(req)) {
             return;
@@ -62,7 +62,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         if (!checkProcessable(res)) {
             return;
         }
-        if (!isAllowedMethod(req.getMethod())) {
+        if (!isAllowedMethod(req.getRequestMethod().name())) {
             rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
         }
 
@@ -88,8 +88,8 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
     @Override
     public void processPreflightRequest(Translet translet) throws CorsException {
-        HttpServletRequest req = translet.getRequestAdaptee();
-        HttpServletResponse res = translet.getResponseAdaptee();
+        RequestAdapter req = translet.getRequestAdapter();
+        ResponseAdapter res = translet.getResponseAdapter();
 
         if (!isPreFlightRequest(req)) {
             rejectRequest(translet, CorsException.INVALID_PREFLIGHT_REQUEST);
@@ -143,8 +143,11 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     public void sendError(Translet translet) throws IOException {
         Throwable t = translet.getRootCauseOfRaisedException();
         if (t instanceof CorsException corsException) {
-            HttpServletResponse res = translet.getResponseAdaptee();
-            res.sendError(corsException.getHttpStatusCode(), corsException.getMessage());
+            ResponseAdapter res = translet.getResponseAdapter();
+            res.setStatus(corsException.getHttpStatusCode());
+            if (corsException.getMessage() != null) {
+                res.getWriter().write(corsException.getMessage());
+            }
         }
     }
 
@@ -156,7 +159,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
      * @throws CorsException if the request is denied
      */
     protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
-        HttpServletResponse res = translet.getResponseAdaptee();
+        ResponseAdapter res = translet.getResponseAdapter();
         res.setStatus(ce.getHttpStatusCode());
 
         translet.setAttribute(CORS_HTTP_STATUS_CODE, ce.getHttpStatusCode());
@@ -165,7 +168,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         throw ce;
     }
 
-    protected boolean checkProcessable(HttpServletResponse res) {
+    protected boolean checkProcessable(ResponseAdapter res) {
         if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");

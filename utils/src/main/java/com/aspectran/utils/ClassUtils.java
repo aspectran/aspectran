@@ -265,6 +265,36 @@ public class ClassUtils {
     }
 
     /**
+     * Determines whether the {@link Class} identified by the supplied name is present
+     * and can be loaded. Will return {@code false} if either the class or
+     * one of its dependencies is not present or cannot be loaded.
+     * @param className the name of the class to check
+     * @return {@code true} if the class is present; {@code false} otherwise
+     */
+    public static boolean isPresent(String className) {
+        return isPresent(className, getDefaultClassLoader());
+    }
+
+    /**
+     * Determines whether the {@link Class} identified by the supplied name is present
+     * and can be loaded using the specified class loader. Will return {@code false}
+     * if either the class or one of its dependencies is not present or cannot be loaded.
+     * @param className the name of the class to check
+     * @param classLoader the class loader to use (may be {@code null} which indicates
+     *                    the default class loader)
+     * @return {@code true} if the class is present; {@code false} otherwise
+     */
+    public static boolean isPresent(String className, ClassLoader classLoader) {
+        try {
+            classForName(className, classLoader != null ? classLoader : getDefaultClassLoader());
+            return true;
+        } catch (Throwable ex) {
+            return false;
+        }
+    }
+
+
+    /**
      * Returns the user-defined class for a given class.
      * <p>For regular classes, it returns the class itself. For CGLIB or Javassist-generated
      * proxy classes, it returns the superclass, which is the original user-defined class.</p>

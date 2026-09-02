@@ -15,64 +15,112 @@
  */
 package com.aspectran.thymeleaf.context.web;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
-import jakarta.servlet.ServletContext;
 import org.jspecify.annotations.NonNull;
 import org.thymeleaf.web.servlet.IServletWebApplication;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Set;
 
 /**
- * A Thymeleaf {@link IServletWebApplication} implementation that
- * wraps an Aspectran {@link ServletContext}.
+ * A Thymeleaf {@link IServletWebApplication} implementation backed by
+ * Aspectran's {@link ApplicationAdapter}.
  *
  * <p>Created: 2024-11-27</p>
  */
 public class WebActivityApplication implements IServletWebApplication {
 
-    private final ServletContext servletContext;
+    private final ActivityContext activityContext;
+
+    private final ApplicationAdapter applicationAdapter;
 
     /**
      * Instantiates a new WebActivityApplication.
-     * @param servletContext the servlet context
+     * @param activityContext the activity context
      */
-    WebActivityApplication(@NonNull ServletContext servletContext) {
-        this.servletContext = servletContext;
+    public WebActivityApplication(@NonNull ActivityContext activityContext) {
+        this.activityContext = activityContext;
+        this.applicationAdapter = activityContext.getApplicationAdapter();
+    }
+
+    @Override
+    public int getAttributeCount() {
+        return (applicationAdapter != null ? applicationAdapter.getAttributeNames().size() : 0);
+    }
+
+    @Override
+    public Set<String> getAllAttributeNames() {
+        return (applicationAdapter != null ? applicationAdapter.getAttributeNames() : Collections.emptySet());
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return servletContext.getAttributeNames();
+        return Collections.enumeration(getAllAttributeNames());
     }
 
     @Override
     public Object getAttributeValue(String name) {
-        return servletContext.getAttribute(name);
+        return (applicationAdapter != null ? applicationAdapter.getAttribute(name) : null);
     }
 
     @Override
     public void setAttributeValue(String name, Object value) {
-        servletContext.setAttribute(name, value);
+        if (applicationAdapter != null) {
+            applicationAdapter.setAttribute(name, value);
+        }
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        if (applicationAdapter != null) {
+            applicationAdapter.removeAttribute(name);
+        }
     }
 
     @Override
     public InputStream getResourceAsStream(String path) {
         Assert.notNull(path, "Path cannot be null");
-        return servletContext.getResourceAsStream(path);
+        if (applicationAdapter == null) {
+            return null;
+        }
+        try {
+            Path resourcePath = applicationAdapter.getRealPath(path);
+            if (Files.exists(resourcePath) && !Files.isDirectory(resourcePath)) {
+                return Files.newInputStream(resourcePath);
+            }
+            return activityContext.getClassLoader().getResourceAsStream(path);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
-    public URL getResource(String path) throws MalformedURLException {
+    public URL getResource(String path) {
         Assert.notNull(path, "Path cannot be null");
-        return servletContext.getResource(path);
+        if (applicationAdapter == null) {
+            return null;
+        }
+        try {
+            Path resourcePath = applicationAdapter.getRealPath(path);
+            if (Files.exists(resourcePath)) {
+                return resourcePath.toUri().toURL();
+            }
+            return activityContext.getClassLoader().getResource(path);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public Object getNativeServletContextObject() {
-        return servletContext;
+        return null;
     }
 
 }

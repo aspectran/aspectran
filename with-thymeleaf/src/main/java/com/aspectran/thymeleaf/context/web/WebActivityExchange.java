@@ -19,7 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.thymeleaf.context.common.AbstractActivityExchange;
 import com.aspectran.thymeleaf.context.common.AspectranWebSession;
 import com.aspectran.utils.Assert;
-import com.aspectran.web.activity.WebActivity;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.web.adapter.WebRequestAdapter;
 import org.jspecify.annotations.NonNull;
 import org.thymeleaf.web.IWebApplication;
 import org.thymeleaf.web.IWebExchange;
@@ -27,8 +28,7 @@ import org.thymeleaf.web.IWebRequest;
 import org.thymeleaf.web.IWebSession;
 
 /**
- * A Thymeleaf {@link IWebExchange} implementation for Aspectran's servlet-based
- * web environment.
+ * A Thymeleaf {@link IWebExchange} implementation for Aspectran's web environment.
  *
  * <p>This class extends {@link AbstractActivityExchange} and provides access to
  * the request, session, and application objects, adapted for Thymeleaf's web context.</p>
@@ -76,23 +76,38 @@ public class WebActivityExchange extends AbstractActivityExchange {
         return application;
     }
 
+    private static final boolean SERVLET_API_PRESENT =
+            ClassUtils.isPresent("jakarta.servlet.http.HttpServletRequest", WebActivityExchange.class.getClassLoader());
+
     /**
      * Builds a new {@link WebActivityExchange} for the given activity.
      * @param activity the current {@link Activity}
      * @return a new {@code WebActivityExchange} instance
-     * @throws IllegalArgumentException if the activity is not a {@link WebActivity}
+     * @throws IllegalArgumentException if the activity does not have a {@link WebRequestAdapter}
      */
     @NonNull
     public static WebActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");
-        if (activity instanceof WebActivity webActivity) {
-            IWebRequest request = new WebActivityRequest(webActivity.getRequestAdapter());
-            IWebSession session = (webActivity.hasSessionAdapter() ? new AspectranWebSession(webActivity.getSessionAdapter()) : null);
-            IWebApplication application = new WebActivityApplication(webActivity.getRequest().getServletContext());
+        if (activity.getRequestAdapter() instanceof WebRequestAdapter webRequestAdapter) {
+            IWebRequest request = new WebActivityRequest(webRequestAdapter);
+            IWebSession session = (activity.hasSessionAdapter() ? new AspectranWebSession(activity.getSessionAdapter()) : null);
+            IWebApplication application = createWebApplication(activity);
             return new WebActivityExchange(activity, request, session, application);
         } else {
-            throw new IllegalArgumentException("activity must be WebActivity");
+            throw new IllegalArgumentException("Activity must have a WebRequestAdapter");
         }
     }
 
+    @NonNull
+    private static IWebApplication createWebApplication(Activity activity) {
+        if (SERVLET_API_PRESENT && activity.getRequestAdapter() != null) {
+            Object adaptee = activity.getRequestAdapter().getAdaptee();
+            if (ServletWebExchangeHelper.isHttpServletRequest(adaptee)) {
+                return ServletWebExchangeHelper.createApplication(adaptee);
+            }
+        }
+        return new WebActivityApplication(activity.getActivityContext());
+    }
+
 }
+

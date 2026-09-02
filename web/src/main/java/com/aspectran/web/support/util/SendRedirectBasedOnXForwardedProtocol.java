@@ -32,6 +32,29 @@ import java.io.IOException;
  */
 public class SendRedirectBasedOnXForwardedProtocol {
 
+    /**
+     * The setting name for determining whether to rewrite the protocol of a redirect URL to HTTPS.
+     * This is relevant when a web application server uses HTTP, but a front-end proxy server (like Nginx)
+     * receives HTTPS requests. If set to {@code true}, the redirect URL's protocol will be changed to HTTPS.
+     * This setting is typically injected into the current {@code Activity} via an Aspect configuration,
+     * for example:
+     * <pre>
+     *     &lt;aspect id="webTransletSettings"&gt;
+     *         &lt;joinpoint&gt;
+     *             pointcut: {
+     *                 +: /**
+     *             }
+     *         &lt;/joinpoint&gt;
+     *         &lt;settings&gt;
+     *             &lt;setting name="characterEncoding" value="utf-8"/&gt;
+     *             &lt;setting name="viewDispatcher" value="jspViewDispatcher"/&gt;
+     *             &lt;setting name="proxyProtocolAware" value="true"/&gt;
+     *         &lt;/settings&gt;
+     *     &lt;/aspect&gt;
+     * </pre>
+     */
+    public static final String PROXY_PROTOCOL_AWARE_SETTING_NAME = "proxyProtocolAware";
+
     private static final String SCHEME_DELIMITER = "://";
 
     /**

@@ -18,6 +18,8 @@ package com.aspectran.web.support.util;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.RedirectTarget;
+import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -25,17 +27,17 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.adapter.WebRequestAdapter;
+import com.aspectran.web.support.http.Cookie;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.MediaType;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,48 +69,16 @@ public class WebUtils {
     }
 
     /**
-     * Extracts the remote client IP address from the servlet request.
-     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
-     * falling back to the remote address of the underlying servlet request.
-     * @param request the current servlet request
-     * @return the remote IP address
-     */
-    public static String getRemoteAddr(@NonNull HttpServletRequest request) {
-        String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
-        if (StringUtils.hasLength(remoteAddr)) {
-            if (remoteAddr.contains(",")) {
-                remoteAddr = StringUtils.tokenize(remoteAddr, ",", true)[0];
-            }
-        } else {
-            remoteAddr = request.getRemoteAddr();
-        }
-        return remoteAddr;
-    }
-
-    /**
-     * Extracts the remote client IP address from the translet.
-     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
-     * falling back to the remote address of the underlying servlet request.
-     * @param translet the current translet
-     * @return the remote IP address
-     */
-    public static String getRemoteAddr(@NonNull Translet translet) {
-        Assert.notNull(translet, "Translet must not be null");
-        return getRemoteAddr((HttpServletRequest)translet.getRequestAdaptee());
-    }
-
-    /**
-     * Retrieve the first cookie with the given name. Note that multiple
-     * cookies can have the same name but different paths or domains.
-     * @param request current servlet request
-     * @param cookieName cookie name
-     * @return the first cookie with the given name, or {@code null} if none is found
+     * Retrieves the first cookie with the given name from the request adapter.
+     * @param requestAdapter the request adapter
+     * @param cookieName the cookie name
+     * @return the {@link Cookie}, or {@code null} if not found
      */
     @Nullable
-    public static Cookie getCookie(HttpServletRequest request, String cookieName) {
-        Assert.notNull(request, "Request must not be null");
+    public static Cookie getCookie(@NonNull RequestAdapter requestAdapter, @NonNull String cookieName) {
+        Assert.notNull(requestAdapter, "RequestAdapter must not be null");
         Assert.hasLength(cookieName, "Cookie name must not be null or empty");
-        Cookie[] cookies = request.getCookies();
+        Cookie[] cookies = getCookies(requestAdapter);
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookieName.equals(cookie.getName())) {
@@ -120,18 +90,64 @@ public class WebUtils {
     }
 
     /**
-     * Retrieve the first cookie with the given name. Note that multiple
-     * cookies can have the same name but different paths or domains.
-     * @param translet current translet
-     * @param cookieName cookie name
-     * @return the first cookie with the given name, or {@code null} if none is found
+     * Retrieves the first cookie with the given name from the translet.
+     * @param translet the current translet
+     * @param cookieName the cookie name
+     * @return the {@link Cookie}, or {@code null} if not found
      */
     @Nullable
-    public static Cookie getCookie(Translet translet, String cookieName) {
+    public static Cookie getCookie(@NonNull Translet translet, @NonNull String cookieName) {
         Assert.notNull(translet, "Translet must not be null");
-        Assert.hasLength(cookieName, "Cookie name must not be null or empty");
-        HttpServletRequest request = translet.getRequestAdaptee();
-        return getCookie(request, cookieName);
+        return getCookie(translet.getRequestAdapter(), cookieName);
+    }
+
+    /**
+     * Retrieves all cookies from the request adapter by parsing the {@code Cookie} header.
+     * @param requestAdapter the request adapter
+     * @return an array of {@link Cookie} objects, or {@code null} if none sent
+     */
+    public static Cookie @Nullable [] getCookies(@NonNull RequestAdapter requestAdapter) {
+        Assert.notNull(requestAdapter, "RequestAdapter must not be null");
+        List<String> cookieHeaders = requestAdapter.getHeaderValues(HttpHeaders.COOKIE);
+        if (cookieHeaders == null || cookieHeaders.isEmpty()) {
+            return null;
+        }
+        List<Cookie> cookies = new ArrayList<>();
+        for (String header : cookieHeaders) {
+            parseCookies(header, cookies);
+        }
+        return (!cookies.isEmpty() ? cookies.toArray(new Cookie[0]) : null);
+    }
+
+    /**
+     * Retrieves all cookies from the translet by parsing the {@code Cookie} header.
+     * @param translet the current translet
+     * @return an array of {@link Cookie} objects, or {@code null} if none sent
+     */
+    @Nullable
+    public static Cookie[] getCookies(@NonNull Translet translet) {
+        Assert.notNull(translet, "Translet must not be null");
+        return getCookies(translet.getRequestAdapter());
+    }
+
+    private static void parseCookies(@Nullable String cookieHeader, @NonNull List<Cookie> cookies) {
+        if (cookieHeader == null || cookieHeader.isEmpty()) {
+            return;
+        }
+        String[] pairs = StringUtils.split(cookieHeader, ";");
+        for (String pair : pairs) {
+            int eq = pair.indexOf('=');
+            if (eq != -1) {
+                String name = pair.substring(0, eq).trim();
+                String value = pair.substring(eq + 1).trim();
+                if (value.startsWith("\"") && value.endsWith("\"") && value.length() > 1) {
+                    value = value.substring(1, value.length() - 1);
+                }
+                if (!name.isEmpty()) {
+                    cookies.add(new Cookie(name, value));
+                }
+            }
+        }
     }
 
     /**
@@ -228,13 +244,13 @@ public class WebUtils {
      * <p>This method inspects the {@code X-Forwarded-Path} header. If the header
      * is present, it is returned (with any trailing slash removed). This is useful
      * when an application is running behind a reverse proxy that alters the context path.
-     * @param request the current servlet request
+     * @param requestAdapter the current request adapter
      * @return the reverse context path from the header, or {@code null} if the header is not found
      * @see HttpHeaders#X_FORWARDED_PATH
      */
     @Nullable
-    public static String getReverseContextPath(@NonNull HttpServletRequest request) {
-        String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
+    public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter) {
+        String forwardedPath = requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH);
         if (forwardedPath != null) {
             if (forwardedPath.equals("/")) {
                 return StringUtils.EMPTY;
@@ -251,15 +267,15 @@ public class WebUtils {
     /**
      * Determines the context path to be used for reverse-proxy scenarios,
      * falling back to a default context path.
-     * @param request the current servlet request
+     * @param requestAdapter the current request adapter
      * @param defaultContextPath the default context path to return if the
      *      {@code X-Forwarded-Path} header is not present
      * @return the reverse context path from the header, or the default context path
-     * @see #getReverseContextPath(HttpServletRequest)
+     * @see #getReverseContextPath(RequestAdapter)
      */
     @Nullable
-    public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
-        String reverseContextPath = getReverseContextPath(request);
+    public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter, String defaultContextPath) {
+        String reverseContextPath = getReverseContextPath(requestAdapter);
         if (reverseContextPath != null) {
             return reverseContextPath;
         } else {
@@ -365,3 +381,5 @@ public class WebUtils {
     }
 
 }
+
+

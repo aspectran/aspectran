@@ -16,15 +16,14 @@
 package com.aspectran.web.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
-import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -54,7 +53,7 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
         if (supportedLocales == null || supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) {
             return requestLocale;
         }
-        Locale supportedLocale = findSupportedLocale(translet.getResponseAdapter().getAdaptee(), supportedLocales);
+        Locale supportedLocale = findSupportedLocale(translet.getRequestAdapter(), supportedLocales);
         if (supportedLocale != null) {
             return supportedLocale;
         }
@@ -67,28 +66,20 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Nullable
-    private Locale findSupportedLocale(@NonNull HttpServletRequest request, List<Locale> supportedLocales) {
-        Enumeration<Locale> requestLocales = request.getLocales();
-        Locale languageMatch = null;
-        while (requestLocales.hasMoreElements()) {
-            Locale locale = requestLocales.nextElement();
-            if (supportedLocales.contains(locale)) {
-                if (languageMatch == null || languageMatch.getLanguage().equals(locale.getLanguage())) {
-                    // Full match: language + country, possibly narrowed from earlier language-only match
-                    return locale;
+    private Locale findSupportedLocale(@NonNull RequestAdapter requestAdapter, List<Locale> supportedLocales) {
+        String header = requestAdapter.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
+        if (StringUtils.hasText(header)) {
+            try {
+                List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(header);
+                Locale match = Locale.lookup(languageRanges, supportedLocales);
+                if (match != null) {
+                    return match;
                 }
-            } else if (languageMatch == null) {
-                // Let's try to find a language-only match as a fallback
-                for (Locale supportedLocale : supportedLocales) {
-                    if (!StringUtils.hasLength(supportedLocale.getCountry()) &&
-                            supportedLocale.getLanguage().equals(locale.getLanguage())) {
-                        languageMatch = supportedLocale;
-                        break;
-                    }
-                }
+            } catch (IllegalArgumentException e) {
+                // ignore parse exception
             }
         }
-        return languageMatch;
+        return null;
     }
 
     @Override

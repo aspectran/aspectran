@@ -37,7 +37,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * An adapter that wraps a Netty {@link FullHttpRequest}, exposing it as a
@@ -119,13 +118,7 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
 
     @Override
     public void preparse(WebRequestAdapter requestAdapter) {
-        if (requestAdapter == this) {
-            throw new IllegalStateException("Unable to replicate from self");
-        }
-        setAttributeMap(requestAdapter.getAttributeMap());
-        getParameterMap().putAll(requestAdapter.getParameterMap());
-        setMediaType(requestAdapter.getMediaType());
-        setLocale(requestAdapter.getLocale());
+        super.preparse(requestAdapter);
     }
 
     public String getRemoteAddr() {
@@ -134,6 +127,32 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
             if (remoteAddress instanceof InetSocketAddress inetAddress) {
                 return inetAddress.getAddress().getHostAddress();
             }
+        }
+        return null;
+    }
+
+    @Override
+    public String getScheme() {
+        if (ctx != null && ctx.pipeline().get(io.netty.handler.ssl.SslHandler.class) != null) {
+            return "https";
+        }
+        return super.getScheme();
+    }
+
+    @Override
+    public String getRequestURI() {
+        FullHttpRequest request = getHttpRequest();
+        if (request != null) {
+            return new QueryStringDecoder(request.uri()).rawPath();
+        }
+        return null;
+    }
+
+    @Override
+    public String getQueryString() {
+        FullHttpRequest request = getHttpRequest();
+        if (request != null) {
+            return new QueryStringDecoder(request.uri()).rawQuery();
         }
         return null;
     }
