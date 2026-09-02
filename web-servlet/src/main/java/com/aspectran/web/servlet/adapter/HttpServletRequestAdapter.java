@@ -18,9 +18,9 @@ package com.aspectran.web.servlet.adapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.web.servlet.activity.RequestAttributeMap;
 import com.aspectran.web.adapter.AbstractWebRequestAdapter;
 import com.aspectran.web.adapter.WebRequestAdapter;
+import com.aspectran.web.servlet.activity.RequestAttributeMap;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -54,6 +54,14 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
      */
     public HttpServletRequestAdapter(MethodType requestMethod, HttpServletRequest request) {
         super(requestMethod, request);
+    }
+
+    /**
+     * Returns the underlying {@link HttpServletRequest}.
+     * @return the native servlet request
+     */
+    private HttpServletRequest getHttpServletRequest() {
+        return getAdaptee();
     }
 
     /**
@@ -117,12 +125,34 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
         return getHttpServletRequest().getUserPrincipal();
     }
 
-    /**
-     * Returns the underlying {@link HttpServletRequest}.
-     * @return the native servlet request
-     */
-    private HttpServletRequest getHttpServletRequest() {
-        return getAdaptee();
+    @Override
+    public String getScheme() {
+        return getHttpServletRequest().getScheme();
+    }
+
+    @Override
+    public String getServerName() {
+        return getHttpServletRequest().getServerName();
+    }
+
+    @Override
+    public int getServerPort() {
+        return getHttpServletRequest().getServerPort();
+    }
+
+    @Override
+    public String getContextPath() {
+        return getHttpServletRequest().getContextPath();
+    }
+
+    @Override
+    public String getRequestURI() {
+        return getHttpServletRequest().getRequestURI();
+    }
+
+    @Override
+    public String getQueryString() {
+        return getHttpServletRequest().getQueryString();
     }
 
     /**
@@ -159,46 +189,6 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
         }
 
         setLocale(request.getLocale());
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws IllegalStateException if attempting to replicate from itself
-     */
-    @Override
-    public void preparse(WebRequestAdapter requestAdapter) {
-        super.preparse(requestAdapter);
-    }
-
-
-    @Override
-    public String getScheme() {
-        return getHttpServletRequest().getScheme();
-    }
-
-    @Override
-    public String getServerName() {
-        return getHttpServletRequest().getServerName();
-    }
-
-    @Override
-    public int getServerPort() {
-        return getHttpServletRequest().getServerPort();
-    }
-
-    @Override
-    public String getRequestURI() {
-        return getHttpServletRequest().getRequestURI();
-    }
-
-    @Override
-    public String getQueryString() {
-        return getHttpServletRequest().getQueryString();
-    }
-
-    @Override
-    public String getContextPath() {
-        return getHttpServletRequest().getContextPath();
     }
 
 }

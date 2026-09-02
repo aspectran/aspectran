@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.ssl.SslHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,11 +49,18 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
 
     private final ChannelHandlerContext ctx;
 
+    private final String contextPath;
+
     private boolean headersObtained;
 
-    public NettyRequestAdapter(MethodType requestMethod, ChannelHandlerContext ctx, FullHttpRequest request) {
+    public NettyRequestAdapter(
+            MethodType requestMethod,
+            FullHttpRequest request,
+            ChannelHandlerContext ctx,
+            String contextPath) {
         super(requestMethod, request);
         this.ctx = ctx;
+        this.contextPath = (contextPath != null ? contextPath : StringUtils.EMPTY);
     }
 
     public FullHttpRequest getHttpRequest() {
@@ -81,6 +89,47 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
     @Override
     public InputStream getInputStream() throws IOException {
         return new ByteBufInputStream(getHttpRequest().content().duplicate());
+    }
+
+    @Override
+    public String getScheme() {
+        if (ctx != null && ctx.pipeline().get(SslHandler.class) != null) {
+            return "https";
+        }
+        return super.getScheme();
+    }
+
+    @Override
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    @Override
+    public String getRequestURI() {
+        FullHttpRequest request = getHttpRequest();
+        if (request != null) {
+            return new QueryStringDecoder(request.uri()).rawPath();
+        }
+        return null;
+    }
+
+    @Override
+    public String getQueryString() {
+        FullHttpRequest request = getHttpRequest();
+        if (request != null) {
+            return new QueryStringDecoder(request.uri()).rawQuery();
+        }
+        return null;
+    }
+
+    public String getRemoteAddr() {
+        if (ctx != null && ctx.channel() != null) {
+            SocketAddress remoteAddress = ctx.channel().remoteAddress();
+            if (remoteAddress instanceof InetSocketAddress inetAddress) {
+                return inetAddress.getAddress().getHostAddress();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -114,47 +163,6 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
                 // ignore
             }
         }
-    }
-
-    @Override
-    public void preparse(WebRequestAdapter requestAdapter) {
-        super.preparse(requestAdapter);
-    }
-
-    public String getRemoteAddr() {
-        if (ctx != null && ctx.channel() != null) {
-            SocketAddress remoteAddress = ctx.channel().remoteAddress();
-            if (remoteAddress instanceof InetSocketAddress inetAddress) {
-                return inetAddress.getAddress().getHostAddress();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public String getScheme() {
-        if (ctx != null && ctx.pipeline().get(io.netty.handler.ssl.SslHandler.class) != null) {
-            return "https";
-        }
-        return super.getScheme();
-    }
-
-    @Override
-    public String getRequestURI() {
-        FullHttpRequest request = getHttpRequest();
-        if (request != null) {
-            return new QueryStringDecoder(request.uri()).rawPath();
-        }
-        return null;
-    }
-
-    @Override
-    public String getQueryString() {
-        FullHttpRequest request = getHttpRequest();
-        if (request != null) {
-            return new QueryStringDecoder(request.uri()).rawQuery();
-        }
-        return null;
     }
 
 }
