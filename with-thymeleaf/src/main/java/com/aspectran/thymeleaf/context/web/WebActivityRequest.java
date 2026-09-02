@@ -15,13 +15,12 @@
  */
 package com.aspectran.thymeleaf.context.web;
 
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.thymeleaf.context.common.AbstractActivityRequest;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.web.adapter.WebRequestAdapter;
+import com.aspectran.web.support.http.Cookie;
 import com.aspectran.web.support.util.WebUtils;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
@@ -33,44 +32,46 @@ import java.util.Set;
 
 /**
  * A Thymeleaf {@link org.thymeleaf.web.IWebRequest} implementation for Aspectran's
- * servlet-based web environment.
+ * web environment.
  *
- * <p>This class extends {@link AbstractActivityRequest} to handle servlet-specific
- * request details.</p>
+ * <p>This class extends {@link AbstractActivityRequest} and wraps a {@link WebRequestAdapter}.</p>
  *
  * <p>Created: 2024-11-27</p>
  */
 public class WebActivityRequest extends AbstractActivityRequest {
 
+    private final WebRequestAdapter webRequestAdapter;
+
     private final String contextPath;
 
     /**
      * Instantiates a new WebActivityRequest.
-     * @param requestAdapter the request adapter
+     * @param requestAdapter the web request adapter
      */
-    WebActivityRequest(@NonNull RequestAdapter requestAdapter) {
+    public WebActivityRequest(@NonNull WebRequestAdapter requestAdapter) {
         super(requestAdapter);
-        this.contextPath = WebUtils.getReverseContextPath(getHttpServletRequest(), getHttpServletRequest().getContextPath());
+        this.webRequestAdapter = requestAdapter;
+        this.contextPath = WebUtils.getReverseContextPath(requestAdapter, requestAdapter.getContextPath());
     }
 
     @Override
     public String getMethod() {
-        return getHttpServletRequest().getMethod();
+        return webRequestAdapter.getRequestMethod().name();
     }
 
     @Override
     public String getScheme() {
-        return getHttpServletRequest().getScheme();
+        return webRequestAdapter.getScheme();
     }
 
     @Override
     public String getServerName() {
-        return getHttpServletRequest().getServerName();
+        return webRequestAdapter.getServerName();
     }
 
     @Override
     public Integer getServerPort() {
-        return getHttpServletRequest().getServerPort();
+        return webRequestAdapter.getServerPort();
     }
 
     @Override
@@ -79,13 +80,13 @@ public class WebActivityRequest extends AbstractActivityRequest {
         if (contextPath != null && contextPath.length() == 1 && contextPath.charAt(0) == '/') {
             return StringUtils.EMPTY;
         } else {
-            return contextPath;
+            return (contextPath != null ? contextPath : StringUtils.EMPTY);
         }
     }
 
     @Override
     public String getPathWithinApplication() {
-        String requestURI = getHttpServletRequest().getRequestURI();
+        String requestURI = webRequestAdapter.getRequestURI();
         if (requestURI == null) {
             return null;
         }
@@ -98,13 +99,13 @@ public class WebActivityRequest extends AbstractActivityRequest {
 
     @Override
     public String getQueryString() {
-        return getHttpServletRequest().getQueryString();
+        return webRequestAdapter.getQueryString();
     }
 
     @Override
     public boolean containsCookie(String name) {
         Assert.notNull(name, "name cannot be null");
-        Cookie[] cookies = getHttpServletRequest().getCookies();
+        Cookie[] cookies = WebUtils.getCookies(webRequestAdapter);
         if (cookies == null) {
             return false;
         }
@@ -118,13 +119,13 @@ public class WebActivityRequest extends AbstractActivityRequest {
 
     @Override
     public int getCookieCount() {
-        Cookie[] cookies = getHttpServletRequest().getCookies();
+        Cookie[] cookies = WebUtils.getCookies(webRequestAdapter);
         return (cookies == null ? 0 : cookies.length);
     }
 
     @Override
     public Set<String> getAllCookieNames() {
-        Cookie[] cookies = getHttpServletRequest().getCookies();
+        Cookie[] cookies = WebUtils.getCookies(webRequestAdapter);
         if (cookies == null) {
             return Collections.emptySet();
         }
@@ -137,11 +138,11 @@ public class WebActivityRequest extends AbstractActivityRequest {
 
     @Override
     public Map<String, String[]> getCookieMap() {
-        Cookie[] cookies = getHttpServletRequest().getCookies();
+        Cookie[] cookies = WebUtils.getCookies(webRequestAdapter);
         if (cookies == null) {
             return Collections.emptyMap();
         }
-        Map<String,String[]> cookieMap = new LinkedHashMap<>(3);
+        Map<String, String[]> cookieMap = new LinkedHashMap<>(3);
         for (Cookie cookie : cookies) {
             String cookieName = cookie.getName();
             String cookieValue = cookie.getValue();
@@ -160,7 +161,7 @@ public class WebActivityRequest extends AbstractActivityRequest {
     @Override
     public String[] getCookieValues(String name) {
         Assert.notNull(name, "Name cannot be null");
-        Cookie[] cookies = getHttpServletRequest().getCookies();
+        Cookie[] cookies = WebUtils.getCookies(webRequestAdapter);
         if (cookies == null) {
             return null;
         }
@@ -179,10 +180,6 @@ public class WebActivityRequest extends AbstractActivityRequest {
             }
         }
         return cookieValues;
-    }
-
-    private HttpServletRequest getHttpServletRequest() {
-        return getRequestAdapter().getAdaptee();
     }
 
 }

@@ -26,10 +26,11 @@ import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.PathUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.web.service.DefaultWebService;
-import com.aspectran.web.service.DefaultWebServiceBuilder;
+import com.aspectran.web.servlet.service.DefaultServletWebService;
+import com.aspectran.web.servlet.service.DefaultServletWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.service.WebServiceClassLoader;
+import com.aspectran.web.servlet.service.ServletWebService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
@@ -184,7 +185,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 manager.deploy();
 
                 ServletContext servletContext = manager.getDeployment().getServletContext();
-                DefaultWebService rootWebService = createRootWebService(servletContext);
+                DefaultServletWebService rootWebService = createRootWebService(servletContext);
                 if (towServletContext.getTowSessionManager() != null) {
                     towServletContext.getTowSessionManager().start(); // for lazy stop
                 } else {
@@ -206,7 +207,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 SessionManager sessionManager = deployment.getSessionManager();
                 ServletContext servletContext = deployment.getServletContext();
 
-                DefaultWebService webService = WebService.findWebService(servletContext);
+                DefaultServletWebService webService = ServletWebService.findWebService(servletContext);
                 if (webService.isActive()) {
                     webService.pause();
                 }
@@ -233,9 +234,9 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
      * @throws Exception if the service fails to start
      */
     @NonNull
-    private DefaultWebService createRootWebService(ServletContext servletContext) throws Exception {
+    private DefaultServletWebService createRootWebService(ServletContext servletContext) throws Exception {
         CoreService masterService = getActivityContext().getMasterService();
-        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService);
+        DefaultServletWebService rootWebService = DefaultServletWebServiceBuilder.build(servletContext, masterService);
         if (rootWebService.isOrphan()) {
             rootWebService.start();
         }
@@ -246,7 +247,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
      * Stops and withdraws a {@link WebService}.
      * @param webService the web service to dispose of
      */
-    private void disposeRootWebService(@NonNull DefaultWebService webService) {
+    private void disposeRootWebService(@NonNull DefaultServletWebService webService) {
         if (webService.isActive()) {
             webService.stop();
         }

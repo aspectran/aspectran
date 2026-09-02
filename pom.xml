@@ -93,6 +93,7 @@
         <module>test</module>
         <module>utils</module>
         <module>web</module>
+        <module>web-servlet</module>
         <module>with-freemarker</module>
         <module>with-jetty</module>
         <module>with-jpa</module>

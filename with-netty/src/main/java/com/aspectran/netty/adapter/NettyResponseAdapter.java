@@ -42,18 +42,16 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static com.aspectran.web.adapter.HttpServletResponseAdapter.PROXY_PROTOCOL_AWARE_SETTING_NAME;
+import static com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol.PROXY_PROTOCOL_AWARE_SETTING_NAME;
 
 /**
  * An adapter that wraps Netty's response mechanism, exposing it as a

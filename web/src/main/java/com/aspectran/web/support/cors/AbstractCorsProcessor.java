@@ -15,10 +15,10 @@
  */
 package com.aspectran.web.support.cors;
 
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
-import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Collections;
@@ -447,21 +447,21 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     /**
      * Returns {@code true} if the request is a valid CORS one.
-     * @param request the http request
+     * @param request the request adapter
      * @return {@code true} if the request is a valid CORS one, else {@code false}
      */
-    protected boolean isCorsRequest(@NonNull HttpServletRequest request) {
+    protected boolean isCorsRequest(@NonNull RequestAdapter request) {
         return (request.getHeader(HttpHeaders.ORIGIN) != null);
     }
 
     /**
      * Returns {@code true} if the request is a valid CORS pre-flight one.
-     * @param request the http request
+     * @param request the request adapter
      * @return {@code true} if the request is a valid CORS pre-flight one, else {@code false}
      */
-    protected boolean isPreFlightRequest(HttpServletRequest request) {
+    protected boolean isPreFlightRequest(RequestAdapter request) {
         return (isCorsRequest(request)
-                && MethodType.OPTIONS.name().equals(request.getMethod())
+                && MethodType.OPTIONS.equals(request.getRequestMethod())
                 && request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD) != null);
     }
 

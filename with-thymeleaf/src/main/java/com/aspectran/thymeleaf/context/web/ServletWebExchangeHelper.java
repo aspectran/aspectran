@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.thymeleaf.context.web;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import org.thymeleaf.web.servlet.IServletWebApplication;
+
+/**
+ * Internal helper to create {@link ServletWebActivityApplication} in a Servlet environment,
+ * isolated in its own class so that {@link WebActivityExchange} does not reference
+ * {@link HttpServletRequest} or {@link ServletContext} directly.
+ *
+ * <p>Created: 2026-09-02</p>
+ */
+final class ServletWebExchangeHelper {
+
+    private ServletWebExchangeHelper() {
+    }
+
+    static boolean isHttpServletRequest(Object adaptee) {
+        return (adaptee instanceof HttpServletRequest);
+    }
+
+    static IServletWebApplication createApplication(Object adaptee) {
+        ServletContext servletContext = ((HttpServletRequest) adaptee).getServletContext();
+        return new ServletWebActivityApplication(servletContext);
+    }
+
+}

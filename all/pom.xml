@@ -92,6 +92,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-web-servlet</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-freemarker</artifactId>
             <version>${project.version}</version>
         </dependency>

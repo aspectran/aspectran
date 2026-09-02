@@ -16,14 +16,13 @@
 package com.aspectran.web.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.LocaleUtils;
+import com.aspectran.web.support.http.Cookie;
 import com.aspectran.web.support.util.CookieGenerator;
 import com.aspectran.web.support.util.WebUtils;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -90,7 +89,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     /**
      * Use the given domain for cookies.
      * The cookie is only visible to servers in this domain.
-     * @see jakarta.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(String cookieDomain) {
         getLocaleCookieGenerator().setCookieDomain(cookieDomain);
@@ -100,7 +98,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     /**
      * Use the given path for cookies.
      * The cookie is only visible to URLs in this path and below.
-     * @see jakarta.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
         getLocaleCookieGenerator().setCookiePath(cookiePath);
@@ -112,7 +109,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Useful special value: -1 ... not persistent, deleted when client shuts down.
      * <p>Default is no specific maximum age at all, using the Servlet container's
      * default.</p>
-     * @see jakarta.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(Integer cookieMaxAge) {
         getLocaleCookieGenerator().setCookieMaxAge(cookieMaxAge);
@@ -124,7 +120,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * such as HTTPS (SSL). This is an indication to the receiving browser,
      * not processed by the HTTP server itself.
      * <p>Default is "false".</p>
-     * @see jakarta.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
         getLocaleCookieGenerator().setCookieSecure(cookieSecure);
@@ -134,7 +129,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     /**
      * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      * <p>Default is "false".</p>
-     * @see jakarta.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
         getLocaleCookieGenerator().setCookieHttpOnly(cookieHttpOnly);
@@ -208,29 +202,31 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     @Override
     public void setLocale(@NonNull Translet translet, Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
-        HttpServletResponse response = translet.getResponseAdaptee();
-        getLocaleCookieGenerator().addCookie(response, (locale != null ? toLocaleValue(locale) : ""));
+        getLocaleCookieGenerator().addCookie(translet.getResponseAdapter(), (locale != null ? toLocaleValue(locale) : ""));
     }
 
     @Override
     public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
-        HttpServletResponse response = translet.getResponseAdaptee();
-        getTimeZoneCookieGenerator().addCookie(response, (timeZone != null ? timeZone.getID() : ""));
+        getTimeZoneCookieGenerator().addCookie(translet.getResponseAdapter(), (timeZone != null ? timeZone.getID() : ""));
     }
 
+    @Nullable
     private Locale parseLocaleCookie(@NonNull Translet translet) {
-        Locale locale = null;
         String cookieName = getLocaleCookieGenerator().getCookieName();
-        HttpServletRequest request = translet.getRequestAdaptee();
-        Cookie cookie = WebUtils.getCookie(request, cookieName);
+        if (cookieName == null) {
+            return null;
+        }
+        RequestAdapter requestAdapter = translet.getRequestAdapter();
+        Cookie cookie = WebUtils.getCookie(requestAdapter, cookieName);
+        Locale locale = null;
         if (cookie != null) {
             String value = cookie.getValue();
             try {
                 locale = parseLocaleValue(value);
             } catch (IllegalArgumentException ex) {
                 if (isRejectInvalidCookies() &&
-                        request.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
+                        requestAdapter.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
                     throw new IllegalStateException("Encountered invalid locale cookie '" +
                             cookieName + "': [" + value + "] due to: " + ex.getMessage());
                 } else {
@@ -248,18 +244,22 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
         return locale;
     }
 
+    @Nullable
     private TimeZone parseTimeZoneCookie(@NonNull Translet translet) {
-        TimeZone timeZone = null;
         String cookieName = getTimeZoneCookieGenerator().getCookieName();
-        HttpServletRequest request = translet.getRequestAdaptee();
-        Cookie cookie = WebUtils.getCookie(request, cookieName);
+        if (cookieName == null) {
+            return null;
+        }
+        RequestAdapter requestAdapter = translet.getRequestAdapter();
+        Cookie cookie = WebUtils.getCookie(requestAdapter, cookieName);
+        TimeZone timeZone = null;
         if (cookie != null) {
             String value = cookie.getValue();
             try {
                 timeZone = LocaleUtils.parseTimeZoneString(value);
             } catch (IllegalArgumentException ex) {
                 if (isRejectInvalidCookies() &&
-                        request.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
+                        requestAdapter.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
                     throw new IllegalStateException("Encountered invalid time zone cookie '" +
                             cookieName + "': [" + value + "] due to: " + ex.getMessage());
                 } else {
