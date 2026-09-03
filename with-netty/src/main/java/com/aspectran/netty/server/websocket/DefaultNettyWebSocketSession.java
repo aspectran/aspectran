@@ -32,6 +32,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.net.SocketAddress;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -56,7 +57,17 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
 
     private final WebSocketServerHandshaker handshaker;
 
+    private final Map<String, String> pathParameters;
+
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
+
+    private final NettyWebSocketConfig webSocketConfig;
+
+    private volatile int maxTextMessageBufferSize;
+
+    private volatile int maxBinaryMessageBufferSize;
+
+    private volatile long maxIdleTimeout;
 
     public DefaultNettyWebSocketSession(
             @NonNull Channel channel,
@@ -64,6 +75,27 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
             @NonNull String path,
             @NonNull HttpHeaders handshakeHeaders,
             @Nullable WebSocketServerHandshaker handshaker) {
+        this(channel, uri, path, handshakeHeaders, handshaker, null, null);
+    }
+
+    public DefaultNettyWebSocketSession(
+            @NonNull Channel channel,
+            @NonNull String uri,
+            @NonNull String path,
+            @NonNull HttpHeaders handshakeHeaders,
+            @Nullable WebSocketServerHandshaker handshaker,
+            @Nullable Map<String, String> pathParameters) {
+        this(channel, uri, path, handshakeHeaders, handshaker, pathParameters, null);
+    }
+
+    public DefaultNettyWebSocketSession(
+            @NonNull Channel channel,
+            @NonNull String uri,
+            @NonNull String path,
+            @NonNull HttpHeaders handshakeHeaders,
+            @Nullable WebSocketServerHandshaker handshaker,
+            @Nullable Map<String, String> pathParameters,
+            @Nullable NettyWebSocketConfig webSocketConfig) {
         Assert.notNull(channel, "channel must not be null");
         Assert.notNull(uri, "uri must not be null");
         Assert.notNull(path, "path must not be null");
@@ -74,6 +106,19 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
         this.path = path;
         this.handshakeHeaders = handshakeHeaders;
         this.handshaker = handshaker;
+        this.pathParameters = (pathParameters != null && !pathParameters.isEmpty()
+                ? Collections.unmodifiableMap(pathParameters)
+                : Collections.emptyMap());
+        this.webSocketConfig = webSocketConfig;
+        if (webSocketConfig != null) {
+            this.maxTextMessageBufferSize = webSocketConfig.getMaxTextMessageBufferSize();
+            this.maxBinaryMessageBufferSize = webSocketConfig.getMaxBinaryMessageBufferSize();
+            this.maxIdleTimeout = webSocketConfig.getMaxIdleTimeout();
+        } else {
+            this.maxTextMessageBufferSize = 65536;
+            this.maxBinaryMessageBufferSize = 65536;
+            this.maxIdleTimeout = 0;
+        }
     }
 
     @Override
@@ -110,6 +155,12 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
     @NonNull
     public String getPath() {
         return path;
+    }
+
+    @Override
+    @NonNull
+    public Map<String, String> getPathParameters() {
+        return pathParameters;
     }
 
     @Override
@@ -211,6 +262,42 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
     @Override
     public String toString() {
         return "NettyWebSocketSession[" + id + ", uri=" + uri + "]";
+    }
+
+    @Override
+    @Nullable
+    public NettyWebSocketConfig getWebSocketConfig() {
+        return webSocketConfig;
+    }
+
+    @Override
+    public long getMaxIdleTimeout() {
+        return maxIdleTimeout;
+    }
+
+    @Override
+    public void setMaxIdleTimeout(long milliseconds) {
+        this.maxIdleTimeout = milliseconds;
+    }
+
+    @Override
+    public int getMaxTextMessageBufferSize() {
+        return maxTextMessageBufferSize;
+    }
+
+    @Override
+    public void setMaxTextMessageBufferSize(int length) {
+        this.maxTextMessageBufferSize = length;
+    }
+
+    @Override
+    public int getMaxBinaryMessageBufferSize() {
+        return maxBinaryMessageBufferSize;
+    }
+
+    @Override
+    public void setMaxBinaryMessageBufferSize(int length) {
+        this.maxBinaryMessageBufferSize = length;
     }
 
 }

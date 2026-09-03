@@ -23,8 +23,7 @@ import com.aspectran.netty.server.websocket.DefaultNettyWebSocketSession;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.server.websocket.NettyWebSocketHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
-import com.aspectran.netty.service.DefaultNettyService;
-import com.aspectran.netty.service.NettyService;
+import com.aspectran.netty.server.websocket.WebSocketEndpointMatch;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.LoggingGroupHelper;
 import io.netty.channel.ChannelFutureListener;
@@ -71,6 +70,12 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpHandler.class);
 
+    public static final String WS_IDLE_STATE_HANDLER_NAME = "wsIdleState";
+
+    public static final String WS_FRAME_AGGREGATOR_HANDLER_NAME = "wsFrameAggregator";
+
+    public static final String WS_HANDLER_NAME = "wsHandler";
+
     private final NettyContextRouter contextRouter;
 
     private final ExecutorService requestExecutor;
@@ -80,33 +85,6 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
     private final NettyWebSocketConfig webSocketConfig;
 
     private final boolean proxyAddressForwarding;
-
-    public NettyHttpHandler(@NonNull NettyService nettyService, ExecutorService requestExecutor) {
-        this(nettyService, requestExecutor, null, null);
-    }
-
-    public NettyHttpHandler(
-            @NonNull NettyService nettyService,
-            ExecutorService requestExecutor,
-            PathBasedLoggingGroupHandler loggingGroupHandler) {
-        this(nettyService, requestExecutor, loggingGroupHandler, null);
-    }
-
-    public NettyHttpHandler(
-            @NonNull NettyService nettyService,
-            ExecutorService requestExecutor,
-            PathBasedLoggingGroupHandler loggingGroupHandler,
-            @Nullable NettyWebSocketConfig webSocketConfig) {
-        super(false);
-        this.contextRouter = new NettyContextRouter();
-        if (nettyService instanceof DefaultNettyService defaultNettyService) {
-            this.contextRouter.addContext(new NettyContext(nettyService.getContextPath(), defaultNettyService));
-        }
-        this.requestExecutor = requestExecutor;
-        this.loggingGroupHandler = loggingGroupHandler;
-        this.webSocketConfig = webSocketConfig;
-        this.proxyAddressForwarding = nettyService.isProxyAddressForwarding();
-    }
 
     public NettyHttpHandler(@NonNull NettyContextRouter contextRouter, ExecutorService requestExecutor) {
         this(contextRouter, requestExecutor, null, null);
@@ -166,18 +144,21 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                 return;
             }
 
-            if (isWebSocketUpgrade(request)) {
-                String contextPath = context.getContextPath();
-                String relativePath = path;
-                if (!contextPath.isEmpty() && path.startsWith(contextPath)) {
+            String contextPath = context.getContextPath();
+            String relativePath = path;
+            if (StringUtils.hasLength(contextPath)) {
+                if (path.equals(contextPath) || path.startsWith(contextPath + "/")) {
                     relativePath = path.substring(contextPath.length());
                 }
-                if (relativePath.isEmpty()) {
-                    relativePath = "/";
-                }
-                NettyWebSocketListener endpoint = context.getWebSocketEndpoint(relativePath);
-                if (endpoint != null) {
-                    handleWebSocketHandshake(ctx, request, relativePath, endpoint, context);
+            }
+            if (relativePath.isEmpty()) {
+                relativePath = "/";
+            }
+
+            if (isWebSocketUpgrade(request)) {
+                WebSocketEndpointMatch match = context.matchWebSocketEndpoint(relativePath);
+                if (match != null) {
+                    handleWebSocketHandshake(ctx, request, relativePath, match, context);
                     return;
                 }
             }
@@ -187,7 +168,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                 return;
             }
 
-            if (context.getResourceHandler() != null && context.getResourceHandler().handle(ctx, request)) {
+            if (context.getResourceHandler() != null && context.getResourceHandler().handle(ctx, request, relativePath)) {
                 return;
             }
 
@@ -227,8 +208,9 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
             ChannelHandlerContext ctx,
             FullHttpRequest request,
             String path,
-            NettyWebSocketListener listener,
+            WebSocketEndpointMatch match,
             @Nullable NettyContext context) {
+        NettyWebSocketListener listener = match.getListener();
         String wsLocation = getWebSocketLocation(request, ctx);
         NettyWebSocketConfig effectiveConfig = (context != null && context.getWebSocketConfig() != null)
                 ? context.getWebSocketConfig()
@@ -250,46 +232,42 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
             if (future.isSuccess()) {
                 ctx.channel().eventLoop().execute(() -> {
                     DefaultNettyWebSocketSession session = new DefaultNettyWebSocketSession(
-                            ctx.channel(), request.uri(), path, request.headers(), handshaker);
+                            ctx.channel(), request.uri(), path, request.headers(), handshaker,
+                            match.getPathParameters(), effectiveConfig);
+
+                    String wsGroup = ChannelLoggingGroupHelper.get(ctx.channel());
+                    if (wsGroup != null) {
+                        LoggingGroupHelper.set(wsGroup);
+                    }
+                    try {
+                        listener.onOpen(session);
+                    } catch (Exception e) {
+                        logger.error("Error in WebSocket onOpen", e);
+                        session.close(1011, "Internal error");
+                        return;
+                    } finally {
+                        if (wsGroup != null) {
+                            LoggingGroupHelper.clear();
+                        }
+                    }
 
                     ChannelPipeline pipeline = ctx.pipeline();
-                    if (pipeline.get("wsHandler") == null) {
-                        if (pipeline.get("idleState") != null) {
-                            pipeline.remove("idleState");
+                    if (pipeline.get(WS_HANDLER_NAME) == null) {
+                        if (pipeline.get(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME) != null) {
+                            pipeline.remove(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME);
                         }
                         if (effectiveConfig != null && effectiveConfig.getMaxIdleTimeout() > 0) {
                             int idleSeconds = (int)Math.max(1, effectiveConfig.getMaxIdleTimeout() / 1000);
-                            pipeline.addBefore(ctx.name(), "wsIdleState", new IdleStateHandler(0, 0, idleSeconds));
+                            pipeline.addBefore(ctx.name(), WS_IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, 0, idleSeconds));
                         }
-                        pipeline.addBefore(ctx.name(), "wsFrameAggregator", new WebSocketFrameAggregator(maxMessageSize));
-                        pipeline.addBefore(ctx.name(), "wsHandler",
+                        pipeline.addBefore(ctx.name(), WS_FRAME_AGGREGATOR_HANDLER_NAME, new WebSocketFrameAggregator(maxMessageSize));
+                        pipeline.addBefore(ctx.name(), WS_HANDLER_NAME,
                                 new NettyWebSocketHandler(session, listener, requestExecutor, handshaker));
-                    }
-
-                    String wsGroup = ChannelLoggingGroupHelper.get(ctx.channel());
-                    Runnable openTask = () -> {
-                        if (wsGroup != null) {
-                            LoggingGroupHelper.set(wsGroup);
-                        }
-                        try {
-                            listener.onOpen(session);
-                        } catch (Exception e) {
-                            logger.error("Error in WebSocket onOpen", e);
-                            session.close(1011, "Internal error");
-                        } finally {
-                            if (wsGroup != null) {
-                                LoggingGroupHelper.clear();
-                            }
-                        }
-                    };
-                    if (requestExecutor != null) {
-                        requestExecutor.execute(openTask);
-                    } else {
-                        openTask.run();
                     }
                 });
             } else {
-                logger.warn("WebSocket handshake failed", future.cause());
+                logger.error("WebSocket handshake failed", future.cause());
+                ctx.close();
             }
         });
     }

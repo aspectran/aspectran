@@ -38,12 +38,12 @@ import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedStream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -121,6 +121,14 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
 
     @Override
     public boolean handle(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) throws Exception {
+        return handle(ctx, request, null);
+    }
+
+    @Override
+    public boolean handle(
+            ChannelHandlerContext ctx,
+            @NonNull FullHttpRequest request,
+            @Nullable String relativePath) throws Exception {
         if (!request.decoderResult().isSuccess()) {
             return false;
         }
@@ -130,11 +138,7 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
             return false;
         }
 
-        String uri = request.uri();
-        int queryIndex = uri.indexOf('?');
-        String path = (queryIndex != -1 ? uri.substring(0, queryIndex) : uri);
-        path = URLDecoder.decode(path, StandardCharsets.UTF_8);
-
+        String path = resolvePath(request, relativePath);
         if (getPathPatterns() != null && !getPathPatterns().matches(path)) {
             return false;
         }
@@ -143,32 +147,56 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
         if (sanitizedPath == null) {
             return false;
         }
+        if (File.separatorChar != '/') {
+            sanitizedPath = sanitizedPath.replace(File.separatorChar, '/');
+        }
         if (sanitizedPath.startsWith("/")) {
             sanitizedPath = sanitizedPath.substring(1);
         }
 
         ClassLoader cl = resolveClassLoader();
         String resourcePath = prefix + sanitizedPath;
-        URL resourceUrl = cl.getResource(resourcePath);
+        URL resourceUrl = null;
 
-        // Try index files if path represents a directory or ends with '/'
-        if (resourceUrl == null || resourcePath.endsWith("/")) {
+        if (resourcePath.endsWith("/")) {
             String[] indexFiles = getIndexFiles();
             if (indexFiles != null) {
-                String dirPath = (resourcePath.endsWith("/") ? resourcePath : resourcePath + "/");
                 for (String indexFile : indexFiles) {
-                    URL indexUrl = cl.getResource(dirPath + indexFile);
+                    URL indexUrl = cl.getResource(resourcePath + indexFile);
                     if (indexUrl != null) {
                         resourceUrl = indexUrl;
-                        resourcePath = dirPath + indexFile;
+                        resourcePath = resourcePath + indexFile;
                         break;
                     }
                 }
             }
-        }
-
-        if (resourceUrl == null) {
-            return false;
+            if (resourceUrl == null) {
+                return false;
+            }
+        } else {
+            resourceUrl = cl.getResource(resourcePath);
+            if (resourceUrl == null) {
+                return false;
+            }
+            if (isDirectory(resourceUrl)) {
+                URL indexUrl = null;
+                String[] indexFiles = getIndexFiles();
+                if (indexFiles != null) {
+                    String dirPath = resourcePath + "/";
+                    for (String indexFile : indexFiles) {
+                        URL url = cl.getResource(dirPath + indexFile);
+                        if (url != null) {
+                            indexUrl = url;
+                            resourcePath = dirPath + indexFile;
+                            break;
+                        }
+                    }
+                }
+                if (indexUrl == null) {
+                    return false;
+                }
+                resourceUrl = indexUrl;
+            }
         }
 
         URLConnection conn = resourceUrl.openConnection();
@@ -243,6 +271,20 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
             return activityContext.getClassLoader();
         }
         return ClassUtils.getDefaultClassLoader();
+    }
+
+    private boolean isDirectory(@NonNull URL url) {
+        if (url.getPath().endsWith("/")) {
+            return true;
+        }
+        if ("file".equals(url.getProtocol())) {
+            try {
+                return new File(url.toURI()).isDirectory();
+            } catch (Exception ignore) {
+                return false;
+            }
+        }
+        return false;
     }
 
 }

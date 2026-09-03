@@ -82,6 +82,8 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     private String[] indexFiles = DEFAULT_INDEX_FILES;
 
+    private String contextPath;
+
     protected NettyResourceHandler() {
         super(false);
         this.baseDir = null;
@@ -109,6 +111,14 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     public File getBaseDir() {
         return baseDir;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = (contextPath != null ? contextPath : "");
     }
 
     public void setPathPatterns(String[] includePatterns, String[] excludePatterns) {
@@ -147,6 +157,13 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     }
 
     public boolean handle(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) throws Exception {
+        return handle(ctx, request, null);
+    }
+
+    public boolean handle(
+            ChannelHandlerContext ctx,
+            @NonNull FullHttpRequest request,
+            @Nullable String relativePath) throws Exception {
         if (!request.decoderResult().isSuccess()) {
             return false;
         }
@@ -156,11 +173,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
             return false;
         }
 
-        String uri = request.uri();
-        int queryIndex = uri.indexOf('?');
-        String path = (queryIndex != -1 ? uri.substring(0, queryIndex) : uri);
-        path = URLDecoder.decode(path, StandardCharsets.UTF_8);
-
+        String path = resolvePath(request, relativePath);
         if (pathPatterns != null && !pathPatterns.matches(path)) {
             return false;
         }
@@ -263,6 +276,34 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
             lastContentFuture.addListener(ChannelFutureListener.CLOSE);
         }
         return true;
+    }
+
+    /**
+     * Resolves the request path to a normalized relative path against the configured context path.
+     * @param request the HTTP request
+     * @param relativePath the pre-calculated relative path, or {@code null}
+     * @return the resolved and normalized relative path
+     */
+    @NonNull
+    protected String resolvePath(@NonNull FullHttpRequest request, @Nullable String relativePath) {
+        String path;
+        if (relativePath != null) {
+            path = relativePath;
+        } else {
+            String uri = request.uri();
+            int queryIndex = uri.indexOf('?');
+            path = (queryIndex != -1 ? uri.substring(0, queryIndex) : uri);
+            if (StringUtils.hasLength(contextPath)) {
+                if (path.equals(contextPath) || path.startsWith(contextPath + "/")) {
+                    path = path.substring(contextPath.length());
+                }
+            }
+        }
+        path = URLDecoder.decode(path, StandardCharsets.UTF_8);
+        if (path.isEmpty() || !path.startsWith("/")) {
+            path = "/" + path;
+        }
+        return path;
     }
 
     @Nullable

@@ -75,6 +75,13 @@ public interface NettyWebSocketSession {
     String getPath();
 
     /**
+     * Returns the URI path parameters extracted from the matching template, if any.
+     * @return the path parameters map
+     */
+    @NonNull
+    Map<String, String> getPathParameters();
+
+    /**
      * Returns the HTTP headers received during the initial handshake upgrade request.
      * @return the handshake headers
      */
@@ -164,5 +171,49 @@ public interface NettyWebSocketSession {
      * @return a {@link ChannelFuture} representing the close operation
      */
     ChannelFuture close(int statusCode, @Nullable String reasonText);
+
+    /**
+     * Returns the WebSocket configuration associated with this session, if any.
+     * @return the WebSocket configuration, or {@code null}
+     */
+    @Nullable
+    NettyWebSocketConfig getWebSocketConfig();
+
+    /**
+     * Returns the maximum idle timeout in milliseconds.
+     * A value of zero or negative indicates that sessions will never time out due to inactivity.
+     * @return the maximum idle timeout in milliseconds
+     */
+    long getMaxIdleTimeout();
+
+    /**
+     * Sets the maximum idle timeout in milliseconds.
+     * @param milliseconds the maximum idle timeout in milliseconds
+     */
+    void setMaxIdleTimeout(long milliseconds);
+
+    /**
+     * Returns the maximum buffer size in bytes for text messages.
+     * @return the maximum buffer size
+     */
+    int getMaxTextMessageBufferSize();
+
+    /**
+     * Sets the maximum buffer size in bytes for text messages.
+     * @param length the maximum buffer size
+     */
+    void setMaxTextMessageBufferSize(int length);
+
+    /**
+     * Returns the maximum buffer size in bytes for binary messages.
+     * @return the maximum buffer size
+     */
+    int getMaxBinaryMessageBufferSize();
+
+    /**
+     * Sets the maximum buffer size in bytes for binary messages.
+     * @param length the maximum buffer size
+     */
+    void setMaxBinaryMessageBufferSize(int length);
 
 }

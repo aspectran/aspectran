@@ -23,8 +23,6 @@ import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
-import com.aspectran.netty.service.DefaultNettyService;
-import com.aspectran.netty.service.NettyService;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -45,6 +43,26 @@ import java.util.concurrent.TimeUnit;
  * <p>Created: 2026-09-02</p>
  */
 public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
+
+    public static final String SSL_HANDLER_NAME = "ssl";
+
+    public static final String IDLE_STATE_HANDLER_NAME = "idleState";
+
+    public static final String HTTP_CODEC_HANDLER_NAME = "codec";
+
+    public static final String COMPRESSOR_HANDLER_NAME = "compressor";
+
+    public static final String AGGREGATOR_HANDLER_NAME = "aggregator";
+
+    public static final String CHUNKED_WRITER_HANDLER_NAME = "chunkedWriter";
+
+    public static final String LOGGING_GROUP_HANDLER_NAME = "loggingGroup";
+
+    public static final String ACCESS_LOG_HANDLER_NAME = "accessLog";
+
+    public static final String RESOURCE_HANDLER_NAME = "resource";
+
+    public static final String HTTP_HANDLER_NAME = "handler";
 
     private final NettyListenerConfig listenerConfig;
 
@@ -162,26 +180,6 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
         this(listenerConfig, contextRouter, requestExecutor, resourceHandler, accessLogHandler, null, maxContentLength, contentCompression);
     }
 
-    public NettyChannelInitializer(
-            NettyListenerConfig listenerConfig,
-            NettyService nettyService,
-            ExecutorService requestExecutor,
-            NettyResourceHandler resourceHandler,
-            NettyAccessLogHandler accessLogHandler,
-            int maxContentLength,
-            boolean contentCompression) {
-        this(listenerConfig, createContextRouter(nettyService), requestExecutor, resourceHandler, accessLogHandler, null, maxContentLength, contentCompression);
-    }
-
-    @NonNull
-    private static NettyContextRouter createContextRouter(NettyService nettyService) {
-        NettyContextRouter router = new NettyContextRouter();
-        if (nettyService instanceof DefaultNettyService defaultNettyService) {
-            router.addContext(new NettyContext(nettyService.getContextPath(), defaultNettyService));
-        }
-        return router;
-    }
-
     @Override
     protected void initChannel(@NonNull SocketChannel ch) throws Exception {
         ChannelPipeline p = ch.pipeline();
@@ -191,40 +189,40 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
             if (sslContext == null) {
                 sslContext = listenerConfig.buildSslContext();
             }
-            p.addLast("ssl", sslContext.newHandler(ch.alloc()));
+            p.addLast(SSL_HANDLER_NAME, sslContext.newHandler(ch.alloc()));
         }
 
         if (idleTimeout > 0) {
-            p.addLast("idleState", new IdleStateHandler(idleTimeout, 0, 0, TimeUnit.MILLISECONDS));
+            p.addLast(IDLE_STATE_HANDLER_NAME, new IdleStateHandler(idleTimeout, 0, 0, TimeUnit.MILLISECONDS));
         }
 
-        p.addLast("codec", new HttpServerCodec());
+        p.addLast(HTTP_CODEC_HANDLER_NAME, new HttpServerCodec());
 
         if (encodingHandler != null) {
-            p.addLast("compressor", encodingHandler.createContentCompressor());
+            p.addLast(COMPRESSOR_HANDLER_NAME, encodingHandler.createContentCompressor());
         } else if (contentCompression) {
-            p.addLast("compressor", new HttpContentCompressor());
+            p.addLast(COMPRESSOR_HANDLER_NAME, new HttpContentCompressor());
         }
 
-        p.addLast("aggregator", new HttpObjectAggregator(maxContentLength));
-        p.addLast("chunkedWriter", new ChunkedWriteHandler());
+        p.addLast(AGGREGATOR_HANDLER_NAME, new HttpObjectAggregator(maxContentLength));
+        p.addLast(CHUNKED_WRITER_HANDLER_NAME, new ChunkedWriteHandler());
 
         if (loggingGroupHandler != null) {
-            p.addLast("loggingGroup", loggingGroupHandler);
+            p.addLast(LOGGING_GROUP_HANDLER_NAME, loggingGroupHandler);
         }
 
         if (accessLogHandler != null) {
             if (proxyAddressForwarding) {
                 accessLogHandler.setProxyAddressForwarding(true);
             }
-            p.addLast("accessLog", accessLogHandler);
+            p.addLast(ACCESS_LOG_HANDLER_NAME, accessLogHandler);
         }
 
         if (resourceHandler != null) {
-            p.addLast("resource", resourceHandler);
+            p.addLast(RESOURCE_HANDLER_NAME, resourceHandler);
         }
 
-        p.addLast("handler", new NettyHttpHandler(contextRouter, requestExecutor, loggingGroupHandler, webSocketConfig, proxyAddressForwarding));
+        p.addLast(HTTP_HANDLER_NAME, new NettyHttpHandler(contextRouter, requestExecutor, loggingGroupHandler, webSocketConfig, proxyAddressForwarding));
     }
 
 }

@@ -43,7 +43,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,12 +77,6 @@ public class JsrWebSocketSession implements Session {
     private final URI requestURI;
 
     private final Map<String, List<String>> requestParameterMap;
-
-    private long maxIdleTimeout;
-
-    private int maxTextMessageBufferSize = 65536;
-
-    private int maxBinaryMessageBufferSize = 65536;
 
     public JsrWebSocketSession(
             @NonNull NettyWebSocketSession nettySession,
@@ -190,17 +183,17 @@ public class JsrWebSocketSession implements Session {
 
     @Override
     public <T> void addMessageHandler(Class<T> clazz, MessageHandler.Whole<T> handler) {
-        addMessageHandler((MessageHandler) handler);
+        addMessageHandler(handler);
     }
 
     @Override
     public <T> void addMessageHandler(Class<T> clazz, MessageHandler.Partial<T> handler) {
-        addMessageHandler((MessageHandler) handler);
+        addMessageHandler(handler);
     }
 
     @Override
     public Set<MessageHandler> getMessageHandlers() {
-        return Collections.unmodifiableSet(new HashSet<>(messageHandlers));
+        return Set.copyOf(messageHandlers);
     }
 
     @Override
@@ -235,32 +228,32 @@ public class JsrWebSocketSession implements Session {
 
     @Override
     public long getMaxIdleTimeout() {
-        return maxIdleTimeout;
+        return nettySession.getMaxIdleTimeout();
     }
 
     @Override
     public void setMaxIdleTimeout(long milliseconds) {
-        this.maxIdleTimeout = milliseconds;
+        nettySession.setMaxIdleTimeout(milliseconds);
     }
 
     @Override
     public void setMaxBinaryMessageBufferSize(int length) {
-        this.maxBinaryMessageBufferSize = length;
+        nettySession.setMaxBinaryMessageBufferSize(length);
     }
 
     @Override
     public int getMaxBinaryMessageBufferSize() {
-        return maxBinaryMessageBufferSize;
+        return nettySession.getMaxBinaryMessageBufferSize();
     }
 
     @Override
     public void setMaxTextMessageBufferSize(int length) {
-        this.maxTextMessageBufferSize = length;
+        nettySession.setMaxTextMessageBufferSize(length);
     }
 
     @Override
     public int getMaxTextMessageBufferSize() {
-        return maxTextMessageBufferSize;
+        return nettySession.getMaxTextMessageBufferSize();
     }
 
     @Override
@@ -307,7 +300,7 @@ public class JsrWebSocketSession implements Session {
 
     @Override
     public Map<String, String> getPathParameters() {
-        return Collections.emptyMap();
+        return nettySession.getPathParameters();
     }
 
     @Override
@@ -342,7 +335,7 @@ public class JsrWebSocketSession implements Session {
         return "JsrWebSocketSession[" + getId() + ", uri=" + requestURI + "]";
     }
 
-    private static Map<String, List<String>> parseRequestParameters(URI uri) {
+    private static Map<String, List<String>> parseRequestParameters(@NonNull URI uri) {
         String query = uri.getQuery();
         if (query == null || query.isEmpty()) {
             return Collections.emptyMap();
@@ -395,6 +388,7 @@ public class JsrWebSocketSession implements Session {
         }
 
         @Override
+        @NonNull
         public OutputStream getSendStream() throws IOException {
             return new ByteArrayOutputStream() {
                 @Override
@@ -407,12 +401,13 @@ public class JsrWebSocketSession implements Session {
         }
 
         @Override
+        @NonNull
         public Writer getSendWriter() throws IOException {
             return new Writer() {
                 private final StringBuilder sb = new StringBuilder();
 
                 @Override
-                public void write(char[] cbuf, int off, int len) {
+                public void write(char @NonNull [] cbuf, int off, int len) {
                     sb.append(cbuf, off, len);
                 }
 
@@ -494,6 +489,7 @@ public class JsrWebSocketSession implements Session {
         }
 
         @Override
+        @NonNull
         public Future<Void> sendText(String text) {
             CompletableFuture<Void> completable = new CompletableFuture<>();
             nettySession.sendText(text).addListener(future -> {
@@ -507,7 +503,8 @@ public class JsrWebSocketSession implements Session {
         }
 
         @Override
-        public Future<Void> sendBinary(ByteBuffer data) {
+        @NonNull
+        public Future<Void> sendBinary(@NonNull ByteBuffer data) {
             CompletableFuture<Void> completable = new CompletableFuture<>();
             byte[] bytes = new byte[data.remaining()];
             data.get(bytes);
@@ -522,7 +519,7 @@ public class JsrWebSocketSession implements Session {
         }
 
         @Override
-        public void sendBinary(ByteBuffer data, SendHandler handler) {
+        public void sendBinary(@NonNull ByteBuffer data, SendHandler handler) {
             byte[] bytes = new byte[data.remaining()];
             data.get(bytes);
             nettySession.sendBinary(bytes).addListener(future -> {
@@ -535,6 +532,7 @@ public class JsrWebSocketSession implements Session {
         }
 
         @Override
+        @NonNull
         public Future<Void> sendObject(Object data) {
             try {
                 return sendText(encodeTextObject(data));
