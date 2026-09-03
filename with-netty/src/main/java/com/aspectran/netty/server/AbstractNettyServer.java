@@ -18,7 +18,9 @@ package com.aspectran.netty.server;
 import com.aspectran.netty.server.handler.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.NettyChannelInitializer;
 import com.aspectran.netty.server.handler.NettyResourceHandler;
+import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
+import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.service.DefaultNettyService;
 import com.aspectran.netty.service.NettyService;
 import com.aspectran.utils.Assert;
@@ -79,6 +81,8 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     private boolean virtualThreads = true;
 
+    private boolean nativeTransport = true;
+
     private String threadNamePrefix = "netty-task-";
 
     private int bossThreads = 1;
@@ -91,11 +95,19 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     private boolean contentCompression;
 
+    private NettyEncodingHandler encodingHandler;
+
     private NettyResourceHandler resourceHandler;
 
     private NettyAccessLogHandler accessLogHandler;
 
     private PathBasedLoggingGroupHandler loggingGroupHandler;
+
+    private NettyWebSocketConfig webSocketConfig;
+
+    private int idleTimeout;
+
+    private boolean proxyAddressForwarding;
 
     private EventLoopGroup bossGroup;
 
@@ -170,6 +182,14 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         this.virtualThreads = virtualThreads;
     }
 
+    public boolean isNativeTransport() {
+        return nativeTransport;
+    }
+
+    public void setNativeTransport(boolean nativeTransport) {
+        this.nativeTransport = nativeTransport;
+    }
+
     public int getBossThreads() {
         return bossThreads;
     }
@@ -210,6 +230,14 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         this.contentCompression = contentCompression;
     }
 
+    public NettyEncodingHandler getEncodingHandler() {
+        return encodingHandler;
+    }
+
+    public void setEncodingHandler(NettyEncodingHandler encodingHandler) {
+        this.encodingHandler = encodingHandler;
+    }
+
     public NettyResourceHandler getResourceHandler() {
         return resourceHandler;
     }
@@ -232,6 +260,38 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     public void setLoggingGroupHandler(PathBasedLoggingGroupHandler loggingGroupHandler) {
         this.loggingGroupHandler = loggingGroupHandler;
+    }
+
+    public NettyWebSocketConfig getWebSocketConfig() {
+        return webSocketConfig;
+    }
+
+    public void setWebSocketConfig(NettyWebSocketConfig webSocketConfig) {
+        this.webSocketConfig = webSocketConfig;
+    }
+
+    public int getIdleTimeout() {
+        return idleTimeout;
+    }
+
+    public void setIdleTimeout(int idleTimeout) {
+        this.idleTimeout = Math.max(0, idleTimeout);
+    }
+
+    public int getIdleTimeoutSecs() {
+        return idleTimeout / 1000;
+    }
+
+    public void setIdleTimeoutSecs(int idleTimeoutSecs) {
+        setIdleTimeout(idleTimeoutSecs * 1000);
+    }
+
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
@@ -300,6 +360,9 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
         for (NettyContext context : contextRouter.getContexts()) {
             if (!context.isStarted()) {
+                if (proxyAddressForwarding && !context.isProxyAddressForwarding()) {
+                    context.setProxyAddressForwarding(true);
+                }
                 context.start();
             }
         }
@@ -312,16 +375,16 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         ThreadFactory workerThreadFactory = new DefaultThreadFactory("netty-worker", true);
 
         Class<? extends ServerSocketChannel> channelClass;
-        if (Epoll.isAvailable()) {
-            bossGroup = new EpollEventLoopGroup(bossThreads, bossThreadFactory);
-            workerGroup = new EpollEventLoopGroup(workerThreads, workerThreadFactory);
-            channelClass = EpollServerSocketChannel.class;
-            logger.info("Netty native Epoll transport is available and active");
-        } else if (KQueue.isAvailable()) {
-            bossGroup = new KQueueEventLoopGroup(bossThreads, bossThreadFactory);
-            workerGroup = new KQueueEventLoopGroup(workerThreads, workerThreadFactory);
-            channelClass = KQueueServerSocketChannel.class;
-            logger.info("Netty native KQueue transport is available and active");
+        if (nativeTransport && isEpollAvailable()) {
+            bossGroup = EpollSupport.createEventLoopGroup(bossThreads, bossThreadFactory);
+            workerGroup = EpollSupport.createEventLoopGroup(workerThreads, workerThreadFactory);
+            channelClass = EpollSupport.getServerSocketChannelClass();
+            logger.info("Netty native Epoll transport is active");
+        } else if (nativeTransport && isKQueueAvailable()) {
+            bossGroup = KQueueSupport.createEventLoopGroup(bossThreads, bossThreadFactory);
+            workerGroup = KQueueSupport.createEventLoopGroup(workerThreads, workerThreadFactory);
+            channelClass = KQueueSupport.getServerSocketChannelClass();
+            logger.info("Netty native KQueue transport is active");
         } else {
             bossGroup = new NioEventLoopGroup(bossThreads, bossThreadFactory);
             workerGroup = new NioEventLoopGroup(workerThreads, workerThreadFactory);
@@ -382,8 +445,12 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
                 resourceHandler,
                 accessLogHandler,
                 loggingGroupHandler,
+                encodingHandler,
+                webSocketConfig,
                 maxContentLength,
-                contentCompression
+                contentCompression,
+                idleTimeout,
+                proxyAddressForwarding
         );
     }
 
@@ -435,4 +502,93 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         logger.info("Netty server stopped");
     }
 
+    private boolean isEpollAvailable() {
+        try {
+            if (EpollSupport.isAvailable()) {
+                return true;
+            }
+            if (logger.isDebugEnabled()) {
+                Throwable cause = EpollSupport.unavailabilityCause();
+                logger.debug("Netty native Epoll transport is not available: {}",
+                        cause != null ? cause.getMessage() : "unknown reason");
+            }
+        } catch (Throwable t) {
+            logger.debug("Netty native Epoll transport is not available: {}", t.getMessage());
+        }
+        return false;
+    }
+
+    private boolean isKQueueAvailable() {
+        try {
+            if (KQueueSupport.isAvailable()) {
+                return true;
+            }
+            if (logger.isDebugEnabled()) {
+                Throwable cause = KQueueSupport.unavailabilityCause();
+                logger.debug("Netty native KQueue transport is not available: {}",
+                        cause != null ? cause.getMessage() : "unknown reason");
+            }
+        } catch (Throwable t) {
+            logger.debug("Netty native KQueue transport is not available: {}", t.getMessage());
+        }
+        return false;
+    }
+
+    private static class EpollSupport {
+
+        static boolean isAvailable() {
+            try {
+                return Epoll.isAvailable();
+            } catch (Throwable t) {
+                return false;
+            }
+        }
+
+        static Throwable unavailabilityCause() {
+            try {
+                return Epoll.unavailabilityCause();
+            } catch (Throwable t) {
+                return t;
+            }
+        }
+
+        static EventLoopGroup createEventLoopGroup(int threads, ThreadFactory threadFactory) {
+            return new EpollEventLoopGroup(threads, threadFactory);
+        }
+
+        static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
+            return EpollServerSocketChannel.class;
+        }
+
+    }
+
+    private static class KQueueSupport {
+
+        static boolean isAvailable() {
+            try {
+                return KQueue.isAvailable();
+            } catch (Throwable t) {
+                return false;
+            }
+        }
+
+        static Throwable unavailabilityCause() {
+            try {
+                return KQueue.unavailabilityCause();
+            } catch (Throwable t) {
+                return t;
+            }
+        }
+
+        static EventLoopGroup createEventLoopGroup(int threads, ThreadFactory threadFactory) {
+            return new KQueueEventLoopGroup(threads, threadFactory);
+        }
+
+        static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
+            return KQueueServerSocketChannel.class;
+        }
+
+    }
+
 }
+

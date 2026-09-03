@@ -28,6 +28,8 @@ import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -128,6 +130,18 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<WebSocket
         }
 
         logger.warn("Unsupported WebSocket frame type: {}", frame.getClass().getName());
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent idleStateEvent) {
+            if (idleStateEvent.state() == IdleState.ALL_IDLE) {
+                if (closed.compareAndSet(false, true)) {
+                    session.close(1000, "Idle timeout");
+                }
+            }
+        }
+        super.userEventTriggered(ctx, evt);
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.netty.server.handler.NettyResourceHandler;
 import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.session.NettySessionManager;
+import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
 import com.aspectran.netty.server.websocket.jsr356.NettyServerEndpointExporter;
 import com.aspectran.netty.service.DefaultNettyService;
@@ -34,7 +35,6 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -81,9 +81,13 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private final Map<String, NettyWebSocketListener> webSocketEndpoints = new ConcurrentHashMap<>();
 
+    private NettyWebSocketConfig webSocketConfig;
+
     private String loggingGroup;
 
     private Boolean derived;
+
+    private Boolean proxyAddressForwarding;
 
     public NettyContext() {
     }
@@ -216,12 +220,28 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return !webSocketEndpoints.isEmpty();
     }
 
+    public NettyWebSocketConfig getWebSocketConfig() {
+        return webSocketConfig;
+    }
+
+    public void setWebSocketConfig(NettyWebSocketConfig webSocketConfig) {
+        this.webSocketConfig = webSocketConfig;
+    }
+
     public boolean isDerived() {
         return Boolean.TRUE.equals(derived);
     }
 
     public void setDerived(boolean derived) {
         this.derived = derived;
+    }
+
+    public boolean isProxyAddressForwarding() {
+        return Boolean.TRUE.equals(proxyAddressForwarding);
+    }
+
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
     @Nullable
@@ -280,6 +300,9 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         nettyService.setContextPath(contextPath);
         nettyService.setSessionAdaptable(sessionAdaptable);
         nettyService.setTrailingSlashRedirect(trailingSlashRedirect);
+        if (proxyAddressForwarding != null) {
+            nettyService.setProxyAddressForwarding(proxyAddressForwarding);
+        }
 
         if (sessionManager instanceof NettySessionManager nettySessionManager) {
             if (sessionConfig == null) {
@@ -317,15 +340,12 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
                 logger.warn("Failed to auto-register @ServerEndpoint for NettyContext [{}]", getDisplayContextPath(), e);
             }
         }
-
-        logger.info("NettyContext [{}] started", getDisplayContextPath());
     }
 
     @Override
     protected void doStop() throws Exception {
         if (nettyService != null && nettyService.isActive()) {
             nettyService.stop();
-            logger.info("NettyContext [{}] stopped", getDisplayContextPath());
         }
         if (sessionManager != null) {
             if (sessionManager instanceof Component component && component.isInitialized() && !component.isDestroyed()) {
@@ -336,7 +356,7 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
-    protected AspectranConfig loadAspectranConfig(String location) throws IOException, AponParseException {
+    protected AspectranConfig loadAspectranConfig(String location) throws IOException {
         if (location == null) {
             return null;
         }

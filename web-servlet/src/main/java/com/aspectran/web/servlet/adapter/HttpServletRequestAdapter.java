@@ -141,6 +141,11 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     }
 
     @Override
+    public String getRemoteAddr() {
+        return getHttpServletRequest().getRemoteAddr();
+    }
+
+    @Override
     public String getContextPath() {
         return getHttpServletRequest().getContextPath();
     }

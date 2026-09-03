@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpChunkedInput;
+import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
@@ -81,6 +82,11 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     private String[] indexFiles = DEFAULT_INDEX_FILES;
 
+    protected NettyResourceHandler() {
+        super(false);
+        this.baseDir = null;
+    }
+
     public NettyResourceHandler(File baseDir) {
         this(baseDir, (String[])null);
     }
@@ -111,6 +117,10 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     public void setPathPatterns(IncludeExcludeWildcardPatterns pathPatterns) {
         this.pathPatterns = pathPatterns;
+    }
+
+    public IncludeExcludeWildcardPatterns getPathPatterns() {
+        return pathPatterns;
     }
 
     /**
@@ -238,9 +248,10 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         // Write the content
         ChannelFuture sendFileFuture;
         ChannelFuture lastContentFuture;
-        if (ctx.pipeline().get(SslHandler.class) != null) {
-            // Cannot use zero-copy with SSL
-            sendFileFuture = ctx.write(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)), ctx.newProgressivePromise());
+        if (ctx.pipeline().get(SslHandler.class) != null ||
+                ctx.pipeline().get(HttpContentCompressor.class) != null) {
+            // Cannot use zero-copy with SSL or HTTP content compression
+            sendFileFuture = ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)), ctx.newProgressivePromise());
             lastContentFuture = sendFileFuture;
         } else {
             // Zero-copy file transfer
@@ -255,7 +266,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     }
 
     @Nullable
-    private static String sanitizePath(String path) {
+    protected static String sanitizePath(String path) {
         path = path.replace('/', File.separatorChar);
         while (path.startsWith(File.separator)) {
             path = path.substring(1);
@@ -269,7 +280,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     }
 
     @Nullable
-    private File findIndexFile(File dir) {
+    protected File findIndexFile(File dir) {
         if (indexFiles != null && indexFiles.length > 0) {
             for (String indexFileName : indexFiles) {
                 File indexFile = new File(dir, indexFileName);
@@ -281,7 +292,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         return null;
     }
 
-    private static void sendNotModified(ChannelHandlerContext ctx, FullHttpRequest request) {
+    protected static void sendNotModified(ChannelHandlerContext ctx, FullHttpRequest request) {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_MODIFIED);
         setDateHeader(response);
         boolean keepAlive = HttpUtil.isKeepAlive(request);
@@ -294,14 +305,18 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
-    private static void setDateHeader(@NonNull FullHttpResponse response) {
+    protected static void setDateHeader(@NonNull FullHttpResponse response) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
         dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
         Calendar time = new GregorianCalendar();
         response.headers().set(HttpHeaderNames.DATE, dateFormatter.format(time.getTime()));
     }
 
-    private static void setDateAndCacheHeaders(@NonNull HttpResponse response, @NonNull File fileToCache) {
+    protected static void setDateAndCacheHeaders(@NonNull HttpResponse response, @NonNull File fileToCache) {
+        setDateAndCacheHeaders(response, fileToCache.lastModified());
+    }
+
+    protected static void setDateAndCacheHeaders(@NonNull HttpResponse response, long lastModified) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
         dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
 
@@ -313,36 +328,45 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         time.add(Calendar.SECOND, HTTP_CACHE_SECONDS);
         response.headers().set(HttpHeaderNames.EXPIRES, dateFormatter.format(time.getTime()));
         response.headers().set(HttpHeaderNames.CACHE_CONTROL, "private, max-age=" + HTTP_CACHE_SECONDS);
-        response.headers().set(HttpHeaderNames.LAST_MODIFIED, dateFormatter.format(new Date(fileToCache.lastModified())));
+        if (lastModified > 0) {
+            response.headers().set(HttpHeaderNames.LAST_MODIFIED, dateFormatter.format(new Date(lastModified)));
+        }
     }
 
-    private static void setContentTypeHeader(HttpResponse response, @NonNull File file) {
+    protected static void setContentTypeHeader(HttpResponse response, @NonNull File file) {
         String mimeType = null;
         try {
             mimeType = java.nio.file.Files.probeContentType(file.toPath());
         } catch (IOException ignore) {
             // ignore
         }
-        if (mimeType == null) {
-            String ext = FilenameUtils.getExtension(file.getName());
-            if (ext != null) {
-                mimeType = switch (ext.toLowerCase()) {
-                    case "html", "htm" -> "text/html; charset=UTF-8";
-                    case "css" -> "text/css; charset=UTF-8";
-                    case "js" -> "application/javascript; charset=UTF-8";
-                    case "json" -> "application/json; charset=UTF-8";
-                    case "png" -> "image/png";
-                    case "jpg", "jpeg" -> "image/jpeg";
-                    case "gif" -> "image/gif";
-                    case "svg" -> "image/svg+xml";
-                    case "ico" -> "image/x-icon";
-                    case "txt" -> "text/plain; charset=UTF-8";
-                    case "xml" -> "application/xml; charset=UTF-8";
-                    default -> MediaType.APPLICATION_OCTET_STREAM_VALUE;
-                };
-            } else {
-                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-            }
+        if (mimeType != null) {
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, mimeType);
+        } else {
+            setContentTypeHeader(response, file.getName());
+        }
+    }
+
+    protected static void setContentTypeHeader(HttpResponse response, @NonNull String filename) {
+        String mimeType;
+        String ext = FilenameUtils.getExtension(filename);
+        if (ext != null) {
+            mimeType = switch (ext.toLowerCase()) {
+                case "html", "htm" -> "text/html; charset=UTF-8";
+                case "css" -> "text/css; charset=UTF-8";
+                case "js" -> "application/javascript; charset=UTF-8";
+                case "json" -> "application/json; charset=UTF-8";
+                case "png" -> "image/png";
+                case "jpg", "jpeg" -> "image/jpeg";
+                case "gif" -> "image/gif";
+                case "svg" -> "image/svg+xml";
+                case "ico" -> "image/x-icon";
+                case "txt" -> "text/plain; charset=UTF-8";
+                case "xml" -> "application/xml; charset=UTF-8";
+                default -> MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            };
+        } else {
+            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
         }
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, mimeType);
     }

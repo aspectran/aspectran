@@ -56,20 +56,36 @@ public class NettyActivity extends CoreActivity {
 
     private final FullHttpRequest request;
 
+    private final String reverseContextPath;
+
     private String requestName;
 
     private MethodType requestMethod;
 
     public NettyActivity(@NonNull NettyService nettyService, ChannelHandlerContext ctx, FullHttpRequest request) {
+        this(nettyService, ctx, request, null);
+    }
+
+    public NettyActivity(
+            @NonNull NettyService nettyService,
+            ChannelHandlerContext ctx,
+            FullHttpRequest request,
+            String reverseContextPath) {
         super(nettyService.getActivityContext(), nettyService.getContextPath());
         this.nettyService = nettyService;
         this.ctx = ctx;
         this.request = request;
+        this.reverseContextPath = reverseContextPath;
     }
 
     @Override
     public Mode getMode() {
         return Mode.WEB;
+    }
+
+    @Override
+    public String getReverseContextPath() {
+        return reverseContextPath;
     }
 
     public NettyService getNettyService() {
@@ -101,11 +117,17 @@ public class NettyActivity extends CoreActivity {
     }
 
     public String getFullRequestName() {
-        if (requestMethod != null && requestName != null) {
-            return requestMethod + " " + requestName;
-        } else {
-            return (requestName != null ? requestName : StringUtils.EMPTY);
+        StringBuilder sb = new StringBuilder();
+        if (requestMethod != null) {
+            sb.append(requestMethod).append(" ");
         }
+        if (StringUtils.hasLength(reverseContextPath)) {
+            sb.append(reverseContextPath);
+        }
+        if (requestName != null) {
+            sb.append(requestName);
+        }
+        return sb.toString();
     }
 
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
@@ -152,7 +174,8 @@ public class NettyActivity extends CoreActivity {
             }
 
             NettyRequestAdapter requestAdapter = new NettyRequestAdapter(
-                    getTranslet().getRequestMethod(), request, ctx, getContextPath());
+                    getTranslet().getRequestMethod(), request, ctx, getContextPath(),
+                    nettyService.isProxyAddressForwarding());
             if (getPendingActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (StringUtils.hasLength(maxRequestSizeSetting)) {

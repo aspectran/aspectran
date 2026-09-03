@@ -20,10 +20,12 @@ import com.aspectran.netty.server.NettyContextRouter;
 import com.aspectran.netty.server.handler.logging.ChannelLoggingGroupHelper;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.websocket.DefaultNettyWebSocketSession;
+import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.server.websocket.NettyWebSocketHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
 import com.aspectran.netty.service.DefaultNettyService;
 import com.aspectran.netty.service.NettyService;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.LoggingGroupHelper;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -42,11 +44,20 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
+
+import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_HOST;
+import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_PROTO;
+import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_SSL;
 
 /**
  * Netty inbound handler that dispatches incoming {@link FullHttpRequest}s
@@ -66,14 +77,26 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     private final PathBasedLoggingGroupHandler loggingGroupHandler;
 
+    private final NettyWebSocketConfig webSocketConfig;
+
+    private final boolean proxyAddressForwarding;
+
     public NettyHttpHandler(@NonNull NettyService nettyService, ExecutorService requestExecutor) {
-        this(nettyService, requestExecutor, null);
+        this(nettyService, requestExecutor, null, null);
     }
 
     public NettyHttpHandler(
             @NonNull NettyService nettyService,
             ExecutorService requestExecutor,
             PathBasedLoggingGroupHandler loggingGroupHandler) {
+        this(nettyService, requestExecutor, loggingGroupHandler, null);
+    }
+
+    public NettyHttpHandler(
+            @NonNull NettyService nettyService,
+            ExecutorService requestExecutor,
+            PathBasedLoggingGroupHandler loggingGroupHandler,
+            @Nullable NettyWebSocketConfig webSocketConfig) {
         super(false);
         this.contextRouter = new NettyContextRouter();
         if (nettyService instanceof DefaultNettyService defaultNettyService) {
@@ -81,20 +104,41 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         }
         this.requestExecutor = requestExecutor;
         this.loggingGroupHandler = loggingGroupHandler;
+        this.webSocketConfig = webSocketConfig;
+        this.proxyAddressForwarding = nettyService.isProxyAddressForwarding();
     }
 
     public NettyHttpHandler(@NonNull NettyContextRouter contextRouter, ExecutorService requestExecutor) {
-        this(contextRouter, requestExecutor, null);
+        this(contextRouter, requestExecutor, null, null);
     }
 
     public NettyHttpHandler(
             @NonNull NettyContextRouter contextRouter,
             ExecutorService requestExecutor,
             PathBasedLoggingGroupHandler loggingGroupHandler) {
+        this(contextRouter, requestExecutor, loggingGroupHandler, null);
+    }
+
+    public NettyHttpHandler(
+            @NonNull NettyContextRouter contextRouter,
+            ExecutorService requestExecutor,
+            PathBasedLoggingGroupHandler loggingGroupHandler,
+            @Nullable NettyWebSocketConfig webSocketConfig) {
+        this(contextRouter, requestExecutor, loggingGroupHandler, webSocketConfig, false);
+    }
+
+    public NettyHttpHandler(
+            @NonNull NettyContextRouter contextRouter,
+            ExecutorService requestExecutor,
+            PathBasedLoggingGroupHandler loggingGroupHandler,
+            @Nullable NettyWebSocketConfig webSocketConfig,
+            boolean proxyAddressForwarding) {
         super(false);
         this.contextRouter = contextRouter;
         this.requestExecutor = requestExecutor;
         this.loggingGroupHandler = loggingGroupHandler;
+        this.webSocketConfig = webSocketConfig;
+        this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
     @Override
@@ -114,11 +158,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         NettyContext context = contextRouter.match(path);
 
         String groupName = resolveLoggingGroup(path, context);
-        if (groupName != null) {
-            ChannelLoggingGroupHelper.setTo(ctx.channel(), groupName);
-        } else {
-            ChannelLoggingGroupHelper.setTo(ctx.channel(), null);
-        }
+        ChannelLoggingGroupHelper.setTo(ctx.channel(), groupName);
 
         try {
             if (context == null) {
@@ -137,7 +177,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                 }
                 NettyWebSocketListener endpoint = context.getWebSocketEndpoint(relativePath);
                 if (endpoint != null) {
-                    handleWebSocketHandshake(ctx, request, relativePath, endpoint);
+                    handleWebSocketHandshake(ctx, request, relativePath, endpoint, context);
                     return;
                 }
             }
@@ -190,10 +230,19 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
             ChannelHandlerContext ctx,
             FullHttpRequest request,
             String path,
-            NettyWebSocketListener listener) {
-        String wsLocation = getWebSocketLocation(request);
+            NettyWebSocketListener listener,
+            @Nullable NettyContext context) {
+        String wsLocation = getWebSocketLocation(request, ctx);
+        NettyWebSocketConfig effectiveConfig = (context != null && context.getWebSocketConfig() != null)
+                ? context.getWebSocketConfig()
+                : this.webSocketConfig;
+        int maxFramePayloadLength = (effectiveConfig != null ? effectiveConfig.getMaxFramePayloadLength() : 65536);
+        int maxMessageSize = (effectiveConfig != null ? effectiveConfig.getMaxMessageSize() : 65536);
+        boolean allowExtensions = (effectiveConfig == null || effectiveConfig.isAllowExtensions());
+        String subprotocols = (effectiveConfig != null ? effectiveConfig.getSubprotocols() : null);
+
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-                wsLocation, null, true, 65536);
+                wsLocation, subprotocols, allowExtensions, maxFramePayloadLength);
         WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(request);
         if (handshaker == null) {
             WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
@@ -208,7 +257,14 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
                     ChannelPipeline pipeline = ctx.pipeline();
                     if (pipeline.get("wsHandler") == null) {
-                        pipeline.addBefore(ctx.name(), "wsFrameAggregator", new WebSocketFrameAggregator(65536));
+                        if (pipeline.get("idleState") != null) {
+                            pipeline.remove("idleState");
+                        }
+                        if (effectiveConfig != null && effectiveConfig.getMaxIdleTimeout() > 0) {
+                            int idleSeconds = (int) Math.max(1, effectiveConfig.getMaxIdleTimeout() / 1000);
+                            pipeline.addBefore(ctx.name(), "wsIdleState", new IdleStateHandler(0, 0, idleSeconds));
+                        }
+                        pipeline.addBefore(ctx.name(), "wsFrameAggregator", new WebSocketFrameAggregator(maxMessageSize));
                         pipeline.addBefore(ctx.name(), "wsHandler",
                                 new NettyWebSocketHandler(session, listener, requestExecutor, handshaker));
                     }
@@ -242,9 +298,28 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
     }
 
     @NonNull
-    private String getWebSocketLocation(@NonNull FullHttpRequest req) {
-        String host = req.headers().get(HttpHeaderNames.HOST);
-        return "ws://" + (host != null ? host : "localhost") + req.uri();
+    private String getWebSocketLocation(@NonNull FullHttpRequest req, ChannelHandlerContext ctx) {
+        String host = null;
+        String scheme = "ws";
+        if (proxyAddressForwarding) {
+            String forwardedHost = req.headers().get(X_FORWARDED_HOST);
+            if (StringUtils.hasText(forwardedHost)) {
+                int idx = forwardedHost.indexOf(',');
+                host = (idx != -1 ? forwardedHost.substring(0, idx).trim() : forwardedHost.trim());
+            }
+            String proto = req.headers().get(X_FORWARDED_PROTO);
+            if ("https".equalsIgnoreCase(proto) || "wss".equalsIgnoreCase(proto) ||
+                    "on".equalsIgnoreCase(req.headers().get(X_FORWARDED_SSL))) {
+                scheme = "wss";
+            }
+        }
+        if (host == null) {
+            host = req.headers().get(HttpHeaderNames.HOST);
+        }
+        if (scheme.equals("ws") && ctx.pipeline().get(SslHandler.class) != null) {
+            scheme = "wss";
+        }
+        return scheme + "://" + (host != null ? host : "localhost") + req.uri();
     }
 
     private void sendNotFound(ChannelHandlerContext ctx, FullHttpRequest request) {
@@ -265,6 +340,20 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         HttpUtil.setContentLength(response, 0);
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    @Override
+    public void userEventTriggered(@NonNull ChannelHandlerContext ctx, @NonNull Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent idleStateEvent) {
+            if (idleStateEvent.state() == IdleState.READER_IDLE || idleStateEvent.state() == IdleState.ALL_IDLE) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Closing idle HTTP connection: {}", ctx.channel());
+                }
+                ctx.close();
+                return;
+            }
+        }
+        super.userEventTriggered(ctx, evt);
     }
 
     @Override

@@ -29,6 +29,8 @@ import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.thread.ThreadContextHelper;
+import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.util.WebUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -42,10 +44,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -98,9 +103,10 @@ public class DefaultNettyService extends AbstractNettyService {
             requestName = decodedPath;
         }
         final MethodType requestMethod = MethodType.resolve(request.method().name(), MethodType.GET);
+        final String reverseContextPath = getReverseContextPath(request, contextPath);
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(request, requestName, requestMethod));
+            logger.debug(getRequestInfo(ctx, request, reverseContextPath, requestName, requestMethod));
         }
 
         if (!isRequestAcceptable(requestName)) {
@@ -108,7 +114,7 @@ public class DefaultNettyService extends AbstractNettyService {
             return false;
         }
 
-        NettyActivity activity = new NettyActivity(this, ctx, request);
+        NettyActivity activity = new NettyActivity(this, ctx, request, reverseContextPath);
         activity.setRequestName(requestName);
         activity.setRequestMethod(requestMethod);
         try {
@@ -231,12 +237,41 @@ public class DefaultNettyService extends AbstractNettyService {
         return false;
     }
 
-    private String getRequestInfo(@NonNull FullHttpRequest request, String requestName, MethodType requestMethod) {
-        ToStringBuilder tsb = new ToStringBuilder("Request");
-        tsb.append("method", requestMethod);
-        tsb.append("name", requestName);
-        tsb.append("uri", request.uri());
-        return tsb.toString();
+    @NonNull
+    private String getRequestInfo(
+            @NonNull ChannelHandlerContext ctx,
+            @NonNull FullHttpRequest request,
+            String reverseContextPath,
+            String requestName,
+            MethodType requestMethod) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(requestMethod).append(" ");
+        if (StringUtils.hasLength(reverseContextPath)) {
+            sb.append(reverseContextPath);
+        }
+        sb.append(requestName).append(" ");
+        sb.append(request.protocolVersion().text()).append(" ");
+        sb.append(getRemoteAddr(ctx, request));
+        return sb.toString();
+    }
+
+    @Nullable
+    private String getReverseContextPath(@NonNull FullHttpRequest request, String defaultContextPath) {
+        return WebUtils.getReverseContextPath(request.headers().get(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+    }
+
+    @NonNull
+    private String getRemoteAddr(@NonNull ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
+        String fallbackRemoteAddr = null;
+        SocketAddress address = ctx.channel().remoteAddress();
+        if (address instanceof InetSocketAddress inetSocketAddress) {
+            fallbackRemoteAddr = inetSocketAddress.getAddress().getHostAddress();
+        } else if (address != null) {
+            fallbackRemoteAddr = address.toString();
+        }
+        String forwardedFor = (isProxyAddressForwarding() ? request.headers().get(HttpHeaders.X_FORWARDED_FOR) : null);
+        String remoteAddr = WebUtils.getRemoteAddr(forwardedFor, fallbackRemoteAddr);
+        return (remoteAddr != null ? remoteAddr : "127.0.0.1");
     }
 
 }

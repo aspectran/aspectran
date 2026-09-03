@@ -71,4 +71,16 @@ public interface NettyService extends WebService {
      */
     boolean service(@NonNull ChannelHandlerContext ctx, @NonNull FullHttpRequest request) throws IOException;
 
+    /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
+    boolean isProxyAddressForwarding();
+
+    /**
+     * Sets whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @param proxyAddressForwarding true to enable proxy address forwarding; false otherwise
+     */
+    void setProxyAddressForwarding(boolean proxyAddressForwarding);
+
 }

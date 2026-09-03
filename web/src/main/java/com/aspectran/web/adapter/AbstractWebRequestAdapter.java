@@ -145,6 +145,11 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
     }
 
     @Override
+    public String getRemoteAddr() {
+        return null;
+    }
+
+    @Override
     public abstract String getContextPath();
 
     @Override

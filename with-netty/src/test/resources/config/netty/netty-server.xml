@@ -19,10 +19,39 @@
         <property name="autoStart">%{netty.server.startup}</property>
         <property name="virtualThreads" valueType="boolean">true</property>
         <property name="sessionManager">#{netty.sessionManager}</property>
+        <property name="encodingHandler">#{netty.server.handler.encodingHandler}</property>
         <property name="listeners" type="array">
             <bean class="com.aspectran.netty.server.NettyListenerConfig">
                 <property name="port" valueType="int">%{netty.server.listener.http.port}</property>
                 <property name="host">%{netty.server.listener.http.host}</property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="netty.server.handler.encodingHandler"
+          class="com.aspectran.netty.server.handler.encoding.NettyEncodingHandler"
+          scope="prototype">
+        <property name="encodingProviders" type="array">
+            <value>gzip</value>
+        </property>
+        <property name="encodingPredicates" type="array">
+            <bean class="com.aspectran.netty.server.handler.encoding.ContentEncodingPredicates">
+                <property name="mediaTypes" type="array">
+                    <value>text/html</value>
+                    <value>text/css</value>
+                    <value>text/javascript</value>
+                    <value>application/javascript</value>
+                </property>
+            </bean>
+            <bean class="com.aspectran.netty.server.handler.encoding.ContentEncodingPredicates">
+                <property name="contentSizeLargerThan" valueType="long">32</property>
+                <property name="mediaTypes" type="array">
+                    <value>text/xml</value>
+                    <value>text/plain</value>
+                    <value>application/json</value>
+                    <value>application/xml</value>
+                    <value>application/apon</value>
+                </property>
             </bean>
         </property>
     </bean>

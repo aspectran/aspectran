@@ -26,9 +26,11 @@ import io.undertow.util.HeaderMap;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
 import io.undertow.util.LocaleUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
@@ -136,6 +138,18 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
     public String getQueryString() {
         HttpServerExchange exchange = getAdaptee();
         return exchange.getQueryString();
+    }
+
+    @Nullable
+    public String getRemoteAddr() {
+        HttpServerExchange exchange = getAdaptee();
+        if (exchange != null) {
+            InetSocketAddress sourceAddress = exchange.getSourceAddress();
+            if (sourceAddress != null && sourceAddress.getAddress() != null) {
+                return sourceAddress.getAddress().getHostAddress();
+            }
+        }
+        return null;
     }
 
     /**

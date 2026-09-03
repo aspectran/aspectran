@@ -57,6 +57,8 @@ public class TowActivity extends CoreActivity {
 
     private final HttpServerExchange exchange;
 
+    private final String reverseContextPath;
+
     private String requestName;
 
     private MethodType requestMethod;
@@ -67,14 +69,30 @@ public class TowActivity extends CoreActivity {
      * @param exchange the Undertow {@link HttpServerExchange} for the current request
      */
     public TowActivity(@NonNull TowService towService, HttpServerExchange exchange) {
+        this(towService, exchange, null);
+    }
+
+    /**
+     * Instantiates a new TowActivity.
+     * @param towService the main Aspectran Undertow service
+     * @param exchange the Undertow {@link HttpServerExchange} for the current request
+     * @param reverseContextPath the reverse context path for URL generation
+     */
+    public TowActivity(@NonNull TowService towService, HttpServerExchange exchange, String reverseContextPath) {
         super(towService.getActivityContext());
         this.towService = towService;
         this.exchange = exchange;
+        this.reverseContextPath = reverseContextPath;
     }
 
     @Override
     public Mode getMode() {
         return Mode.WEB;
+    }
+
+    @Override
+    public String getReverseContextPath() {
+        return reverseContextPath;
     }
 
     /**
@@ -127,15 +145,21 @@ public class TowActivity extends CoreActivity {
 
     /**
      * Returns a human-readable representation of the request, combining
-     * method and name (e.g., "GET /path/to/translet").
+     * method, reverse context path, and name (e.g., "GET /context/path/to/translet").
      * @return the combined request information
      */
     public String getFullRequestName() {
-        if (requestMethod != null && requestName != null) {
-            return requestMethod + " " + requestName;
-        } else {
-            return (requestName != null ? requestName : StringUtils.EMPTY);
+        StringBuilder sb = new StringBuilder();
+        if (requestMethod != null) {
+            sb.append(requestMethod).append(" ");
         }
+        if (StringUtils.hasLength(reverseContextPath)) {
+            sb.append(reverseContextPath);
+        }
+        if (requestName != null) {
+            sb.append(requestName);
+        }
+        return sb.toString();
     }
 
     /**

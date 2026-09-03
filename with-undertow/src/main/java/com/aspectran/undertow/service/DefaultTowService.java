@@ -31,9 +31,11 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
+import com.aspectran.web.support.util.WebUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,9 +88,10 @@ public class DefaultTowService extends AbstractTowService {
             requestName = exchange.getRequestURI();
         }
         final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
+        final String reverseContextPath = getReverseContextPath(exchange, exchange.getResolvedPath());
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(exchange, requestName, requestMethod));
+            logger.debug(getRequestInfo(exchange, reverseContextPath, requestName, requestMethod));
         }
 
         if (!isRequestAcceptable(requestName)) {
@@ -96,7 +99,7 @@ public class DefaultTowService extends AbstractTowService {
             return false;
         }
 
-        TowActivity activity = new TowActivity(this, exchange);
+        TowActivity activity = new TowActivity(this, exchange, reverseContextPath);
         activity.setRequestName(requestName);
         activity.setRequestMethod(requestMethod);
         try {
@@ -206,23 +209,36 @@ public class DefaultTowService extends AbstractTowService {
     /**
      * Generates a concise, one-line log message for an incoming request.
      * @param exchange the current HTTP exchange
+     * @param reverseContextPath the reverse context path
      * @param requestName the processed request name
      * @param requestMethod the processed request method
      * @return a formatted string for logging
      */
     @NonNull
-    private String getRequestInfo(@NonNull HttpServerExchange exchange, String requestName, MethodType requestMethod) {
+    private String getRequestInfo(
+            @NonNull HttpServerExchange exchange,
+            String reverseContextPath,
+            String requestName,
+            MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append(requestMethod).append(" ");
+        if (StringUtils.hasLength(reverseContextPath)) {
+            sb.append(reverseContextPath);
+        }
         sb.append(requestName).append(" ");
         sb.append(exchange.getProtocol()).append(" ");
-        String remoteAddr = exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR);
-        if (StringUtils.hasLength(remoteAddr)) {
-            sb.append(remoteAddr);
-        } else {
-            sb.append(exchange.getSourceAddress());
-        }
+        String fallbackRemoteAddr = (exchange.getSourceAddress() != null && exchange.getSourceAddress().getAddress() != null
+                ? exchange.getSourceAddress().getAddress().getHostAddress() : null);
+        String remoteAddr = WebUtils.getRemoteAddr(
+                exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR), fallbackRemoteAddr);
+        sb.append(remoteAddr);
         return sb.toString();
+    }
+
+    @Nullable
+    private String getReverseContextPath(@NonNull HttpServerExchange exchange, String defaultContextPath) {
+        return WebUtils.getReverseContextPath(
+                exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
     }
 
     /**
