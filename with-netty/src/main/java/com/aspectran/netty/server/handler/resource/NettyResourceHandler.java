@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.netty.server.handler;
+package com.aspectran.netty.server.handler.resource;
 
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.StringUtils;
@@ -68,7 +68,7 @@ import java.util.TimeZone;
 @ChannelHandler.Sharable
 public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
+    protected static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
     private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
 

@@ -23,7 +23,7 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.netty.server.handler.NettyResourceHandler;
+import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.session.NettySessionManager;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;

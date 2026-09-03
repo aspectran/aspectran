@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.netty.server.handler;
+package com.aspectran.netty.server.handler.accesslog;
 
 import com.aspectran.netty.server.handler.logging.ChannelLoggingGroupHelper;
 import com.aspectran.utils.StringUtils;
@@ -30,6 +30,8 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.util.AttributeKey;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -241,7 +243,8 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         return Collections.unmodifiableList(elements);
     }
 
-    private LogElement parseBracedToken(String inner, char modifier) {
+    @Nullable
+    private LogElement parseBracedToken(@NonNull String inner, char modifier) {
         if (inner.startsWith("i,")) {
             return new RequestHeaderElement(inner.substring(2).trim());
         }
@@ -266,6 +269,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         return null;
     }
 
+    @Nullable
     private LogElement parseSingleToken(char token) {
         return switch (token) {
             case 't' -> new DateTimeElement();
@@ -296,56 +300,56 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
 
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, AccessLogData data) {
             sb.append(text);
         }
     }
 
     private static class DateTimeElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, AccessLogData data) {
             sb.append('[').append(ZonedDateTime.now().format(DATE_FORMATTER)).append(']');
         }
     }
 
     private static class RemoteIpElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.clientIp != null ? data.clientIp : "-");
         }
     }
 
     private static class RequestLineElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.requestLine != null ? data.requestLine : "-");
         }
     }
 
     private static class MethodElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.method != null ? data.method : "-");
         }
     }
 
     private static class UriPathElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.getPath());
         }
     }
 
     private static class QueryStringElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.getQueryString());
         }
     }
 
     private static class StatusCodeElement implements LogElement {
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.statusCode);
         }
     }
@@ -358,7 +362,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
 
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(StringBuilder sb, @NonNull AccessLogData data) {
             if (data.contentLength >= 0) {
                 sb.append(data.contentLength);
             } else {
@@ -392,7 +396,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
 
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             String val = (data.headers != null ? data.headers.get(headerName) : null);
             sb.append(val != null ? val : "-");
         }
@@ -406,7 +410,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
 
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             String val = (data.responseHeaders != null ? data.responseHeaders.get(headerName) : null);
             sb.append(val != null ? val : "-");
         }
@@ -420,7 +424,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
 
         @Override
-        public void append(StringBuilder sb, AccessLogData data) {
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
             sb.append(data.getCookieValue(cookieName));
         }
     }
@@ -452,6 +456,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         long contentLength = -1L;
         private Map<String, String> cookies;
 
+        @NonNull
         String getCookieValue(String name) {
             if (cookies == null) {
                 cookies = parseCookies();
@@ -460,6 +465,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
             return (val != null ? val : "-");
         }
 
+        @NonNull
         private Map<String, String> parseCookies() {
             if (headers == null) {
                 return Collections.emptyMap();
@@ -493,6 +499,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
             return (q != -1 ? uri.substring(0, q) : uri);
         }
 
+        @NonNull
         String getQueryString() {
             if (uri == null) {
                 return "";

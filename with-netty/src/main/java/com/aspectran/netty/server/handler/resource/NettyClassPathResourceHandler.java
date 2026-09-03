@@ -17,7 +17,6 @@ package com.aspectran.netty.server.handler.resource;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.netty.server.handler.NettyResourceHandler;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import io.netty.channel.ChannelFuture;
@@ -58,8 +57,6 @@ import java.util.Locale;
  */
 @ChannelHandler.Sharable
 public class NettyClassPathResourceHandler extends NettyResourceHandler implements ActivityContextAware {
-
-    private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
     private ActivityContext activityContext;
 
