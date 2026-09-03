@@ -17,6 +17,7 @@ package com.aspectran.netty.server;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedAspectran;
+import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.utils.ResourceUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -67,7 +68,7 @@ class DefaultNettyServerTest {
         aspectran = EmbeddedAspectran.run(aspectranConfig);
         nettyServer = aspectran.getBean("netty.server");
         if (nettyServer instanceof AbstractNettyServer ans) {
-            ans.setResourceHandler(new com.aspectran.netty.server.handler.NettyResourceHandler(testDir, "/static/**"));
+            ans.setResourceHandler(new NettyResourceHandler(testDir, "/static/**"));
         }
         nettyServer.start();
 

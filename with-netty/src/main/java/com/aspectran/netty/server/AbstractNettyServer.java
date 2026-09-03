@@ -15,9 +15,9 @@
  */
 package com.aspectran.netty.server;
 
-import com.aspectran.netty.server.handler.NettyAccessLogHandler;
+import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.NettyChannelInitializer;
-import com.aspectran.netty.server.handler.NettyResourceHandler;
+import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
