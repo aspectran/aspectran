@@ -41,8 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractNettyService extends DefaultCoreService implements NettyService {
 
-    private boolean sessionAdaptable = true;
-
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     private SessionManager sessionManager;
@@ -73,11 +71,7 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
     @Override
     public boolean isSessionAdaptable() {
-        return sessionAdaptable;
-    }
-
-    public void setSessionAdaptable(boolean sessionAdaptable) {
-        this.sessionAdaptable = sessionAdaptable;
+        return sessionManager != null;
     }
 
     @Override

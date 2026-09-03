@@ -32,7 +32,6 @@
             <bean class="com.aspectran.netty.server.NettyContext">
                 <property name="contextPath">/api</property>
                 <property name="aspectranConfigFile">classpath:config/aspectran-api-config.apon</property>
-                <property name="sessionAdaptable" valueType="boolean">false</property>
             </bean>
             <bean class="com.aspectran.netty.server.NettyContext">
                 <property name="contextPath">/admin</property>

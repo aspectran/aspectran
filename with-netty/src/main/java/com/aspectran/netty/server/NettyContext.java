@@ -75,8 +75,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private NettyResourceHandler resourceHandler;
 
-    private boolean sessionAdaptable = true;
-
     private boolean trailingSlashRedirect = true;
 
     private final Map<String, NettyWebSocketListener> webSocketEndpoints = new ConcurrentHashMap<>();
@@ -84,8 +82,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     private NettyWebSocketConfig webSocketConfig;
 
     private String loggingGroup;
-
-    private Boolean derived;
 
     private Boolean proxyAddressForwarding;
 
@@ -177,14 +173,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.resourceHandler = resourceHandler;
     }
 
-    public boolean isSessionAdaptable() {
-        return sessionAdaptable;
-    }
-
-    public void setSessionAdaptable(boolean sessionAdaptable) {
-        this.sessionAdaptable = sessionAdaptable;
-    }
-
     public boolean isTrailingSlashRedirect() {
         return trailingSlashRedirect;
     }
@@ -228,14 +216,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.webSocketConfig = webSocketConfig;
     }
 
-    public boolean isDerived() {
-        return Boolean.TRUE.equals(derived);
-    }
-
-    public void setDerived(boolean derived) {
-        this.derived = derived;
-    }
-
     public boolean isProxyAddressForwarding() {
         return Boolean.TRUE.equals(proxyAddressForwarding);
     }
@@ -254,9 +234,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
             if (StringUtils.hasText(name)) {
                 return name;
             }
-        }
-        if (activityContext != null && StringUtils.hasText(activityContext.getName())) {
-            return activityContext.getName();
         }
         if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
             return contextPath.startsWith("/") ? contextPath.substring(1) : contextPath;
@@ -277,28 +254,20 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     protected void doStart() throws Exception {
         if (nettyService == null) {
             CoreService masterService = (activityContext != null ? activityContext.getMasterService() : null);
-            boolean isDerived = (derived != null ? derived : (aspectranConfig == null && aspectranConfigFile == null));
-            if (isDerived) {
-                Assert.notNull(masterService, "masterService must not be null for derived NettyContext [" +
-                        getDisplayContextPath() + "]");
+            if (aspectranConfig == null && aspectranConfigFile != null) {
+                aspectranConfig = loadAspectranConfig(aspectranConfigFile);
+            }
+            if (aspectranConfig != null) {
+                nettyService = DefaultNettyServiceBuilder.build(masterService, aspectranConfig);
+            } else if (masterService != null) {
                 nettyService = DefaultNettyServiceBuilder.build(masterService);
             } else {
-                if (aspectranConfig == null && aspectranConfigFile != null) {
-                    aspectranConfig = loadAspectranConfig(aspectranConfigFile);
-                }
-                if (aspectranConfig != null) {
-                    nettyService = DefaultNettyServiceBuilder.build(masterService, aspectranConfig);
-                } else if (masterService != null) {
-                    nettyService = DefaultNettyServiceBuilder.build(masterService);
-                } else {
-                    throw new IllegalStateException("Neither aspectranConfig nor masterService is available for NettyContext [" +
-                            getDisplayContextPath() + "]");
-                }
+                throw new IllegalStateException("Neither aspectranConfig nor masterService is available for NettyContext [" +
+                        getDisplayContextPath() + "]");
             }
         }
 
         nettyService.setContextPath(contextPath);
-        nettyService.setSessionAdaptable(sessionAdaptable);
         nettyService.setTrailingSlashRedirect(trailingSlashRedirect);
         if (proxyAddressForwarding != null) {
             nettyService.setProxyAddressForwarding(proxyAddressForwarding);

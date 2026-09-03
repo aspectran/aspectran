@@ -18,13 +18,7 @@ package com.aspectran.netty.server;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.CoreService;
-import com.aspectran.netty.server.session.NettySessionManager;
-import com.aspectran.netty.service.AbstractNettyService;
-import com.aspectran.netty.service.DefaultNettyServiceBuilder;
-import com.aspectran.netty.service.NettyService;
 
 /**
  * The default concrete implementation of {@link AbstractNettyServer}.
@@ -34,32 +28,13 @@ import com.aspectran.netty.service.NettyService;
  * <p>Created: 2026-09-02</p>
  */
 public class DefaultNettyServer extends AbstractNettyServer
-        implements InitializableBean, DisposableBean, ActivityContextAware {
-
-    private SessionManager sessionManager;
+        implements ActivityContextAware, InitializableBean, DisposableBean {
 
     private ActivityContext activityContext;
-
-    public SessionManager getSessionManager() {
-        return sessionManager;
-    }
-
-    public void setSessionManager(SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
-        applySessionManager(getNettyService());
-    }
 
     @Override
     public void setActivityContext(ActivityContext context) {
         this.activityContext = context;
-        if (getNettyService() == null && getContexts().isEmpty()) {
-            CoreService masterService = context.getMasterService();
-            if (masterService != null) {
-                NettyService service = DefaultNettyServiceBuilder.build(masterService);
-                applySessionManager(service);
-                setNettyService(service);
-            }
-        }
     }
 
     @Override
@@ -69,20 +44,8 @@ public class DefaultNettyServer extends AbstractNettyServer
                 context.setActivityContext(activityContext);
             }
         }
-        applySessionManager(getNettyService());
         if (isAutoStart() && !isRunning()) {
             start();
-        }
-    }
-
-    private void applySessionManager(NettyService nettyService) {
-        if (nettyService != null && sessionManager != null) {
-            if (nettyService.getSessionManager() == null) {
-                nettyService.setSessionManager(sessionManager);
-            }
-            if (sessionManager instanceof NettySessionManager nsm && nettyService instanceof AbstractNettyService ans) {
-                ans.setSessionConfig(nsm.getSessionConfig());
-            }
         }
     }
 
