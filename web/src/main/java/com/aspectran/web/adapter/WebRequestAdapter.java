@@ -48,6 +48,12 @@ public interface WebRequestAdapter extends RequestAdapter {
     int getServerPort();
 
     /**
+     * Returns the Internet Protocol (IP) address of the client or last proxy that sent the request.
+     * @return a string containing the IP address
+     */
+    String getRemoteAddr();
+
+    /**
      * Returns the portion of the request URI that indicates the context of the request.
      * @return a string specifying the context path, or an empty string if in default context
      */

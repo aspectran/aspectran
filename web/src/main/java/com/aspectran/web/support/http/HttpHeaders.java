@@ -433,4 +433,9 @@ public interface HttpHeaders {
      */
     String X_FORWARDED_PORT = "X-Forwarded-Port";
 
+    /**
+     * The X-Forwarded-Ssl header is used to determine if SSL was used when connecting to the proxy.
+     */
+    String X_FORWARDED_SSL = "X-Forwarded-Ssl";
+
 }

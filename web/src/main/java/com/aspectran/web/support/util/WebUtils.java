@@ -47,14 +47,6 @@ import java.util.Map;
  */
 public class WebUtils {
 
-    /**
-     * Standard Servlet 2.3+ spec request attribute for error page exception.
-     * <p>To be exposed to JSPs that are marked as error pages, when forwarding
-     * to them directly rather than through the servlet container's error page
-     * resolution mechanism.</p>
-     */
-    public static final String ERROR_EXCEPTION_ATTRIBUTE = "jakarta.servlet.error.exception";
-
     private static final char QUESTION_CHAR = '?';
 
     private static final char AMPERSAND_CHAR = '&';
@@ -239,17 +231,13 @@ public class WebUtils {
     }
 
     /**
-     * Determines the context path to be used for reverse-proxy scenarios.
-     * <p>This method inspects the {@code X-Forwarded-Path} header. If the header
-     * is present, it is returned (with any trailing slash removed). This is useful
-     * when an application is running behind a reverse proxy that alters the context path.
-     * @param requestAdapter the current request adapter
-     * @return the reverse context path from the header, or {@code null} if the header is not found
-     * @see HttpHeaders#X_FORWARDED_PATH
+     * Normalizes the reverse-proxy context path extracted from the {@code X-Forwarded-Path} header.
+     * <p>If the path is "/", an empty string is returned; any trailing slash is removed.</p>
+     * @param forwardedPath the forwarded path header value
+     * @return the normalized reverse context path, or {@code null} if forwardedPath is {@code null}
      */
     @Nullable
-    public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter) {
-        String forwardedPath = requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH);
+    public static String parseReverseContextPath(String forwardedPath) {
         if (forwardedPath != null) {
             if (forwardedPath.equals("/")) {
                 return StringUtils.EMPTY;
@@ -266,6 +254,49 @@ public class WebUtils {
     /**
      * Determines the context path to be used for reverse-proxy scenarios,
      * falling back to a default context path.
+     * @param forwardedPath the forwarded path header value
+     * @param defaultContextPath the default context path to return if forwardedPath is {@code null}
+     * @return the reverse context path from the header, or the default context path
+     */
+    @Nullable
+    public static String parseReverseContextPath(String forwardedPath, String defaultContextPath) {
+        String reverseContextPath = parseReverseContextPath(forwardedPath);
+        if (reverseContextPath != null) {
+            return reverseContextPath;
+        } else {
+            return defaultContextPath;
+        }
+    }
+
+    /**
+     * Determines the context path to be used for reverse-proxy scenarios,
+     * falling back to a default context path.
+     * @param forwardedPath the forwarded path header value
+     * @param defaultContextPath the default context path to return if forwardedPath is {@code null}
+     * @return the reverse context path from the header, or the default context path
+     */
+    @Nullable
+    public static String getReverseContextPath(String forwardedPath, String defaultContextPath) {
+        return parseReverseContextPath(forwardedPath, defaultContextPath);
+    }
+
+    /**
+     * Determines the context path to be used for reverse-proxy scenarios.
+     * <p>This method inspects the {@code X-Forwarded-Path} header. If the header
+     * is present, it is returned (with any trailing slash removed). This is useful
+     * when an application is running behind a reverse proxy that alters the context path.</p>
+     * @param requestAdapter the current request adapter
+     * @return the reverse context path from the header, or {@code null} if the header is not found
+     * @see HttpHeaders#X_FORWARDED_PATH
+     */
+    @Nullable
+    public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter) {
+        return parseReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH));
+    }
+
+    /**
+     * Determines the context path to be used for reverse-proxy scenarios,
+     * falling back to a default context path.
      * @param requestAdapter the current request adapter
      * @param defaultContextPath the default context path to return if the
      *      {@code X-Forwarded-Path} header is not present
@@ -274,12 +305,84 @@ public class WebUtils {
      */
     @Nullable
     public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter, String defaultContextPath) {
-        String reverseContextPath = getReverseContextPath(requestAdapter);
-        if (reverseContextPath != null) {
-            return reverseContextPath;
-        } else {
-            return defaultContextPath;
+        return getReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+    }
+
+    /**
+     * Extracts the client IP address from the {@code X-Forwarded-For} header value.
+     * <p>If the header contains multiple comma-separated IP addresses, the first IP
+     * (the original client) is returned with leading and trailing whitespace trimmed.</p>
+     * @param forwardedFor the value of the {@code X-Forwarded-For} header
+     * @return the client IP address, or {@code null} if forwardedFor is empty
+     */
+    @Nullable
+    public static String parseRemoteAddr(String forwardedFor) {
+        if (StringUtils.hasLength(forwardedFor)) {
+            if (forwardedFor.contains(",")) {
+                return StringUtils.tokenize(forwardedFor, ",", true)[0];
+            } else {
+                return forwardedFor.trim();
+            }
         }
+        return null;
+    }
+
+    /**
+     * Determines the remote IP address, preferring the IP from the {@code X-Forwarded-For}
+     * header if present, and falling back to the specified fallback remote address.
+     * @param forwardedFor the value of the {@code X-Forwarded-For} header
+     * @param fallbackRemoteAddr the fallback IP address (e.g. from the underlying socket)
+     * @return the resolved remote IP address
+     */
+    @Nullable
+    public static String getRemoteAddr(String forwardedFor, String fallbackRemoteAddr) {
+        String remoteAddr = parseRemoteAddr(forwardedFor);
+        return (remoteAddr != null ? remoteAddr : fallbackRemoteAddr);
+    }
+
+    /**
+     * Extracts the remote client IP address from the request adapter.
+     * <p>If the adapter is a {@link WebRequestAdapter}, its {@link WebRequestAdapter#getRemoteAddr()}
+     * method is checked first. If that returns {@code null}, the {@code X-Forwarded-For} header
+     * is inspected.</p>
+     * @param requestAdapter the current request adapter
+     * @return the remote IP address, or {@code null} if not determinable
+     */
+    @Nullable
+    public static String getRemoteAddr(@NonNull RequestAdapter requestAdapter) {
+        Assert.notNull(requestAdapter, "requestAdapter must not be null");
+        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter) {
+            String remoteAddr = webRequestAdapter.getRemoteAddr();
+            if (StringUtils.hasLength(remoteAddr)) {
+                return remoteAddr;
+            }
+            return parseRemoteAddr(webRequestAdapter.getHeader(HttpHeaders.X_FORWARDED_FOR));
+        }
+        return null;
+    }
+
+    /**
+     * Extracts the remote client IP address from the current activity.
+     * @param activity the current activity
+     * @return the remote IP address, or {@code null} if not determinable
+     */
+    @Nullable
+    public static String getRemoteAddr(@NonNull Activity activity) {
+        Assert.notNull(activity, "activity must not be null");
+        RequestAdapter requestAdapter = activity.getRequestAdapter();
+        return (requestAdapter != null ? getRemoteAddr(requestAdapter) : null);
+    }
+
+    /**
+     * Extracts the remote client IP address from the current translet.
+     * @param translet the current translet
+     * @return the remote IP address, or {@code null} if not determinable
+     */
+    @Nullable
+    public static String getRemoteAddr(@NonNull Translet translet) {
+        Assert.notNull(translet, "translet must not be null");
+        RequestAdapter requestAdapter = translet.getRequestAdapter();
+        return (requestAdapter != null ? getRemoteAddr(requestAdapter) : null);
     }
 
     /**

@@ -205,4 +205,15 @@ class DefaultNettyServerTest {
         }
     }
 
+    @Test
+    void testNativeTransportProperty() {
+        if (nettyServer instanceof AbstractNettyServer ans) {
+            assertTrue(ans.isNativeTransport());
+            ans.setNativeTransport(false);
+            assertEquals(false, ans.isNativeTransport());
+            ans.setNativeTransport(true);
+            assertTrue(ans.isNativeTransport());
+        }
+    }
+
 }

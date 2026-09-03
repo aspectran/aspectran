@@ -17,8 +17,8 @@ package com.aspectran.web.servlet.support.util;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
@@ -32,48 +32,9 @@ import org.jspecify.annotations.Nullable;
 public class ServletWebUtils {
 
     /**
-     * Standard Servlet 2.3+ spec request attribute for error page exception.
-     * <p>To be exposed to JSPs that are marked as error pages, when forwarding
-     * to them directly rather than through the servlet container's error page
-     * resolution mechanism.</p>
-     */
-    public static final String ERROR_EXCEPTION_ATTRIBUTE = "jakarta.servlet.error.exception";
-
-    /**
      * This class cannot be instantiated.
      */
     private ServletWebUtils() {
-    }
-
-    /**
-     * Extracts the remote client IP address from the servlet request.
-     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
-     * falling back to the remote address of the underlying servlet request.
-     * @param request the current servlet request
-     * @return the remote IP address
-     */
-    public static String getRemoteAddr(@NonNull HttpServletRequest request) {
-        String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
-        if (StringUtils.hasLength(remoteAddr)) {
-            if (remoteAddr.contains(",")) {
-                remoteAddr = StringUtils.tokenize(remoteAddr, ",", true)[0];
-            }
-        } else {
-            remoteAddr = request.getRemoteAddr();
-        }
-        return remoteAddr;
-    }
-
-    /**
-     * Extracts the remote client IP address from the translet.
-     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
-     * falling back to the remote address of the underlying servlet request.
-     * @param translet the current translet
-     * @return the remote IP address
-     */
-    public static String getRemoteAddr(@NonNull Translet translet) {
-        Assert.notNull(translet, "Translet must not be null");
-        return getRemoteAddr((HttpServletRequest)translet.getRequestAdaptee());
     }
 
     /**
@@ -124,18 +85,8 @@ public class ServletWebUtils {
      */
     @Nullable
     public static String getReverseContextPath(@NonNull HttpServletRequest request) {
-        String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
-        if (forwardedPath != null) {
-            if (forwardedPath.equals("/")) {
-                return StringUtils.EMPTY;
-            } else if (forwardedPath.endsWith("/")) {
-                return forwardedPath.substring(0, forwardedPath.length() - 1);
-            } else {
-                return forwardedPath;
-            }
-        } else {
-            return null;
-        }
+        Assert.notNull(request, "request must not be null");
+        return WebUtils.parseReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH));
     }
 
     /**
@@ -149,12 +100,31 @@ public class ServletWebUtils {
      */
     @Nullable
     public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
-        String reverseContextPath = getReverseContextPath(request);
-        if (reverseContextPath != null) {
-            return reverseContextPath;
-        } else {
-            return defaultContextPath;
-        }
+        Assert.notNull(request, "request must not be null");
+        return WebUtils.getReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+    }
+
+    /**
+     * Extracts the remote client IP address from the servlet request.
+     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
+     * falling back to the remote address of the underlying servlet request.
+     * @param request the current servlet request
+     * @return the remote IP address
+     */
+    public static String getRemoteAddr(@NonNull HttpServletRequest request) {
+        Assert.notNull(request, "request must not be null");
+        return WebUtils.getRemoteAddr(request.getHeader(HttpHeaders.X_FORWARDED_FOR), request.getRemoteAddr());
+    }
+
+    /**
+     * Extracts the remote client IP address from the translet.
+     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
+     * falling back to the remote address of the underlying servlet request.
+     * @param translet the current translet
+     * @return the remote IP address
+     */
+    public static String getRemoteAddr(@NonNull Translet translet) {
+        return WebUtils.getRemoteAddr(translet);
     }
 
 }

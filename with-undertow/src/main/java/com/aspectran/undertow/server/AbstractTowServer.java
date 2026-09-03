@@ -23,6 +23,7 @@ import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
+import io.undertow.server.handlers.ProxyPeerAddressHandler;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import org.jspecify.annotations.NonNull;
@@ -54,6 +55,8 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
     private boolean shutdownGracefully = true;
 
     private int shutdownTimeoutSecs;
+
+    private boolean proxyAddressForwarding;
 
     private RequestHandlerFactory requestHandlerFactory;
 
@@ -105,6 +108,22 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      */
     public void setShutdownTimeoutSecs(int shutdownTimeoutSecs) {
         this.shutdownTimeoutSecs = shutdownTimeoutSecs;
+    }
+
+    /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    /**
+     * Sets whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @param proxyAddressForwarding true to enable proxy address forwarding; false otherwise
+     */
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
     /**
@@ -280,6 +299,9 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      */
     protected Undertow buildServer() throws Exception {
         HttpHandler handler = getRequestHandlerFactory().createHandler();
+        if (isProxyAddressForwarding()) {
+            handler = new ProxyPeerAddressHandler(handler);
+        }
         if (isShutdownGracefully()) {
             handler = new GracefulShutdownHandler(handler);
         }

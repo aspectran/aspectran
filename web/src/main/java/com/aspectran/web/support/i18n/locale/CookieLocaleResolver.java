@@ -225,8 +225,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
             try {
                 locale = parseLocaleValue(value);
             } catch (IllegalArgumentException ex) {
-                if (isRejectInvalidCookies() &&
-                        requestAdapter.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
+                if (isRejectInvalidCookies() && translet.getRaisedException() == null) {
                     throw new IllegalStateException("Encountered invalid locale cookie '" +
                             cookieName + "': [" + value + "] due to: " + ex.getMessage());
                 } else {
@@ -258,8 +257,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
             try {
                 timeZone = LocaleUtils.parseTimeZoneString(value);
             } catch (IllegalArgumentException ex) {
-                if (isRejectInvalidCookies() &&
-                        requestAdapter.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
+                if (isRejectInvalidCookies() && translet.getRaisedException() == null) {
                     throw new IllegalStateException("Encountered invalid time zone cookie '" +
                             cookieName + "': [" + value + "] due to: " + ex.getMessage());
                 } else {

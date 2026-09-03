@@ -281,12 +281,7 @@ public class DefaultServletWebService extends AbstractServletWebService {
         }
         sb.append(requestName).append(" ");
         sb.append(request.getProtocol()).append(" ");
-        String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
-        if (StringUtils.hasLength(remoteAddr)) {
-            sb.append(remoteAddr);
-        } else {
-            sb.append(request.getRemoteAddr());
-        }
+        sb.append(ServletWebUtils.getRemoteAddr(request));
         return sb.toString();
     }
 

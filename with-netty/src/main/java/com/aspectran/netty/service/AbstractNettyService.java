@@ -55,8 +55,20 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
     private boolean trailingSlashRedirect;
 
+    private boolean proxyAddressForwarding;
+
     protected AbstractNettyService(CoreService parentService, boolean derived) {
         super(parentService, derived);
+    }
+
+    @Override
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    @Override
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
     @Override
