@@ -109,14 +109,14 @@
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-mybatis</artifactId>
-                <version>9.7.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-logback</artifactId>
                 <version>9.7.0-SNAPSHOT</version>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-mybatis</artifactId>
+                <version>9.7.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
