@@ -23,11 +23,14 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.session.NettySessionManager;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
+import com.aspectran.netty.server.websocket.WebSocketEndpointMatch;
+import com.aspectran.netty.server.websocket.WebSocketEndpointTemplate;
 import com.aspectran.netty.server.websocket.jsr356.NettyServerEndpointExporter;
 import com.aspectran.netty.service.DefaultNettyService;
 import com.aspectran.netty.service.DefaultNettyServiceBuilder;
@@ -44,8 +47,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Represents an application context deployed at a specific context path on a {@link NettyServer}.
@@ -61,13 +69,13 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private ActivityContext activityContext;
 
+    private DefaultNettyService nettyService;
+
     private String contextPath = "";
 
     private String aspectranConfigFile;
 
     private AspectranConfig aspectranConfig;
-
-    private DefaultNettyService nettyService;
 
     private SessionManager sessionManager;
 
@@ -75,9 +83,9 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private NettyResourceHandler resourceHandler;
 
-    private boolean trailingSlashRedirect = true;
+    private final Map<String, NettyWebSocketListener> exactWebSocketEndpoints = new ConcurrentHashMap<>();
 
-    private final Map<String, NettyWebSocketListener> webSocketEndpoints = new ConcurrentHashMap<>();
+    private final List<WebSocketEndpointTemplate> templateWebSocketEndpoints = new CopyOnWriteArrayList<>();
 
     private NettyWebSocketConfig webSocketConfig;
 
@@ -97,9 +105,21 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.aspectranConfigFile = aspectranConfigFile;
     }
 
-    public NettyContext(String contextPath, DefaultNettyService nettyService) {
-        setContextPath(contextPath);
-        this.nettyService = nettyService;
+    @Override
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.activityContext = context;
+    }
+
+    public DefaultNettyService getNettyService() {
+        return nettyService;
+    }
+
+    @Nullable
+    public ActivityContext getActivityContext() {
+        if (nettyService != null && nettyService.getActivityContext() != null) {
+            return nettyService.getActivityContext();
+        }
+        return activityContext;
     }
 
     @NonNull
@@ -118,6 +138,9 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
             if (this.contextPath.endsWith("/")) {
                 this.contextPath = this.contextPath.substring(0, this.contextPath.length() - 1);
             }
+        }
+        if (this.resourceHandler != null && this.resourceHandler.getContextPath() == null) {
+            this.resourceHandler.setContextPath(this.contextPath);
         }
     }
 
@@ -139,14 +162,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     public void setAspectranConfig(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
-    }
-
-    public DefaultNettyService getNettyService() {
-        return nettyService;
-    }
-
-    public void setNettyService(DefaultNettyService nettyService) {
-        this.nettyService = nettyService;
     }
 
     public SessionManager getSessionManager() {
@@ -171,22 +186,22 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     public void setResourceHandler(NettyResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
-    }
-
-    public boolean isTrailingSlashRedirect() {
-        return trailingSlashRedirect;
-    }
-
-    public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
-        this.trailingSlashRedirect = trailingSlashRedirect;
+        if (resourceHandler != null && resourceHandler.getContextPath() == null) {
+            resourceHandler.setContextPath(this.contextPath);
+        }
     }
 
     public Map<String, NettyWebSocketListener> getWebSocketEndpoints() {
-        return webSocketEndpoints;
+        Map<String, NettyWebSocketListener> map = new LinkedHashMap<>(exactWebSocketEndpoints);
+        for (WebSocketEndpointTemplate template : templateWebSocketEndpoints) {
+            map.put(template.getPattern(), template.getListener());
+        }
+        return Collections.unmodifiableMap(map);
     }
 
     public void setWebSocketEndpoints(Map<String, NettyWebSocketListener> endpoints) {
-        this.webSocketEndpoints.clear();
+        this.exactWebSocketEndpoints.clear();
+        this.templateWebSocketEndpoints.clear();
         if (endpoints != null) {
             endpoints.forEach(this::addWebSocketEndpoint);
         }
@@ -196,16 +211,38 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         Assert.notNull(path, "path must not be null");
         Assert.notNull(listener, "listener must not be null");
         String normalizedPath = (path.startsWith("/") ? path : "/" + path);
-        webSocketEndpoints.put(normalizedPath, listener);
+        if (normalizedPath.contains("{") && normalizedPath.contains("}")) {
+            templateWebSocketEndpoints.add(new WebSocketEndpointTemplate(normalizedPath, listener));
+            Collections.sort(templateWebSocketEndpoints);
+        } else {
+            exactWebSocketEndpoints.put(normalizedPath, listener);
+        }
     }
 
-    public NettyWebSocketListener getWebSocketEndpoint(@NonNull String path) {
+    @Nullable
+    public WebSocketEndpointMatch matchWebSocketEndpoint(@NonNull String path) {
         String normalizedPath = (path.startsWith("/") ? path : "/" + path);
-        return webSocketEndpoints.get(normalizedPath);
+        NettyWebSocketListener exact = exactWebSocketEndpoints.get(normalizedPath);
+        if (exact != null) {
+            return new WebSocketEndpointMatch(exact, Collections.emptyMap());
+        }
+        for (WebSocketEndpointTemplate template : templateWebSocketEndpoints) {
+            Map<String, String> params = template.match(normalizedPath);
+            if (params != null) {
+                return new WebSocketEndpointMatch(template.getListener(), params);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public NettyWebSocketListener getWebSocketEndpoint(@NonNull String path) {
+        WebSocketEndpointMatch match = matchWebSocketEndpoint(path);
+        return (match != null ? match.getListener() : null);
     }
 
     public boolean hasWebSocketEndpoints() {
-        return !webSocketEndpoints.isEmpty();
+        return !exactWebSocketEndpoints.isEmpty() || !templateWebSocketEndpoints.isEmpty();
     }
 
     public NettyWebSocketConfig getWebSocketConfig() {
@@ -246,29 +283,22 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     }
 
     @Override
-    public void setActivityContext(@NonNull ActivityContext context) {
-        this.activityContext = context;
-    }
-
-    @Override
     protected void doStart() throws Exception {
-        if (nettyService == null) {
-            CoreService masterService = (activityContext != null ? activityContext.getMasterService() : null);
-            if (aspectranConfig == null && aspectranConfigFile != null) {
-                aspectranConfig = loadAspectranConfig(aspectranConfigFile);
-            }
-            if (aspectranConfig != null) {
-                nettyService = DefaultNettyServiceBuilder.build(masterService, aspectranConfig);
-            } else if (masterService != null) {
-                nettyService = DefaultNettyServiceBuilder.build(masterService);
-            } else {
-                throw new IllegalStateException("Neither aspectranConfig nor masterService is available for NettyContext [" +
-                        getDisplayContextPath() + "]");
-            }
+        CoreService masterService = (activityContext != null ? activityContext.getMasterService() : null);
+        if (aspectranConfig == null && aspectranConfigFile != null) {
+            aspectranConfig = loadAspectranConfig(aspectranConfigFile);
+        }
+        if (aspectranConfig != null) {
+            nettyService = DefaultNettyServiceBuilder.build(masterService, aspectranConfig);
+        } else if (masterService != null) {
+            nettyService = DefaultNettyServiceBuilder.build(masterService);
+        } else {
+            throw new IllegalStateException("Neither aspectranConfig nor masterService is available for NettyContext [" +
+                    getDisplayContextPath() + "]");
         }
 
         nettyService.setContextPath(contextPath);
-        nettyService.setTrailingSlashRedirect(trailingSlashRedirect);
+        nettyService.setNettyContext(this);
         if (proxyAddressForwarding != null) {
             nettyService.setProxyAddressForwarding(proxyAddressForwarding);
         }
@@ -300,11 +330,21 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
             nettyService.start();
         }
 
-        if (nettyService.getActivityContext() != null) {
+        exportServerEndpoints();
+
+        if (resourceHandler != null && resourceHandler.getContextPath() == null) {
+            resourceHandler.setContextPath(contextPath);
+        }
+    }
+
+    public void exportServerEndpoints() {
+        if (nettyService != null && nettyService.getActivityContext() != null) {
             try {
-                NettyServerEndpointExporter exporter = new NettyServerEndpointExporter(this);
-                exporter.setActivityContext(nettyService.getActivityContext());
-                exporter.registerEndpoints();
+                NettyServerEndpointExporter exporter = new NettyServerEndpointExporter(nettyService.getActivityContext(), this);
+                Set<Class<?>> endpointClasses = exporter.registerEndpoints();
+                for (Class<?> endpointClass : endpointClasses) {
+                    CoreServiceHolder.hold(endpointClass, nettyService);
+                }
             } catch (Exception e) {
                 logger.warn("Failed to auto-register @ServerEndpoint for NettyContext [{}]", getDisplayContextPath(), e);
             }

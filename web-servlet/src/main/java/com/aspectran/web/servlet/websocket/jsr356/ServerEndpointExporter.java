@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.servlet.websocket.jsr356;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.web.servlet.service.ServletWebService;
 import com.aspectran.web.websocket.jsr356.AspectranConfigurator;
@@ -52,7 +53,7 @@ public class ServerEndpointExporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerEndpointExporter.class);
 
-    private final ServletWebService webService;
+    private final ActivityContext activityContext;
 
     private final ServerContainer serverContainer;
 
@@ -60,8 +61,16 @@ public class ServerEndpointExporter {
     private List<Class<?>> annotatedEndpointClasses;
 
     public ServerEndpointExporter(@NonNull ServletWebService webService) {
-        this.webService = webService;
+        Assert.notNull(webService, "webService must not be null");
+        Assert.notNull(webService.getActivityContext(), "webService must have an ActivityContext");
+        this.activityContext = webService.getActivityContext();
         this.serverContainer = (ServerContainer)webService.getServletContext().getAttribute(ServerContainer.class.getName());
+    }
+
+    public ServerEndpointExporter(@NonNull ActivityContext activityContext, @Nullable ServerContainer serverContainer) {
+        Assert.notNull(activityContext, "activityContext must not be null");
+        this.activityContext = activityContext;
+        this.serverContainer = serverContainer;
     }
 
     /**
@@ -142,11 +151,11 @@ public class ServerEndpointExporter {
     }
 
     private Collection<Class<?>> findServerEndpointClasses() {
-        return webService.getActivityContext().getBeanRegistry().findConfigBeanClassesWithAnnotation(ServerEndpoint.class);
+        return activityContext.getBeanRegistry().findConfigBeanClassesWithAnnotation(ServerEndpoint.class);
     }
 
     private ServerEndpointConfig[] findServerEndpointConfigs() {
-        return webService.getActivityContext().getBeanRegistry().getBeansOfType(ServerEndpointConfig.class);
+        return activityContext.getBeanRegistry().getBeansOfType(ServerEndpointConfig.class);
     }
 
 }

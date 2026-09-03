@@ -24,6 +24,10 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,17 +35,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit test for {@link NettyClassPathResourceHandler}.
+ * Unit test for {@link NettyResourceHandler}.
  */
-class NettyClassPathResourceHandlerTest {
+class NettyResourceHandlerTest {
 
     @Test
-    void testServeClasspathResource() throws Exception {
-        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
+    void testServeFile(@TempDir Path tempDir) throws Exception {
+        Files.writeString(tempDir.resolve("test.html"), "<html><body>Hello</body></html>");
+
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
         EmbeddedChannel channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
-                HttpVersion.HTTP_1_1, HttpMethod.GET, "/aspectran-config.apon");
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/test.html");
 
         boolean handled = handler.handle(channel.pipeline().firstContext(), request);
         assertTrue(handled, "Resource should be handled");
@@ -54,42 +60,16 @@ class NettyClassPathResourceHandlerTest {
     }
 
     @Test
-    void testResourceNotFound() throws Exception {
-        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+    void testContextPathStripping(@TempDir Path tempDir) throws Exception {
+        Path assetsDir = Files.createDirectories(tempDir.resolve("assets"));
+        Files.writeString(assetsDir.resolve("style.css"), "body { color: red; }");
 
-        FullHttpRequest request = new DefaultFullHttpRequest(
-                HttpVersion.HTTP_1_1, HttpMethod.GET, "/non-existing-file.txt");
-
-        boolean handled = handler.handle(channel.pipeline().firstContext(), request);
-        assertFalse(handled, "Non-existing resource should not be handled");
-    }
-
-    @Test
-    void testHeadRequest() throws Exception {
-        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
-
-        FullHttpRequest request = new DefaultFullHttpRequest(
-                HttpVersion.HTTP_1_1, HttpMethod.HEAD, "/aspectran-config.apon");
-
-        boolean handled = handler.handle(channel.pipeline().firstContext(), request);
-        assertTrue(handled, "HEAD request should be handled");
-
-        HttpResponse response = channel.readOutbound();
-        assertNotNull(response);
-        assertEquals(HttpResponseStatus.OK, response.status());
-        assertTrue(response.headers().contains(HttpHeaderNames.CONTENT_LENGTH));
-    }
-
-    @Test
-    void testContextPathStripping() throws Exception {
-        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
         handler.setContextPath("/console");
         EmbeddedChannel channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
-                HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/aspectran-config.apon");
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/assets/style.css");
 
         boolean handled = handler.handle(channel.pipeline().firstContext(), request);
         assertTrue(handled, "Resource should be handled with contextPath stripped");
@@ -100,14 +80,17 @@ class NettyClassPathResourceHandlerTest {
     }
 
     @Test
-    void testExplicitRelativePath() throws Exception {
-        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
+    void testExplicitRelativePath(@TempDir Path tempDir) throws Exception {
+        Path assetsDir = Files.createDirectories(tempDir.resolve("assets"));
+        Files.writeString(assetsDir.resolve("style.css"), "body { color: blue; }");
+
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
         EmbeddedChannel channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
-                HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/aspectran-config.apon");
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/assets/style.css");
 
-        boolean handled = handler.handle(channel.pipeline().firstContext(), request, "/aspectran-config.apon");
+        boolean handled = handler.handle(channel.pipeline().firstContext(), request, "/assets/style.css");
         assertTrue(handled, "Resource should be handled using explicit relativePath");
 
         HttpResponse response = channel.readOutbound();
@@ -116,16 +99,15 @@ class NettyClassPathResourceHandlerTest {
     }
 
     @Test
-    void testDirectoryWithoutIndexFile() throws Exception {
-        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        handler.setContextPath("/console");
+    void testFileNotFound(@TempDir Path tempDir) throws Exception {
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
         EmbeddedChannel channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
-                HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/");
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/non-existing.txt");
 
-        boolean handled = handler.handle(channel.pipeline().firstContext(), request, "/");
-        assertFalse(handled, "Directory request without index file should not be handled");
+        boolean handled = handler.handle(channel.pipeline().firstContext(), request);
+        assertFalse(handled, "Non-existing file should not be handled");
     }
 
 }

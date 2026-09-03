@@ -21,8 +21,6 @@ import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
-import com.aspectran.netty.service.DefaultNettyService;
-import com.aspectran.netty.service.NettyService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
@@ -340,7 +338,7 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     @Override
     protected void doStart() throws Exception {
         if (contextRouter.isEmpty()) {
-            throw new IllegalStateException("Neither nettyService nor contexts are configured on NettyServer");
+            throw new IllegalStateException("No NettyContext configured on " + this);
         }
 
         for (NettyContext context : contextRouter.getContexts()) {

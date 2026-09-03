@@ -16,8 +16,10 @@
 package com.aspectran.netty.server.websocket.jsr356;
 
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import com.aspectran.netty.server.DefaultNettyServer;
+import com.aspectran.netty.server.NettyContext;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.web.websocket.jsr356.SimplifiedEndpoint;
 import jakarta.websocket.CloseReason;
@@ -25,6 +27,7 @@ import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
+import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -65,9 +68,12 @@ class JsrWebSocketServerTest {
         nettyServer = aspectran.getBean("netty.server");
 
         // Manually export JSR endpoints on the server
-        NettyServerEndpointExporter exporter = new NettyServerEndpointExporter(nettyServer);
+        NettyContext nettyContext = ((DefaultNettyServer)nettyServer).getContextRouter().getRootContext();
+        NettyServerEndpointExporter exporter = new NettyServerEndpointExporter(
+                ((CoreService)aspectran).getActivityContext(), nettyContext);
         exporter.registerEndpoint(EchoServerEndpoint.class);
         exporter.registerEndpoint(ChatServerEndpoint.class);
+        exporter.registerEndpoint(TemplateServerEndpoint.class);
 
         nettyServer.start();
         port = nettyServer.getActivePort();
@@ -182,6 +188,46 @@ class JsrWebSocketServerTest {
 
         @Override
         protected void onSessionRemoved(Session session) {
+        }
+
+    }
+
+    @Test
+    void testJsrTemplateEndpoint() throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        CompletableFuture<String> receivedText = new CompletableFuture<>();
+
+        WebSocket webSocket = client.newWebSocketBuilder()
+                .buildAsync(URI.create("ws://127.0.0.1:" + port + "/jsr-nodes/node1/appmon/websocket/secretToken123"),
+                        new WebSocket.Listener() {
+                            @Override
+                            public CompletionStage<?> onText(WebSocket ws, CharSequence data, boolean last) {
+                                receivedText.complete(data.toString());
+                                return WebSocket.Listener.super.onText(ws, data, last);
+                            }
+                        })
+                .get(5, TimeUnit.SECONDS);
+
+        webSocket.sendText("hello", true);
+        String response = receivedText.get(5, TimeUnit.SECONDS);
+        assertEquals("Node: node1 token: secretToken123 says hello", response);
+
+        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "Done").get(5, TimeUnit.SECONDS);
+    }
+
+    @ServerEndpoint("/jsr-nodes/{nodeId}/appmon/websocket/{token}")
+    public static class TemplateServerEndpoint {
+
+        @OnOpen
+        public void onOpen(Session session, @PathParam("nodeId") String nodeId, @PathParam("token") String token) {
+            assertEquals("node1", nodeId);
+            assertEquals("secretToken123", token);
+            assertEquals("secretToken123", session.getPathParameters().get("token"));
+        }
+
+        @OnMessage
+        public String onMessage(Session session, String message, @PathParam("nodeId") String nodeId, @PathParam("token") String token) {
+            return "Node: " + nodeId + " token: " + token + " says " + message;
         }
 
     }

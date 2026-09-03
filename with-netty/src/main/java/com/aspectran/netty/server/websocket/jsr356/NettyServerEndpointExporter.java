@@ -15,11 +15,8 @@
  */
 package com.aspectran.netty.server.websocket.jsr356;
 
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.netty.server.NettyContext;
-import com.aspectran.netty.server.NettyServer;
 import com.aspectran.utils.Assert;
 import jakarta.websocket.server.ServerEndpoint;
 import jakarta.websocket.server.ServerEndpointConfig;
@@ -41,40 +38,28 @@ import java.util.Set;
  *
  * <p>Created: 2026-09-02</p>
  */
-public class NettyServerEndpointExporter implements InitializableBean, ActivityContextAware {
+public class NettyServerEndpointExporter {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyServerEndpointExporter.class);
 
-    private ActivityContext activityContext;
+    private final ActivityContext activityContext;
 
-    private NettyServer nettyServer;
-
-    private NettyContext nettyContext;
+    private final NettyContext nettyContext;
 
     @Nullable
     private List<Class<?>> annotatedEndpointClasses;
 
-    public NettyServerEndpointExporter() {
-    }
-
-    public NettyServerEndpointExporter(@NonNull NettyContext nettyContext) {
+    public NettyServerEndpointExporter(@NonNull ActivityContext activityContext, @NonNull NettyContext nettyContext) {
+        Assert.notNull(activityContext, "activityContext must not be null");
+        Assert.notNull(nettyContext, "nettyContext must not be null");
+        this.activityContext = activityContext;
         this.nettyContext = nettyContext;
     }
 
-    public NettyServerEndpointExporter(@NonNull NettyServer nettyServer) {
-        this.nettyServer = nettyServer;
-    }
-
-    @Override
-    public void setActivityContext(@NonNull ActivityContext activityContext) {
-        this.activityContext = activityContext;
-    }
-
-    public void setNettyServer(NettyServer nettyServer) {
-        this.nettyServer = nettyServer;
-    }
-
-    public void setNettyContext(NettyContext nettyContext) {
+    public NettyServerEndpointExporter(@NonNull NettyContext nettyContext) {
+        Assert.notNull(nettyContext, "nettyContext must not be null");
+        Assert.notNull(nettyContext.getActivityContext(), "activityContext must not be null for NettyContext");
+        this.activityContext = nettyContext.getActivityContext();
         this.nettyContext = nettyContext;
     }
 
@@ -82,25 +67,11 @@ public class NettyServerEndpointExporter implements InitializableBean, ActivityC
         this.annotatedEndpointClasses = Arrays.asList(annotatedEndpointClasses);
     }
 
-    @Override
-    public void initialize() throws Exception {
-        Assert.state(activityContext != null, "activityContext must not be null");
-
-        if (nettyServer == null && nettyContext == null) {
-            try {
-                nettyServer = activityContext.getBeanRegistry().getBean(NettyServer.class);
-            } catch (Exception ignore) {
-            }
-        }
-
-        registerEndpoints();
-    }
-
     public Set<Class<?>> registerEndpoints() {
         Set<Class<?>> endpointClasses = new LinkedHashSet<>();
         if (annotatedEndpointClasses != null) {
             endpointClasses.addAll(annotatedEndpointClasses);
-        } else if (activityContext != null) {
+        } else {
             endpointClasses.addAll(findServerEndpointClasses());
         }
 
@@ -108,13 +79,11 @@ public class NettyServerEndpointExporter implements InitializableBean, ActivityC
             registerEndpoint(endpointClass);
         }
 
-        if (activityContext != null) {
-            ServerEndpointConfig[] endpointConfigs = findServerEndpointConfigs();
-            if (endpointConfigs != null) {
-                for (ServerEndpointConfig endpointConfig : endpointConfigs) {
-                    registerEndpoint(endpointConfig);
-                    endpointClasses.add(endpointConfig.getEndpointClass());
-                }
+        ServerEndpointConfig[] endpointConfigs = findServerEndpointConfigs();
+        if (endpointConfigs != null) {
+            for (ServerEndpointConfig endpointConfig : endpointConfigs) {
+                registerEndpoint(endpointConfig);
+                endpointClasses.add(endpointConfig.getEndpointClass());
             }
         }
 
@@ -126,8 +95,8 @@ public class NettyServerEndpointExporter implements InitializableBean, ActivityC
         Assert.notNull(annotation, "Class must be annotated with @ServerEndpoint: " + endpointClass.getName());
 
         String path = annotation.value();
-        Object endpointInstance = null;
-        if (activityContext != null && activityContext.getBeanRegistry().containsBean(endpointClass)) {
+        Object endpointInstance;
+        if (activityContext.getBeanRegistry().containsBean(endpointClass)) {
             endpointInstance = activityContext.getBeanRegistry().getBean(endpointClass);
         } else {
             try {
@@ -160,8 +129,8 @@ public class NettyServerEndpointExporter implements InitializableBean, ActivityC
 
     public void registerEndpoint(@NonNull ServerEndpointConfig endpointConfig) {
         Class<?> endpointClass = endpointConfig.getEndpointClass();
-        Object endpointInstance = null;
-        if (activityContext != null && activityContext.getBeanRegistry().containsBean(endpointClass)) {
+        Object endpointInstance;
+        if (activityContext.getBeanRegistry().containsBean(endpointClass)) {
             endpointInstance = activityContext.getBeanRegistry().getBean(endpointClass);
         } else {
             try {
@@ -175,11 +144,8 @@ public class NettyServerEndpointExporter implements InitializableBean, ActivityC
     }
 
     private void registerEndpoint(Object endpointInstance, String path, ServerEndpointConfig endpointConfig) {
-        NettyContext targetContext = resolveTargetContext(path);
-        Assert.state(targetContext != null, "No matching NettyContext found for WebSocket path: " + path);
-
         String relativePath = path;
-        String contextPath = targetContext.getContextPath();
+        String contextPath = nettyContext.getContextPath();
         if (!contextPath.isEmpty() && path.startsWith(contextPath)) {
             relativePath = path.substring(contextPath.length());
         }
@@ -188,25 +154,12 @@ public class NettyServerEndpointExporter implements InitializableBean, ActivityC
         }
 
         JsrWebSocketEndpointAdapter adapter = new JsrWebSocketEndpointAdapter(endpointInstance, endpointConfig);
-        targetContext.addWebSocketEndpoint(relativePath, adapter);
+        nettyContext.addWebSocketEndpoint(relativePath, adapter);
 
         if (logger.isInfoEnabled()) {
             logger.info("Registered JSR-356 @ServerEndpoint [{}] on NettyContext [{}] with path [{}]",
-                    endpointInstance.getClass().getName(), targetContext.getDisplayContextPath(), relativePath);
+                    endpointInstance.getClass().getName(), nettyContext.getDisplayContextPath(), relativePath);
         }
-    }
-
-    private NettyContext resolveTargetContext(String path) {
-        if (nettyContext != null) {
-            return nettyContext;
-        }
-        if (nettyServer != null && nettyServer.getContextRouter() != null) {
-            NettyContext matched = nettyServer.getContextRouter().match(path);
-            if (matched != null) {
-                return matched;
-            }
-        }
-        return null;
     }
 
     private Collection<Class<?>> findServerEndpointClasses() {

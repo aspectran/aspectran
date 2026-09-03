@@ -28,6 +28,7 @@ import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
+import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import jakarta.websocket.server.ServerEndpointConfig;
 import org.jspecify.annotations.NonNull;
@@ -35,6 +36,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -170,12 +172,15 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
     private void invokeOnOpen(JsrWebSocketSession session) {
         try {
             Class<?>[] paramTypes = onOpenMethod.getParameterTypes();
+            Annotation[][] paramAnnos = onOpenMethod.getParameterAnnotations();
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 if (paramTypes[i].isAssignableFrom(Session.class)) {
                     args[i] = session;
                 } else if (paramTypes[i].isAssignableFrom(EndpointConfig.class)) {
                     args[i] = endpointConfig;
+                } else {
+                    args[i] = resolvePathParam(paramAnnos[i], paramTypes[i], session);
                 }
             }
             onOpenMethod.invoke(endpointInstance, args);
@@ -187,12 +192,15 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
     private void invokeOnClose(JsrWebSocketSession session, CloseReason closeReason) {
         try {
             Class<?>[] paramTypes = onCloseMethod.getParameterTypes();
+            Annotation[][] paramAnnos = onCloseMethod.getParameterAnnotations();
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 if (paramTypes[i].isAssignableFrom(Session.class)) {
                     args[i] = session;
                 } else if (paramTypes[i].isAssignableFrom(CloseReason.class)) {
                     args[i] = closeReason;
+                } else {
+                    args[i] = resolvePathParam(paramAnnos[i], paramTypes[i], session);
                 }
             }
             onCloseMethod.invoke(endpointInstance, args);
@@ -204,12 +212,15 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
     private void invokeOnError(JsrWebSocketSession session, Throwable cause) {
         try {
             Class<?>[] paramTypes = onErrorMethod.getParameterTypes();
+            Annotation[][] paramAnnos = onErrorMethod.getParameterAnnotations();
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 if (paramTypes[i].isAssignableFrom(Session.class)) {
                     args[i] = session;
                 } else if (Throwable.class.isAssignableFrom(paramTypes[i])) {
                     args[i] = cause;
+                } else {
+                    args[i] = resolvePathParam(paramAnnos[i], paramTypes[i], session);
                 }
             }
             onErrorMethod.invoke(endpointInstance, args);
@@ -221,12 +232,16 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
     private void invokeOnMessageText(JsrWebSocketSession session, String text) {
         try {
             Class<?>[] paramTypes = onMessageTextMethod.getParameterTypes();
+            Annotation[][] paramAnnos = onMessageTextMethod.getParameterAnnotations();
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 if (paramTypes[i].isAssignableFrom(Session.class)) {
                     args[i] = session;
                 } else if (paramTypes[i].isAssignableFrom(String.class)) {
-                    args[i] = text;
+                    Object pathVal = resolvePathParam(paramAnnos[i], paramTypes[i], session);
+                    args[i] = (pathVal != null ? pathVal : text);
+                } else {
+                    args[i] = resolvePathParam(paramAnnos[i], paramTypes[i], session);
                 }
             }
             Object result = onMessageTextMethod.invoke(endpointInstance, args);
@@ -241,6 +256,7 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
     private void invokeOnMessageBinary(JsrWebSocketSession session, byte[] data) {
         try {
             Class<?>[] paramTypes = onMessageBinaryMethod.getParameterTypes();
+            Annotation[][] paramAnnos = onMessageBinaryMethod.getParameterAnnotations();
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 if (paramTypes[i].isAssignableFrom(Session.class)) {
@@ -249,6 +265,8 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
                     args[i] = data;
                 } else if (paramTypes[i].isAssignableFrom(ByteBuffer.class)) {
                     args[i] = ByteBuffer.wrap(data);
+                } else {
+                    args[i] = resolvePathParam(paramAnnos[i], paramTypes[i], session);
                 }
             }
             Object result = onMessageBinaryMethod.invoke(endpointInstance, args);
@@ -258,6 +276,37 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
         } catch (Exception e) {
             logger.error("Failed to invoke @OnMessage(binary) on {}", endpointClass.getName(), unwrapInvocationTarget(e));
         }
+    }
+
+    @Nullable
+    private Object resolvePathParam(Annotation @NonNull [] annotations, Class<?> paramType, JsrWebSocketSession session) {
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof PathParam pathParam) {
+                String raw = session.getPathParameters().get(pathParam.value());
+                if (raw == null) {
+                    return null;
+                }
+                if (paramType == String.class) {
+                    return raw;
+                } else if (paramType == int.class || paramType == Integer.class) {
+                    return Integer.parseInt(raw);
+                } else if (paramType == long.class || paramType == Long.class) {
+                    return Long.parseLong(raw);
+                } else if (paramType == boolean.class || paramType == Boolean.class) {
+                    return Boolean.parseBoolean(raw);
+                } else if (paramType == double.class || paramType == Double.class) {
+                    return Double.parseDouble(raw);
+                } else if (paramType == float.class || paramType == Float.class) {
+                    return Float.parseFloat(raw);
+                } else if (paramType == short.class || paramType == Short.class) {
+                    return Short.parseShort(raw);
+                } else if (paramType == byte.class || paramType == Byte.class) {
+                    return Byte.parseByte(raw);
+                }
+                return raw;
+            }
+        }
+        return null;
     }
 
     private void initEncodersAndDecoders() {

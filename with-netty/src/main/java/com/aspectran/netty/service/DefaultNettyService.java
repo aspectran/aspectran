@@ -24,6 +24,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.netty.activity.NettyActivity;
+import com.aspectran.netty.server.NettyContext;
 import com.aspectran.utils.DurationUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
@@ -69,8 +70,18 @@ public class DefaultNettyService extends AbstractNettyService {
 
     protected volatile long pauseTimeout = -2L;
 
+    private NettyContext nettyContext;
+
     DefaultNettyService(CoreService parentService, boolean derived) {
         super(parentService, derived);
+    }
+
+    public NettyContext getNettyContext() {
+        return nettyContext;
+    }
+
+    public void setNettyContext(NettyContext nettyContext) {
+        this.nettyContext = nettyContext;
     }
 
     @Override
