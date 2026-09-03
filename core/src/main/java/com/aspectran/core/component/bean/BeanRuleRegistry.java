@@ -251,7 +251,7 @@ public class BeanRuleRegistry {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
         }
-        return typeBasedBeanRuleMap.containsKey(type);
+        return (typeBasedBeanRuleMap.containsKey(type) || configurableBeanRuleMap.containsKey(type));
     }
 
     /**
