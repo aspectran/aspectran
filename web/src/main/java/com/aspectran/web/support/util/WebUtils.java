@@ -66,7 +66,7 @@ public class WebUtils {
      * @return the {@link Cookie}, or {@code null} if not found
      */
     @Nullable
-    public static Cookie getCookie(@NonNull RequestAdapter requestAdapter, @NonNull String cookieName) {
+    public static Cookie getCookie(@NonNull RequestAdapter requestAdapter, String cookieName) {
         Assert.notNull(requestAdapter, "RequestAdapter must not be null");
         Assert.hasLength(cookieName, "Cookie name must not be null or empty");
         Cookie[] cookies = getCookies(requestAdapter);
@@ -87,7 +87,7 @@ public class WebUtils {
      * @return the {@link Cookie}, or {@code null} if not found
      */
     @Nullable
-    public static Cookie getCookie(@NonNull Translet translet, @NonNull String cookieName) {
+    public static Cookie getCookie(@NonNull Translet translet, String cookieName) {
         Assert.notNull(translet, "Translet must not be null");
         return getCookie(translet.getRequestAdapter(), cookieName);
     }
@@ -97,7 +97,7 @@ public class WebUtils {
      * @param requestAdapter the request adapter
      * @return an array of {@link Cookie} objects, or {@code null} if none sent
      */
-    public static Cookie @Nullable [] getCookies(@NonNull RequestAdapter requestAdapter) {
+    public static Cookie @Nullable [] getCookies(RequestAdapter requestAdapter) {
         Assert.notNull(requestAdapter, "RequestAdapter must not be null");
         List<String> cookieHeaders = requestAdapter.getHeaderValues(HttpHeaders.COOKIE);
         if (cookieHeaders == null || cookieHeaders.isEmpty()) {
@@ -116,7 +116,7 @@ public class WebUtils {
      * @return an array of {@link Cookie} objects, or {@code null} if none sent
      */
     @Nullable
-    public static Cookie[] getCookies(@NonNull Translet translet) {
+    public static Cookie[] getCookies(Translet translet) {
         Assert.notNull(translet, "Translet must not be null");
         return getCookies(translet.getRequestAdapter());
     }

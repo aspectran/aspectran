@@ -249,8 +249,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
         if (cookieName == null) {
             return null;
         }
-        RequestAdapter requestAdapter = translet.getRequestAdapter();
-        Cookie cookie = WebUtils.getCookie(requestAdapter, cookieName);
+        Cookie cookie = WebUtils.getCookie(translet, cookieName);
         TimeZone timeZone = null;
         if (cookie != null) {
             String value = cookie.getValue();
