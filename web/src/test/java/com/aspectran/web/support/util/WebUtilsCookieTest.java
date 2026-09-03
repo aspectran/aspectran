@@ -66,4 +66,26 @@ class WebUtilsCookieTest {
         assertNull(cookies);
     }
 
+    @Test
+    void testSetCookie() {
+        com.aspectran.core.adapter.ResponseAdapter responseAdapter = new com.aspectran.core.adapter.DefaultResponseAdapter(null);
+        Cookie cookie = Cookie.builder("auth", "token123")
+                .path("/app")
+                .maxAge(600)
+                .httpOnly(true)
+                .build();
+
+        WebUtils.setCookie(responseAdapter, cookie);
+        String header = responseAdapter.getHeader(HttpHeaders.SET_COOKIE);
+        assertEquals("auth=token123; Path=/app; Max-Age=600; HttpOnly", header);
+    }
+
+    @Test
+    void testRemoveCookie() {
+        com.aspectran.core.adapter.ResponseAdapter responseAdapter = new com.aspectran.core.adapter.DefaultResponseAdapter(null);
+        WebUtils.removeCookie(responseAdapter, "auth", "/app");
+        String header = responseAdapter.getHeader(HttpHeaders.SET_COOKIE);
+        assertEquals("auth=; Path=/app; Max-Age=0", header);
+    }
+
 }

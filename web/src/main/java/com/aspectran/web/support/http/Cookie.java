@@ -199,6 +199,35 @@ public class Cookie implements Serializable {
         this.sameSite = sameSite;
     }
 
+    /**
+     * Builds the {@code Set-Cookie} header value string for this cookie according to RFC 6265.
+     * @return the formatted {@code Set-Cookie} header value string
+     */
+    @NonNull
+    public String toHeaderValue() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append('=').append(value != null ? value : "");
+        if (domain != null) {
+            sb.append("; Domain=").append(domain);
+        }
+        if (path != null) {
+            sb.append("; Path=").append(path);
+        }
+        if (maxAge != null) {
+            sb.append("; Max-Age=").append(maxAge);
+        }
+        if (secure) {
+            sb.append("; Secure");
+        }
+        if (httpOnly) {
+            sb.append("; HttpOnly");
+        }
+        if (sameSite != null) {
+            sb.append("; SameSite=").append(sameSite);
+        }
+        return sb.toString();
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -223,6 +252,94 @@ public class Cookie implements Serializable {
     @Override
     public String toString() {
         return name + "=" + (value != null ? value : "");
+    }
+
+    @NonNull
+    public static Builder builder(@NonNull String name) {
+        return new Builder(name, null);
+    }
+
+    @NonNull
+    public static Builder builder(@NonNull String name, @Nullable String value) {
+        return new Builder(name, value);
+    }
+
+    public static class Builder {
+
+        private final String name;
+
+        private String value;
+
+        private String domain;
+
+        private String path;
+
+        private Integer maxAge;
+
+        private boolean secure;
+
+        private boolean httpOnly;
+
+        private String sameSite;
+
+        Builder(@NonNull String name, @Nullable String value) {
+            Assert.notNull(name, "Cookie name must not be null");
+            this.name = name;
+            this.value = value;
+        }
+
+        public Builder value(@Nullable String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder domain(@Nullable String domain) {
+            this.domain = domain;
+            return this;
+        }
+
+        public Builder path(@Nullable String path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder maxAge(int maxAge) {
+            this.maxAge = maxAge;
+            return this;
+        }
+
+        public Builder maxAge(@Nullable Integer maxAge) {
+            this.maxAge = maxAge;
+            return this;
+        }
+
+        public Builder secure(boolean secure) {
+            this.secure = secure;
+            return this;
+        }
+
+        public Builder httpOnly(boolean httpOnly) {
+            this.httpOnly = httpOnly;
+            return this;
+        }
+
+        public Builder sameSite(@Nullable String sameSite) {
+            this.sameSite = sameSite;
+            return this;
+        }
+
+        @NonNull
+        public Cookie build() {
+            Cookie cookie = new Cookie(name, value);
+            cookie.setDomain(domain);
+            cookie.setPath(path);
+            cookie.setMaxAge(maxAge);
+            cookie.setSecure(secure);
+            cookie.setHttpOnly(httpOnly);
+            cookie.setSameSite(sameSite);
+            return cookie;
+        }
+
     }
 
 }
