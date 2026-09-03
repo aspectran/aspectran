@@ -76,4 +76,41 @@ class CookieTest {
         assertNotEquals(c1, c3);
     }
 
+    @Test
+    void testToHeaderValue() {
+        Cookie cookie = new Cookie("authToken", "secret123");
+        cookie.setPath("/admin");
+        cookie.setDomain("example.com");
+        cookie.setMaxAge(1800);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setSameSite("Strict");
+
+        assertEquals("authToken=secret123; Domain=example.com; Path=/admin; Max-Age=1800; Secure; HttpOnly; SameSite=Strict",
+                cookie.toHeaderValue());
+    }
+
+    @Test
+    void testBuilder() {
+        Cookie cookie = Cookie.builder("session", "xyz")
+                .path("/api")
+                .domain("example.org")
+                .maxAge(3600)
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("Lax")
+                .build();
+
+        assertEquals("session", cookie.getName());
+        assertEquals("xyz", cookie.getValue());
+        assertEquals("/api", cookie.getPath());
+        assertEquals("example.org", cookie.getDomain());
+        assertEquals(3600, cookie.getMaxAge());
+        assertTrue(cookie.isSecure());
+        assertTrue(cookie.isHttpOnly());
+        assertEquals("Lax", cookie.getSameSite());
+        assertEquals("session=xyz; Domain=example.org; Path=/api; Max-Age=3600; Secure; HttpOnly; SameSite=Lax",
+                cookie.toHeaderValue());
+    }
+
 }

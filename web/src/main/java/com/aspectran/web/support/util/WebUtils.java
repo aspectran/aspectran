@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -119,6 +120,82 @@ public class WebUtils {
     public static Cookie[] getCookies(Translet translet) {
         Assert.notNull(translet, "Translet must not be null");
         return getCookies(translet.getRequestAdapter());
+    }
+
+    /**
+     * Sets a cookie in the response adapter by adding a {@code Set-Cookie} header.
+     * @param responseAdapter the response adapter
+     * @param cookie the cookie to set
+     */
+    public static void setCookie(@NonNull ResponseAdapter responseAdapter, @NonNull Cookie cookie) {
+        Assert.notNull(responseAdapter, "responseAdapter must not be null");
+        Assert.notNull(cookie, "cookie must not be null");
+        responseAdapter.addHeader(HttpHeaders.SET_COOKIE, cookie.toHeaderValue());
+    }
+
+    /**
+     * Sets a cookie in the translet's response by adding a {@code Set-Cookie} header.
+     * @param translet the current translet
+     * @param cookie the cookie to set
+     */
+    public static void setCookie(@NonNull Translet translet, @NonNull Cookie cookie) {
+        Assert.notNull(translet, "translet must not be null");
+        ResponseAdapter responseAdapter = translet.getResponseAdapter();
+        if (responseAdapter != null) {
+            setCookie(responseAdapter, cookie);
+        }
+    }
+
+    /**
+     * Sets a cookie with the specified name and value in the translet's response.
+     * @param translet the current translet
+     * @param name the cookie name
+     * @param value the cookie value
+     */
+    public static void setCookie(@NonNull Translet translet, @NonNull String name, @Nullable String value) {
+        setCookie(translet, new Cookie(name, value));
+    }
+
+    /**
+     * Removes a cookie from the client by setting a {@code Set-Cookie} header
+     * with an empty value, max-age 0, and the specified path.
+     * @param responseAdapter the response adapter
+     * @param cookieName the name of the cookie to remove
+     * @param path the path of the cookie, or {@code null}
+     */
+    public static void removeCookie(@NonNull ResponseAdapter responseAdapter, @NonNull String cookieName, @Nullable String path) {
+        Assert.notNull(responseAdapter, "responseAdapter must not be null");
+        Assert.hasLength(cookieName, "cookieName must not be null or empty");
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setMaxAge(0);
+        if (path != null) {
+            cookie.setPath(path);
+        }
+        setCookie(responseAdapter, cookie);
+    }
+
+    /**
+     * Removes a cookie from the client by setting a {@code Set-Cookie} header
+     * with an empty value, max-age 0, and the specified path.
+     * @param translet the current translet
+     * @param cookieName the name of the cookie to remove
+     * @param path the path of the cookie, or {@code null}
+     */
+    public static void removeCookie(@NonNull Translet translet, @NonNull String cookieName, @Nullable String path) {
+        Assert.notNull(translet, "translet must not be null");
+        ResponseAdapter responseAdapter = translet.getResponseAdapter();
+        if (responseAdapter != null) {
+            removeCookie(responseAdapter, cookieName, path);
+        }
+    }
+
+    /**
+     * Removes a cookie from the client with the default root path ("/").
+     * @param translet the current translet
+     * @param cookieName the name of the cookie to remove
+     */
+    public static void removeCookie(@NonNull Translet translet, @NonNull String cookieName) {
+        removeCookie(translet, cookieName, "/");
     }
 
     private static void parseCookies(@Nullable String cookieHeader, @NonNull List<Cookie> cookies) {
