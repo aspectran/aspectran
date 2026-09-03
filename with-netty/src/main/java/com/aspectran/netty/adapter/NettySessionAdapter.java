@@ -25,6 +25,7 @@ import com.aspectran.netty.service.AbstractNettyService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -54,7 +55,7 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
             ChannelHandlerContext ctx,
             FullHttpRequest request,
             NettyResponseAdapter responseAdapter,
-            NettyActivity activity) {
+            @NonNull NettyActivity activity) {
         super(request);
         this.request = request;
         this.responseAdapter = responseAdapter;
@@ -197,8 +198,7 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
 
         if (create) {
             String newId = sessionManager.createSessionId();
-            ManagedSession newManagedSession = sessionManager.createSession(newId);
-            session = newManagedSession;
+            session = sessionManager.createSession(newId);
             newSession = true;
 
             if (responseAdapter != null) {

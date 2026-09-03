@@ -77,8 +77,6 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     private final NettyContextRouter contextRouter = new NettyContextRouter();
 
-    private NettyService nettyService;
-
     private boolean autoStart = true;
 
     private boolean virtualThreads = true;
@@ -158,14 +156,6 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     public void addContext(NettyContext context) {
         contextRouter.addContext(context);
-    }
-
-    public NettyService getNettyService() {
-        return nettyService;
-    }
-
-    public void setNettyService(NettyService nettyService) {
-        this.nettyService = nettyService;
     }
 
     public boolean isAutoStart() {
@@ -350,13 +340,7 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     @Override
     protected void doStart() throws Exception {
         if (contextRouter.isEmpty()) {
-            if (nettyService != null) {
-                if (nettyService instanceof DefaultNettyService defaultNettyService) {
-                    contextRouter.addContext(new NettyContext(nettyService.getContextPath(), defaultNettyService));
-                }
-            } else {
-                throw new IllegalStateException("Neither nettyService nor contexts are configured on NettyServer");
-            }
+            throw new IllegalStateException("Neither nettyService nor contexts are configured on NettyServer");
         }
 
         for (NettyContext context : contextRouter.getContexts()) {

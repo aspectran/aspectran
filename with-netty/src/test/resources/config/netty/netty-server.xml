@@ -18,12 +18,42 @@
     <bean id="netty.server" class="com.aspectran.netty.server.DefaultNettyServer">
         <property name="autoStart">%{netty.server.startup}</property>
         <property name="virtualThreads" valueType="boolean">true</property>
-        <property name="sessionManager">#{netty.sessionManager}</property>
         <property name="encodingHandler">#{netty.server.handler.encodingHandler}</property>
         <property name="listeners" type="array">
             <bean class="com.aspectran.netty.server.NettyListenerConfig">
                 <property name="port" valueType="int">%{netty.server.listener.http.port}</property>
                 <property name="host">%{netty.server.listener.http.host}</property>
+            </bean>
+        </property>
+        <property name="contexts" type="array">
+            <bean class="com.aspectran.netty.server.NettyContext">
+                <property name="contextPath">/</property>
+                <property name="sessionManager">#{netty.context.root.sessionManager}</property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="netty.context.root.sessionManager"
+          class="com.aspectran.netty.server.session.NettySessionManager"
+          scope="prototype">
+        <property name="sessionManagerConfig">
+            <bean class="com.aspectran.core.context.config.SessionManagerConfig">
+                <argument>
+                    workerName: rn0
+                    maxActiveSessions: 9999
+                    maxIdleSeconds: 1800
+                    evictionIdleSeconds: 900
+                    maxIdleSecondsForNew: 60
+                    evictionIdleSecondsForNew: 30
+                    scavengingIntervalSeconds: 90
+                    clusterEnabled: false
+                </argument>
+            </bean>
+        </property>
+        <property name="sessionStore">
+            <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
+                <property name="storeDir">%{system:aspectran.workPath:/work}/_sessions/%{tow.context.root.name}</property>
+                <property name="gracePeriodSecs" valueType="int">30</property>
             </bean>
         </property>
     </bean>

@@ -16,6 +16,7 @@
 package com.aspectran.netty.server.websocket;
 
 import com.aspectran.netty.server.DefaultNettyServer;
+import com.aspectran.netty.server.NettyContext;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,7 +73,7 @@ class NettyWebSocketConfigTest {
 
     @Test
     void testContextIntegration() {
-        com.aspectran.netty.server.NettyContext context = new com.aspectran.netty.server.NettyContext("/api");
+        NettyContext context = new NettyContext("/api");
         NettyWebSocketConfig config = new NettyWebSocketConfig();
         config.setMaxFramePayloadLength(131072);
         config.setMaxMessageSize(2097152);
