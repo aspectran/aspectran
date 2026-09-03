@@ -261,7 +261,7 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
             return contextPath.startsWith("/") ? contextPath.substring(1) : contextPath;
         }
-        return "root";
+        return null;
     }
 
     public void setLoggingGroup(String loggingGroup) {

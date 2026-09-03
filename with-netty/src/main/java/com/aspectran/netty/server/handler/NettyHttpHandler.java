@@ -151,7 +151,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         }
     }
 
-    private void processRequest(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
+    private void processRequest(@NonNull ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
         String uri = request.uri();
         int queryIndex = uri.indexOf('?');
         String path = (queryIndex != -1 ? uri.substring(0, queryIndex) : uri);
@@ -214,9 +214,6 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         if (groupName == null && context != null) {
             groupName = context.getLoggingGroup();
         }
-        if (groupName == null && contextRouter.getRootContext() != null) {
-            groupName = contextRouter.getRootContext().getLoggingGroup();
-        }
         return groupName;
     }
 
@@ -261,7 +258,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                             pipeline.remove("idleState");
                         }
                         if (effectiveConfig != null && effectiveConfig.getMaxIdleTimeout() > 0) {
-                            int idleSeconds = (int) Math.max(1, effectiveConfig.getMaxIdleTimeout() / 1000);
+                            int idleSeconds = (int)Math.max(1, effectiveConfig.getMaxIdleTimeout() / 1000);
                             pipeline.addBefore(ctx.name(), "wsIdleState", new IdleStateHandler(0, 0, idleSeconds));
                         }
                         pipeline.addBefore(ctx.name(), "wsFrameAggregator", new WebSocketFrameAggregator(maxMessageSize));
