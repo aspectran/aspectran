@@ -15,11 +15,11 @@
  */
 package com.aspectran.netty.server;
 
-import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.NettyChannelInitializer;
-import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
+import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
+import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.service.DefaultNettyService;
 import com.aspectran.netty.service.NettyService;
@@ -32,17 +32,19 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollIoHandler;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.kqueue.KQueue;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueIoHandler;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -346,7 +348,6 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     protected void doStart() throws Exception {
         if (contextRouter.isEmpty()) {
             if (nettyService != null) {
@@ -386,8 +387,8 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             channelClass = KQueueSupport.getServerSocketChannelClass();
             logger.info("Netty native KQueue transport is active");
         } else {
-            bossGroup = new NioEventLoopGroup(bossThreads, bossThreadFactory);
-            workerGroup = new NioEventLoopGroup(workerThreads, workerThreadFactory);
+            bossGroup = new MultiThreadIoEventLoopGroup(bossThreads, bossThreadFactory, NioIoHandler.newFactory());
+            workerGroup = new MultiThreadIoEventLoopGroup(workerThreads, workerThreadFactory, NioIoHandler.newFactory());
             channelClass = NioServerSocketChannel.class;
             logger.info("Netty NIO transport is active");
         }
@@ -552,8 +553,9 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             }
         }
 
+        @NonNull
         static EventLoopGroup createEventLoopGroup(int threads, ThreadFactory threadFactory) {
-            return new EpollEventLoopGroup(threads, threadFactory);
+            return new MultiThreadIoEventLoopGroup(threads, threadFactory, EpollIoHandler.newFactory());
         }
 
         static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
@@ -580,8 +582,9 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             }
         }
 
+        @NonNull
         static EventLoopGroup createEventLoopGroup(int threads, ThreadFactory threadFactory) {
-            return new KQueueEventLoopGroup(threads, threadFactory);
+            return new MultiThreadIoEventLoopGroup(threads, threadFactory, KQueueIoHandler.newFactory());
         }
 
         static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
@@ -591,4 +594,3 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     }
 
 }
-
