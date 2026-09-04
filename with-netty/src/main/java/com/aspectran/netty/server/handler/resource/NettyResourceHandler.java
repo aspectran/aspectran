@@ -234,48 +234,57 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
             return false;
         }
 
-        long fileLength = raf.length();
-        HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        HttpUtil.setContentLength(response, fileLength);
-        setContentTypeHeader(response, file);
-        setDateAndCacheHeaders(response, file);
+        try {
+            long fileLength = raf.length();
+            HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+            HttpUtil.setContentLength(response, fileLength);
+            setContentTypeHeader(response, file);
+            setDateAndCacheHeaders(response, file);
 
-        boolean keepAlive = HttpUtil.isKeepAlive(request);
-        if (keepAlive) {
-            HttpUtil.setKeepAlive(response, true);
-        }
+            boolean keepAlive = HttpUtil.isKeepAlive(request);
+            if (keepAlive) {
+                HttpUtil.setKeepAlive(response, true);
+            }
 
-        // Write the initial line and the header
-        ctx.write(response);
+            // Write the initial line and the header
+            ctx.write(response);
 
-        // If HEAD request, do not write content
-        if (HttpMethod.HEAD.equals(method)) {
-            ChannelFuture future = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-            raf.close();
+            // If HEAD request, do not write content
+            if (HttpMethod.HEAD.equals(method)) {
+                ChannelFuture future = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+                raf.close();
+                if (!keepAlive) {
+                    future.addListener(ChannelFutureListener.CLOSE);
+                }
+                return true;
+            }
+
+            // Write the content
+            ChannelFuture sendFileFuture;
+            ChannelFuture lastContentFuture;
+            if (ctx.pipeline().get(SslHandler.class) != null ||
+                    ctx.pipeline().get(HttpContentCompressor.class) != null) {
+                // Cannot use zero-copy with SSL or HTTP content compression
+                sendFileFuture = ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)), ctx.newProgressivePromise());
+                lastContentFuture = sendFileFuture;
+            } else {
+                // Zero-copy file transfer
+                sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
+                lastContentFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            }
+
             if (!keepAlive) {
-                future.addListener(ChannelFutureListener.CLOSE);
+                lastContentFuture.addListener(ChannelFutureListener.CLOSE);
             }
             return true;
+        } catch (Throwable t) {
+            try {
+                raf.close();
+            } catch (Exception ignore) {
+                // ignore
+            }
+            throw t;
         }
-
-        // Write the content
-        ChannelFuture sendFileFuture;
-        ChannelFuture lastContentFuture;
-        if (ctx.pipeline().get(SslHandler.class) != null ||
-                ctx.pipeline().get(HttpContentCompressor.class) != null) {
-            // Cannot use zero-copy with SSL or HTTP content compression
-            sendFileFuture = ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)), ctx.newProgressivePromise());
-            lastContentFuture = sendFileFuture;
-        } else {
-            // Zero-copy file transfer
-            sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
-            lastContentFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-        }
-
-        if (!keepAlive) {
-            lastContentFuture.addListener(ChannelFutureListener.CLOSE);
-        }
-        return true;
     }
 
     /**
@@ -300,7 +309,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
             }
         }
         path = URLDecoder.decode(path, StandardCharsets.UTF_8);
-        if (path.isEmpty() || !path.startsWith("/")) {
+        if (!path.startsWith("/")) {
             path = "/" + path;
         }
         return path;
@@ -322,7 +331,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     @Nullable
     protected File findIndexFile(File dir) {
-        if (indexFiles != null && indexFiles.length > 0) {
+        if (indexFiles != null) {
             for (String indexFileName : indexFiles) {
                 File indexFile = new File(dir, indexFileName);
                 if (indexFile.isFile() && !indexFile.isHidden()) {
