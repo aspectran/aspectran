@@ -15,6 +15,8 @@
  */
 package com.aspectran.netty.server.handler.resource;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.DefaultApplicationAdapter;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -156,6 +158,85 @@ class NettyResourceHandlerTest {
 
         channel.finishAndReleaseAll();
         channel = null;
+    }
+
+    @Test
+    void testBlockProtectedDirectories(@TempDir Path tempDir) throws Exception {
+        Path webInfJsp = Files.createDirectories(tempDir.resolve("WEB-INF/jsp/home"));
+        Files.writeString(webInfJsp.resolve("main.jsp"), "<h1>JSP Source</h1>");
+
+        Path metaInf = Files.createDirectories(tempDir.resolve("META-INF"));
+        Files.writeString(metaInf.resolve("MANIFEST.MF"), "Manifest-Version: 1.0\n");
+
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
+        channel = new EmbeddedChannel(handler);
+
+        FullHttpRequest req1 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/WEB-INF/jsp/home/main.jsp");
+        assertFalse(handler.handle(channel.pipeline().firstContext(), req1),
+                "Direct request to /WEB-INF/jsp/home/main.jsp must be blocked");
+
+        FullHttpRequest req2 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/web-inf/jsp/home/main.jsp");
+        assertFalse(handler.handle(channel.pipeline().firstContext(), req2),
+                "Case-insensitive /web-inf/ request must be blocked");
+
+        FullHttpRequest req3 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/META-INF/MANIFEST.MF");
+        assertFalse(handler.handle(channel.pipeline().firstContext(), req3),
+                "Direct request to /META-INF/MANIFEST.MF must be blocked");
+
+        // When protected directory blocking is disabled, resource can be served
+        handler.setBlockProtectedDirectories(false);
+        FullHttpRequest req4 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/WEB-INF/jsp/home/main.jsp");
+        assertTrue(handler.handle(channel.pipeline().firstContext(), req4),
+                "Request should be handled when blockProtectedDirectories is false");
+
+        channel.finishAndReleaseAll();
+        channel = null;
+    }
+
+    @Test
+    void testSetPathPatternsFromApon(@TempDir Path tempDir) throws Exception {
+        Path publicDir = Files.createDirectories(tempDir.resolve("public"));
+        Files.writeString(publicDir.resolve("index.html"), "<h1>Public</h1>");
+
+        Path secretDir = Files.createDirectories(tempDir.resolve("secret"));
+        Files.writeString(secretDir.resolve("secret.txt"), "classified");
+
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
+        handler.setPathPatterns("""
+                +: /**
+                -: /secret/**
+                """);
+        channel = new EmbeddedChannel(handler);
+
+        FullHttpRequest req1 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/public/index.html");
+        assertTrue(handler.handle(channel.pipeline().firstContext(), req1),
+                "/public/index.html should be included");
+
+        FullHttpRequest req2 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/secret/secret.txt");
+        assertFalse(handler.handle(channel.pipeline().firstContext(), req2),
+                "/secret/secret.txt should be excluded");
+
+        channel.finishAndReleaseAll();
+        channel = null;
+    }
+
+    @Test
+    void testSetBasePath(@TempDir Path tempDir) {
+        NettyResourceHandler handler = new NettyResourceHandler();
+        handler.setBasePath(tempDir.toString());
+        assertEquals(tempDir.toFile(), handler.getBaseDir());
+
+        Path subDir = tempDir.resolve("static");
+        ApplicationAdapter adapter = new DefaultApplicationAdapter(tempDir.toString());
+        handler.setApplicationAdapter(adapter);
+        handler.setBasePath("/static");
+        assertEquals(subDir.toFile(), handler.getBaseDir());
     }
 
 }
