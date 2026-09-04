@@ -29,6 +29,7 @@ import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,7 @@ class JsrWebSocketServerTest {
         nettyServer = aspectran.getBean("netty.server");
 
         // Manually export JSR endpoints on the server
-        NettyContext nettyContext = ((DefaultNettyServer)nettyServer).getContextRouter().getRootContext();
+        NettyContext nettyContext = nettyServer.getContextRouter().getRootContext();
         NettyServerEndpointExporter exporter = new NettyServerEndpointExporter(
                 ((CoreService)aspectran).getActivityContext(), nettyContext);
         exporter.registerEndpoint(EchoServerEndpoint.class);
@@ -219,7 +220,7 @@ class JsrWebSocketServerTest {
     public static class TemplateServerEndpoint {
 
         @OnOpen
-        public void onOpen(Session session, @PathParam("nodeId") String nodeId, @PathParam("token") String token) {
+        public void onOpen(@NonNull Session session, @PathParam("nodeId") String nodeId, @PathParam("token") String token) {
             assertEquals("node1", nodeId);
             assertEquals("secretToken123", token);
             assertEquals("secretToken123", session.getPathParameters().get("token"));

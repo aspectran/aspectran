@@ -17,6 +17,7 @@ package com.aspectran.netty.server;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.SessionAdapter;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ import java.util.Map;
  */
 public class TestSessionBean {
 
-    public Map<String, Object> process(Translet translet) {
+    public Map<String, Object> process(@NonNull Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         Integer count = sessionAdapter.getAttribute("count");
         if (count == null) {

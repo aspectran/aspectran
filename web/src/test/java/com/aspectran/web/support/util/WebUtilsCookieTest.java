@@ -16,7 +16,9 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.core.adapter.AbstractRequestAdapter;
+import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.web.support.http.Cookie;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -68,7 +70,7 @@ class WebUtilsCookieTest {
 
     @Test
     void testSetCookie() {
-        com.aspectran.core.adapter.ResponseAdapter responseAdapter = new com.aspectran.core.adapter.DefaultResponseAdapter(null);
+        ResponseAdapter responseAdapter = new DefaultResponseAdapter(null);
         Cookie cookie = Cookie.builder("auth", "token123")
                 .path("/app")
                 .maxAge(600)
@@ -82,7 +84,7 @@ class WebUtilsCookieTest {
 
     @Test
     void testRemoveCookie() {
-        com.aspectran.core.adapter.ResponseAdapter responseAdapter = new com.aspectran.core.adapter.DefaultResponseAdapter(null);
+        ResponseAdapter responseAdapter = new DefaultResponseAdapter(null);
         WebUtils.removeCookie(responseAdapter, "auth", "/app");
         String header = responseAdapter.getHeader(HttpHeaders.SET_COOKIE);
         assertEquals("auth=; Path=/app; Max-Age=0", header);
