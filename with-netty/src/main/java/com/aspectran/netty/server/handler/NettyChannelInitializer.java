@@ -15,14 +15,12 @@
  */
 package com.aspectran.netty.server.handler;
 
-import com.aspectran.netty.server.NettyContext;
 import com.aspectran.netty.server.NettyContextRouter;
 import com.aspectran.netty.server.NettyListenerConfig;
 import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
-import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -78,8 +76,6 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final NettyEncodingHandler encodingHandler;
 
-    private final NettyWebSocketConfig webSocketConfig;
-
     private final int maxContentLength;
 
     private final boolean contentCompression;
@@ -96,7 +92,6 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
             NettyAccessLogHandler accessLogHandler,
             PathBasedLoggingGroupHandler loggingGroupHandler,
             NettyEncodingHandler encodingHandler,
-            NettyWebSocketConfig webSocketConfig,
             int maxContentLength,
             boolean contentCompression,
             int idleTimeout,
@@ -108,7 +103,6 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
         this.accessLogHandler = accessLogHandler;
         this.loggingGroupHandler = loggingGroupHandler;
         this.encodingHandler = encodingHandler;
-        this.webSocketConfig = webSocketConfig;
         this.maxContentLength = (maxContentLength > 0 ? maxContentLength : 10 * 1024 * 1024);
         this.contentCompression = contentCompression;
         this.idleTimeout = Math.max(0, idleTimeout);
@@ -123,25 +117,10 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
             NettyAccessLogHandler accessLogHandler,
             PathBasedLoggingGroupHandler loggingGroupHandler,
             NettyEncodingHandler encodingHandler,
-            NettyWebSocketConfig webSocketConfig,
             int maxContentLength,
             boolean contentCompression,
             int idleTimeout) {
-        this(listenerConfig, contextRouter, requestExecutor, resourceHandler, accessLogHandler, loggingGroupHandler, encodingHandler, webSocketConfig, maxContentLength, contentCompression, idleTimeout, false);
-    }
-
-    public NettyChannelInitializer(
-            NettyListenerConfig listenerConfig,
-            NettyContextRouter contextRouter,
-            ExecutorService requestExecutor,
-            NettyResourceHandler resourceHandler,
-            NettyAccessLogHandler accessLogHandler,
-            PathBasedLoggingGroupHandler loggingGroupHandler,
-            NettyEncodingHandler encodingHandler,
-            NettyWebSocketConfig webSocketConfig,
-            int maxContentLength,
-            boolean contentCompression) {
-        this(listenerConfig, contextRouter, requestExecutor, resourceHandler, accessLogHandler, loggingGroupHandler, encodingHandler, webSocketConfig, maxContentLength, contentCompression, 0);
+        this(listenerConfig, contextRouter, requestExecutor, resourceHandler, accessLogHandler, loggingGroupHandler, encodingHandler, maxContentLength, contentCompression, idleTimeout, false);
     }
 
     public NettyChannelInitializer(
@@ -154,7 +133,7 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
             NettyEncodingHandler encodingHandler,
             int maxContentLength,
             boolean contentCompression) {
-        this(listenerConfig, contextRouter, requestExecutor, resourceHandler, accessLogHandler, loggingGroupHandler, encodingHandler, null, maxContentLength, contentCompression);
+        this(listenerConfig, contextRouter, requestExecutor, resourceHandler, accessLogHandler, loggingGroupHandler, encodingHandler, maxContentLength, contentCompression, 0);
     }
 
     public NettyChannelInitializer(
@@ -222,7 +201,7 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
             p.addLast(RESOURCE_HANDLER_NAME, resourceHandler);
         }
 
-        p.addLast(HTTP_HANDLER_NAME, new NettyHttpHandler(contextRouter, requestExecutor, loggingGroupHandler, webSocketConfig, proxyAddressForwarding));
+        p.addLast(HTTP_HANDLER_NAME, new NettyHttpHandler(contextRouter, requestExecutor, loggingGroupHandler, proxyAddressForwarding));
     }
 
 }

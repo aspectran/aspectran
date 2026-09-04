@@ -15,7 +15,6 @@
  */
 package com.aspectran.netty.server.websocket;
 
-import com.aspectran.netty.server.DefaultNettyServer;
 import com.aspectran.netty.server.NettyContext;
 import org.junit.jupiter.api.Test;
 
@@ -58,17 +57,6 @@ class NettyWebSocketConfigTest {
         assertEquals(60000, config.getMaxIdleTimeout());
         assertEquals(131072, config.getMaxTextMessageBufferSize());
         assertEquals(262144, config.getMaxBinaryMessageBufferSize());
-    }
-
-    @Test
-    void testServerIntegration() {
-        DefaultNettyServer server = new DefaultNettyServer();
-        NettyWebSocketConfig config = new NettyWebSocketConfig();
-        config.setMaxMessageSize(1048576);
-        server.setWebSocketConfig(config);
-
-        assertNotNull(server.getWebSocketConfig());
-        assertEquals(1048576, server.getWebSocketConfig().getMaxMessageSize());
     }
 
     @Test
