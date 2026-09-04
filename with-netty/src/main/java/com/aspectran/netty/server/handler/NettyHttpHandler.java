@@ -121,7 +121,6 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
-        request.retain();
         if (requestExecutor != null) {
             requestExecutor.execute(() -> processRequest(ctx, request));
         } else {
