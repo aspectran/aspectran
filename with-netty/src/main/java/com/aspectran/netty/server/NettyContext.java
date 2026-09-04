@@ -180,7 +180,13 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     }
 
     public SessionManager getSessionManager() {
-        return sessionManager;
+        if (sessionManager != null) {
+            return sessionManager;
+        }
+        if (nettyService != null) {
+            return nettyService.getSessionManager();
+        }
+        return null;
     }
 
     public void setSessionManager(SessionManager sessionManager) {

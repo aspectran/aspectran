@@ -15,6 +15,7 @@
  */
 package com.aspectran.netty.server;
 
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.netty.server.handler.NettyChannelInitializer;
 import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
@@ -50,11 +51,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Abstract base implementation of the {@link NettyServer} interface.
@@ -81,6 +86,8 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     private boolean nativeTransport = true;
 
     private String threadNamePrefix = "netty-task-";
+
+    private String workerName;
 
     private int bossThreads = 1;
 
@@ -319,18 +326,83 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         this.threadNamePrefix = threadNamePrefix;
     }
 
+    @Override
+    public String getWorkerName() {
+        if (workerName != null) {
+            return workerName;
+        }
+        if (StringUtils.hasText(threadNamePrefix)) {
+            String prefix = threadNamePrefix.trim();
+            if (prefix.endsWith("-task-")) {
+                return prefix.substring(0, prefix.length() - "-task-".length());
+            }
+            if (prefix.endsWith("-")) {
+                return prefix.substring(0, prefix.length() - 1);
+            }
+            return prefix;
+        }
+        return "netty";
+    }
+
     public void setWorkerName(String workerName) {
+        this.workerName = workerName;
         if (StringUtils.hasText(workerName)) {
             this.threadNamePrefix = workerName.trim() + "-task-";
         }
     }
 
+    @Override
+    public EventLoopGroup getBossGroup() {
+        return bossGroup;
+    }
+
+    @Override
+    public EventLoopGroup getWorkerGroup() {
+        return workerGroup;
+    }
+
+    @Override
     public ExecutorService getRequestExecutor() {
         return requestExecutor;
     }
 
     public void setRequestExecutor(ExecutorService requestExecutor) {
         this.requestExecutor = requestExecutor;
+    }
+
+    @Override
+    public ThreadPoolExecutor getThreadPoolExecutor() {
+        if (requestExecutor instanceof ThreadPoolExecutor tpe) {
+            return tpe;
+        }
+        if (requestExecutor instanceof TrackingExecutor tracking) {
+            if (tracking.getDelegate() instanceof ThreadPoolExecutor tpe) {
+                return tpe;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int getActiveRequests() {
+        if (requestExecutor instanceof TrackingExecutor tracking) {
+            return tracking.getActiveCount();
+        }
+        if (requestExecutor instanceof ThreadPoolExecutor tpe) {
+            return tpe.getActiveCount();
+        }
+        return 0;
+    }
+
+    @Override
+    public long getTotalRequests() {
+        if (requestExecutor instanceof TrackingExecutor tracking) {
+            return tracking.getTotalCount();
+        }
+        if (requestExecutor instanceof ThreadPoolExecutor tpe) {
+            return tpe.getTaskCount();
+        }
+        return 0;
     }
 
     @Override
@@ -349,6 +421,22 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             return listeners.get(index).getActualPort();
         }
         return -1;
+    }
+
+    @Override
+    public SessionManager getSessionManager() {
+        return getSessionManager(null);
+    }
+
+    @Override
+    public SessionManager getSessionManager(String contextPath) {
+        NettyContext context = contextRouter.getContext(contextPath);
+        return (context != null ? context.getSessionManager() : null);
+    }
+
+    @Override
+    public SessionManager getSessionManagerByPath(String path) {
+        return getSessionManager(path);
     }
 
     @Override
@@ -400,12 +488,14 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
                 ThreadFactory threadFactory = Thread.ofVirtual()
                         .name(prefix, 1)
                         .factory();
-                requestExecutor = Executors.newThreadPerTaskExecutor(threadFactory);
+                requestExecutor = new TrackingExecutor(Executors.newThreadPerTaskExecutor(threadFactory));
                 logger.info("Java 21 Virtual Threads enabled for Netty request dispatching (prefix: '{}')", prefix);
             } else {
                 String poolName = (prefix.endsWith("-") ? prefix.substring(0, prefix.length() - 1) : prefix);
-                requestExecutor = Executors.newCachedThreadPool(new DefaultThreadFactory(poolName, true));
+                requestExecutor = new TrackingExecutor(Executors.newCachedThreadPool(new DefaultThreadFactory(poolName, true)));
             }
+        } else if (!(requestExecutor instanceof TrackingExecutor)) {
+            requestExecutor = new TrackingExecutor(requestExecutor);
         }
 
         activeChannels.clear();
@@ -591,6 +681,76 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
         static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
             return KQueueServerSocketChannel.class;
+        }
+
+    }
+
+    public static class TrackingExecutor extends AbstractExecutorService {
+
+        private final ExecutorService delegate;
+
+        private final AtomicInteger activeCount = new AtomicInteger();
+
+        private final LongAdder totalCount = new LongAdder();
+
+        public TrackingExecutor(@NonNull ExecutorService delegate) {
+            this.delegate = delegate;
+        }
+
+        public ExecutorService getDelegate() {
+            return delegate;
+        }
+
+        public int getActiveCount() {
+            return activeCount.get();
+        }
+
+        public long getTotalCount() {
+            return totalCount.sum();
+        }
+
+        @Override
+        public void execute(@NonNull Runnable command) {
+            activeCount.incrementAndGet();
+            totalCount.increment();
+            try {
+                delegate.execute(() -> {
+                    try {
+                        command.run();
+                    } finally {
+                        activeCount.decrementAndGet();
+                    }
+                });
+            } catch (Throwable t) {
+                activeCount.decrementAndGet();
+                throw t;
+            }
+        }
+
+        @Override
+        public void shutdown() {
+            delegate.shutdown();
+        }
+
+        @NonNull
+        @Override
+        public List<Runnable> shutdownNow() {
+            return delegate.shutdownNow();
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return delegate.isShutdown();
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return delegate.isTerminated();
+        }
+
+        @Override
+        public boolean awaitTermination(long timeout, @NonNull TimeUnit unit) throws InterruptedException {
+            return delegate.awaitTermination(timeout, unit);
         }
 
     }

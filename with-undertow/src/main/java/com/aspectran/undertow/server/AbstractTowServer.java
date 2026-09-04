@@ -34,6 +34,7 @@ import org.xnio.Option;
 import org.xnio.OptionMap;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 /**
  * Abstract base class for {@link TowServer} implementations.
@@ -370,6 +371,15 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         return getRequestHandlerFactory().getServletContainer().getDeploymentByPath(path);
     }
 
+    /**
+     * Retrieves the Aspectran {@link SessionManager} for the root context.
+     * @return the session manager, or {@code null} if not found
+     */
+    @Override
+    public SessionManager getSessionManager() {
+        return getSessionManagerByPath("/");
+    }
+
     @Override
     public SessionManager getSessionManager(String deploymentName) {
         DeploymentManager deploymentManager = getDeploymentManager(deploymentName);
@@ -399,6 +409,24 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
             }
         }
         return null;
+    }
+
+    @Override
+    public int getActivePort() {
+        if (isRunning()) {
+            Undertow undertow = getUndertow();
+            if (undertow != null) {
+                for (Undertow.ListenerInfo listenerInfo : undertow.getListenerInfo()) {
+                    // Note: Undertow has a typo in the method name 'getProtcol'
+                    if ("http".equals(listenerInfo.getProtcol()) || "https".equals(listenerInfo.getProtcol())) {
+                        if (listenerInfo.getAddress() instanceof InetSocketAddress inetSocketAddress) {
+                            return inetSocketAddress.getPort();
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
     }
 
 }
