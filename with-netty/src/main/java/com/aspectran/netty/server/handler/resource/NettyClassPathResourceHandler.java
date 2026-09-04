@@ -58,11 +58,11 @@ import java.util.Locale;
 @ChannelHandler.Sharable
 public class NettyClassPathResourceHandler extends NettyResourceHandler implements ActivityContextAware {
 
-    private ActivityContext activityContext;
+    private volatile ActivityContext activityContext;
 
-    private ClassLoader classLoader;
+    private volatile ClassLoader classLoader;
 
-    private String prefix = "";
+    private volatile String prefix;
 
     /**
      * Creates a new classpath resource handler serving from the root of the classpath.
@@ -172,6 +172,9 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
         }
 
         String path = resolvePath(request, relativePath);
+        if (isProtectedPath(path)) {
+            return false;
+        }
         if (getPathPatterns() != null && !getPathPatterns().matches(path)) {
             return false;
         }

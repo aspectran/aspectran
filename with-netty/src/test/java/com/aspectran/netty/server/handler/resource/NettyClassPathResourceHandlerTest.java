@@ -139,4 +139,36 @@ class NettyClassPathResourceHandlerTest {
         assertFalse(handled, "Directory request without index file should not be handled");
     }
 
+    @Test
+    void testBlockProtectedDirectories() throws Exception {
+        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("");
+        channel = new EmbeddedChannel(handler);
+
+        FullHttpRequest req1 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/WEB-INF/web.xml");
+        assertFalse(handler.handle(channel.pipeline().firstContext(), req1),
+                "Classpath request to /WEB-INF/ must be blocked");
+
+        FullHttpRequest req2 = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/META-INF/MANIFEST.MF");
+        assertFalse(handler.handle(channel.pipeline().firstContext(), req2),
+                "Classpath request to /META-INF/ must be blocked");
+    }
+
+    @Test
+    void testSetPathPatternsFromApon() throws Exception {
+        NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
+        handler.setPathPatterns("""
+                +: /**
+                -: /aspectran-config.apon
+                """);
+        channel = new EmbeddedChannel(handler);
+
+        FullHttpRequest request = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/aspectran-config.apon");
+
+        boolean handled = handler.handle(channel.pipeline().firstContext(), request);
+        assertFalse(handled, "Excluded resource by APON pattern should not be handled");
+    }
+
 }

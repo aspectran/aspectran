@@ -15,8 +15,12 @@
  */
 package com.aspectran.netty.server.handler.resource;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.web.support.http.MediaType;
 import io.netty.channel.ChannelFuture;
@@ -58,38 +62,59 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Netty inbound handler for serving static files with high performance.
- * <p>Supports zero-copy file transfer via {@link DefaultFileRegion} when cleartext HTTP
- * is used, and chunked transfer via {@link ChunkedFile} when SSL/TLS is enabled.
- * Also handles HTTP 304 Not Modified caching headers and include/exclude wildcard patterns.</p>
+ * Netty inbound handler for serving static files from the filesystem with high performance.
+ * <p>Key features include:</p>
+ * <ul>
+ *   <li><b>Zero-Copy File Transfer</b>: Uses {@link DefaultFileRegion} for cleartext HTTP
+ *       to transfer files directly from disk to network buffers via OS kernel copy.</li>
+ *   <li><b>Chunked Streaming</b>: Uses {@link ChunkedFile} and {@link HttpChunkedInput}
+ *       when SSL/TLS ({@link SslHandler}) or HTTP content compression ({@link HttpContentCompressor})
+ *       is active in the channel pipeline.</li>
+ *   <li><b>Security &amp; Traversal Prevention</b>: Sanitizes paths to prevent directory traversal
+ *       attacks and blocks access to sensitive or protected directories such as {@code /WEB-INF/}
+ *       and {@code /META-INF/} by default.</li>
+ *   <li><b>HTTP Caching &amp; Conditional Requests</b>: Handles {@code If-Modified-Since} validation
+ *       with {@code 304 Not Modified} responses, and sets {@code Cache-Control}, {@code Expires},
+ *       and {@code Last-Modified} headers.</li>
+ *   <li><b>Path Pattern Filtering</b>: Supports include and exclude wildcard patterns configured
+ *       via string arrays, {@link IncludeExcludeParameters}, or APON format.</li>
+ *   <li><b>Directory Index Resolution</b>: Automatically serves configured index files (e.g.,
+ *       {@code index.html}, {@code index.htm}) when a directory is requested.</li>
+ *   <li><b>Application Integration</b>: Implements {@link ApplicationAdapterAware} to automatically
+ *       resolve relative base paths against the application root directory.</li>
+ * </ul>
  *
  * <p>Created: 2026-09-02</p>
  */
 @ChannelHandler.Sharable
-public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRequest> implements ApplicationAdapterAware {
 
     protected static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
-
     private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
-
     private static final int HTTP_CACHE_SECONDS = 60;
 
     private static final String[] DEFAULT_INDEX_FILES = new String[] { "index.html", "index.htm" };
+    private static final String[] PROTECTED_DIRECTORIES = new String[] { "WEB-INF", "META-INF" };
 
-    private final File baseDir;
+    private volatile ApplicationAdapter applicationAdapter;
+
+    private volatile String contextPath;
+
+    private volatile File baseDir;
 
     private volatile IncludeExcludeWildcardPatterns pathPatterns;
 
-    private String[] indexFiles = DEFAULT_INDEX_FILES;
+    private volatile String[] indexFiles = DEFAULT_INDEX_FILES;
 
-    private String contextPath;
+    private volatile boolean blockProtectedDirectories = true;
 
     /**
-     * Protected constructor for subclasses that do not serve from the local filesystem.
+     * Creates a new instance with auto-release disabled for unhandled requests.
+     * <p>Typically used for bean configuration or by subclasses that do not serve
+     * directly from a static local filesystem directory.</p>
      */
-    protected NettyResourceHandler() {
+    public NettyResourceHandler() {
         super(false);
-        this.baseDir = null;
     }
 
     /**
@@ -101,17 +126,9 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     }
 
     /**
-     * Creates a new resource handler serving static files from the specified directory path.
-     * @param basePath the base directory path string
-     */
-    public NettyResourceHandler(String basePath) {
-        this(new File(basePath));
-    }
-
-    /**
      * Creates a new resource handler serving static files from the specified base directory,
      * restricted to matching include wildcard patterns.
-     * @param baseDir the base directory
+     * @param baseDir the base directory containing static files
      * @param includePatterns wildcard patterns matching request paths to serve
      */
     public NettyResourceHandler(File baseDir, String... includePatterns) {
@@ -123,26 +140,21 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     }
 
     /**
-     * Creates a new resource handler serving static files from the specified base directory path,
-     * restricted to matching include wildcard patterns.
-     * @param basePath the base directory path
-     * @param includePatterns wildcard patterns matching request paths to serve
+     * Returns the application adapter.
+     * @return the application adapter, or {@code null} if not set
      */
-    public NettyResourceHandler(String basePath, String... includePatterns) {
-        this(new File(basePath), includePatterns);
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
     }
 
-    /**
-     * Returns the base directory where static files reside.
-     * @return the base directory
-     */
-    public File getBaseDir() {
-        return baseDir;
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
     }
 
     /**
      * Returns the context path prefix associated with this handler.
-     * @return the context path
+     * @return the context path prefix
      */
     public String getContextPath() {
         return contextPath;
@@ -157,17 +169,82 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     }
 
     /**
+     * Returns the base directory where static files reside.
+     * @return the base directory, or {@code null} if not set
+     */
+    public File getBaseDir() {
+        return baseDir;
+    }
+
+    /**
+     * Sets the base directory from which static files are served.
+     * @param baseDir the base directory
+     */
+    public void setBaseDir(File baseDir) {
+        this.baseDir = baseDir;
+    }
+
+    /**
+     * Sets the base directory path from which static files are served.
+     * <p>If an {@link ApplicationAdapter} is configured, relative paths are resolved
+     * against the application root directory via {@link ApplicationAdapter#getRealPath(String)}.
+     * Otherwise, the path is resolved directly against the local filesystem.</p>
+     * @param basePath the base directory path
+     * @throws IllegalArgumentException if {@code basePath} is null or empty
+     */
+    public void setBasePath(String basePath) {
+        if (!StringUtils.hasText(basePath)) {
+            throw new IllegalArgumentException("Base path must not be null or empty");
+        }
+        if (applicationAdapter != null) {
+            setBaseDir(applicationAdapter.getRealPath(basePath).toFile());
+        } else {
+            setBaseDir(new File(basePath));
+        }
+    }
+
+    /**
      * Configures include and exclude URL wildcard patterns for resource serving.
-     * @param includePatterns patterns to include
-     * @param excludePatterns patterns to exclude
+     * @param includePatterns patterns matching request paths to include
+     * @param excludePatterns patterns matching request paths to exclude
      */
     public void setPathPatterns(String[] includePatterns, String[] excludePatterns) {
         this.pathPatterns = IncludeExcludeWildcardPatterns.of(includePatterns, excludePatterns, '/');
     }
 
     /**
+     * Configures include and exclude URL wildcard patterns from an {@link IncludeExcludeParameters} bean.
+     * @param includeExcludeParameters the parameter object defining include and exclude patterns
+     */
+    public void setPathPatterns(IncludeExcludeParameters includeExcludeParameters) {
+        if (includeExcludeParameters != null && includeExcludeParameters.hasPatterns()) {
+            this.pathPatterns = IncludeExcludeWildcardPatterns.of(includeExcludeParameters, '/');
+        } else {
+            this.pathPatterns = null;
+        }
+    }
+
+    /**
+     * Configures include and exclude URL wildcard patterns from an APON string.
+     * <p>For example:</p>
+     * <pre>{@code
+     * +: /static/**
+     * -: /static/secret/**
+     * }</pre>
+     * @param apon the APON text containing '+' (include) and '-' (exclude) patterns
+     * @throws AponParseException if the APON text cannot be parsed
+     */
+    public void setPathPatterns(String apon) throws AponParseException {
+        if (StringUtils.hasText(apon)) {
+            setPathPatterns(new IncludeExcludeParameters(apon));
+        } else {
+            this.pathPatterns = null;
+        }
+    }
+
+    /**
      * Sets the pre-compiled include/exclude wildcard patterns.
-     * @param pathPatterns the wildcard patterns
+     * @param pathPatterns the wildcard patterns to evaluate against request paths
      */
     public void setPathPatterns(IncludeExcludeWildcardPatterns pathPatterns) {
         this.pathPatterns = pathPatterns;
@@ -175,15 +252,62 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     /**
      * Returns the include/exclude wildcard patterns applied to request paths.
-     * @return the wildcard patterns
+     * @return the wildcard patterns, or {@code null} if none are configured
      */
     public IncludeExcludeWildcardPatterns getPathPatterns() {
         return pathPatterns;
     }
 
     /**
+     * Returns whether access to protected directories (e.g. {@code /WEB-INF/}, {@code /META-INF/})
+     * is blocked by default.
+     * @return {@code true} if protected directories are blocked; {@code false} otherwise
+     */
+    public boolean isBlockProtectedDirectories() {
+        return blockProtectedDirectories;
+    }
+
+    /**
+     * Sets whether access to protected directories (e.g. {@code /WEB-INF/}, {@code /META-INF/})
+     * should be blocked.
+     * @param blockProtectedDirectories {@code true} to block protected directories; {@code false} to allow
+     */
+    public void setBlockProtectedDirectories(boolean blockProtectedDirectories) {
+        this.blockProtectedDirectories = blockProtectedDirectories;
+    }
+
+    /**
+     * Checks if the given path targets a protected directory such as {@code /WEB-INF/} or {@code /META-INF/}.
+     * <p>The check is case-insensitive and inspects leading, intermediate, and trailing path segments.</p>
+     * @param path the request path to inspect
+     * @return {@code true} if the path targets a protected directory and blocking is enabled; {@code false} otherwise
+     */
+    protected boolean isProtectedPath(String path) {
+        if (!blockProtectedDirectories || path == null) {
+            return false;
+        }
+        String normalized = (File.separatorChar != '/' ? path.replace(File.separatorChar, '/') : path);
+        while (normalized.startsWith("/")) {
+            normalized = normalized.substring(1);
+        }
+        String lower = normalized.toLowerCase(Locale.ROOT);
+        for (String dir : PROTECTED_DIRECTORIES) {
+            String dirLower = dir.toLowerCase(Locale.ROOT);
+            if (lower.startsWith(dirLower)) {
+                if (lower.length() == dirLower.length() || lower.charAt(dirLower.length()) == '/') {
+                    return true;
+                }
+            }
+            if (lower.contains("/" + dirLower + "/") || lower.endsWith("/" + dirLower)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the index files to serve when a directory is requested.
-     * @return the array of index file names
+     * @return an array of index file names
      */
     public String[] getIndexFiles() {
         return indexFiles;
@@ -209,7 +333,7 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     /**
      * Attempts to serve a static resource matching the request URI.
      * @param ctx the channel handler context
-     * @param request the HTTP request
+     * @param request the full HTTP request
      * @return {@code true} if the request was handled and a resource was served; {@code false} otherwise
      * @throws Exception if an error occurs during resource retrieval or transfer
      */
@@ -219,9 +343,20 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     /**
      * Attempts to serve a static resource matching the request URI or a pre-resolved relative path.
+     * <p>The handling process follows these steps:</p>
+     * <ol>
+     *   <li>Verifies successful HTTP decoding and ensures the request method is {@code GET} or {@code HEAD}.</li>
+     *   <li>Resolves the relative path and checks against protected directories and configured path patterns.</li>
+     *   <li>Sanitizes the path and prevents directory traversal attacks outside the {@code baseDir}.</li>
+     *   <li>Resolves directory requests to a matching index file if available.</li>
+     *   <li>Validates the {@code If-Modified-Since} header for an HTTP 304 Not Modified cache response.</li>
+     *   <li>Transfers the file using zero-copy ({@link DefaultFileRegion}) for cleartext HTTP,
+     *       or chunked streaming ({@link ChunkedFile}) when SSL or HTTP compression is present.</li>
+     * </ol>
      * @param ctx the channel handler context
-     * @param request the HTTP request
-     * @param relativePath the relative path to resolve against base directory, or {@code null}
+     * @param request the full HTTP request
+     * @param relativePath the relative path to resolve against the base directory,
+     *                     or {@code null} to extract and normalize from the request URI
      * @return {@code true} if the request was handled and a resource was served; {@code false} otherwise
      * @throws Exception if an error occurs during resource retrieval or transfer
      */
@@ -239,6 +374,9 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
 
         String path = resolvePath(request, relativePath);
+        if (isProtectedPath(path)) {
+            return false;
+        }
         if (pathPatterns != null && !pathPatterns.matches(path)) {
             return false;
         }
@@ -354,6 +492,8 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     /**
      * Resolves the request path to a normalized relative path against the configured context path.
+     * <p>Strips any query string, removes the matching context path prefix, decodes URL-encoded
+     * characters in UTF-8, and guarantees a leading slash.</p>
      * @param request the HTTP request
      * @param relativePath the pre-calculated relative path, or {@code null}
      * @return the resolved and normalized relative path
@@ -380,6 +520,13 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         return path;
     }
 
+    /**
+     * Sanitizes a requested path to prevent directory traversal attacks and system path exploits.
+     * <p>Replaces slash separators with the local file separator, strips leading separators,
+     * and rejects any relative navigation containing {@code ".."} or hidden dot segments.</p>
+     * @param path the raw normalized request path
+     * @return the sanitized filesystem-safe path, or {@code null} if the path is invalid or attempts traversal
+     */
     @Nullable
     protected static String sanitizePath(String path) {
         path = path.replace('/', File.separatorChar);
@@ -394,6 +541,11 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         return path;
     }
 
+    /**
+     * Searches for a valid index file within the specified directory matching the configured index file list.
+     * @param dir the directory to inspect
+     * @return the first existing, non-hidden index file found, or {@code null} if none match
+     */
     @Nullable
     protected File findIndexFile(File dir) {
         if (indexFiles != null) {
@@ -407,6 +559,11 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         return null;
     }
 
+    /**
+     * Sends an HTTP 304 Not Modified response indicating that the cached resource remains valid.
+     * @param ctx the channel handler context
+     * @param request the incoming HTTP request
+     */
     protected static void sendNotModified(ChannelHandlerContext ctx, FullHttpRequest request) {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_MODIFIED);
         setDateHeader(response);
@@ -420,6 +577,10 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
+    /**
+     * Sets the {@code Date} HTTP header on the response using the standard HTTP-date GMT format.
+     * @param response the HTTP response
+     */
     protected static void setDateHeader(@NonNull FullHttpResponse response) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
         dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
@@ -427,10 +588,22 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         response.headers().set(HttpHeaderNames.DATE, dateFormatter.format(time.getTime()));
     }
 
+    /**
+     * Sets standard HTTP caching headers ({@code Date}, {@code Expires}, {@code Cache-Control},
+     * and {@code Last-Modified}) on the response based on the file's last modified timestamp.
+     * @param response the HTTP response
+     * @param fileToCache the file being served
+     */
     protected static void setDateAndCacheHeaders(@NonNull HttpResponse response, @NonNull File fileToCache) {
         setDateAndCacheHeaders(response, fileToCache.lastModified());
     }
 
+    /**
+     * Sets standard HTTP caching headers ({@code Date}, {@code Expires}, {@code Cache-Control},
+     * and {@code Last-Modified}) on the response.
+     * @param response the HTTP response
+     * @param lastModified the last modified timestamp in milliseconds, or 0 if unknown
+     */
     protected static void setDateAndCacheHeaders(@NonNull HttpResponse response, long lastModified) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
         dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
@@ -448,6 +621,13 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
+    /**
+     * Determines and sets the {@code Content-Type} header on the response for the specified file.
+     * <p>First attempts to probe the MIME type using {@link java.nio.file.Files#probeContentType(java.nio.file.Path)};
+     * if undetermined, falls back to matching the file extension.</p>
+     * @param response the HTTP response
+     * @param file the file to inspect
+     */
     protected static void setContentTypeHeader(HttpResponse response, @NonNull File file) {
         String mimeType = null;
         try {
@@ -462,6 +642,11 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
+    /**
+     * Sets the {@code Content-Type} header on the response based on the file extension of the specified filename.
+     * @param response the HTTP response
+     * @param filename the file name whose extension is used to determine MIME type
+     */
     protected static void setContentTypeHeader(HttpResponse response, @NonNull String filename) {
         String mimeType;
         String ext = FilenameUtils.getExtension(filename);
