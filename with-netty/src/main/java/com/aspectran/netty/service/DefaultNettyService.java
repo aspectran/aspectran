@@ -76,10 +76,18 @@ public class DefaultNettyService extends AbstractNettyService {
         super(parentService, derived);
     }
 
+    /**
+     * Returns the Netty context bound to this service.
+     * @return the Netty context
+     */
     public NettyContext getNettyContext() {
         return nettyContext;
     }
 
+    /**
+     * Sets the Netty context bound to this service.
+     * @param nettyContext the Netty context
+     */
     public void setNettyContext(NettyContext nettyContext) {
         this.nettyContext = nettyContext;
     }

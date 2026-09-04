@@ -249,26 +249,53 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         this.loggingGroupHandler = loggingGroupHandler;
     }
 
+    /**
+     * Returns the HTTP connection idle timeout in milliseconds.
+     * @return the idle timeout in milliseconds
+     */
     public int getIdleTimeout() {
         return idleTimeout;
     }
 
+    /**
+     * Sets the HTTP connection idle timeout in milliseconds.
+     * <p>If set to a positive value, an {@link io.netty.handler.timeout.IdleStateHandler}
+     * is registered in the HTTP pipeline to close idle connections when no incoming request
+     * is received within this duration.</p>
+     * @param idleTimeout the idle timeout in milliseconds
+     */
     public void setIdleTimeout(int idleTimeout) {
         this.idleTimeout = Math.max(0, idleTimeout);
     }
 
+    /**
+     * Returns the HTTP connection idle timeout in seconds.
+     * @return the idle timeout in seconds
+     */
     public int getIdleTimeoutSecs() {
         return idleTimeout / 1000;
     }
 
+    /**
+     * Sets the HTTP connection idle timeout in seconds.
+     * @param idleTimeoutSecs the idle timeout in seconds
+     */
     public void setIdleTimeoutSecs(int idleTimeoutSecs) {
         setIdleTimeout(idleTimeoutSecs * 1000);
     }
 
+    /**
+     * Returns whether proxy address forwarding (honoring X-Forwarded-* headers) is enabled.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
     public boolean isProxyAddressForwarding() {
         return proxyAddressForwarding;
     }
 
+    /**
+     * Sets whether proxy address forwarding (honoring X-Forwarded-* headers) is enabled.
+     * @param proxyAddressForwarding true to enable proxy address forwarding; false otherwise
+     */
     public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
         this.proxyAddressForwarding = proxyAddressForwarding;
     }
@@ -409,6 +436,11 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         }
     }
 
+    /**
+     * Creates a {@link ChannelInitializer} configured with the HTTP pipeline handlers for the specified listener.
+     * @param listenerConfig the listener configuration
+     * @return the configured channel initializer
+     */
     protected ChannelInitializer<SocketChannel> createChannelInitializer(NettyListenerConfig listenerConfig) {
         return new NettyChannelInitializer(
                 listenerConfig,

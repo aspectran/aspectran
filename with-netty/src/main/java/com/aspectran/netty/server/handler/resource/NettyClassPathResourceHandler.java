@@ -64,19 +64,36 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
 
     private String prefix = "";
 
+    /**
+     * Creates a new classpath resource handler serving from the root of the classpath.
+     */
     public NettyClassPathResourceHandler() {
         this("");
     }
 
+    /**
+     * Creates a new classpath resource handler serving from the specified classpath prefix.
+     * @param prefix the classpath prefix (e.g. "static/" or "/public")
+     */
     public NettyClassPathResourceHandler(String prefix) {
         setPrefix(prefix);
     }
 
+    /**
+     * Creates a new classpath resource handler serving with the given class loader and prefix.
+     * @param classLoader the class loader used to locate resources
+     * @param prefix the classpath prefix
+     */
     public NettyClassPathResourceHandler(ClassLoader classLoader, String prefix) {
         this.classLoader = classLoader;
         setPrefix(prefix);
     }
 
+    /**
+     * Creates a new classpath resource handler with the specified prefix and URL include patterns.
+     * @param prefix the classpath prefix
+     * @param includePatterns wildcard patterns matching request paths to serve
+     */
     public NettyClassPathResourceHandler(String prefix, String... includePatterns) {
         setPrefix(prefix);
         if (includePatterns != null && includePatterns.length > 0) {
@@ -84,10 +101,18 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
         }
     }
 
+    /**
+     * Returns the classpath prefix path.
+     * @return the prefix
+     */
     public String getPrefix() {
         return prefix;
     }
 
+    /**
+     * Sets the classpath prefix path under which static resources reside.
+     * @param prefix the prefix string
+     */
     public void setPrefix(String prefix) {
         if (prefix == null || prefix.isEmpty()) {
             this.prefix = "";
@@ -103,10 +128,18 @@ public class NettyClassPathResourceHandler extends NettyResourceHandler implemen
         }
     }
 
+    /**
+     * Returns the explicit class loader used to load classpath resources.
+     * @return the class loader, or {@code null} if inherited from context
+     */
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
+    /**
+     * Sets the class loader used to load classpath resources.
+     * @param classLoader the class loader to use
+     */
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }

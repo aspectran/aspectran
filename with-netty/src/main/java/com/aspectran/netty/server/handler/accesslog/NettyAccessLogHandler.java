@@ -77,15 +77,26 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
 
     private boolean proxyAddressForwarding;
 
+    /**
+     * Constructs a new {@code NettyAccessLogHandler} with default logger category and format.
+     */
     public NettyAccessLogHandler() {
         this(DEFAULT_CATEGORY);
     }
 
+    /**
+     * Constructs a new {@code NettyAccessLogHandler} with the specified logger category.
+     * @param category the logger category name
+     */
     public NettyAccessLogHandler(String category) {
         setCategory(category);
         setFormatString(DEFAULT_FORMAT);
     }
 
+    /**
+     * Constructs a new {@code NettyAccessLogHandler} with the specified {@link Logger}.
+     * @param logger the logger to use for access logging
+     */
     public NettyAccessLogHandler(Logger logger) {
         this.logger = (logger != null ? logger : LoggerFactory.getLogger(DEFAULT_CATEGORY));
         this.category = this.logger.getName();

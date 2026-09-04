@@ -49,6 +49,11 @@ public class NettyServerEndpointExporter {
     @Nullable
     private List<Class<?>> annotatedEndpointClasses;
 
+    /**
+     * Creates a new exporter with the given activity context and Netty context.
+     * @param activityContext the activity context containing bean definitions
+     * @param nettyContext the Netty context to register endpoints with
+     */
     public NettyServerEndpointExporter(@NonNull ActivityContext activityContext, @NonNull NettyContext nettyContext) {
         Assert.notNull(activityContext, "activityContext must not be null");
         Assert.notNull(nettyContext, "nettyContext must not be null");
@@ -56,6 +61,10 @@ public class NettyServerEndpointExporter {
         this.nettyContext = nettyContext;
     }
 
+    /**
+     * Creates a new exporter resolving the activity context from the given Netty context.
+     * @param nettyContext the Netty context to register endpoints with
+     */
     public NettyServerEndpointExporter(@NonNull NettyContext nettyContext) {
         Assert.notNull(nettyContext, "nettyContext must not be null");
         Assert.notNull(nettyContext.getActivityContext(), "activityContext must not be null for NettyContext");
@@ -63,10 +72,20 @@ public class NettyServerEndpointExporter {
         this.nettyContext = nettyContext;
     }
 
+    /**
+     * Explicitly specifies the classes annotated with {@link ServerEndpoint} to register,
+     * bypassing automatic classpath/bean scanning.
+     * @param annotatedEndpointClasses the endpoint classes to export
+     */
     public void setAnnotatedEndpointClasses(Class<?>... annotatedEndpointClasses) {
         this.annotatedEndpointClasses = Arrays.asList(annotatedEndpointClasses);
     }
 
+    /**
+     * Scans for and registers all discovered {@link ServerEndpoint} annotated classes
+     * and {@link ServerEndpointConfig} beans into the {@link NettyContext}.
+     * @return the set of registered endpoint classes
+     */
     public Set<Class<?>> registerEndpoints() {
         Set<Class<?>> endpointClasses = new LinkedHashSet<>();
         if (annotatedEndpointClasses != null) {
@@ -90,6 +109,10 @@ public class NettyServerEndpointExporter {
         return endpointClasses;
     }
 
+    /**
+     * Registers a single endpoint class annotated with {@link ServerEndpoint}.
+     * @param endpointClass the annotated endpoint class
+     */
     public void registerEndpoint(@NonNull Class<?> endpointClass) {
         ServerEndpoint annotation = endpointClass.getAnnotation(ServerEndpoint.class);
         Assert.notNull(annotation, "Class must be annotated with @ServerEndpoint: " + endpointClass.getName());
@@ -127,6 +150,10 @@ public class NettyServerEndpointExporter {
         registerEndpoint(endpointInstance, path, endpointConfig);
     }
 
+    /**
+     * Registers an endpoint defined by a programmatic {@link ServerEndpointConfig}.
+     * @param endpointConfig the server endpoint configuration
+     */
     public void registerEndpoint(@NonNull ServerEndpointConfig endpointConfig) {
         Class<?> endpointClass = endpointConfig.getEndpointClass();
         Object endpointInstance;

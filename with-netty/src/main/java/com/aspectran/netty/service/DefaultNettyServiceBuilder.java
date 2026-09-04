@@ -34,6 +34,11 @@ public class DefaultNettyServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyServiceBuilder.class);
 
+    /**
+     * Builds a derived {@link DefaultNettyService} instance from the parent service.
+     * @param parentService the parent core service
+     * @return the newly created and configured {@link DefaultNettyService}
+     */
     @NonNull
     public static DefaultNettyService build(CoreService parentService) {
         Assert.notNull(parentService, "parentService must not be null");
@@ -49,6 +54,12 @@ public class DefaultNettyServiceBuilder {
         return nettyService;
     }
 
+    /**
+     * Builds a {@link DefaultNettyService} instance using an explicit {@link AspectranConfig}.
+     * @param parentService the parent core service
+     * @param aspectranConfig the explicit configuration to apply
+     * @return the newly created and configured {@link DefaultNettyService}
+     */
     @NonNull
     public static DefaultNettyService build(CoreService parentService, AspectranConfig aspectranConfig) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");

@@ -37,6 +37,10 @@ public class NettyFileParameter extends FileParameter {
 
     private final FileUpload fileUpload;
 
+    /**
+     * Constructs a new NettyFileParameter wrapping the given Netty {@link FileUpload}.
+     * @param fileUpload the Netty file upload object
+     */
     public NettyFileParameter(@NonNull FileUpload fileUpload) {
         super(determineFile(fileUpload), fileUpload.getContentType());
         this.fileUpload = fileUpload;

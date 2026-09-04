@@ -42,6 +42,10 @@ public class DefaultNettyServiceFactoryBean
         this.context = context;
     }
 
+    /**
+     * Sets the session manager for the created Netty service.
+     * @param sessionManager the session manager
+     */
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }

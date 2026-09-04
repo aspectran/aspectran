@@ -35,11 +35,19 @@ public class NettyContextRouter {
 
     private volatile NettyContext rootContext;
 
+    /**
+     * Adds a {@link NettyContext} to the router and re-sorts contexts by prefix length descending.
+     * @param context the context to add
+     */
     public void addContext(@NonNull NettyContext context) {
         contexts.add(context);
         resort();
     }
 
+    /**
+     * Sets the array of {@link NettyContext} instances to route.
+     * @param contexts the contexts to route
+     */
     public void setContexts(NettyContext... contexts) {
         this.contexts.clear();
         if (contexts != null) {
@@ -48,6 +56,10 @@ public class NettyContextRouter {
         resort();
     }
 
+    /**
+     * Sets the list of {@link NettyContext} instances to route.
+     * @param contexts the list of contexts to route
+     */
     public void setContexts(List<NettyContext> contexts) {
         this.contexts.clear();
         if (contexts != null) {
@@ -56,6 +68,11 @@ public class NettyContextRouter {
         resort();
     }
 
+    /**
+     * Removes a {@link NettyContext} from the router.
+     * @param context the context to remove
+     * @return true if removed; false otherwise
+     */
     public boolean removeContext(NettyContext context) {
         boolean removed = contexts.remove(context);
         if (removed) {
@@ -64,18 +81,35 @@ public class NettyContextRouter {
         return removed;
     }
 
+    /**
+     * Returns an unmodifiable list of registered contexts, sorted in routing precedence order.
+     * @return the list of contexts
+     */
     public List<NettyContext> getContexts() {
         return Collections.unmodifiableList(contexts);
     }
 
+    /**
+     * Returns whether any contexts are registered.
+     * @return true if no contexts are registered; false otherwise
+     */
     public boolean isEmpty() {
         return contexts.isEmpty();
     }
 
+    /**
+     * Returns the number of registered contexts.
+     * @return the context count
+     */
     public int size() {
         return contexts.size();
     }
 
+    /**
+     * Matches the given request URI path to the most specific {@link NettyContext}.
+     * @param path the request URI path
+     * @return the matched context, or the root context if no specific prefix matches
+     */
     @Nullable
     public NettyContext match(@NonNull String path) {
         for (NettyContext context : contexts) {
@@ -90,6 +124,10 @@ public class NettyContextRouter {
         return rootContext;
     }
 
+    /**
+     * Returns the root context (context path {@code ""} or {@code "/"}), or {@code null} if none is registered.
+     * @return the root context
+     */
     public NettyContext getRootContext() {
         return rootContext;
     }

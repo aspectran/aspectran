@@ -27,10 +27,18 @@ public class NettySessionManager extends DefaultSessionManager implements Initia
 
     private NettySessionConfig sessionConfig = new NettySessionConfig();
 
+    /**
+     * Returns the session cookie configuration.
+     * @return the session configuration
+     */
     public NettySessionConfig getSessionConfig() {
         return sessionConfig;
     }
 
+    /**
+     * Sets the session cookie configuration.
+     * @param sessionConfig the session configuration
+     */
     public void setSessionConfig(NettySessionConfig sessionConfig) {
         this.sessionConfig = (sessionConfig != null ? sessionConfig : new NettySessionConfig());
     }

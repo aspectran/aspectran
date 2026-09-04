@@ -61,6 +61,14 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
 
     private boolean headersObtained;
 
+    /**
+     * Creates a new {@code NettyRequestAdapter}.
+     * @param requestMethod the HTTP request method type
+     * @param request the native Netty {@link FullHttpRequest} to wrap
+     * @param ctx the Netty {@link ChannelHandlerContext} for the client connection
+     * @param contextPath the context path of the web application
+     * @param proxyAddressForwarding whether forwarded headers (X-Forwarded-*) should be honored
+     */
     public NettyRequestAdapter(
             MethodType requestMethod,
             FullHttpRequest request,
@@ -73,6 +81,13 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
         this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
+    /**
+     * Creates a new {@code NettyRequestAdapter} with proxy address forwarding disabled.
+     * @param requestMethod the HTTP request method type
+     * @param request the native Netty {@link FullHttpRequest} to wrap
+     * @param ctx the Netty {@link ChannelHandlerContext} for the client connection
+     * @param contextPath the context path of the web application
+     */
     public NettyRequestAdapter(
             MethodType requestMethod,
             FullHttpRequest request,
@@ -81,14 +96,26 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
         this(requestMethod, request, ctx, contextPath, false);
     }
 
+    /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are respected.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
     public boolean isProxyAddressForwarding() {
         return proxyAddressForwarding;
     }
 
+    /**
+     * Returns the underlying Netty {@link FullHttpRequest}.
+     * @return the wrapped full HTTP request
+     */
     public FullHttpRequest getHttpRequest() {
         return getAdaptee();
     }
 
+    /**
+     * Returns the Netty {@link ChannelHandlerContext} for the client connection.
+     * @return the channel handler context
+     */
     public ChannelHandlerContext getChannelHandlerContext() {
         return ctx;
     }

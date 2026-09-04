@@ -87,6 +87,12 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
 
     private boolean committed;
 
+    /**
+     * Creates a new {@code NettyResponseAdapter}.
+     * @param ctx the Netty {@link ChannelHandlerContext} for the client connection
+     * @param request the native Netty {@link FullHttpRequest} being responded to
+     * @param activity the current {@link NettyActivity}
+     */
     public NettyResponseAdapter(ChannelHandlerContext ctx, FullHttpRequest request, NettyActivity activity) {
         super(ctx);
         this.ctx = ctx;
@@ -94,6 +100,10 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
         this.activity = activity;
     }
 
+    /**
+     * Returns the Netty HTTP response headers.
+     * @return the response headers
+     */
     public HttpHeaders getNettyHeaders() {
         return headers;
     }
@@ -255,6 +265,10 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    /**
+     * Returns whether the response has already been committed and flushed.
+     * @return true if the response is committed; false otherwise
+     */
     public boolean isCommitted() {
         return committed;
     }
@@ -316,6 +330,10 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
         return (location != null && (location.startsWith("http://") || location.startsWith("https://")));
     }
 
+    /**
+     * Sets the reserved redirect location header to be applied when the response is committed.
+     * @param reservedRedirectLocation the redirect URL or path
+     */
     public void setReservedRedirectLocation(String reservedRedirectLocation) {
         this.reservedRedirectLocation = reservedRedirectLocation;
     }

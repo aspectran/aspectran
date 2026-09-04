@@ -62,6 +62,10 @@ public class NettyEncodingHandler {
         this.encodingProviders = encodingProviders;
     }
 
+    /**
+     * Returns the array of enabled encoding provider names.
+     * @return the array of provider names
+     */
     public String[] getEncodingProviders() {
         return encodingProviders;
     }
@@ -75,6 +79,10 @@ public class NettyEncodingHandler {
         this.encodingPredicates = encodingPredicates;
     }
 
+    /**
+     * Returns the compression predicates configured for this handler.
+     * @return the array of {@link ContentEncodingPredicates}
+     */
     public ContentEncodingPredicates[] getEncodingPredicates() {
         return encodingPredicates;
     }
@@ -90,6 +98,10 @@ public class NettyEncodingHandler {
         this.compressionLevel = compressionLevel;
     }
 
+    /**
+     * Returns the configured compression level.
+     * @return the compression level (1-9)
+     */
     public int getCompressionLevel() {
         return compressionLevel;
     }

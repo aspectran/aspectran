@@ -96,13 +96,25 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private Boolean proxyAddressForwarding;
 
+    /**
+     * Constructs a new {@code NettyContext} with the default root context path.
+     */
     public NettyContext() {
     }
 
+    /**
+     * Constructs a new {@code NettyContext} with the specified context path.
+     * @param contextPath the context path
+     */
     public NettyContext(String contextPath) {
         setContextPath(contextPath);
     }
 
+    /**
+     * Constructs a new {@code NettyContext} with the specified context path and configuration file.
+     * @param contextPath the context path
+     * @param aspectranConfigFile the Aspectran configuration file path
+     */
     public NettyContext(String contextPath, String aspectranConfigFile) {
         setContextPath(contextPath);
         this.aspectranConfigFile = aspectranConfigFile;
@@ -248,18 +260,34 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return !exactWebSocketEndpoints.isEmpty() || !templateWebSocketEndpoints.isEmpty();
     }
 
+    /**
+     * Returns the WebSocket configuration for this context.
+     * @return the WebSocket configuration, or {@code null} if not configured
+     */
     public NettyWebSocketConfig getWebSocketConfig() {
         return webSocketConfig;
     }
 
+    /**
+     * Sets the WebSocket configuration for this context.
+     * @param webSocketConfig the WebSocket configuration
+     */
     public void setWebSocketConfig(NettyWebSocketConfig webSocketConfig) {
         this.webSocketConfig = webSocketConfig;
     }
 
+    /**
+     * Returns the WebSocket server container initializer for this context.
+     * @return the WebSocket server container initializer, or {@code null} if not configured
+     */
     public NettyWebSocketServerContainerInitializer getWebSocketServerContainerInitializer() {
         return webSocketServerContainerInitializer;
     }
 
+    /**
+     * Sets the WebSocket server container initializer for this context.
+     * @param webSocketServerContainerInitializer the WebSocket server container initializer
+     */
     public void setWebSocketServerContainerInitializer(
             NettyWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
         this.webSocketServerContainerInitializer = webSocketServerContainerInitializer;
@@ -352,6 +380,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
+    /**
+     * Scans and exports all {@link jakarta.websocket.server.ServerEndpoint} annotated classes
+     * within this context's {@link ActivityContext} to this Netty context.
+     */
     public void exportServerEndpoints() {
         if (nettyService != null && nettyService.getActivityContext() != null) {
             try {

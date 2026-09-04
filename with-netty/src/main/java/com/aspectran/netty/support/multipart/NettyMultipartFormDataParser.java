@@ -66,6 +66,9 @@ public class NettyMultipartFormDataParser implements MultipartFormDataParser {
 
     private String deniedFileExtensions;
 
+    /**
+     * Constructs a new NettyMultipartFormDataParser.
+     */
     public NettyMultipartFormDataParser() {
     }
 

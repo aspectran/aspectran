@@ -63,6 +63,10 @@ public class ContentEncodingPredicates {
         }
     }
 
+    /**
+     * Returns the minimum content size in bytes for compression eligibility.
+     * @return the minimum content size
+     */
     public long getContentSizeLargerThan() {
         return contentSizeLargerThan;
     }
@@ -88,6 +92,10 @@ public class ContentEncodingPredicates {
         }
     }
 
+    /**
+     * Returns the array of compressible MIME types.
+     * @return the array of media types
+     */
     public String[] getMediaTypes() {
         return mediaTypes;
     }
@@ -109,6 +117,10 @@ public class ContentEncodingPredicates {
         }
     }
 
+    /**
+     * Returns the array of User-Agent patterns excluded from compression.
+     * @return the array of excluded User-Agent regex patterns
+     */
     public String[] getExcludedUserAgents() {
         return excludedUserAgents;
     }

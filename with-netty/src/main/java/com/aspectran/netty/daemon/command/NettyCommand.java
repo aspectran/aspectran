@@ -45,6 +45,10 @@ public class NettyCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
+    /**
+     * Instantiates a new {@code NettyCommand}.
+     * @param registry the command registry
+     */
     public NettyCommand(CommandRegistry registry) {
         super(registry);
     }
@@ -149,6 +153,7 @@ public class NettyCommand extends AbstractCommand {
         return beanRegistry.hasSingleton(NettyServer.class, serverName);
     }
 
+    @NonNull
     private NettyServer getNettyServer(String serverName) {
         BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
         NettyServer nettyServer = beanRegistry.getBean(NettyServer.class, serverName);
@@ -158,6 +163,7 @@ public class NettyCommand extends AbstractCommand {
         return nettyServer;
     }
 
+    @NonNull
     private String getStatus(String status) {
         return status + " - " + "Netty " + NettyServer.getVersion();
     }

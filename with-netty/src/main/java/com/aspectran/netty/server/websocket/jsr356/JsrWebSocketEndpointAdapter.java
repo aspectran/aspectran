@@ -81,6 +81,11 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
 
     private Method onMessageBinaryMethod;
 
+    /**
+     * Creates a new adapter wrapping the given JSR-356 endpoint instance.
+     * @param endpointInstance the endpoint object instance
+     * @param endpointConfig the server endpoint configuration, or {@code null}
+     */
     public JsrWebSocketEndpointAdapter(
             @NonNull Object endpointInstance,
             @Nullable ServerEndpointConfig endpointConfig) {
@@ -92,14 +97,26 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
         findAnnotatedMethods();
     }
 
+    /**
+     * Returns the underlying target endpoint instance.
+     * @return the endpoint instance
+     */
     public Object getEndpointInstance() {
         return endpointInstance;
     }
 
+    /**
+     * Returns the target endpoint class.
+     * @return the endpoint class
+     */
     public Class<?> getEndpointClass() {
         return endpointClass;
     }
 
+    /**
+     * Returns an unmodifiable set of open JSR-356 sessions for this endpoint.
+     * @return the set of active sessions
+     */
     public Set<Session> getOpenSessions() {
         return Collections.unmodifiableSet(openSessions);
     }

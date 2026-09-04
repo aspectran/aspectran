@@ -58,6 +58,13 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<WebSocket
 
     private final AtomicBoolean closed = new AtomicBoolean();
 
+    /**
+     * Creates a new handler for processing WebSocket frames for a specific session.
+     * @param session the WebSocket session
+     * @param listener the event listener to receive messages and lifecycle callbacks
+     * @param requestExecutor optional executor service to dispatch listener callbacks asynchronously
+     * @param handshaker the server handshaker used during the upgrade
+     */
     public NettyWebSocketHandler(
             @NonNull NettyWebSocketSession session,
             @NonNull NettyWebSocketListener listener,

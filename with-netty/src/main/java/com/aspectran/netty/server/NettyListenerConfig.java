@@ -60,13 +60,25 @@ public class NettyListenerConfig {
 
     private boolean reuseAddress = true;
 
+    /**
+     * Constructs a new {@code NettyListenerConfig} with default host and port.
+     */
     public NettyListenerConfig() {
     }
 
+    /**
+     * Constructs a new {@code NettyListenerConfig} for the specified port.
+     * @param port the port number to bind
+     */
     public NettyListenerConfig(int port) {
         this.port = port;
     }
 
+    /**
+     * Constructs a new {@code NettyListenerConfig} for the specified host and port.
+     * @param host the host address or hostname
+     * @param port the port number to bind
+     */
     public NettyListenerConfig(String host, int port) {
         this.host = host;
         this.port = port;
