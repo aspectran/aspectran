@@ -62,10 +62,23 @@ public class NettyActivity extends CoreActivity {
 
     private MethodType requestMethod;
 
+    /**
+     * Instantiates a new {@code NettyActivity} without a reverse context path.
+     * @param nettyService the Netty service managing this activity
+     * @param ctx the Netty channel handler context for the client connection
+     * @param request the native Netty HTTP request
+     */
     public NettyActivity(@NonNull NettyService nettyService, ChannelHandlerContext ctx, FullHttpRequest request) {
         this(nettyService, ctx, request, null);
     }
 
+    /**
+     * Instantiates a new {@code NettyActivity} with the specified reverse context path.
+     * @param nettyService the Netty service managing this activity
+     * @param ctx the Netty channel handler context for the client connection
+     * @param request the native Netty HTTP request
+     * @param reverseContextPath the reverse context path for URL resolution
+     */
     public NettyActivity(
             @NonNull NettyService nettyService,
             ChannelHandlerContext ctx,
@@ -88,34 +101,66 @@ public class NettyActivity extends CoreActivity {
         return reverseContextPath;
     }
 
+    /**
+     * Returns the Netty service managing this activity.
+     * @return the Netty service
+     */
     public NettyService getNettyService() {
         return nettyService;
     }
 
+    /**
+     * Returns the Netty channel handler context associated with the client connection.
+     * @return the channel handler context
+     */
     public ChannelHandlerContext getChannelHandlerContext() {
         return ctx;
     }
 
+    /**
+     * Returns the native Netty HTTP request being processed.
+     * @return the full HTTP request
+     */
     public FullHttpRequest getRequest() {
         return request;
     }
 
+    /**
+     * Returns the request name corresponding to the translet path.
+     * @return the request name
+     */
     public String getRequestName() {
         return requestName;
     }
 
+    /**
+     * Sets the request name corresponding to the translet path.
+     * @param requestName the request name
+     */
     public void setRequestName(String requestName) {
         this.requestName = requestName;
     }
 
+    /**
+     * Returns the HTTP request method type.
+     * @return the request method type
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Sets the HTTP request method type.
+     * @param requestMethod the request method type
+     */
     public void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
+    /**
+     * Returns the full request name including the HTTP method, reverse context path, and request name.
+     * @return the full request representation
+     */
     public String getFullRequestName() {
         StringBuilder sb = new StringBuilder();
         if (requestMethod != null) {
@@ -130,6 +175,11 @@ public class NettyActivity extends CoreActivity {
         return sb.toString();
     }
 
+    /**
+     * Prepares the activity execution for the configured request name and method.
+     * @throws TransletNotFoundException if no matching translet is found
+     * @throws ActivityPrepareException if preparing the activity fails
+     */
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
         Assert.state(requestName != null, "requestName is not set");
         Assert.state(requestMethod != null, "requestMethod is not set");

@@ -69,6 +69,14 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
 
     private volatile long maxIdleTimeout;
 
+    /**
+     * Creates a new WebSocket session with basic connection information.
+     * @param channel the underlying Netty channel
+     * @param uri the handshake request URI
+     * @param path the matched endpoint path
+     * @param handshakeHeaders HTTP headers from the handshake request
+     * @param handshaker the server handshaker used for handshake negotiation
+     */
     public DefaultNettyWebSocketSession(
             @NonNull Channel channel,
             @NonNull String uri,
@@ -78,6 +86,15 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
         this(channel, uri, path, handshakeHeaders, handshaker, null, null);
     }
 
+    /**
+     * Creates a new WebSocket session with URI path parameters.
+     * @param channel the underlying Netty channel
+     * @param uri the handshake request URI
+     * @param path the matched endpoint path
+     * @param handshakeHeaders HTTP headers from the handshake request
+     * @param handshaker the server handshaker used for handshake negotiation
+     * @param pathParameters template variables extracted from the path
+     */
     public DefaultNettyWebSocketSession(
             @NonNull Channel channel,
             @NonNull String uri,
@@ -88,6 +105,16 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
         this(channel, uri, path, handshakeHeaders, handshaker, pathParameters, null);
     }
 
+    /**
+     * Creates a new WebSocket session with full configuration options.
+     * @param channel the underlying Netty channel
+     * @param uri the handshake request URI
+     * @param path the matched endpoint path
+     * @param handshakeHeaders HTTP headers from the handshake request
+     * @param handshaker the server handshaker used for handshake negotiation
+     * @param pathParameters template variables extracted from the path
+     * @param webSocketConfig custom WebSocket configuration settings
+     */
     public DefaultNettyWebSocketSession(
             @NonNull Channel channel,
             @NonNull String uri,

@@ -55,6 +55,11 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
     private boolean proxyAddressForwarding;
 
+    /**
+     * Constructs a new abstract Netty service.
+     * @param parentService the parent core service
+     * @param derived whether this service is derived from parent
+     */
     protected AbstractNettyService(CoreService parentService, boolean derived) {
         super(parentService, derived);
     }
@@ -103,10 +108,18 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Returns the session configuration settings used by this service.
+     * @return the session configuration
+     */
     public NettySessionConfig getSessionConfig() {
         return sessionConfig;
     }
 
+    /**
+     * Sets the session configuration settings for this service.
+     * @param sessionConfig the session configuration
+     */
     public void setSessionConfig(NettySessionConfig sessionConfig) {
         this.sessionConfig = (sessionConfig != null ? sessionConfig : new NettySessionConfig());
     }
@@ -131,18 +144,34 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
         }
     }
 
+    /**
+     * Returns the character encoding used for decoding request URIs.
+     * @return the URI decoding charset name
+     */
     public String getUriDecoding() {
         return uriDecoding;
     }
 
+    /**
+     * Sets the character encoding to use for URI decoding.
+     * @param uriDecoding the charset name (e.g. "UTF-8")
+     */
     protected void setUriDecoding(String uriDecoding) {
         this.uriDecoding = uriDecoding;
     }
 
+    /**
+     * Returns whether automatic redirect is performed for trailing slashes when a path matches.
+     * @return {@code true} if trailing slash redirect is enabled; {@code false} otherwise
+     */
     public boolean isTrailingSlashRedirect() {
         return trailingSlashRedirect;
     }
 
+    /**
+     * Sets whether automatic redirect is performed for trailing slashes.
+     * @param trailingSlashRedirect {@code true} to enable trailing slash redirect; {@code false} otherwise
+     */
     public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
         this.trailingSlashRedirect = trailingSlashRedirect;
     }
@@ -166,6 +195,10 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
         }
     }
 
+    /**
+     * Applies settings from the specified {@link WebConfig}.
+     * @param webConfig the web configuration
+     */
     protected void configure(@NonNull WebConfig webConfig) {
         setUriDecoding(webConfig.getUriDecoding());
 

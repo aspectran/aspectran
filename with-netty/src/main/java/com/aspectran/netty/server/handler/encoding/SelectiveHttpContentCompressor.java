@@ -35,6 +35,11 @@ public class SelectiveHttpContentCompressor extends HttpContentCompressor {
 
     private String currentUserAgent;
 
+    /**
+     * Creates a new selective HTTP content compressor.
+     * @param encodingPredicates an optional array of predicates to filter compressible responses
+     * @param compressionOptions variable compression options to apply when encoding
+     */
     public SelectiveHttpContentCompressor(
             @Nullable ContentEncodingPredicates[] encodingPredicates,
             CompressionOptions... compressionOptions) {

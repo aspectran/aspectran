@@ -49,58 +49,114 @@ public class NettySessionConfig {
 
     private CookieHeaderNames.SameSite sameSite = CookieHeaderNames.SameSite.Lax;
 
+    /**
+     * Returns the name of the session cookie.
+     * @return the cookie name
+     */
     public String getCookieName() {
         return cookieName;
     }
 
+    /**
+     * Sets the name of the session cookie.
+     * @param cookieName the cookie name, or {@code null} to use the default {@value #DEFAULT_SESSION_COOKIE_NAME}
+     */
     public void setCookieName(String cookieName) {
         this.cookieName = (cookieName != null ? cookieName : DEFAULT_SESSION_COOKIE_NAME);
     }
 
+    /**
+     * Returns the path attribute of the session cookie.
+     * @return the cookie path
+     */
     public String getCookiePath() {
         return cookiePath;
     }
 
+    /**
+     * Sets the path attribute of the session cookie.
+     * @param cookiePath the cookie path
+     */
     public void setCookiePath(String cookiePath) {
         this.cookiePath = cookiePath;
     }
 
+    /**
+     * Returns the domain attribute of the session cookie.
+     * @return the cookie domain, or {@code null} if not specified
+     */
     public String getCookieDomain() {
         return cookieDomain;
     }
 
+    /**
+     * Sets the domain attribute of the session cookie.
+     * @param cookieDomain the cookie domain
+     */
     public void setCookieDomain(String cookieDomain) {
         this.cookieDomain = cookieDomain;
     }
 
+    /**
+     * Returns the maximum age in seconds for the session cookie.
+     * @return the maximum age in seconds, or -1 if the cookie expires when the browser closes
+     */
     public int getMaxAge() {
         return maxAge;
     }
 
+    /**
+     * Sets the maximum age in seconds for the session cookie.
+     * @param maxAge the maximum age in seconds (-1 for a session-scoped cookie)
+     */
     public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
     }
 
+    /**
+     * Returns whether the session cookie should only be transmitted over secure HTTPS connections.
+     * @return {@code true} if secure; {@code false} otherwise
+     */
     public boolean isSecure() {
         return secure;
     }
 
+    /**
+     * Sets whether the session cookie should only be transmitted over secure HTTPS connections.
+     * @param secure {@code true} to require HTTPS; {@code false} otherwise
+     */
     public void setSecure(boolean secure) {
         this.secure = secure;
     }
 
+    /**
+     * Returns whether the session cookie is marked as HttpOnly to prevent client-side script access.
+     * @return {@code true} if HttpOnly; {@code false} otherwise
+     */
     public boolean isHttpOnly() {
         return httpOnly;
     }
 
+    /**
+     * Sets whether the session cookie is marked as HttpOnly.
+     * @param httpOnly {@code true} to mark as HttpOnly; {@code false} otherwise
+     */
     public void setHttpOnly(boolean httpOnly) {
         this.httpOnly = httpOnly;
     }
 
+    /**
+     * Returns the SameSite attribute value configured for the session cookie.
+     * @return the SameSite attribute, or {@code null} if not set
+     */
     public CookieHeaderNames.SameSite getSameSite() {
         return sameSite;
     }
 
+    /**
+     * Sets the SameSite attribute value for the session cookie.
+     * @param sameSite the SameSite policy (e.g., "Strict", "Lax", "None"), or {@code null} to disable
+     */
     public void setSameSite(String sameSite) {
         if (sameSite != null) {
             try {

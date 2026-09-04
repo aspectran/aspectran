@@ -33,10 +33,19 @@ public class WebSocketEndpointMatch {
 
     private final Map<String, String> pathParameters;
 
+    /**
+     * Creates a new match result with the matched listener and no path parameters.
+     * @param listener the matched WebSocket listener
+     */
     public WebSocketEndpointMatch(@NonNull NettyWebSocketListener listener) {
         this(listener, null);
     }
 
+    /**
+     * Creates a new match result with the matched listener and extracted path parameters.
+     * @param listener the matched WebSocket listener
+     * @param pathParameters the URI path parameters extracted from the template
+     */
     public WebSocketEndpointMatch(@NonNull NettyWebSocketListener listener, @Nullable Map<String, String> pathParameters) {
         Assert.notNull(listener, "listener must not be null");
         this.listener = listener;
@@ -45,11 +54,19 @@ public class WebSocketEndpointMatch {
                 : Collections.emptyMap());
     }
 
+    /**
+     * Returns the matched WebSocket listener.
+     * @return the listener
+     */
     @NonNull
     public NettyWebSocketListener getListener() {
         return listener;
     }
 
+    /**
+     * Returns the extracted path parameters.
+     * @return the unmodifiable map of path parameters
+     */
     @NonNull
     public Map<String, String> getPathParameters() {
         return pathParameters;

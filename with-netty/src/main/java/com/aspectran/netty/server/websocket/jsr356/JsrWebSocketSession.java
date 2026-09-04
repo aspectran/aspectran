@@ -81,6 +81,13 @@ public class JsrWebSocketSession implements Session {
 
     private final Map<String, Object> userProperties = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a new JSR-356 session wrapping the underlying Netty WebSocket session.
+     * @param nettySession the underlying Netty WebSocket session
+     * @param openSessions the tracking set of active sessions
+     * @param encoders the list of message encoders
+     * @param decoders the list of message decoders
+     */
     public JsrWebSocketSession(
             @NonNull NettyWebSocketSession nettySession,
             @NonNull Set<Session> openSessions,
@@ -98,14 +105,28 @@ public class JsrWebSocketSession implements Session {
         this.requestParameterMap = parseRequestParameters(this.requestURI);
     }
 
+    /**
+     * Returns the underlying Netty WebSocket session.
+     * @return the Netty session
+     */
     public NettyWebSocketSession getNettySession() {
         return nettySession;
     }
 
+    /**
+     * Returns whether any JSR-356 message handlers have been registered on this session.
+     * @return {@code true} if handlers are present; {@code false} otherwise
+     */
     public boolean hasMessageHandlers() {
         return !messageHandlers.isEmpty();
     }
 
+    /**
+     * Dispatches an incoming text message to registered message handlers,
+     * applying text decoders if applicable.
+     * @param text the incoming text payload
+     * @throws Exception if an error occurs while handling the message
+     */
     public void handleTextMessage(String text) throws Exception {
         for (MessageHandler handler : messageHandlers) {
             if (handler instanceof MessageHandler.Whole whole) {
@@ -137,6 +158,11 @@ public class JsrWebSocketSession implements Session {
         }
     }
 
+    /**
+     * Dispatches an incoming binary message to registered message handlers.
+     * @param data the incoming binary payload
+     * @throws Exception if an error occurs while handling the message
+     */
     public void handleBinaryMessage(byte[] data) throws Exception {
         ByteBuffer buffer = ByteBuffer.wrap(data);
         for (MessageHandler handler : messageHandlers) {
@@ -153,6 +179,12 @@ public class JsrWebSocketSession implements Session {
         }
     }
 
+    /**
+     * Encodes an object to text using the registered text encoders.
+     * @param object the object to encode
+     * @return the encoded string
+     * @throws EncodeException if no matching encoder is found or encoding fails
+     */
     @SuppressWarnings("unchecked")
     protected String encodeTextObject(Object object) throws EncodeException {
         if (object == null) {

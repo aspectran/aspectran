@@ -84,6 +84,20 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final boolean proxyAddressForwarding;
 
+    /**
+     * Constructs a new {@code NettyChannelInitializer} with full configuration options.
+     * @param listenerConfig the listener configuration
+     * @param contextRouter the context router for dispatching requests to NettyContexts
+     * @param requestExecutor the executor service for asynchronous request dispatching
+     * @param resourceHandler the static resource handler
+     * @param accessLogHandler the access log handler
+     * @param loggingGroupHandler the path-based logging group handler
+     * @param encodingHandler the character encoding handler
+     * @param maxContentLength the maximum allowable HTTP request body size in bytes
+     * @param contentCompression whether HTTP response content compression (gzip/deflate) is enabled
+     * @param idleTimeout the HTTP connection idle timeout in milliseconds
+     * @param proxyAddressForwarding whether forwarded headers (X-Forwarded-*) should be honored
+     */
     public NettyChannelInitializer(
             NettyListenerConfig listenerConfig,
             NettyContextRouter contextRouter,

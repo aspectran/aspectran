@@ -44,6 +44,10 @@ public class NettyCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
+    /**
+     * Constructs a new NettyCommand for the shell console.
+     * @param registry the command registry
+     */
     public NettyCommand(CommandRegistry registry) {
         super(registry);
 

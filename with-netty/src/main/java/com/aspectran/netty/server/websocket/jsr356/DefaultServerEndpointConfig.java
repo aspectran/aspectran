@@ -52,10 +52,25 @@ public class DefaultServerEndpointConfig implements ServerEndpointConfig {
 
     private final Map<String, Object> userProperties = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a minimal server endpoint configuration.
+     * @param endpointClass the endpoint implementation class
+     * @param path the URI path or template mapping
+     */
     public DefaultServerEndpointConfig(@NonNull Class<?> endpointClass, @NonNull String path) {
         this(endpointClass, path, null, null, null, null, null);
     }
 
+    /**
+     * Creates a fully configured server endpoint configuration.
+     * @param endpointClass the endpoint implementation class
+     * @param path the URI path or template mapping
+     * @param encoders the list of message encoder classes
+     * @param decoders the list of message decoder classes
+     * @param subprotocols the list of supported subprotocol names
+     * @param extensions the list of supported extensions
+     * @param configurator the server endpoint configurator
+     */
     public DefaultServerEndpointConfig(
             @NonNull Class<?> endpointClass,
             @NonNull String path,

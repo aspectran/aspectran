@@ -41,13 +41,24 @@ public class PathBasedLoggingGroupHandler extends ChannelInboundHandlerAdapter {
 
     private Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 
+    /**
+     * Creates a new unconfigured path-based logging group handler.
+     */
     public PathBasedLoggingGroupHandler() {
     }
 
+    /**
+     * Creates a new path-based logging group handler with the given pattern mapping.
+     * @param pathPatternsByGroupName map of logging group names to APON formatted include/exclude patterns
+     */
     public PathBasedLoggingGroupHandler(Map<String, String> pathPatternsByGroupName) {
         setPathPatternsByGroupName(pathPatternsByGroupName);
     }
 
+    /**
+     * Returns the compiled path patterns mapped by logging group name.
+     * @return the mapping of group names to {@link IncludeExcludeWildcardPatterns}
+     */
     public Map<String, IncludeExcludeWildcardPatterns> getPathPatternsByGroupName() {
         return pathPatternsByGroupName;
     }

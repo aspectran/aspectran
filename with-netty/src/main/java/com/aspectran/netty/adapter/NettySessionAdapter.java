@@ -51,6 +51,13 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
 
     private boolean newSession;
 
+    /**
+     * Creates a new {@code NettySessionAdapter}.
+     * @param ctx the Netty {@link ChannelHandlerContext} for the client connection
+     * @param request the native Netty HTTP request
+     * @param responseAdapter the response adapter used to write session cookies
+     * @param activity the current {@link NettyActivity}
+     */
     public NettySessionAdapter(
             ChannelHandlerContext ctx,
             FullHttpRequest request,
@@ -160,6 +167,9 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
         return (sess == null || newSession);
     }
 
+    /**
+     * Records an access to the underlying session, updating its last accessed time.
+     */
     public void access() {
         Session sess = getSession(false);
         if (sess != null) {
@@ -167,6 +177,9 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * Completes request processing for the underlying session.
+     */
     public void complete() {
         Session sess = getSession(false);
         if (sess != null) {
@@ -174,6 +187,11 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * Retrieves the current {@link Session}, or creates a new one if requested.
+     * @param create true to create a new session if one does not already exist
+     * @return the existing or newly created session, or {@code null}
+     */
     public Session getSession(boolean create) {
         if (session != null) {
             if (session.isValid()) {

@@ -44,6 +44,11 @@ public class WebSocketEndpointTemplate implements Comparable<WebSocketEndpointTe
 
     private final boolean template;
 
+    /**
+     * Creates a new WebSocket endpoint template with a URI pattern and associated listener.
+     * @param pattern the URI template pattern (e.g. {@code /chat/{room}})
+     * @param listener the WebSocket listener to dispatch to
+     */
     public WebSocketEndpointTemplate(@NonNull String pattern, @NonNull NettyWebSocketListener listener) {
         Assert.notNull(pattern, "pattern must not be null");
         Assert.notNull(listener, "listener must not be null");
@@ -72,20 +77,37 @@ public class WebSocketEndpointTemplate implements Comparable<WebSocketEndpointTe
         this.literalCount = literals;
     }
 
+    /**
+     * Returns the normalized URI template pattern string.
+     * @return the pattern
+     */
     @NonNull
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * Returns the associated WebSocket listener.
+     * @return the listener
+     */
     @NonNull
     public NettyWebSocketListener getListener() {
         return listener;
     }
 
+    /**
+     * Returns whether this template contains dynamic path variables.
+     * @return {@code true} if dynamic template variables exist; {@code false} if exact literal path
+     */
     public boolean isTemplate() {
         return template;
     }
 
+    /**
+     * Matches a request path against this template and extracts path parameters.
+     * @param path the request path to match
+     * @return a map of path variable names to decoded values, or {@code null} if no match
+     */
     @Nullable
     public Map<String, String> match(@NonNull String path) {
         int queryIndex = path.indexOf('?');

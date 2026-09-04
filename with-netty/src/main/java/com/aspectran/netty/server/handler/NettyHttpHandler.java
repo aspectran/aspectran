@@ -84,10 +84,21 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     private final boolean proxyAddressForwarding;
 
+    /**
+     * Constructs a new {@code NettyHttpHandler}.
+     * @param contextRouter the context router for dispatching requests
+     * @param requestExecutor the executor service for asynchronous request dispatching
+     */
     public NettyHttpHandler(@NonNull NettyContextRouter contextRouter, ExecutorService requestExecutor) {
         this(contextRouter, requestExecutor, null, false);
     }
 
+    /**
+     * Constructs a new {@code NettyHttpHandler} with a logging group handler.
+     * @param contextRouter the context router for dispatching requests
+     * @param requestExecutor the executor service for asynchronous request dispatching
+     * @param loggingGroupHandler the logging group handler
+     */
     public NettyHttpHandler(
             @NonNull NettyContextRouter contextRouter,
             ExecutorService requestExecutor,
@@ -95,6 +106,13 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
         this(contextRouter, requestExecutor, loggingGroupHandler, false);
     }
 
+    /**
+     * Constructs a new {@code NettyHttpHandler} with full configuration.
+     * @param contextRouter the context router for dispatching requests
+     * @param requestExecutor the executor service for asynchronous request dispatching
+     * @param loggingGroupHandler the logging group handler
+     * @param proxyAddressForwarding whether forwarded headers (X-Forwarded-*) are honored
+     */
     public NettyHttpHandler(
             @NonNull NettyContextRouter contextRouter,
             ExecutorService requestExecutor,

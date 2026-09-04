@@ -84,19 +84,36 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
     private String contextPath;
 
+    /**
+     * Protected constructor for subclasses that do not serve from the local filesystem.
+     */
     protected NettyResourceHandler() {
         super(false);
         this.baseDir = null;
     }
 
+    /**
+     * Creates a new resource handler serving static files from the specified base directory.
+     * @param baseDir the base directory containing static files
+     */
     public NettyResourceHandler(File baseDir) {
         this(baseDir, (String[])null);
     }
 
+    /**
+     * Creates a new resource handler serving static files from the specified directory path.
+     * @param basePath the base directory path string
+     */
     public NettyResourceHandler(String basePath) {
         this(new File(basePath));
     }
 
+    /**
+     * Creates a new resource handler serving static files from the specified base directory,
+     * restricted to matching include wildcard patterns.
+     * @param baseDir the base directory
+     * @param includePatterns wildcard patterns matching request paths to serve
+     */
     public NettyResourceHandler(File baseDir, String... includePatterns) {
         super(false);
         this.baseDir = baseDir;
@@ -105,30 +122,61 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
+    /**
+     * Creates a new resource handler serving static files from the specified base directory path,
+     * restricted to matching include wildcard patterns.
+     * @param basePath the base directory path
+     * @param includePatterns wildcard patterns matching request paths to serve
+     */
     public NettyResourceHandler(String basePath, String... includePatterns) {
         this(new File(basePath), includePatterns);
     }
 
+    /**
+     * Returns the base directory where static files reside.
+     * @return the base directory
+     */
     public File getBaseDir() {
         return baseDir;
     }
 
+    /**
+     * Returns the context path prefix associated with this handler.
+     * @return the context path
+     */
     public String getContextPath() {
         return contextPath;
     }
 
+    /**
+     * Sets the context path prefix to strip from incoming request URIs.
+     * @param contextPath the context path prefix
+     */
     public void setContextPath(String contextPath) {
         this.contextPath = (contextPath != null ? contextPath : "");
     }
 
+    /**
+     * Configures include and exclude URL wildcard patterns for resource serving.
+     * @param includePatterns patterns to include
+     * @param excludePatterns patterns to exclude
+     */
     public void setPathPatterns(String[] includePatterns, String[] excludePatterns) {
         this.pathPatterns = IncludeExcludeWildcardPatterns.of(includePatterns, excludePatterns, '/');
     }
 
+    /**
+     * Sets the pre-compiled include/exclude wildcard patterns.
+     * @param pathPatterns the wildcard patterns
+     */
     public void setPathPatterns(IncludeExcludeWildcardPatterns pathPatterns) {
         this.pathPatterns = pathPatterns;
     }
 
+    /**
+     * Returns the include/exclude wildcard patterns applied to request paths.
+     * @return the wildcard patterns
+     */
     public IncludeExcludeWildcardPatterns getPathPatterns() {
         return pathPatterns;
     }
@@ -158,10 +206,25 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         }
     }
 
+    /**
+     * Attempts to serve a static resource matching the request URI.
+     * @param ctx the channel handler context
+     * @param request the HTTP request
+     * @return {@code true} if the request was handled and a resource was served; {@code false} otherwise
+     * @throws Exception if an error occurs during resource retrieval or transfer
+     */
     public boolean handle(ChannelHandlerContext ctx, @NonNull FullHttpRequest request) throws Exception {
         return handle(ctx, request, null);
     }
 
+    /**
+     * Attempts to serve a static resource matching the request URI or a pre-resolved relative path.
+     * @param ctx the channel handler context
+     * @param request the HTTP request
+     * @param relativePath the relative path to resolve against base directory, or {@code null}
+     * @return {@code true} if the request was handled and a resource was served; {@code false} otherwise
+     * @throws Exception if an error occurs during resource retrieval or transfer
+     */
     public boolean handle(
             ChannelHandlerContext ctx,
             @NonNull FullHttpRequest request,
