@@ -23,6 +23,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,12 +40,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class NettyResourceHandlerTest {
 
+    private EmbeddedChannel channel;
+
+    @AfterEach
+    void tearDown() {
+        if (channel != null) {
+            channel.finishAndReleaseAll();
+            channel = null;
+        }
+    }
+
     @Test
     void testServeFile(@TempDir Path tempDir) throws Exception {
-        Files.writeString(tempDir.resolve("test.html"), "<html><body>Hello</body></html>");
+        Path file = tempDir.resolve("test.html");
+        Files.writeString(file, "<html><body>Hello</body></html>");
 
         NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/test.html");
@@ -57,6 +69,33 @@ class NettyResourceHandlerTest {
         assertEquals(HttpResponseStatus.OK, response.status());
         assertTrue(response.headers().contains(HttpHeaderNames.CONTENT_TYPE));
         assertTrue(response.headers().contains(HttpHeaderNames.LAST_MODIFIED));
+
+        channel.finishAndReleaseAll();
+        channel = null;
+        Files.delete(file);
+        assertFalse(Files.exists(file));
+    }
+
+    @Test
+    void testHeadRequest(@TempDir Path tempDir) throws Exception {
+        Files.writeString(tempDir.resolve("test.html"), "<html><body>Hello</body></html>");
+
+        NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
+        channel = new EmbeddedChannel(handler);
+
+        FullHttpRequest request = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.HEAD, "/test.html");
+
+        boolean handled = handler.handle(channel.pipeline().firstContext(), request);
+        assertTrue(handled, "HEAD request should be handled");
+
+        HttpResponse response = channel.readOutbound();
+        assertNotNull(response);
+        assertEquals(HttpResponseStatus.OK, response.status());
+        assertTrue(response.headers().contains(HttpHeaderNames.CONTENT_LENGTH));
+
+        channel.finishAndReleaseAll();
+        channel = null;
     }
 
     @Test
@@ -66,7 +105,7 @@ class NettyResourceHandlerTest {
 
         NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
         handler.setContextPath("/console");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/assets/style.css");
@@ -77,6 +116,9 @@ class NettyResourceHandlerTest {
         HttpResponse response = channel.readOutbound();
         assertNotNull(response);
         assertEquals(HttpResponseStatus.OK, response.status());
+
+        channel.finishAndReleaseAll();
+        channel = null;
     }
 
     @Test
@@ -85,7 +127,7 @@ class NettyResourceHandlerTest {
         Files.writeString(assetsDir.resolve("style.css"), "body { color: blue; }");
 
         NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/assets/style.css");
@@ -96,18 +138,24 @@ class NettyResourceHandlerTest {
         HttpResponse response = channel.readOutbound();
         assertNotNull(response);
         assertEquals(HttpResponseStatus.OK, response.status());
+
+        channel.finishAndReleaseAll();
+        channel = null;
     }
 
     @Test
     void testFileNotFound(@TempDir Path tempDir) throws Exception {
         NettyResourceHandler handler = new NettyResourceHandler(tempDir.toFile());
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/non-existing.txt");
 
         boolean handled = handler.handle(channel.pipeline().firstContext(), request);
         assertFalse(handled, "Non-existing file should not be handled");
+
+        channel.finishAndReleaseAll();
+        channel = null;
     }
 
 }

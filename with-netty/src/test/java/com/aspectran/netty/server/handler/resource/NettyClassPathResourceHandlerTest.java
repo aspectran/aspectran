@@ -23,6 +23,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,10 +36,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class NettyClassPathResourceHandlerTest {
 
+    private EmbeddedChannel channel;
+
+    @AfterEach
+    void tearDown() {
+        if (channel != null) {
+            channel.finishAndReleaseAll();
+            channel = null;
+        }
+    }
+
     @Test
     void testServeClasspathResource() throws Exception {
         NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/aspectran-config.apon");
@@ -56,7 +67,7 @@ class NettyClassPathResourceHandlerTest {
     @Test
     void testResourceNotFound() throws Exception {
         NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/non-existing-file.txt");
@@ -68,7 +79,7 @@ class NettyClassPathResourceHandlerTest {
     @Test
     void testHeadRequest() throws Exception {
         NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.HEAD, "/aspectran-config.apon");
@@ -86,7 +97,7 @@ class NettyClassPathResourceHandlerTest {
     void testContextPathStripping() throws Exception {
         NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
         handler.setContextPath("/console");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/aspectran-config.apon");
@@ -102,7 +113,7 @@ class NettyClassPathResourceHandlerTest {
     @Test
     void testExplicitRelativePath() throws Exception {
         NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/aspectran-config.apon");
@@ -119,7 +130,7 @@ class NettyClassPathResourceHandlerTest {
     void testDirectoryWithoutIndexFile() throws Exception {
         NettyClassPathResourceHandler handler = new NettyClassPathResourceHandler("config/");
         handler.setContextPath("/console");
-        EmbeddedChannel channel = new EmbeddedChannel(handler);
+        channel = new EmbeddedChannel(handler);
 
         FullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, "/console/");
