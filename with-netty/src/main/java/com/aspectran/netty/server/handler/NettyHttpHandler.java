@@ -207,7 +207,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
             ChannelHandlerContext ctx,
             FullHttpRequest request,
             String path,
-            WebSocketEndpointMatch match,
+            @NonNull WebSocketEndpointMatch match,
             @Nullable NettyContext context) {
         NettyWebSocketListener listener = match.getListener();
         String wsLocation = getWebSocketLocation(request, ctx);

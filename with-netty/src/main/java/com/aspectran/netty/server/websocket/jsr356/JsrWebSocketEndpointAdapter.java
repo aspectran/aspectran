@@ -57,6 +57,8 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JsrWebSocketEndpointAdapter.class);
 
+    private static final String JSR_SESSION_ATTR = JsrWebSocketSession.class.getName();
+
     private final Object endpointInstance;
 
     private final Class<?> endpointClass;
@@ -106,7 +108,7 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
     public void onOpen(@NonNull NettyWebSocketSession session) throws Exception {
         JsrWebSocketSession jsrSession = new JsrWebSocketSession(session, openSessions, encoders, decoders);
         openSessions.add(jsrSession);
-        session.setAttribute("jsrSession", jsrSession);
+        session.setAttribute(JSR_SESSION_ATTR, jsrSession);
 
         if (endpointInstance instanceof Endpoint endpoint) {
             endpoint.onOpen(jsrSession, endpointConfig);
@@ -117,7 +119,7 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
 
     @Override
     public void onMessage(@NonNull NettyWebSocketSession session, String text) throws Exception {
-        JsrWebSocketSession jsrSession = session.getAttribute("jsrSession");
+        JsrWebSocketSession jsrSession = session.getAttribute(JSR_SESSION_ATTR);
         if (jsrSession != null) {
             if (jsrSession.hasMessageHandlers()) {
                 jsrSession.handleTextMessage(text);
@@ -129,7 +131,7 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
 
     @Override
     public void onMessage(@NonNull NettyWebSocketSession session, byte[] data) throws Exception {
-        JsrWebSocketSession jsrSession = session.getAttribute("jsrSession");
+        JsrWebSocketSession jsrSession = session.getAttribute(JSR_SESSION_ATTR);
         if (jsrSession != null) {
             if (jsrSession.hasMessageHandlers()) {
                 jsrSession.handleBinaryMessage(data);
@@ -141,7 +143,7 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
 
     @Override
     public void onClose(@NonNull NettyWebSocketSession session, int statusCode, @Nullable String reason) throws Exception {
-        JsrWebSocketSession jsrSession = session.getAttribute("jsrSession");
+        JsrWebSocketSession jsrSession = session.getAttribute(JSR_SESSION_ATTR);
         if (jsrSession != null) {
             openSessions.remove(jsrSession);
             CloseReason.CloseCode code = CloseReason.CloseCodes.getCloseCode(statusCode);
@@ -157,7 +159,7 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
 
     @Override
     public void onError(@NonNull NettyWebSocketSession session, @NonNull Throwable cause) {
-        JsrWebSocketSession jsrSession = session.getAttribute("jsrSession");
+        JsrWebSocketSession jsrSession = session.getAttribute(JSR_SESSION_ATTR);
         if (jsrSession != null) {
             if (endpointInstance instanceof Endpoint endpoint) {
                 endpoint.onError(jsrSession, cause);

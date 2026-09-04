@@ -35,13 +35,21 @@ import java.util.ArrayList;
  */
 public class TowWebSocketServerContainerInitializer {
 
-    private boolean directBuffers = false;
+    private boolean directBuffers = true;
 
     private int bufferSize = 16384;
 
     private int maximumPoolSize = -1;
 
     private int threadLocalCacheSize = 12;
+
+    private Long idleTimeout;
+
+    private Long asyncSendTimeout;
+
+    private Integer maxBinaryMessageSize;
+
+    private Integer maxTextMessageSize;
 
     /**
      * Sets whether to use direct buffers.
@@ -75,6 +83,38 @@ public class TowWebSocketServerContainerInitializer {
         this.threadLocalCacheSize = threadLocalCacheSize;
     }
 
+    public Long getIdleTimeout() {
+        return idleTimeout;
+    }
+
+    public void setIdleTimeout(long idleTimeout) {
+        this.idleTimeout = idleTimeout;
+    }
+
+    public Long getAsyncSendTimeout() {
+        return asyncSendTimeout;
+    }
+
+    public void setAsyncSendTimeout(long asyncSendTimeout) {
+        this.asyncSendTimeout = asyncSendTimeout;
+    }
+
+    public Integer getMaxBinaryMessageSize() {
+        return maxBinaryMessageSize;
+    }
+
+    public void setMaxBinaryMessageSize(int maxBinaryMessageSize) {
+        this.maxBinaryMessageSize = maxBinaryMessageSize;
+    }
+
+    public Integer getMaxTextMessageSize() {
+        return maxTextMessageSize;
+    }
+
+    public void setMaxTextMessageSize(int maxTextMessageSize) {
+        this.maxTextMessageSize = maxTextMessageSize;
+    }
+
     /**
      * Initializes the web socket server container.
      * @param towServletContext the servlet context
@@ -83,6 +123,22 @@ public class TowWebSocketServerContainerInitializer {
         if (!towServletContext.getServletContextAttributes().containsKey(WebSocketDeploymentInfo.ATTRIBUTE_NAME)) {
             ByteBufferPool byteBufferPool = new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize);
             WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo().setBuffers(byteBufferPool);
+            if (idleTimeout != null || asyncSendTimeout != null || maxBinaryMessageSize != null || maxTextMessageSize != null) {
+                webSocketDeploymentInfo.addListener(container -> {
+                    if (idleTimeout != null) {
+                        container.setDefaultMaxSessionIdleTimeout(idleTimeout);
+                    }
+                    if (asyncSendTimeout != null) {
+                        container.setAsyncSendTimeout(asyncSendTimeout);
+                    }
+                    if (maxBinaryMessageSize != null) {
+                        container.setDefaultMaxBinaryMessageBufferSize(maxBinaryMessageSize);
+                    }
+                    if (maxTextMessageSize != null) {
+                        container.setDefaultMaxTextMessageBufferSize(maxTextMessageSize);
+                    }
+                });
+            }
             towServletContext.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, webSocketDeploymentInfo);
             towServletContext.addSessionListener(new WebSocketGracefulCloseListener());
         }
