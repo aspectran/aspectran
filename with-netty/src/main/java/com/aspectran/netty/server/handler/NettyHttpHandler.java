@@ -82,40 +82,28 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     private final PathBasedLoggingGroupHandler loggingGroupHandler;
 
-    private final NettyWebSocketConfig webSocketConfig;
-
     private final boolean proxyAddressForwarding;
 
     public NettyHttpHandler(@NonNull NettyContextRouter contextRouter, ExecutorService requestExecutor) {
-        this(contextRouter, requestExecutor, null, null);
+        this(contextRouter, requestExecutor, null, false);
     }
 
     public NettyHttpHandler(
             @NonNull NettyContextRouter contextRouter,
             ExecutorService requestExecutor,
             PathBasedLoggingGroupHandler loggingGroupHandler) {
-        this(contextRouter, requestExecutor, loggingGroupHandler, null);
+        this(contextRouter, requestExecutor, loggingGroupHandler, false);
     }
 
     public NettyHttpHandler(
             @NonNull NettyContextRouter contextRouter,
             ExecutorService requestExecutor,
             PathBasedLoggingGroupHandler loggingGroupHandler,
-            @Nullable NettyWebSocketConfig webSocketConfig) {
-        this(contextRouter, requestExecutor, loggingGroupHandler, webSocketConfig, false);
-    }
-
-    public NettyHttpHandler(
-            @NonNull NettyContextRouter contextRouter,
-            ExecutorService requestExecutor,
-            PathBasedLoggingGroupHandler loggingGroupHandler,
-            @Nullable NettyWebSocketConfig webSocketConfig,
             boolean proxyAddressForwarding) {
         super(false);
         this.contextRouter = contextRouter;
         this.requestExecutor = requestExecutor;
         this.loggingGroupHandler = loggingGroupHandler;
-        this.webSocketConfig = webSocketConfig;
         this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
@@ -211,13 +199,11 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
             @Nullable NettyContext context) {
         NettyWebSocketListener listener = match.getListener();
         String wsLocation = getWebSocketLocation(request, ctx);
-        NettyWebSocketConfig effectiveConfig = (context != null && context.getWebSocketConfig() != null)
-                ? context.getWebSocketConfig()
-                : this.webSocketConfig;
-        int maxFramePayloadLength = (effectiveConfig != null ? effectiveConfig.getMaxFramePayloadLength() : 65536);
-        int maxMessageSize = (effectiveConfig != null ? effectiveConfig.getMaxMessageSize() : 65536);
-        boolean allowExtensions = (effectiveConfig == null || effectiveConfig.isAllowExtensions());
-        String subprotocols = (effectiveConfig != null ? effectiveConfig.getSubprotocols() : null);
+        NettyWebSocketConfig webSocketConfig = (context != null ? context.getWebSocketConfig() : null);
+        int maxFramePayloadLength = (webSocketConfig != null ? webSocketConfig.getMaxFramePayloadLength() : 65536);
+        int maxMessageSize = (webSocketConfig != null ? webSocketConfig.getMaxMessageSize() : 65536);
+        boolean allowExtensions = (webSocketConfig == null || webSocketConfig.isAllowExtensions());
+        String subprotocols = (webSocketConfig != null ? webSocketConfig.getSubprotocols() : null);
 
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
                 wsLocation, subprotocols, allowExtensions, maxFramePayloadLength);
@@ -232,7 +218,7 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                 ctx.channel().eventLoop().execute(() -> {
                     DefaultNettyWebSocketSession session = new DefaultNettyWebSocketSession(
                             ctx.channel(), request.uri(), path, request.headers(), handshaker,
-                            match.getPathParameters(), effectiveConfig);
+                            match.getPathParameters(), webSocketConfig);
 
                     String wsGroup = ChannelLoggingGroupHelper.get(ctx.channel());
                     if (wsGroup != null) {
@@ -255,8 +241,8 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                         if (pipeline.get(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME) != null) {
                             pipeline.remove(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME);
                         }
-                        if (effectiveConfig != null && effectiveConfig.getMaxIdleTimeout() > 0) {
-                            int idleSeconds = (int)Math.max(1, effectiveConfig.getMaxIdleTimeout() / 1000);
+                        if (webSocketConfig != null && webSocketConfig.getMaxIdleTimeout() > 0) {
+                            int idleSeconds = (int)Math.max(1, webSocketConfig.getMaxIdleTimeout() / 1000);
                             pipeline.addBefore(ctx.name(), WS_IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, 0, idleSeconds));
                         }
                         pipeline.addBefore(ctx.name(), WS_FRAME_AGGREGATOR_HANDLER_NAME, new WebSocketFrameAggregator(maxMessageSize));

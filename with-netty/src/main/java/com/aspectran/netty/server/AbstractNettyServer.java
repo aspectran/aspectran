@@ -20,7 +20,6 @@ import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
-import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
@@ -100,8 +99,6 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     private NettyAccessLogHandler accessLogHandler;
 
     private PathBasedLoggingGroupHandler loggingGroupHandler;
-
-    private NettyWebSocketConfig webSocketConfig;
 
     private int idleTimeout;
 
@@ -250,14 +247,6 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     public void setLoggingGroupHandler(PathBasedLoggingGroupHandler loggingGroupHandler) {
         this.loggingGroupHandler = loggingGroupHandler;
-    }
-
-    public NettyWebSocketConfig getWebSocketConfig() {
-        return webSocketConfig;
-    }
-
-    public void setWebSocketConfig(NettyWebSocketConfig webSocketConfig) {
-        this.webSocketConfig = webSocketConfig;
     }
 
     public int getIdleTimeout() {
@@ -429,7 +418,6 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
                 accessLogHandler,
                 loggingGroupHandler,
                 encodingHandler,
-                webSocketConfig,
                 maxContentLength,
                 contentCompression,
                 idleTimeout,
