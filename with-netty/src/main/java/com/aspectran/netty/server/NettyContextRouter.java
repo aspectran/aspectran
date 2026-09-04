@@ -132,6 +132,28 @@ public class NettyContextRouter {
         return rootContext;
     }
 
+    /**
+     * Returns the {@link NettyContext} registered with the specified context path.
+     * @param contextPath the context path
+     * @return the matched context, or {@code null} if not found
+     */
+    @Nullable
+    public NettyContext getContext(String contextPath) {
+        if (contextPath == null || contextPath.isEmpty() || "/".equals(contextPath)) {
+            return (rootContext != null ? rootContext : (contexts.size() == 1 ? contexts.getFirst() : null));
+        }
+        String normalized = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
+        if (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        for (NettyContext context : contexts) {
+            if (context.getContextPath().equals(normalized)) {
+                return context;
+            }
+        }
+        return null;
+    }
+
     private void resort() {
         NettyContext foundRoot = null;
         for (NettyContext context : contexts) {

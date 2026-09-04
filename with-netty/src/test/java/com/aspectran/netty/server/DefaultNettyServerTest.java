@@ -218,4 +218,15 @@ class DefaultNettyServerTest {
         }
     }
 
+    @Test
+    void testServerMetrics() {
+        assertNotNull(nettyServer.getWorkerName());
+        assertNotNull(nettyServer.getBossGroup());
+        assertNotNull(nettyServer.getWorkerGroup());
+        assertTrue(nettyServer.getBossThreads() > 0);
+        assertNotNull(nettyServer.getRequestExecutor());
+        assertTrue(nettyServer.getTotalRequests() >= 0);
+        assertTrue(nettyServer.getActiveRequests() >= 0);
+    }
+
 }

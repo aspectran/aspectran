@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server;
 
-import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.component.session.SessionManagerProvider;
 import com.aspectran.utils.lifecycle.LifeCycle;
 import io.undertow.Undertow;
 import io.undertow.Version;
@@ -30,7 +30,7 @@ import io.undertow.servlet.api.DeploymentManager;
  *
  * <p>Created: 11/25/23</p>
  */
-public interface TowServer extends LifeCycle {
+public interface TowServer extends LifeCycle, SessionManagerProvider {
 
     /**
      * Returns the version of the underlying Undertow server library.
@@ -62,17 +62,9 @@ public interface TowServer extends LifeCycle {
     DeploymentManager getDeploymentManagerByPath(String path);
 
     /**
-     * Retrieves the Aspectran {@link SessionManager} for a specific deployment.
-     * @param deploymentName the name of the deployment
-     * @return the session manager, or {@code null} if not found
+     * Returns the port on which the primary HTTP/HTTPS listener is bound.
+     * @return the active port, or -1 if the server is not running
      */
-    SessionManager getSessionManager(String deploymentName);
-
-    /**
-     * Retrieves the Aspectran {@link SessionManager} for a web application by its context path.
-     * @param path the context path of the web application
-     * @return the session manager, or {@code null} if not found
-     */
-    SessionManager getSessionManagerByPath(String path);
+    int getActivePort();
 
 }

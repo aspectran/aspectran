@@ -15,12 +15,16 @@
  */
 package com.aspectran.netty.server;
 
+import com.aspectran.core.component.session.SessionManagerProvider;
 import com.aspectran.utils.lifecycle.LifeCycle;
 import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
 import io.netty.util.Version;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Defines the contract for an embedded Netty server managed by Aspectran.
@@ -29,7 +33,7 @@ import java.util.Map;
  *
  * <p>Created: 2026-09-02</p>
  */
-public interface NettyServer extends LifeCycle {
+public interface NettyServer extends LifeCycle, SessionManagerProvider {
 
     /**
      * Returns the version of the Netty transport library.
@@ -73,5 +77,65 @@ public interface NettyServer extends LifeCycle {
      * @return the context router
      */
     NettyContextRouter getContextRouter();
+
+    /**
+     * Returns the worker name or thread name prefix.
+     * @return the worker name
+     */
+    String getWorkerName();
+
+    /**
+     * Returns the boss event loop group that accepts incoming connections.
+     * @return the boss event loop group
+     */
+    EventLoopGroup getBossGroup();
+
+    /**
+     * Returns the worker event loop group that processes I/O for accepted channels.
+     * @return the worker event loop group
+     */
+    EventLoopGroup getWorkerGroup();
+
+    /**
+     * Returns the configured number of boss threads.
+     * @return the boss threads count
+     */
+    int getBossThreads();
+
+    /**
+     * Returns the configured number of worker threads.
+     * @return the worker threads count
+     */
+    int getWorkerThreads();
+
+    /**
+     * Returns the executor service used for asynchronous request dispatching.
+     * @return the request executor, or null if not yet initialized or not configured
+     */
+    ExecutorService getRequestExecutor();
+
+    /**
+     * Returns the underlying {@link ThreadPoolExecutor} if standard thread pooling is used.
+     * @return the thread pool executor, or null if virtual threads or a custom non-thread-pool executor is used
+     */
+    ThreadPoolExecutor getThreadPoolExecutor();
+
+    /**
+     * Returns whether Java 21 virtual threads are enabled for request dispatching.
+     * @return true if virtual threads are enabled; false otherwise
+     */
+    boolean isVirtualThreads();
+
+    /**
+     * Returns the number of active requests currently being processed.
+     * @return the active request count
+     */
+    int getActiveRequests();
+
+    /**
+     * Returns the total number of requests dispatched since server start.
+     * @return the total request count
+     */
+    long getTotalRequests();
 
 }
