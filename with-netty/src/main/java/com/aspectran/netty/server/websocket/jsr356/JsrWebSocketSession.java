@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 
@@ -77,6 +78,8 @@ public class JsrWebSocketSession implements Session {
     private final URI requestURI;
 
     private final Map<String, List<String>> requestParameterMap;
+
+    private final Map<String, Object> userProperties = new ConcurrentHashMap<>();
 
     public JsrWebSocketSession(
             @NonNull NettyWebSocketSession nettySession,
@@ -305,7 +308,7 @@ public class JsrWebSocketSession implements Session {
 
     @Override
     public Map<String, Object> getUserProperties() {
-        return nettySession.getAttributes();
+        return userProperties;
     }
 
     @Override

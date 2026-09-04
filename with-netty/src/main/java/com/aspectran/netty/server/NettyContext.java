@@ -29,6 +29,7 @@ import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.session.NettySessionManager;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
+import com.aspectran.netty.server.websocket.NettyWebSocketServerContainerInitializer;
 import com.aspectran.netty.server.websocket.WebSocketEndpointMatch;
 import com.aspectran.netty.server.websocket.WebSocketEndpointTemplate;
 import com.aspectran.netty.server.websocket.jsr356.NettyServerEndpointExporter;
@@ -86,6 +87,8 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     private final Map<String, NettyWebSocketListener> exactWebSocketEndpoints = new ConcurrentHashMap<>();
 
     private final List<WebSocketEndpointTemplate> templateWebSocketEndpoints = new CopyOnWriteArrayList<>();
+
+    private NettyWebSocketServerContainerInitializer webSocketServerContainerInitializer;
 
     private NettyWebSocketConfig webSocketConfig;
 
@@ -253,6 +256,15 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.webSocketConfig = webSocketConfig;
     }
 
+    public NettyWebSocketServerContainerInitializer getWebSocketServerContainerInitializer() {
+        return webSocketServerContainerInitializer;
+    }
+
+    public void setWebSocketServerContainerInitializer(
+            NettyWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
+        this.webSocketServerContainerInitializer = webSocketServerContainerInitializer;
+    }
+
     public boolean isProxyAddressForwarding() {
         return Boolean.TRUE.equals(proxyAddressForwarding);
     }
@@ -330,7 +342,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
             nettyService.start();
         }
 
-        exportServerEndpoints();
+        if (webSocketServerContainerInitializer != null) {
+            webSocketServerContainerInitializer.initialize(this);
+            exportServerEndpoints();
+        }
 
         if (resourceHandler != null && resourceHandler.getContextPath() == null) {
             resourceHandler.setContextPath(contextPath);
