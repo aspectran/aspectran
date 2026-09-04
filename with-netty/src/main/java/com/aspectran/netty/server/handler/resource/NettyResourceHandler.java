@@ -152,7 +152,9 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         if (!handle(ctx, request)) {
-            ctx.fireChannelRead(request.retain());
+            ctx.fireChannelRead(request);
+        } else {
+            request.release();
         }
     }
 
