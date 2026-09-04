@@ -25,7 +25,6 @@ import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.logging.LoggingGroupHelper;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -115,11 +114,11 @@ class NettyLoggingGroupTest {
     void testContextAutomaticInheritanceForApi() throws Exception {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet get = new HttpGet("http://127.0.0.1:" + port + "/api/logging-group");
-            try (CloseableHttpResponse response = client.execute(get)) {
+            String body = client.execute(get, response -> {
                 assertEquals(200, response.getCode());
-                String body = EntityUtils.toString(response.getEntity());
-                assertEquals("api", body, "Default logging group should match context name 'api'");
-            }
+                return EntityUtils.toString(response.getEntity());
+            });
+            assertEquals("api", body, "Default logging group should match context name 'api'");
         }
     }
 
@@ -127,11 +126,11 @@ class NettyLoggingGroupTest {
     void testContextAutomaticInheritanceForAdmin() throws Exception {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet get = new HttpGet("http://127.0.0.1:" + port + "/admin/logging-group");
-            try (CloseableHttpResponse response = client.execute(get)) {
+            String body = client.execute(get, response -> {
                 assertEquals(200, response.getCode());
-                String body = EntityUtils.toString(response.getEntity());
-                assertEquals("admin", body, "Default logging group should match context name 'admin'");
-            }
+                return EntityUtils.toString(response.getEntity());
+            });
+            assertEquals("admin", body, "Default logging group should match context name 'admin'");
         }
     }
 
@@ -139,11 +138,11 @@ class NettyLoggingGroupTest {
     void testContextAutomaticInheritanceForRoot() throws Exception {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet get = new HttpGet("http://127.0.0.1:" + port + "/logging-group");
-            try (CloseableHttpResponse response = client.execute(get)) {
+            String body = client.execute(get, response -> {
                 assertEquals(200, response.getCode());
-                String body = EntityUtils.toString(response.getEntity());
-                assertEquals("root", body, "Default logging group should match root context name 'root'");
-            }
+                return EntityUtils.toString(response.getEntity());
+            });
+            assertEquals("root", body, "Default logging group should match root context name 'root'");
         }
     }
 
@@ -151,11 +150,11 @@ class NettyLoggingGroupTest {
     void testPathBasedPatternOverride() throws Exception {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet get = new HttpGet("http://127.0.0.1:" + port + "/api/special/logging-group");
-            try (CloseableHttpResponse response = client.execute(get)) {
+            String body = client.execute(get, response -> {
                 assertEquals(200, response.getCode());
-                String body = EntityUtils.toString(response.getEntity());
-                assertEquals("special", body, "Pattern override should take precedence over context name");
-            }
+                return EntityUtils.toString(response.getEntity());
+            });
+            assertEquals("special", body, "Pattern override should take precedence over context name");
         }
     }
 

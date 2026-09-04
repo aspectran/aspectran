@@ -121,7 +121,7 @@ class NettyAccessLogHandlerTest {
         channel.writeOutbound(response);
 
         assertFalse(listAppender.list.isEmpty(), "An access log entry should have been recorded");
-        String logMessage = listAppender.list.get(0).getFormattedMessage();
+        String logMessage = listAppender.list.getFirst().getFormattedMessage();
         assertTrue(logMessage.contains("203.0.113.195 session-xyz-123 \"POST /api/test HTTP/1.1\" 201 13 \"https://example.com/login\" \"Mozilla/5.0 Edge\""),
                 "Log should match Undertow format output: " + logMessage);
     }
@@ -145,7 +145,7 @@ class NettyAccessLogHandlerTest {
         channel.writeOutbound(response);
 
         assertFalse(listAppender.list.isEmpty());
-        String logMessage = listAppender.list.get(0).getFormattedMessage();
+        String logMessage = listAppender.list.getFirst().getFormattedMessage();
         assertTrue(logMessage.contains("- - \"GET /simple HTTP/1.1\" 404 - \"-\" \"-\""),
                 "Missing values should be replaced with '-': " + logMessage);
     }

@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.ReferenceCountUtil;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +59,7 @@ class NettyEncodingHandlerTest {
         handler.setEncodingPredicates(predicate1, predicate2);
     }
 
-    private void drainChannel(EmbeddedChannel channel) {
+    private void drainChannel(@NonNull EmbeddedChannel channel) {
         Object msg;
         while ((msg = channel.readOutbound()) != null) {
             ReferenceCountUtil.release(msg);
