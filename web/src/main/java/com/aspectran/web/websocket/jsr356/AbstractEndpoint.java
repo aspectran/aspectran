@@ -77,7 +77,9 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         } else {
             String reason = "Unauthorized";
             session.close(new CloseReason(CloseReason.CloseCodes.CANNOT_ACCEPT, reason));
-            throw new IOException("WebSocket is closed before the connection is established. Cause: " + reason);
+            if (logger.isDebugEnabled()) {
+                logger.debug("WebSocket connection rejected for session {}. Cause: {}", session.getId(), reason);
+            }
         }
     }
 
