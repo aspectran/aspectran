@@ -133,16 +133,21 @@ public class NettyContextRouter {
     }
 
     /**
-     * Returns the {@link NettyContext} registered with the specified context path.
-     * @param contextPath the context path
+     * Returns the {@link NettyContext} registered with the specified name or context path.
+     * @param nameOrPath the context name or context path
      * @return the matched context, or {@code null} if not found
      */
     @Nullable
-    public NettyContext getContext(String contextPath) {
-        if (contextPath == null || contextPath.isEmpty() || "/".equals(contextPath)) {
+    public NettyContext getContext(String nameOrPath) {
+        if (nameOrPath == null || nameOrPath.isEmpty() || "/".equals(nameOrPath) || "root".equalsIgnoreCase(nameOrPath)) {
             return (rootContext != null ? rootContext : (contexts.size() == 1 ? contexts.getFirst() : null));
         }
-        String normalized = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
+        for (NettyContext context : contexts) {
+            if (nameOrPath.equalsIgnoreCase(context.getName())) {
+                return context;
+            }
+        }
+        String normalized = (nameOrPath.startsWith("/") ? nameOrPath : "/" + nameOrPath);
         if (normalized.endsWith("/")) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
@@ -157,7 +162,7 @@ public class NettyContextRouter {
     private void resort() {
         NettyContext foundRoot = null;
         for (NettyContext context : contexts) {
-            if (context.getContextPath().isEmpty()) {
+            if (context.isRootContext()) {
                 foundRoot = context;
                 break;
             }
