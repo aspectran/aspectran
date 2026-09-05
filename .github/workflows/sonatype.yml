@@ -2,7 +2,7 @@ name: Sonatype
 
 on:
   push:
-    branches: [master, netty-dev]
+    branches: [master]
 
 jobs:
   deploy:
