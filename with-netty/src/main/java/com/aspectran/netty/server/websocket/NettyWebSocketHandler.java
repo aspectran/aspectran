@@ -83,10 +83,14 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<WebSocket
         if (frame instanceof CloseWebSocketFrame closeFrame) {
             if (closed.compareAndSet(false, true)) {
                 int code = closeFrame.statusCode();
+                if (code == -1) {
+                    code = 1000;
+                }
                 String reason = closeFrame.reasonText();
+                int finalCode = code;
                 dispatchTask(() -> {
                     try {
-                        listener.onClose(session, code, reason);
+                        listener.onClose(session, finalCode, reason);
                     } catch (Exception e) {
                         logger.error("Error in WebSocket onClose", e);
                     }
@@ -166,7 +170,7 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<WebSocket
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(@NonNull ChannelHandlerContext ctx, Throwable cause) {
         dispatchTask(() -> {
             try {
                 listener.onError(session, cause);

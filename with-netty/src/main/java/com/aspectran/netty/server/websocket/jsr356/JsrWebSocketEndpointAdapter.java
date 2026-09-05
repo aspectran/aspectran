@@ -163,7 +163,16 @@ public class JsrWebSocketEndpointAdapter implements NettyWebSocketListener {
         JsrWebSocketSession jsrSession = session.getAttribute(JSR_SESSION_ATTR);
         if (jsrSession != null) {
             openSessions.remove(jsrSession);
-            CloseReason.CloseCode code = CloseReason.CloseCodes.getCloseCode(statusCode);
+            CloseReason.CloseCode code;
+            if (statusCode == -1 || statusCode == 1005) {
+                code = CloseReason.CloseCodes.NORMAL_CLOSURE;
+            } else {
+                try {
+                    code = CloseReason.CloseCodes.getCloseCode(statusCode);
+                } catch (IllegalArgumentException e) {
+                    code = () -> statusCode;
+                }
+            }
             CloseReason closeReason = new CloseReason(code != null ? code : CloseReason.CloseCodes.NORMAL_CLOSURE, reason);
 
             if (endpointInstance instanceof Endpoint endpoint) {
