@@ -395,6 +395,17 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
     }
 
     @Override
+    public int getPeakRequests() {
+        if (requestExecutor instanceof TrackingExecutor tracking) {
+            return tracking.getPeakCount();
+        }
+        if (requestExecutor instanceof ThreadPoolExecutor tpe) {
+            return tpe.getLargestPoolSize();
+        }
+        return 0;
+    }
+
+    @Override
     public long getTotalRequests() {
         if (requestExecutor instanceof TrackingExecutor tracking) {
             return tracking.getTotalCount();
@@ -691,6 +702,8 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
         private final AtomicInteger activeCount = new AtomicInteger();
 
+        private final AtomicInteger peakCount = new AtomicInteger();
+
         private final LongAdder totalCount = new LongAdder();
 
         public TrackingExecutor(@NonNull ExecutorService delegate) {
@@ -705,13 +718,18 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             return activeCount.get();
         }
 
+        public int getPeakCount() {
+            return peakCount.get();
+        }
+
         public long getTotalCount() {
             return totalCount.sum();
         }
 
         @Override
         public void execute(@NonNull Runnable command) {
-            activeCount.incrementAndGet();
+            int current = activeCount.incrementAndGet();
+            peakCount.accumulateAndGet(current, Math::max);
             totalCount.increment();
             try {
                 delegate.execute(() -> {

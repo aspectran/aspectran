@@ -227,6 +227,7 @@ class DefaultNettyServerTest {
         assertNotNull(nettyServer.getRequestExecutor());
         assertTrue(nettyServer.getTotalRequests() >= 0);
         assertTrue(nettyServer.getActiveRequests() >= 0);
+        assertTrue(nettyServer.getPeakRequests() >= 0);
     }
 
 }
