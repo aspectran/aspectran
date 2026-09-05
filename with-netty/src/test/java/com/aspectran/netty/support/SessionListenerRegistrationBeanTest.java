@@ -84,6 +84,10 @@ class SessionListenerRegistrationBeanTest {
         assertNotNull(rootByPath, "Session manager for '/' should not be null");
         assertEquals(rootSessionManager, rootByPath);
 
+        SessionManager rootByName = nettyServer.getSessionManager("root");
+        assertNotNull(rootByName, "Session manager for 'root' should not be null");
+        assertEquals(rootSessionManager, rootByName);
+
         SessionManager adminSessionManager = nettyServer.getSessionManager("/admin");
         assertNotNull(adminSessionManager, "Admin session manager should not be null");
 
@@ -167,6 +171,27 @@ class SessionListenerRegistrationBeanTest {
         assertEquals(1, listener.createdCount.get(), "SessionCreated should fire for explicitly specified /admin context");
 
         registrationBean.remove(listener, "/admin");
+    }
+
+    @Test
+    void testRegisterWithRootContextName() throws IOException {
+        SessionListenerRegistrationBean registrationBean = new SessionListenerRegistrationBean();
+        registrationBean.setActivityContext(((CoreService) aspectran).getActivityContext());
+
+        CountingSessionListener listener = new CountingSessionListener();
+        registrationBean.register(listener, "root");
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet req = new HttpGet("http://127.0.0.1:" + port + "/session");
+            httpClient.execute(req, response -> {
+                assertEquals(200, response.getCode());
+                return null;
+            });
+        }
+
+        assertEquals(1, listener.createdCount.get(), "SessionCreated should fire when registered with context name 'root'");
+
+        registrationBean.remove(listener, "root");
     }
 
     @Test

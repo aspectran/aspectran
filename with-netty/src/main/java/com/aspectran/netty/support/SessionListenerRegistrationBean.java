@@ -74,15 +74,15 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
     }
 
     @Override
-    public void register(SessionListener listener, String deploymentName) {
+    public void register(SessionListener listener, String contextName) {
         Assert.notNull(listener, "listener must not be null");
-        String targetPath = (deploymentName != null ? deploymentName : contextPath);
+        String targetPath = (contextName != null ? contextName : contextPath);
         SessionManager sessionManager = getSessionManager(targetPath);
         if (sessionManager != null) {
             sessionManager.addSessionListener(listener);
         } else {
             String displayPath = (targetPath != null && !targetPath.isEmpty() ? targetPath : "/");
-            logger.warn("Unable to register {}. Cause: No session manager found for context path '{}'",
+            logger.warn("Unable to register {}. Cause: No session manager found for context '{}'",
                     ObjectUtils.simpleIdentityToString(listener), displayPath);
         }
     }
@@ -93,16 +93,16 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
     }
 
     @Override
-    public void remove(SessionListener listener, String deploymentName) {
+    public void remove(SessionListener listener, String contextName) {
         Assert.notNull(listener, "listener must not be null");
         if (getBeanRegistry().isAvailable()) {
-            String targetPath = (deploymentName != null ? deploymentName : contextPath);
+            String targetPath = (contextName != null ? contextName : contextPath);
             SessionManager sessionManager = getSessionManager(targetPath);
             if (sessionManager != null) {
                 sessionManager.removeSessionListener(listener);
             } else {
                 String displayPath = (targetPath != null && !targetPath.isEmpty() ? targetPath : "/");
-                logger.warn("Unable to remove {}. Cause: No session manager found for context path '{}'",
+                logger.warn("Unable to remove {}. Cause: No session manager found for context '{}'",
                         ObjectUtils.simpleIdentityToString(listener), displayPath);
             }
         }

@@ -72,6 +72,8 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private DefaultNettyService nettyService;
 
+    private String name;
+
     private String contextPath = "";
 
     private String aspectranConfigFile;
@@ -118,6 +120,43 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     public NettyContext(String contextPath, String aspectranConfigFile) {
         setContextPath(contextPath);
         this.aspectranConfigFile = aspectranConfigFile;
+    }
+
+    /**
+     * Constructs a new {@code NettyContext} with the specified name, context path, and configuration file.
+     * @param name the context name
+     * @param contextPath the context path
+     * @param aspectranConfigFile the Aspectran configuration file path
+     */
+    public NettyContext(String name, String contextPath, String aspectranConfigFile) {
+        this.name = name;
+        setContextPath(contextPath);
+        this.aspectranConfigFile = aspectranConfigFile;
+    }
+
+    @NonNull
+    public String getName() {
+        if (name != null) {
+            return name;
+        }
+        if (nettyService != null && nettyService.getActivityContext() != null) {
+            String ctxName = nettyService.getActivityContext().getName();
+            if (StringUtils.hasText(ctxName)) {
+                return ctxName;
+            }
+        }
+        if (isRootContext()) {
+            return "root";
+        }
+        return (contextPath.startsWith("/") ? contextPath.substring(1) : contextPath);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isRootContext() {
+        return (contextPath.isEmpty() || "/".equals(contextPath));
     }
 
     @Override
