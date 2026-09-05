@@ -38,9 +38,9 @@ public class DemoPlainShell {
      */
     public static void main(String[] args) {
         try {
-            File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
-            System.setProperty(BASE_PATH_PROPERTY, root.getCanonicalPath()); // for logback
-            AspectranShell.main(new String[] { root.getCanonicalPath(), "config/aspectran-config.apon" });
+            File baseDir = new File(ResourceUtils.getResourceAsFile(""), "../../app");
+            System.setProperty(BASE_PATH_PROPERTY, baseDir.getCanonicalPath()); // for logback
+            AspectranShell.main(new String[] { baseDir.getCanonicalPath(), "config/aspectran-config.apon" });
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

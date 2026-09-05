@@ -40,9 +40,9 @@ public class DemoDaemon {
     public static void main(String[] args) {
         try {
             System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY, "daemon");
-            File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
-            System.setProperty(BASE_PATH_PROPERTY, root.getCanonicalPath()); // for logback
-            String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };
+            File baseDir = new File(ResourceUtils.getResourceAsFile(""), "../../app");
+            System.setProperty(BASE_PATH_PROPERTY, baseDir.getCanonicalPath()); // for logback
+            String[] args2 = { baseDir.getCanonicalPath(), "config/aspectran-config.apon" };
             DefaultDaemon.main(args2);
         } catch (Exception e) {
             e.printStackTrace(System.err);
