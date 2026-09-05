@@ -133,6 +133,12 @@ public interface NettyServer extends LifeCycle, SessionManagerProvider {
     int getActiveRequests();
 
     /**
+     * Returns the peak number of concurrent active requests observed.
+     * @return the peak active request count
+     */
+    int getPeakRequests();
+
+    /**
      * Returns the total number of requests dispatched since server start.
      * @return the total request count
      */
