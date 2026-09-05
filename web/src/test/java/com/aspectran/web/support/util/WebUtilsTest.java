@@ -15,6 +15,10 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.core.adapter.AbstractRequestAdapter;
+import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.web.adapter.AbstractWebRequestAdapter;
+import com.aspectran.web.support.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,6 +61,50 @@ class WebUtilsTest {
         assertEquals("203.0.113.195", WebUtils.getRemoteAddr("203.0.113.195, 70.41.3.18", "127.0.0.1"));
         assertEquals("127.0.0.1", WebUtils.getRemoteAddr(null, "127.0.0.1"));
         assertEquals("127.0.0.1", WebUtils.getRemoteAddr("", "127.0.0.1"));
+    }
+
+    @Test
+    void testGetRemoteAddrWithRequestAdapter() {
+        AbstractWebRequestAdapter adapter = new AbstractWebRequestAdapter(MethodType.GET, null) {
+            @Override
+            public String getRemoteAddr() {
+                return "192.168.1.100";
+            }
+
+            @Override
+            public String getContextPath() {
+                return null;
+            }
+
+            @Override
+            public String getRequestURI() {
+                return null;
+            }
+
+            @Override
+            public String getQueryString() {
+                return null;
+            }
+
+            @Override
+            public void preparse() {
+            }
+        };
+
+        // Without X-Forwarded-For header, fallback to getRemoteAddr()
+        assertEquals("192.168.1.100", WebUtils.getRemoteAddr(adapter));
+
+        // With empty X-Forwarded-For header, fallback to getRemoteAddr()
+        adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_FOR, "");
+        assertEquals("192.168.1.100", WebUtils.getRemoteAddr(adapter));
+
+        // With X-Forwarded-For header, prefers X-Forwarded-For
+        adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_FOR, "203.0.113.195, 70.41.3.18");
+        assertEquals("203.0.113.195", WebUtils.getRemoteAddr(adapter));
+
+        // Non-WebRequestAdapter returns null
+        AbstractRequestAdapter nonWebAdapter = new AbstractRequestAdapter(MethodType.GET, null) {};
+        assertNull(WebUtils.getRemoteAddr(nonWebAdapter));
     }
 
 }
