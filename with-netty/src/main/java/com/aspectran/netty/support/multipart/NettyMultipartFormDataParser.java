@@ -18,6 +18,7 @@ package com.aspectran.netty.support.multipart;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
@@ -99,14 +100,26 @@ public class NettyMultipartFormDataParser implements MultipartFormDataParser {
         this.maxRequestSize = maxRequestSize;
     }
 
+    public void setMaxRequestSize(String maxRequestSize) {
+        this.maxRequestSize = DataSizeUtils.toMachineFriendlyByteSize(maxRequestSize);
+    }
+
     @Override
     public void setMaxFileSize(long maxFileSize) {
         this.maxFileSize = maxFileSize;
     }
 
+    public void setMaxFileSize(String maxFileSize) {
+        this.maxFileSize = DataSizeUtils.toMachineFriendlyByteSize(maxFileSize);
+    }
+
     @Override
     public void setMaxInMemorySize(int maxInMemorySize) {
         this.maxInMemorySize = maxInMemorySize;
+    }
+
+    public void setMaxInMemorySize(String maxInMemorySize) {
+        this.maxInMemorySize = (int) DataSizeUtils.toMachineFriendlyByteSize(maxInMemorySize);
     }
 
     @Override
