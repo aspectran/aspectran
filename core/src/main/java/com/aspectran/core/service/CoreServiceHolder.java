@@ -21,6 +21,8 @@ import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.utils.Assert;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -40,6 +42,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public final class CoreServiceHolder {
 
+    private static final Logger logger = LoggerFactory.getLogger(CoreServiceHolder.class);
+
     private static final Set<ServiceHoldingListener> serviceHoldingListeners = new CopyOnWriteArraySet<>();
 
     private static final Set<CoreService> allServices = new CopyOnWriteArraySet<>();
@@ -47,7 +51,7 @@ public final class CoreServiceHolder {
     // Use ConcurrentHashMap for thread safety
     private static final Map<ClassLoader, CoreService> servicesByLoader = new ConcurrentHashMap<>();
 
-    private static final Map<Class<?>, CoreService> servicesByClass = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Set<CoreService>> servicesByClass = new ConcurrentHashMap<>();
 
     private static volatile CoreService currentService;
 
@@ -125,10 +129,17 @@ public final class CoreServiceHolder {
         Assert.notNull(clazz, "clazz must not be null");
         Assert.notNull(service, "service must not be null");
         Assert.state(allServices.contains(service), "Not a registered service: " + service);
-        CoreService existing = servicesByClass.get(clazz);
-        Assert.state(existing == null || existing == service,
-                () -> "The class is already mapped to another service: " + existing);
-        servicesByClass.put(clazz, service);
+        Set<CoreService> services = servicesByClass.computeIfAbsent(clazz, k -> new CopyOnWriteArraySet<>());
+        if (!services.isEmpty() && !services.contains(service)) {
+            ActivityContext currentContext = service.getActivityContext();
+            for (CoreService existing : services) {
+                if (existing.getActivityContext() != currentContext) {
+                    logger.warn("Class '{}' is already mapped to another ActivityContext: {}",
+                            clazz.getName(), existing.getActivityContext());
+                }
+            }
+        }
+        services.add(service);
     }
 
     /**
@@ -149,7 +160,8 @@ public final class CoreServiceHolder {
                 currentService = null;
             }
             servicesByLoader.entrySet().removeIf(entry -> service.equals(entry.getValue()));
-            servicesByClass.entrySet().removeIf(entry -> service.equals(entry.getValue()));
+            servicesByClass.values().forEach(services -> services.remove(service));
+            servicesByClass.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         }
     }
 
@@ -186,7 +198,27 @@ public final class CoreServiceHolder {
      * @return the acquired {@link CoreService}, or {@code null} if none is found
      */
     public static CoreService acquire(Class<?> clazz) {
-        CoreService service = servicesByClass.get(clazz);
+        Set<CoreService> services = servicesByClass.get(clazz);
+        CoreService service = null;
+        if (services != null && !services.isEmpty()) {
+            if (services.size() == 1) {
+                service = services.iterator().next();
+            } else {
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                if (classLoader != null) {
+                    for (CoreService s : services) {
+                        if (classLoader.equals(s.getServiceClassLoader()) ||
+                                classLoader.equals(s.getAltClassLoader())) {
+                            service = s;
+                            break;
+                        }
+                    }
+                }
+                if (service == null) {
+                    service = services.iterator().next();
+                }
+            }
+        }
         if (service == null) {
             service = acquire();
         }
