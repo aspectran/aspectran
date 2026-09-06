@@ -41,4 +41,14 @@ public class DefaultJspServlet extends TowServlet {
         });
     }
 
+    /**
+     * Sets the scratch directory for this JSP servlet.
+     * @param scratchDir the scratch directory
+     */
+    public void setScratchDir(String scratchDir) {
+        if (scratchDir != null) {
+            addInitParam("scratchdir", scratchDir);
+        }
+    }
+
 }

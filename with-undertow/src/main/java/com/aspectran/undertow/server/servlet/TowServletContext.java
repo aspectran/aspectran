@@ -28,6 +28,7 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
+import org.apache.jasper.servlet.JspServlet;
 import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
@@ -49,6 +50,8 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     private ActivityContext context;
 
     private TowSessionManager sessionManager;
+
+    private Path scratchDir;
 
     /**
      * Instantiates a new Tow servlet context.
@@ -92,7 +95,37 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         if (!Files.isDirectory(dir) || !Files.isWritable(dir)) {
             throw new IOException("Could not create scratch directory: " + dir);
         }
+        this.scratchDir = dir;
+        if (getTempPath() == null) {
+            setTempDir(dir);
+        }
+        applyScratchDirToJspServlets();
+    }
+
+    /**
+     * Sets the temporary directory for this servlet context.
+     * @param tempDir the temporary directory
+     * @throws IOException if an I/O error occurs
+     */
+    public void setTempDir(String tempDir) throws IOException {
+        Path dir = getApplicationAdapter().getRealPath(tempDir);
+        Files.createDirectories(dir);
+        if (!Files.isDirectory(dir) || !Files.isWritable(dir)) {
+            throw new IOException("Could not create temporary directory: " + dir);
+        }
         setTempDir(dir);
+    }
+
+    private void applyScratchDirToJspServlets() {
+        if (scratchDir != null) {
+            for (ServletInfo servletInfo : getServlets().values()) {
+                if (JspServlet.class.isAssignableFrom(servletInfo.getServletClass())) {
+                    if (!servletInfo.getInitParams().containsKey("scratchdir")) {
+                        servletInfo.addInitParam("scratchdir", scratchDir.toAbsolutePath().toString());
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -162,6 +195,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
                 }
                 addServlet(towServlet);
             }
+            applyScratchDirToJspServlets();
         }
     }
 

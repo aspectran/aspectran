@@ -17,7 +17,9 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.utils.ClassUtils;
 import io.undertow.servlet.api.ServletInfo;
+import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.Servlet;
+import jakarta.servlet.annotation.MultipartConfig;
 
 import java.util.Map;
 
@@ -46,6 +48,10 @@ public class TowServlet extends ServletInfo {
      */
     public TowServlet(String name, Class<? extends Servlet> servletClass) {
         super(name, servletClass);
+        MultipartConfig multipartConfig = servletClass.getAnnotation(MultipartConfig.class);
+        if (multipartConfig != null) {
+            setMultipartConfig(new MultipartConfigElement(multipartConfig));
+        }
     }
 
     /**
