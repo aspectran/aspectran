@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 /**
  * An abstract base class that provides a default implementation for the {@link LifeCycle} interface.
@@ -28,19 +30,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Subclasses must implement the {@link #doStart()} and {@link #doStop()} methods to provide
  * their specific startup and shutdown logic.</p>
  */
-public abstract class AbstractLifeCycle implements LifeCycle {
+public abstract class AbstractLifeCycle implements LifeCycle, AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractLifeCycle.class);
 
-    private static final int _STOPPED = 0;
-    private static final int _STARTING = 1;
-    private static final int _STARTED = 2;
-    private static final int _STOPPING = 3;
-    private static final int _FAILED = 4;
-
-    private final Object _lock = new Object();
-    private volatile int state = _STOPPED;
+    private final ReentrantLock lock = new ReentrantLock();
     private final List<Listener> listeners = new CopyOnWriteArrayList<>();
+    private volatile State state = State.STOPPED;
 
     /**
      * Starts the component.
@@ -50,21 +46,22 @@ public abstract class AbstractLifeCycle implements LifeCycle {
      */
     @Override
     public final void start() throws Exception {
-        synchronized (_lock) {
-            try {
-                if (state == _STARTED) {
-                    return;
-                }
-                if (state == _STARTING) {
-                    throw new IllegalStateException("Starting");
-                }
-                setStarting();
-                doStart();
-                setStarted();
-            } catch (Exception e) {
-                setFailed(e);
-                throw e;
+        lock.lock();
+        try {
+            if (state == State.STARTED) {
+                return;
             }
+            if (state == State.STARTING) {
+                throw new IllegalStateException("Starting");
+            }
+            setStarting();
+            doStart();
+            setStarted();
+        } catch (Exception e) {
+            setFailed(e);
+            throw e;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -76,21 +73,22 @@ public abstract class AbstractLifeCycle implements LifeCycle {
      */
     @Override
     public final void stop() throws Exception {
-        synchronized (_lock) {
-            try {
-                if (state == _STOPPED) {
-                    return;
-                }
-                if (state == _STOPPING) {
-                    throw new IllegalStateException("Stopping");
-                }
-                setStopping();
-                doStop();
-                setStopped();
-            } catch (Exception e) {
-                setFailed(e);
-                throw e;
+        lock.lock();
+        try {
+            if (state == State.STOPPED) {
+                return;
             }
+            if (state == State.STOPPING) {
+                throw new IllegalStateException("Stopping");
+            }
+            setStopping();
+            doStop();
+            setStopped();
+        } catch (Exception e) {
+            setFailed(e);
+            throw e;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -110,37 +108,38 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public boolean isRunning() {
-        return (state == _STARTED || state == _STARTING);
+        return state.isRunning();
     }
 
     @Override
     public boolean isStarted() {
-        return (state == _STARTED);
+        return state.isStarted();
     }
 
     @Override
     public boolean isStarting() {
-        return (state == _STARTING);
+        return state.isStarting();
     }
 
     @Override
     public boolean isStopping() {
-        return (state == _STOPPING);
+        return state.isStopping();
     }
 
     @Override
     public boolean isStopped() {
-        return (state == _STOPPED);
+        return state.isStopped();
     }
 
     @Override
     public boolean isStoppable() {
-        return (isStarted() || isFailed());
+        State current = state;
+        return (current == State.STARTED || current == State.FAILED);
     }
 
     @Override
     public boolean isFailed() {
-        return (state == _FAILED);
+        return state.isFailed();
     }
 
     /**
@@ -149,7 +148,9 @@ public abstract class AbstractLifeCycle implements LifeCycle {
      */
     @Override
     public void addLifeCycleListener(LifeCycle.Listener listener) {
-        listeners.add(listener);
+        if (listener != null) {
+            listeners.add(listener);
+        }
     }
 
     /**
@@ -158,63 +159,39 @@ public abstract class AbstractLifeCycle implements LifeCycle {
      */
     @Override
     public void removeLifeCycleListener(LifeCycle.Listener listener) {
-        listeners.remove(listener);
+        if (listener != null) {
+            listeners.remove(listener);
+        }
     }
 
     /**
-     * Returns the current state of the component as a string.
-     * @return the current state string (e.g., "STARTED", "STOPPED")
+     * Returns the current state of the component.
+     * @return the current state
      */
     @Override
-    public String getState() {
-        return switch (state) {
-            case _STARTING -> LifeCycle.STARTING;
-            case _STARTED -> LifeCycle.STARTED;
-            case _STOPPING -> LifeCycle.STOPPING;
-            case _STOPPED -> LifeCycle.STOPPED;
-            case _FAILED -> LifeCycle.FAILED;
-            default -> throw new IllegalStateException("State: " + state);
-        };
+    public State getState() {
+        return state;
+    }
+
+    @Override
+    public void close() throws Exception {
+        stop();
     }
 
     private void setStarting() {
-        state = _STARTING;
-        if (logger.isDebugEnabled()) {
-            logger.debug("{} is STARTING", this);
-        }
-        for (Listener listener : listeners) {
-            listener.lifeCycleStarting(this);
-        }
+        transition(State.STARTING, listener -> listener.lifeCycleStarting(this));
     }
 
     private void setStarted() {
-        state = _STARTED;
-        if (logger.isDebugEnabled()) {
-            logger.debug("{} is STARTED", this);
-        }
-        for (Listener listener : listeners) {
-            listener.lifeCycleStarted(this);
-        }
+        transition(State.STARTED, listener -> listener.lifeCycleStarted(this));
     }
 
     private void setStopping() {
-        state = _STOPPING;
-        if (logger.isDebugEnabled()) {
-            logger.debug("{} is STOPPING", this);
-        }
-        for (Listener listener : listeners) {
-            listener.lifeCycleStopping(this);
-        }
+        transition(State.STOPPING, listener -> listener.lifeCycleStopping(this));
     }
 
     private void setStopped() {
-        state = _STOPPED;
-        if (logger.isDebugEnabled()) {
-            logger.debug("{} is STOPPED", this);
-        }
-        for (Listener listener : listeners) {
-            listener.lifeCycleStopped(this);
-        }
+        transition(State.STOPPED, listener -> listener.lifeCycleStopped(this));
     }
 
     /**
@@ -222,12 +199,30 @@ public abstract class AbstractLifeCycle implements LifeCycle {
      * @param cause the cause of the failure
      */
     private void setFailed(Throwable cause) {
-        state = _FAILED;
+        state = State.FAILED;
         if (logger.isDebugEnabled()) {
             logger.debug("{} is FAILED", this, cause);
         }
-        for (Listener listener : listeners) {
-            listener.lifeCycleFailure(this, cause);
+        notifyListeners(listener -> listener.lifeCycleFailure(this, cause));
+    }
+
+    private void transition(State newState, Consumer<Listener> notifier) {
+        state = newState;
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} is {}", this, newState);
+        }
+        notifyListeners(notifier);
+    }
+
+    private void notifyListeners(Consumer<Listener> notifier) {
+        if (notifier != null) {
+            for (Listener listener : listeners) {
+                try {
+                    notifier.accept(listener);
+                } catch (Throwable t) {
+                    logger.warn("Exception while notifying LifeCycle listener: {}", listener, t);
+                }
+            }
         }
     }
 

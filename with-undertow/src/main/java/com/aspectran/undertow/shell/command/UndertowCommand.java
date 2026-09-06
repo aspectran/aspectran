@@ -25,7 +25,7 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.lifecycle.LifeCycle;
+import com.aspectran.utils.lifecycle.LifeCycle.State;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -147,7 +147,7 @@ public class UndertowCommand extends AbstractCommand {
                 TowServer towServer = getTowServer(serverName);
                 towServer.stop();
                 destroyTowServer(towServer);
-                printStatus(LifeCycle.STOPPED, console);
+                printStatus(State.STOPPED, console);
                 success = true;
             } else {
                 console.writeError("The Undertow server is not running.");
@@ -164,13 +164,9 @@ public class UndertowCommand extends AbstractCommand {
         try {
             if (hasTowServer(serverName)) {
                 TowServer towServer = getTowServer(serverName);
-                if (towServer.isStarted()) {
-                    printStatus(LifeCycle.RUNNING, console);
-                } else {
-                    printStatus(towServer.getState(), console);
-                }
+                printStatus(towServer.getState(), console);
             } else {
-                printStatus(LifeCycle.STOPPED, console);
+                printStatus(State.STOPPED, console);
             }
         } catch (BeanException e) {
             console.writeError("The Undertow server bean '" + serverName + "' could not be found.");
@@ -179,10 +175,10 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(String status, @NonNull ShellConsole console) {
+    private void printStatus(@NonNull State state, @NonNull ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.getStyler().setStyle("YELLOW");
-        console.write(status);
+        console.write(state.name());
         console.getStyler().resetStyle();
         console.writeLine(" - Undertow " + TowServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");

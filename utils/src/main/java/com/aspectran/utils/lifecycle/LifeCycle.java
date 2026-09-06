@@ -25,17 +25,37 @@ import java.util.EventListener;
  */
 public interface LifeCycle {
 
-    String STOPPED = "STOPPED";
+    enum State {
+        STOPPED,
+        STARTING,
+        STARTED,
+        STOPPING,
+        FAILED;
 
-    String FAILED = "FAILED";
+        public boolean isRunning() {
+            return (this == STARTING || this == STARTED);
+        }
 
-    String STARTING = "STARTING";
+        public boolean isStarted() {
+            return (this == STARTED);
+        }
 
-    String STARTED = "STARTED";
+        public boolean isStarting() {
+            return (this == STARTING);
+        }
 
-    String STOPPING = "STOPPING";
+        public boolean isStopping() {
+            return (this == STOPPING);
+        }
 
-    String RUNNING = "RUNNING";
+        public boolean isStopped() {
+            return (this == STOPPED);
+        }
+
+        public boolean isFailed() {
+            return (this == FAILED);
+        }
+    }
 
     /**
      * Starts the component.
@@ -99,7 +119,7 @@ public interface LifeCycle {
 
     void removeLifeCycleListener(LifeCycle.Listener listener);
 
-    String getState();
+    State getState();
 
     /**
      * A listener for Lifecycle events.

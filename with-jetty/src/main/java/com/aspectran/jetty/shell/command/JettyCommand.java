@@ -25,7 +25,7 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.lifecycle.LifeCycle;
+import com.aspectran.utils.lifecycle.LifeCycle.State;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -147,7 +147,7 @@ public class JettyCommand extends AbstractCommand {
                 JettyServer jettyServer = getJettyServer(serverName);
                 jettyServer.stop();
                 destroyJettyServer(jettyServer);
-                printStatus(LifeCycle.STOPPED, console);
+                printStatus(State.STOPPED.name(), console);
                 success = true;
             } else {
                 console.writeError("The Jetty server is not running.");
@@ -164,13 +164,9 @@ public class JettyCommand extends AbstractCommand {
         try {
             if (hasJettyServer(serverName)) {
                 JettyServer jettyServer = getJettyServer(serverName);
-                if (jettyServer.isStarted()) {
-                    printStatus(LifeCycle.RUNNING, console);
-                } else {
-                    printStatus(jettyServer.getState(), console);
-                }
+                printStatus(jettyServer.getState(), console);
             } else {
-                printStatus(LifeCycle.STOPPED, console);
+                printStatus(State.STOPPED.name(), console);
             }
         } catch (BeanException e) {
             console.writeError("The Jetty server bean '" + serverName + "' could not be found.");

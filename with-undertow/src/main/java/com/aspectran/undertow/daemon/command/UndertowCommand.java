@@ -27,7 +27,7 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.lifecycle.LifeCycle;
+import com.aspectran.utils.lifecycle.LifeCycle.State;
 import org.jspecify.annotations.NonNull;
 
 import java.net.BindException;
@@ -143,7 +143,7 @@ public class UndertowCommand extends AbstractCommand {
                 TowServer towServer = getTowServer(serverName);
                 towServer.stop();
                 destroyTowServer(towServer);
-                return success(info(getStatus(LifeCycle.STOPPED)));
+                return success(info(getStatus(State.STOPPED)));
             } else {
                 return failed(warn("Undertow server is not running"));
             }
@@ -161,13 +161,9 @@ public class UndertowCommand extends AbstractCommand {
         try {
             if (hasTowServer(serverName)) {
                 TowServer towServer = getTowServer(serverName);
-                if (towServer.isStarted()) {
-                    return success(info(getStatus(LifeCycle.RUNNING)));
-                } else {
-                    return success(info(getStatus(towServer.getState())));
-                }
+                return success(info(getStatus(towServer.getState())));
             } else {
-                return success(info(getStatus(LifeCycle.STOPPED)));
+                return success(info(getStatus(State.STOPPED)));
             }
         } catch (BeanException e) {
             return failed("Undertow server is not available", e);
@@ -177,8 +173,8 @@ public class UndertowCommand extends AbstractCommand {
     }
 
     @NonNull
-    private String getStatus(String status) {
-        return status + " - " + "Undertow " + TowServer.getVersion();
+    private String getStatus(@NonNull State state) {
+        return state + " - " + "Undertow " + TowServer.getVersion();
     }
 
     private TowServer getTowServer(String serverName) {

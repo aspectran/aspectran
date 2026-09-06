@@ -27,7 +27,7 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.jetty.server.JettyServer;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.lifecycle.LifeCycle;
+import com.aspectran.utils.lifecycle.LifeCycle.State;
 import org.jspecify.annotations.NonNull;
 
 import java.net.BindException;
@@ -124,7 +124,7 @@ public class JettyCommand extends AbstractCommand {
                 JettyServer jettyServer = getJettyServer(serverName);
                 jettyServer.stop();
                 destroyJettyServer(jettyServer);
-                return success(info(getStatus(LifeCycle.STOPPED)));
+                return success(info(getStatus(State.STOPPED.name())));
             } else {
                 return failed(warn("Jetty server is not running"));
             }
@@ -137,13 +137,9 @@ public class JettyCommand extends AbstractCommand {
         try {
             if (hasJettyServer(serverName)) {
                 JettyServer jettyServer = getJettyServer(serverName);
-                if (jettyServer.isStarted()) {
-                    return success(info(getStatus(LifeCycle.RUNNING)));
-                } else {
-                    return success(info(getStatus(jettyServer.getState())));
-                }
+                return success(info(getStatus(jettyServer.getState())));
             } else {
-                return success(info(getStatus(LifeCycle.STOPPED)));
+                return success(info(getStatus(State.STOPPED.name())));
             }
         } catch (BeanException e) {
             return failed("Jetty server is not available", e);
@@ -153,7 +149,7 @@ public class JettyCommand extends AbstractCommand {
     }
 
     @NonNull
-    private String getStatus(String status) {
+    private String getStatus(@NonNull String status) {
         return status + " - " + "Jetty " + JettyServer.getVersion();
     }
 

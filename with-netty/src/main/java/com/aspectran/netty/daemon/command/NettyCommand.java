@@ -27,6 +27,7 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.netty.server.NettyServer;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.lifecycle.LifeCycle.State;
 import org.jspecify.annotations.NonNull;
 
 import java.net.BindException;
@@ -102,14 +103,14 @@ public class NettyCommand extends AbstractCommand {
                     return failed(warn("Netty server is already running"));
                 } else {
                     nettyServer.start();
-                    return success(info(getStatus(nettyServer.getState().toString())));
+                    return success(info(getStatus(nettyServer.getState())));
                 }
             } else {
                 nettyServer = getNettyServer(serverName);
                 if (!nettyServer.isRunning()) {
                     nettyServer.start();
                 }
-                return success(info(getStatus(nettyServer.getState().toString())));
+                return success(info(getStatus(nettyServer.getState())));
             }
         } catch (Exception e) {
             if (nettyServer != null) {
@@ -137,7 +138,7 @@ public class NettyCommand extends AbstractCommand {
             return failed(warn("Netty server is not running"));
         }
         nettyServer.stop();
-        return success(info(getStatus(nettyServer.getState().toString())));
+        return success(info(getStatus(nettyServer.getState())));
     }
 
     private CommandResult printServerStatus(String serverName) {
@@ -145,7 +146,7 @@ public class NettyCommand extends AbstractCommand {
             return success(info("Netty server is not available"));
         }
         NettyServer nettyServer = getNettyServer(serverName);
-        return success(info(getStatus(nettyServer.getState().toString())));
+        return success(info(getStatus(nettyServer.getState())));
     }
 
     private boolean hasNettyServer(String serverName) {
@@ -164,8 +165,8 @@ public class NettyCommand extends AbstractCommand {
     }
 
     @NonNull
-    private String getStatus(String status) {
-        return status + " - " + "Netty " + NettyServer.getVersion();
+    private String getStatus(@NonNull State state) {
+        return state + " - " + "Netty " + NettyServer.getVersion();
     }
 
     @Override

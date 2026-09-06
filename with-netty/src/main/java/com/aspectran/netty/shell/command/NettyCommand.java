@@ -25,7 +25,7 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.lifecycle.LifeCycle;
+import com.aspectran.utils.lifecycle.LifeCycle.State;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -153,7 +153,7 @@ public class NettyCommand extends AbstractCommand {
                 NettyServer nettyServer = getNettyServer(serverName);
                 nettyServer.stop();
                 destroyNettyServer(nettyServer);
-                printStatus(LifeCycle.STOPPED, console);
+                printStatus(State.STOPPED, console);
                 success = true;
             } else {
                 console.writeError("The Netty server is not running.");
@@ -170,13 +170,9 @@ public class NettyCommand extends AbstractCommand {
         try {
             if (hasNettyServer(serverName)) {
                 NettyServer nettyServer = getNettyServer(serverName);
-                if (nettyServer.isStarted()) {
-                    printStatus(LifeCycle.RUNNING, console);
-                } else {
-                    printStatus(nettyServer.getState(), console);
-                }
+                printStatus(nettyServer.getState(), console);
             } else {
-                printStatus(LifeCycle.STOPPED, console);
+                printStatus(State.STOPPED, console);
             }
         } catch (BeanException e) {
             console.writeError("The Netty server bean '" + serverName + "' could not be found.");
@@ -185,10 +181,10 @@ public class NettyCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(String status, @NonNull ShellConsole console) {
+    private void printStatus(@NonNull State state, @NonNull ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.getStyler().setStyle("YELLOW");
-        console.write(status);
+        console.write(state.name());
         console.getStyler().resetStyle();
         console.writeLine(" - Netty " + NettyServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
