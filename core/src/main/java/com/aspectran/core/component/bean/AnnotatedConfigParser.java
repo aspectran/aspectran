@@ -19,6 +19,8 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.request.FileParameterMap;
 import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.component.bean.annotation.Action;
@@ -41,6 +43,7 @@ import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.core.component.bean.annotation.Job;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
+import com.aspectran.core.component.bean.annotation.Multipart;
 import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.core.component.bean.annotation.Qualifier;
@@ -724,6 +727,23 @@ public class AnnotatedConfigParser {
                 }
             }
             transletRule.touchRequestRule(false).setAttributeItemRuleMap(itemRuleMap);
+        }
+
+        Multipart multipartAnno = method.getAnnotation(Multipart.class);
+        if (multipartAnno == null) {
+            multipartAnno = beanClass.getAnnotation(Multipart.class);
+        }
+        if (multipartAnno != null) {
+            transletRule.touchRequestRule(false).setMultipartFormDataParser(multipartAnno.value());
+        } else {
+            for (Class<?> paramType : method.getParameterTypes()) {
+                if (FileParameter.class.isAssignableFrom(paramType) ||
+                        (paramType.isArray() && FileParameter.class.isAssignableFrom(paramType.getComponentType())) ||
+                        FileParameterMap.class.isAssignableFrom(paramType)) {
+                    transletRule.touchRequestRule(false).setMultipartFormDataParser("");
+                    break;
+                }
+            }
         }
 
         Action actionAnno = method.getAnnotation(Action.class);

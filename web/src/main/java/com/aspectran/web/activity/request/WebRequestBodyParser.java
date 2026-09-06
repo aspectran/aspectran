@@ -20,6 +20,7 @@ import com.aspectran.core.activity.request.RequestBodyParser;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
@@ -78,30 +79,69 @@ public final class WebRequestBodyParser {
 
     /**
      * Parses a multipart form data request using the configured {@link MultipartFormDataParser}.
-     * The name of the parser bean must be specified as a setting in the activity.
+     * <p>The parser bean can be determined by:</p>
+     * <ul>
+     *   <li>{@link Activity#getMultipartFormDataParser()} if specified via {@code @Multipart("beanName")}</li>
+     *   <li>The {@code multipartFormDataParser} setting in the activity</li>
+     *   <li>The default parser bean named {@code "multipartFormDataParser"} if present</li>
+     *   <li>A single {@link MultipartFormDataParser} bean defined in the context</li>
+     * </ul>
+     * <p>If neither {@link Activity#getMultipartFormDataParser()} nor the activity setting is configured,
+     * the multipart request body will not be parsed for security reasons.</p>
      * @param activity the current activity
      * @throws MultipartRequestParseException if the parser is not configured or if parsing fails
      */
     public static void parseMultipartFormData(@NonNull Activity activity) throws MultipartRequestParseException {
-        String parserBeanName = activity.getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-        if (parserBeanName == null) {
-            // If the setting is not specified, log a warning and return.
-            // Multipart form data will not be parsed in this case.
+        MultipartFormDataParser parser = resolveMultipartFormDataParser(activity);
+        if (parser != null) {
+            parser.parse(activity.getRequestAdapter());
+        }
+    }
+
+    @Nullable
+    private static MultipartFormDataParser resolveMultipartFormDataParser(@NonNull Activity activity)
+            throws MultipartRequestParseException {
+        String configuredParserBeanName = activity.getMultipartFormDataParser();
+        String settingParserBeanName = activity.getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+
+        if (configuredParserBeanName == null && settingParserBeanName == null) {
             if (logger.isWarnEnabled()) {
-                logger.warn("The '" + MULTIPART_FORM_DATA_PARSER_SETTING_NAME + "' setting is not specified " +
-                        "for this multipart request. The request body will not be parsed.");
+                logger.warn("Multipart form data parser is not configured for translet '{}'. " +
+                        "The multipart request body will not be parsed.",
+                        (activity.hasTranslet() ? activity.getTranslet().getTransletName() : ""));
             }
-            return;
+            return null;
         }
 
-        // If the setting is specified, but the bean does not exist, throw an exception.
+        String parserBeanName = null;
+        if (StringUtils.hasText(configuredParserBeanName)) {
+            parserBeanName = configuredParserBeanName.trim();
+        } else if (StringUtils.hasText(settingParserBeanName)) {
+            parserBeanName = settingParserBeanName.trim();
+        }
+
+        if (parserBeanName != null) {
+            try {
+                return activity.getBean(parserBeanName);
+            } catch (NoSuchBeanException e) {
+                throw new MultipartRequestParseException("The multipart form data parser bean named '" +
+                        parserBeanName + "' could not be found in the current activity context. " +
+                        "Please ensure that a bean with this name is correctly defined.", e);
+            }
+        }
+
+        if (activity.containsBean(MultipartFormDataParser.class, MULTIPART_FORM_DATA_PARSER_SETTING_NAME)) {
+            return activity.getBean(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+        }
+
         try {
-            MultipartFormDataParser parser = activity.getBean(parserBeanName);
-            parser.parse(activity.getRequestAdapter());
+            return activity.getBean(MultipartFormDataParser.class);
         } catch (NoSuchBeanException e) {
-            throw new MultipartRequestParseException("The multipart form data parser bean named '" +
-                    parserBeanName + "' could not be found in the current activity context. " +
-                    "Please ensure that a bean with this name is correctly defined.", e);
+            throw new MultipartRequestParseException("No MultipartFormDataParser bean found in the " +
+                    "activity context. Please define a MultipartFormDataParser bean.", e);
+        } catch (NoUniqueBeanException e) {
+            throw new MultipartRequestParseException("Multiple MultipartFormDataParser beans found in the " +
+                    "activity context. Please specify the bean name to use via @Multipart(\"...\") or setting.", e);
         }
     }
 
@@ -204,7 +244,9 @@ public final class WebRequestBodyParser {
      * @return true if the request is multipart, false otherwise
      */
     public static boolean isMultipartForm(MethodType requestMethod, MediaType mediaType) {
-        return MethodType.POST.equals(requestMethod) &&
+        return (MethodType.POST.equals(requestMethod) ||
+                MethodType.PUT.equals(requestMethod) ||
+                MethodType.PATCH.equals(requestMethod)) &&
                 MediaType.MULTIPART_FORM_DATA.equalsTypeAndSubtype(mediaType);
     }
 

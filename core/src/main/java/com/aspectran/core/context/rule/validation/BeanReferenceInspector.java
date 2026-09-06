@@ -174,8 +174,10 @@ public class BeanReferenceInspector {
                     } else {
                         for (RefererInfo refererInfo : refererInfoSet) {
                             if (!isStaticReference(refererInfo)) {
-                                logger.error("Cannot resolve reference: {}", refererInfo);
-                                brokenReferences.put(refererInfo, null);
+                                if (logger.isErrorEnabled()) {
+                                    logger.error(BeanReferenceException.getDetailMessage(refererKey, refererInfo, null));
+                                }
+                                brokenReferences.put(refererInfo, refererKey);
                             }
                         }
                     }

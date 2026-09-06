@@ -837,6 +837,11 @@ public class CoreActivity extends AdviceActivity {
         return encoding;
     }
 
+    @Override
+    public String getMultipartFormDataParser() {
+        return (hasTranslet() ? getTranslet().getMultipartFormDataParser() : null);
+    }
+
     /**
      * Parses and evaluates parameters as defined in the request rule.
      * <p>This method processes {@code <parameter>} rules, evaluates their values if specified,

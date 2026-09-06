@@ -22,11 +22,13 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.component.aspect.AdviceRuleRegistry;
 import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.FilterParameters;
+import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
@@ -47,7 +49,7 @@ import java.util.List;
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class TransletRule
-        implements HasActionRules, HasResponseRules, Replicable<TransletRule>, Describable {
+        implements HasActionRules, HasResponseRules, Replicable<TransletRule>, BeanReferenceable, Describable {
 
     private String name;
 
@@ -505,6 +507,7 @@ public class TransletRule
         if (requestRule != null &&
                 (requestRule.getAllowedMethod() != null ||
                     requestRule.getEncoding() != null ||
+                    requestRule.getMultipartFormDataParser() != null ||
                     requestRule.getParameterItemRuleMap() != null ||
                     requestRule.getAttributeItemRuleMap() != null)) {
             tsb.append("requestRule", requestRule);
@@ -713,6 +716,11 @@ public class TransletRule
             }
         }
         return rr;
+    }
+
+    @Override
+    public BeanRefererType getBeanRefererType() {
+        return BeanRefererType.TRANSLET_RULE;
     }
 
 }

@@ -398,6 +398,14 @@ public interface Activity {
     LocaleResolver getLocaleResolver();
 
     /**
+     * Returns the bean name of the multipart form data parser configured for the current translet.
+     * @return the bean name of the multipart form data parser,
+     *         an empty string if the default parser should be used,
+     *         or {@code null} if multipart is not configured
+     */
+    String getMultipartFormDataParser();
+
+    /**
      * Evaluates an AsEL (Aspectran Expression Language) expression.
      * <p>An AsEL expression can be a simple token-based string, a complex OGNL expression,
      * or a combination of both. Token expressions like {@code ${bean.property}} or

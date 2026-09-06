@@ -47,6 +47,8 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
      */
     private String encoding;
 
+    private String multipartFormDataParser;
+
     private ItemRuleMap parameterItemRuleMap;
 
     private ItemRuleMap attributeItemRuleMap;
@@ -99,6 +101,32 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
         this.encoding = encoding;
     }
 
+    /**
+     * Returns whether this request is configured to handle multipart form data.
+     * @return true if multipart form data handling is enabled; false otherwise
+     */
+    public boolean isMultipart() {
+        return (multipartFormDataParser != null);
+    }
+
+    /**
+     * Returns the bean name of the multipart form data parser.
+     * @return the bean name of the multipart form data parser,
+     *         or an empty string if the default parser should be used
+     */
+    public String getMultipartFormDataParser() {
+        return multipartFormDataParser;
+    }
+
+    /**
+     * Sets the bean name of the multipart form data parser.
+     * @param multipartFormDataParser the bean name of the multipart form data parser,
+     *         or an empty string to use the default parser
+     */
+    public void setMultipartFormDataParser(String multipartFormDataParser) {
+        this.multipartFormDataParser = multipartFormDataParser;
+    }
+
     @Override
     public ItemRuleMap getParameterItemRuleMap() {
         return parameterItemRuleMap;
@@ -140,6 +168,7 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("method", allowedMethod);
         tsb.append("encoding", encoding);
+        tsb.append("multipartFormDataParser", multipartFormDataParser);
         tsb.append("parameters", parameterItemRuleMap);
         tsb.append("attributes", attributeItemRuleMap);
         return tsb.toString();

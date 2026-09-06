@@ -440,6 +440,11 @@ public abstract class AbstractActivity implements Activity {
         this.localeResolver = localeResolver;
     }
 
+    @Override
+    public String getMultipartFormDataParser() {
+        return null;
+    }
+
     //---------------------------------------------------------------------
     // Implementation for AsEL (Aspectran Expression Language) evaluation
     //---------------------------------------------------------------------

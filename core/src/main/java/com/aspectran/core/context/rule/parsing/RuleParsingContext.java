@@ -29,10 +29,12 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
+import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.util.Namespace;
@@ -477,6 +479,15 @@ public class RuleParsingContext {
     }
 
     /**
+     * Returns the current rule appender.
+     * @return the current rule appender, or null if none
+     */
+    @Nullable
+    public RuleAppender getCurrentRuleAppender() {
+        return (ruleAppendHandler != null ? ruleAppendHandler.getCurrentRuleAppender() : null);
+    }
+
+    /**
      * Adds the aspect rule.
      * @param aspectRule the aspect rule to add
      * @throws IllegalRuleException if an illegal rule is found
@@ -542,6 +553,7 @@ public class RuleParsingContext {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
+        reserveBeanReference(transletRule);
         AppendRule appendRule = getActiveAppendRule();
         if (appendRule != null) {
             appendRule.addChildRule(transletRule);
@@ -550,6 +562,16 @@ public class RuleParsingContext {
         transletRuleRegistry.addTransletRule(transletRule);
         if (ruleParsingScope != null && transletRule != null) {
             ruleParsingScope.addScopedTransletName(transletRule.getName());
+        }
+    }
+
+    private void reserveBeanReference(TransletRule transletRule) {
+        if (transletRule != null && beanReferenceInspector != null) {
+            RequestRule requestRule = transletRule.getRequestRule();
+            if (requestRule != null && StringUtils.hasText(requestRule.getMultipartFormDataParser())) {
+                beanReferenceInspector.reserve(requestRule.getMultipartFormDataParser().trim(),
+                        transletRule, getCurrentRuleAppender());
+            }
         }
     }
 

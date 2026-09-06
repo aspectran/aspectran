@@ -50,6 +50,11 @@ public enum BeanRefererType {
     BEAN_RULE("beanRule"),
 
     /**
+     * Indicates that the bean is referenced within a translet rule, such as a multipart form data parser.
+     */
+    TRANSLET_RULE("transletRule"),
+
+    /**
      * Indicates that the bean is referenced as a scheduled job.
      */
     SCHEDULE_RULE("scheduleRule"),

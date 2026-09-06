@@ -113,4 +113,14 @@ public abstract class AbstractTranslet implements Translet {
         return transletRule.getDescriptionRule();
     }
 
+    /**
+     * Returns the bean name of the multipart form data parser configured for this translet.
+     * @return the bean name of the multipart form data parser,
+     *         an empty string if the default parser should be used,
+     *         or {@code null} if multipart is not configured
+     */
+    protected String getMultipartFormDataParser() {
+        return (getRequestRule() != null ? getRequestRule().getMultipartFormDataParser() : null);
+    }
+
 }

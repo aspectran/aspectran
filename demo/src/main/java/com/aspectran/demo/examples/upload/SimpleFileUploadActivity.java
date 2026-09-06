@@ -19,15 +19,13 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Multipart;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.RequestToDelete;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.utils.DataSizeUtils;
-import com.aspectran.utils.FilenameUtils;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.HttpStatusSetter;
 import com.aspectran.web.support.util.WebUtils;
@@ -42,7 +40,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * <p>Created: 2018. 7. 9.</p>
@@ -91,6 +88,7 @@ public class SimpleFileUploadActivity {
     @RequestToPost("/files")
     @Transform(FormatType.JSON)
     @Action("files")
+    @Multipart("standardFileUploader")
     public Collection<UploadedFile> upload(@Qualifier("file") FileParameter[] files) throws IOException {
         if (files != null && files.length > 0) {
             List<UploadedFile> uploadedFileList = new ArrayList<>(files.length);

@@ -62,8 +62,7 @@ public class BeanClassResolver {
 
     @Nullable
     private RuleAppender getCurrentRuleAppender() {
-        return (ruleParsingContext.getRuleAppendHandler() != null ?
-                ruleParsingContext.getRuleAppendHandler().getCurrentRuleAppender() : null);
+        return ruleParsingContext.getCurrentRuleAppender();
     }
 
     private void reserveBeanReference(String beanId, BeanReferenceable referenceable) {

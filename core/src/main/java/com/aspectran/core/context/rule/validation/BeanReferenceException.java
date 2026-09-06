@@ -37,7 +37,7 @@ public class BeanReferenceException extends ActivityContextRuleParserException {
 
     /**
      * Constructor to create exception with a message.
-     * @param brokenReferences the map of beans that can not find
+     * @param brokenReferences the map of beans that cannot find
      */
     BeanReferenceException(Map<RefererInfo, RefererKey> brokenReferences, Map<RefererKey, BeanRule[]> nonUniqueBeans) {
         super(getMessage(brokenReferences, nonUniqueBeans));
@@ -45,7 +45,7 @@ public class BeanReferenceException extends ActivityContextRuleParserException {
 
     /**
      * Gets the detail message.
-     * @param brokenReferences the list of beans that can not find
+     * @param brokenReferences the list of beans that cannot find
      * @return the message
      */
     @NonNull
@@ -66,20 +66,27 @@ public class BeanReferenceException extends ActivityContextRuleParserException {
     }
 
     @NonNull
-    private static String getDetailMessage(RefererKey refererKey, RefererInfo refererInfo, BeanRule[] beanRules) {
+    static String getDetailMessage(RefererKey refererKey, RefererInfo refererInfo, BeanRule[] beanRules) {
         if (refererKey != null) {
             String beanId = refererKey.getQualifier();
             Class<?> beanClass = refererKey.getType();
             if (beanId != null) {
-                return "Cannot resolve reference to bean " + refererKey + "; Referer: " + refererInfo;
-            } else {
+                if (beanClass != null) {
+                    return "Cannot resolve reference to bean '" + beanId + "' of type [" +
+                            beanClass.getName() + "]; Referer: " + refererInfo;
+                } else {
+                    return "Cannot resolve reference to bean '" + beanId + "'; Referer: " + refererInfo;
+                }
+            } else if (beanClass != null) {
                 if (beanRules != null && beanRules.length > 1) {
                     return "No unique bean of type [" + beanClass.getName() + "] is defined: " +
                             "expected single matching bean but found " + beanRules.length + ": [" +
                             NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo;
                 } else {
-                    return "No unique bean of type [" + beanClass.getName() + "] is defined; Referer: " + refererInfo;
+                    return "Cannot resolve reference to bean of type [" + beanClass.getName() + "]; Referer: " + refererInfo;
                 }
+            } else {
+                return "Cannot resolve reference to bean " + refererKey + "; Referer: " + refererInfo;
             }
         } else {
             return "Cannot resolve reference: " + refererInfo;
