@@ -35,6 +35,7 @@ import io.netty.handler.codec.http.multipart.HttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +124,7 @@ public class NettyMultipartFormDataParser implements MultipartFormDataParser {
     }
 
     @Override
-    public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
+    public void parse(@NonNull RequestAdapter requestAdapter) throws MultipartRequestParseException {
         Object adaptee = requestAdapter.getAdaptee();
         if (!(adaptee instanceof FullHttpRequest request)) {
             throw new MultipartRequestParseException("Request adaptee is not a Netty FullHttpRequest: " + adaptee);

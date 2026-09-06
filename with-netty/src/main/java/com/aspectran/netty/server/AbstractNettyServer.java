@@ -117,10 +117,18 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     private ExecutorService requestExecutor;
 
+    /**
+     * Returns the list of configured listener configurations.
+     * @return the list of listener configurations
+     */
     public List<NettyListenerConfig> getListeners() {
         return listeners;
     }
 
+    /**
+     * Sets the listener configurations for this server.
+     * @param listeners the listener configurations
+     */
     public void setListeners(NettyListenerConfig... listeners) {
         this.listeners.clear();
         if (listeners != null) {
@@ -128,6 +136,10 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         }
     }
 
+    /**
+     * Sets the list of listener configurations for this server.
+     * @param listeners the list of listener configurations
+     */
     public void setListeners(List<NettyListenerConfig> listeners) {
         this.listeners.clear();
         if (listeners != null) {
@@ -135,123 +147,232 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         }
     }
 
+    /**
+     * Adds a listener configuration to this server.
+     * @param listenerConfig the listener configuration to add
+     */
     public void addListener(NettyListenerConfig listenerConfig) {
         Assert.notNull(listenerConfig, "listenerConfig must not be null");
         this.listeners.add(listenerConfig);
     }
 
+    @Override
     public NettyContextRouter getContextRouter() {
         return contextRouter;
     }
 
+    /**
+     * Returns the list of registered {@link NettyContext}s.
+     * @return the list of Netty contexts
+     */
     public List<NettyContext> getContexts() {
         return contextRouter.getContexts();
     }
 
+    /**
+     * Sets the {@link NettyContext}s deployed on this server.
+     * @param contexts the Netty contexts
+     */
     public void setContexts(NettyContext... contexts) {
         contextRouter.setContexts(contexts);
     }
 
+    /**
+     * Sets the list of {@link NettyContext}s deployed on this server.
+     * @param contexts the list of Netty contexts
+     */
     public void setContexts(List<NettyContext> contexts) {
         contextRouter.setContexts(contexts);
     }
 
+    /**
+     * Adds a {@link NettyContext} to be deployed on this server.
+     * @param context the Netty context to add
+     */
     public void addContext(NettyContext context) {
         contextRouter.addContext(context);
     }
 
+    /**
+     * Returns whether the server should automatically start when initialized.
+     * @return {@code true} if auto-start is enabled, {@code false} otherwise
+     */
     public boolean isAutoStart() {
         return autoStart;
     }
 
+    /**
+     * Sets whether the server should automatically start when initialized.
+     * @param autoStart {@code true} to enable auto-start, {@code false} otherwise
+     */
     public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
     }
 
+    @Override
     public boolean isVirtualThreads() {
         return virtualThreads;
     }
 
+    /**
+     * Sets whether Java 21 Virtual Threads should be used for request dispatching.
+     * @param virtualThreads {@code true} to use virtual threads, {@code false} for standard thread pool
+     */
     public void setVirtualThreads(boolean virtualThreads) {
         this.virtualThreads = virtualThreads;
     }
 
+    /**
+     * Returns whether native transport (Epoll on Linux, KQueue on macOS) is enabled.
+     * @return {@code true} if native transport is enabled, {@code false} otherwise
+     */
     public boolean isNativeTransport() {
         return nativeTransport;
     }
 
+    /**
+     * Sets whether native transport (Epoll on Linux, KQueue on macOS) should be enabled.
+     * @param nativeTransport {@code true} to enable native transport, {@code false} for standard NIO
+     */
     public void setNativeTransport(boolean nativeTransport) {
         this.nativeTransport = nativeTransport;
     }
 
+    @Override
     public int getBossThreads() {
         return bossThreads;
     }
 
+    /**
+     * Sets the number of boss threads to accept incoming connections.
+     * @param bossThreads the number of boss threads
+     */
     public void setBossThreads(int bossThreads) {
         this.bossThreads = bossThreads;
     }
 
+    @Override
     public int getWorkerThreads() {
         return workerThreads;
     }
 
+    /**
+     * Sets the number of worker threads for I/O event processing.
+     * <p>A value of {@code 0} uses Netty's default (2 * available processor count).</p>
+     * @param workerThreads the number of worker threads
+     */
     public void setWorkerThreads(int workerThreads) {
         this.workerThreads = workerThreads;
     }
 
+    /**
+     * Returns the graceful shutdown timeout in seconds.
+     * @return the shutdown timeout in seconds
+     */
     public int getShutdownTimeoutSecs() {
         return shutdownTimeoutSecs;
     }
 
+    /**
+     * Sets the graceful shutdown timeout in seconds.
+     * @param shutdownTimeoutSecs the shutdown timeout in seconds
+     */
     public void setShutdownTimeoutSecs(int shutdownTimeoutSecs) {
         this.shutdownTimeoutSecs = shutdownTimeoutSecs;
     }
 
+    /**
+     * Returns the maximum content length for aggregated HTTP requests in bytes.
+     * @return the maximum content length in bytes
+     */
     public int getMaxContentLength() {
         return maxContentLength;
     }
 
+    /**
+     * Sets the maximum content length for aggregated HTTP requests in bytes.
+     * @param maxContentLength the maximum content length in bytes
+     */
     public void setMaxContentLength(int maxContentLength) {
         this.maxContentLength = maxContentLength;
     }
 
+    /**
+     * Returns whether HTTP response content compression (gzip/deflate) is enabled.
+     * @return {@code true} if compression is enabled, {@code false} otherwise
+     */
     public boolean isContentCompression() {
         return contentCompression;
     }
 
+    /**
+     * Sets whether HTTP response content compression (gzip/deflate) should be enabled.
+     * @param contentCompression {@code true} to enable compression, {@code false} otherwise
+     */
     public void setContentCompression(boolean contentCompression) {
         this.contentCompression = contentCompression;
     }
 
+    /**
+     * Returns the encoding handler for setting request/response character encoding.
+     * @return the encoding handler, or {@code null} if not configured
+     */
     public NettyEncodingHandler getEncodingHandler() {
         return encodingHandler;
     }
 
+    /**
+     * Sets the encoding handler for setting request/response character encoding.
+     * @param encodingHandler the encoding handler
+     */
     public void setEncodingHandler(NettyEncodingHandler encodingHandler) {
         this.encodingHandler = encodingHandler;
     }
 
+    /**
+     * Returns the server-level fallback static resource handler.
+     * @return the resource handler, or {@code null} if not configured
+     */
     public NettyResourceHandler getResourceHandler() {
         return resourceHandler;
     }
 
+    /**
+     * Sets the server-level fallback static resource handler.
+     * @param resourceHandler the resource handler
+     */
     public void setResourceHandler(NettyResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
     }
 
+    /**
+     * Returns the access log handler for recording HTTP requests.
+     * @return the access log handler, or {@code null} if not configured
+     */
     public NettyAccessLogHandler getAccessLogHandler() {
         return accessLogHandler;
     }
 
+    /**
+     * Sets the access log handler for recording HTTP requests.
+     * @param accessLogHandler the access log handler
+     */
     public void setAccessLogHandler(NettyAccessLogHandler accessLogHandler) {
         this.accessLogHandler = accessLogHandler;
     }
 
+    /**
+     * Returns the path-based logging group handler for MDC-based request logging segregation.
+     * @return the logging group handler, or {@code null} if not configured
+     */
     public PathBasedLoggingGroupHandler getLoggingGroupHandler() {
         return loggingGroupHandler;
     }
 
+    /**
+     * Sets the path-based logging group handler for MDC-based request logging segregation.
+     * @param loggingGroupHandler the logging group handler
+     */
     public void setLoggingGroupHandler(PathBasedLoggingGroupHandler loggingGroupHandler) {
         this.loggingGroupHandler = loggingGroupHandler;
     }
@@ -307,6 +428,10 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
+    /**
+     * Configures URL path patterns mapped to logging group names for request segregation.
+     * @param pathPatternsByGroupName a map where keys are group names and values are comma-separated path patterns
+     */
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
         if (pathPatternsByGroupName != null) {
             if (this.loggingGroupHandler == null) {
@@ -318,10 +443,18 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         }
     }
 
+    /**
+     * Returns the thread name prefix used for request dispatching threads.
+     * @return the thread name prefix
+     */
     public String getThreadNamePrefix() {
         return threadNamePrefix;
     }
 
+    /**
+     * Sets the thread name prefix used for request dispatching threads.
+     * @param threadNamePrefix the thread name prefix
+     */
     public void setThreadNamePrefix(String threadNamePrefix) {
         this.threadNamePrefix = threadNamePrefix;
     }
@@ -344,6 +477,10 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         return "netty";
     }
 
+    /**
+     * Sets the worker name and updates the thread name prefix accordingly.
+     * @param workerName the worker name
+     */
     public void setWorkerName(String workerName) {
         this.workerName = workerName;
         if (StringUtils.hasText(workerName)) {
@@ -366,6 +503,10 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         return requestExecutor;
     }
 
+    /**
+     * Sets a custom {@link ExecutorService} for request dispatching.
+     * @param requestExecutor the executor service
+     */
     public void setRequestExecutor(ExecutorService requestExecutor) {
         this.requestExecutor = requestExecutor;
     }
@@ -696,6 +837,9 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     }
 
+    /**
+     * An {@link ExecutorService} wrapper that tracks active, peak, and total request counts.
+     */
     public static class TrackingExecutor extends AbstractExecutorService {
 
         private final ExecutorService delegate;
@@ -706,22 +850,42 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
         private final LongAdder totalCount = new LongAdder();
 
+        /**
+         * Constructs a new {@code TrackingExecutor} wrapping the specified delegate executor.
+         * @param delegate the underlying executor service
+         */
         public TrackingExecutor(@NonNull ExecutorService delegate) {
             this.delegate = delegate;
         }
 
+        /**
+         * Returns the underlying delegate {@link ExecutorService}.
+         * @return the delegate executor service
+         */
         public ExecutorService getDelegate() {
             return delegate;
         }
 
+        /**
+         * Returns the number of currently active tasks.
+         * @return the active task count
+         */
         public int getActiveCount() {
             return activeCount.get();
         }
 
+        /**
+         * Returns the peak number of concurrently active tasks observed.
+         * @return the peak active task count
+         */
         public int getPeakCount() {
             return peakCount.get();
         }
 
+        /**
+         * Returns the total number of tasks submitted since initialization.
+         * @return the total task count
+         */
         public long getTotalCount() {
             return totalCount.sum();
         }

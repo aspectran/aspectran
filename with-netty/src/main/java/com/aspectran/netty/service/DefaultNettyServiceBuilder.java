@@ -75,6 +75,9 @@ public class DefaultNettyServiceBuilder {
             public void started() {
                 CoreServiceHolder.hold(nettyService);
                 nettyService.pauseTimeout = 0L;
+
+                // Required for any websocket support:
+                // Scan and register WebSocket endpoints once the ActivityContext is available
                 if (nettyService.getNettyContext() != null) {
                     nettyService.getNettyContext().exportServerEndpoints();
                 }

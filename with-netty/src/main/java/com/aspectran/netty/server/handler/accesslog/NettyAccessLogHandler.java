@@ -51,6 +51,24 @@ import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_FOR;
 
 /**
  * Netty handler that logs HTTP access events with configurable format strings and logger categories.
+ * <p>Supports standard formats such as {@code "common"} and {@code "combined"}, as well as custom
+ * format strings using formatting tokens:</p>
+ * <ul>
+ *   <li>{@code %h} or {@code %a} - Remote client IP address</li>
+ *   <li>{@code %t} - Date and time of the request</li>
+ *   <li>{@code %r} - First line of the request (method, URI, and protocol)</li>
+ *   <li>{@code %m} - HTTP request method</li>
+ *   <li>{@code %U} - Request URI path (without query string)</li>
+ *   <li>{@code %q} - Query string (prepended with '?' or empty)</li>
+ *   <li>{@code %s} - HTTP response status code</li>
+ *   <li>{@code %b} - Content-Length of response, or '-' if none</li>
+ *   <li>{@code %B} - Content-Length of response, or '0' if none</li>
+ *   <li>{@code %D} - Time taken to process the request in milliseconds</li>
+ *   <li>{@code %T} - Time taken to process the request in seconds</li>
+ *   <li>{@code %{i,Header-Name}} or {@code %{Header-Name}i} - Incoming request header</li>
+ *   <li>{@code %{o,Header-Name}} or {@code %{Header-Name}o} - Outgoing response header</li>
+ *   <li>{@code %{c,Cookie-Name}} or {@code %{Cookie-Name}c} - Request cookie value</li>
+ * </ul>
  *
  * <p>Created: 2026-09-02</p>
  */
@@ -103,28 +121,53 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         setFormatString(DEFAULT_FORMAT);
     }
 
+    /**
+     * Returns the SLF4J logger category name used for access logging.
+     * @return the logger category name
+     */
     public String getCategory() {
         return category;
     }
 
+    /**
+     * Sets the SLF4J logger category name used for access logging.
+     * @param category the logger category name, or {@code null} to use the default category
+     */
     public void setCategory(String category) {
         this.category = (StringUtils.hasText(category) ? category.trim() : DEFAULT_CATEGORY);
         this.logger = LoggerFactory.getLogger(this.category);
     }
 
+    /**
+     * Returns the access log format pattern.
+     * @return the format pattern string
+     */
     public String getFormatString() {
         return formatString;
     }
 
+    /**
+     * Sets the access log format pattern.
+     * <p>Can be {@code "common"}, {@code "combined"}, or a custom pattern.</p>
+     * @param formatString the format pattern string
+     */
     public void setFormatString(String formatString) {
         this.formatString = (StringUtils.hasText(formatString) ? formatString.trim() : DEFAULT_FORMAT);
         this.logElements = parseFormatString(this.formatString);
     }
 
+    /**
+     * Returns whether proxy address forwarding (parsing {@code X-Forwarded-For}) is enabled.
+     * @return {@code true} if proxy address forwarding is enabled, {@code false} otherwise
+     */
     public boolean isProxyAddressForwarding() {
         return proxyAddressForwarding;
     }
 
+    /**
+     * Sets whether proxy address forwarding (parsing {@code X-Forwarded-For}) is enabled.
+     * @param proxyAddressForwarding {@code true} to enable, {@code false} to disable
+     */
     public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
         this.proxyAddressForwarding = proxyAddressForwarding;
     }

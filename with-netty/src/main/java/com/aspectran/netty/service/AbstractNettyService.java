@@ -100,10 +100,12 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
         attributes.remove(name);
     }
 
+    @Override
     public SessionManager getSessionManager() {
         return sessionManager;
     }
 
+    @Override
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }

@@ -117,7 +117,7 @@ public class NettyEncodingHandler {
         return new SelectiveHttpContentCompressor(encodingPredicates, options);
     }
 
-    private CompressionOptions[] buildCompressionOptions() {
+    private CompressionOptions @NonNull [] buildCompressionOptions() {
         List<CompressionOptions> optionsList = new ArrayList<>();
         if (encodingProviders != null && encodingProviders.length > 0) {
             for (String provider : encodingProviders) {

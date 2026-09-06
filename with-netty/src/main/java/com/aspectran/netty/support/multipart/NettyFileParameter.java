@@ -47,7 +47,7 @@ public class NettyFileParameter extends FileParameter {
     }
 
     @Nullable
-    private static File determineFile(FileUpload fileUpload) {
+    private static File determineFile(@NonNull FileUpload fileUpload) {
         if (!fileUpload.isInMemory()) {
             try {
                 return fileUpload.getFile();

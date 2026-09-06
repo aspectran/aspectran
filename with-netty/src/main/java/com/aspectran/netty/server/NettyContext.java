@@ -134,6 +134,13 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.aspectranConfigFile = aspectranConfigFile;
     }
 
+    /**
+     * Returns the name of this context.
+     * <p>If not explicitly set, attempts to resolve the name from the underlying
+     * {@link ActivityContext}, or returns {@code "root"} if this is the root context,
+     * or the context path without the leading slash.</p>
+     * @return the name of this context
+     */
     @NonNull
     public String getName() {
         if (name != null) {
@@ -151,10 +158,18 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return (contextPath.startsWith("/") ? contextPath.substring(1) : contextPath);
     }
 
+    /**
+     * Sets the name of this context.
+     * @param name the context name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns whether this context is the root context (i.e. empty context path or {@code "/"}).
+     * @return {@code true} if this context is the root context, {@code false} otherwise
+     */
     public boolean isRootContext() {
         return (contextPath.isEmpty() || "/".equals(contextPath));
     }
@@ -164,10 +179,18 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.activityContext = context;
     }
 
+    /**
+     * Returns the {@link DefaultNettyService} associated with this context.
+     * @return the Netty service, or {@code null} if not yet initialized
+     */
     public DefaultNettyService getNettyService() {
         return nettyService;
     }
 
+    /**
+     * Returns the {@link ActivityContext} of this Netty context.
+     * @return the activity context, or {@code null} if not yet available
+     */
     @Nullable
     public ActivityContext getActivityContext() {
         if (nettyService != null && nettyService.getActivityContext() != null) {
@@ -176,11 +199,22 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return activityContext;
     }
 
+    /**
+     * Returns the context path for this context.
+     * <p>For the root context, this returns an empty string.</p>
+     * @return the context path
+     */
     @NonNull
     public String getContextPath() {
         return contextPath;
     }
 
+    /**
+     * Sets the context path for this context.
+     * <p>The path is normalized so that it starts with a leading slash and contains
+     * no trailing slash, except that the root context is stored as an empty string.</p>
+     * @param contextPath the context path
+     */
     public void setContextPath(String contextPath) {
         this.contextPath = StringUtils.nullToEmpty(contextPath);
         if (this.contextPath.equals("/")) {
@@ -198,26 +232,53 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
+    /**
+     * Returns the display context path, which returns {@code "/"} for the root context
+     * instead of an empty string.
+     * @return the display context path
+     */
     public String getDisplayContextPath() {
         return (contextPath.isEmpty() ? "/" : contextPath);
     }
 
+    /**
+     * Returns the Aspectran configuration file location.
+     * @return the configuration file location, or {@code null} if not specified
+     */
     public String getAspectranConfigFile() {
         return aspectranConfigFile;
     }
 
+    /**
+     * Sets the Aspectran configuration file location.
+     * @param aspectranConfigFile the configuration file location
+     */
     public void setAspectranConfigFile(String aspectranConfigFile) {
         this.aspectranConfigFile = aspectranConfigFile;
     }
 
+    /**
+     * Returns the {@link AspectranConfig} applied to this context.
+     * @return the Aspectran configuration, or {@code null} if not configured
+     */
     public AspectranConfig getAspectranConfig() {
         return aspectranConfig;
     }
 
+    /**
+     * Sets the {@link AspectranConfig} for this context.
+     * @param aspectranConfig the Aspectran configuration
+     */
     public void setAspectranConfig(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
     }
 
+    /**
+     * Returns the session manager for this context.
+     * <p>If a custom session manager is not directly set on this context,
+     * attempts to delegate to the underlying {@link DefaultNettyService}.</p>
+     * @return the session manager, or {@code null} if not configured
+     */
     public SessionManager getSessionManager() {
         if (sessionManager != null) {
             return sessionManager;
@@ -228,22 +289,42 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return null;
     }
 
+    /**
+     * Sets the session manager for this context.
+     * @param sessionManager the session manager
+     */
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Returns the session configuration for this context.
+     * @return the session configuration, or {@code null} if not configured
+     */
     public NettySessionConfig getSessionConfig() {
         return sessionConfig;
     }
 
+    /**
+     * Sets the session configuration for this context.
+     * @param sessionConfig the session configuration
+     */
     public void setSessionConfig(NettySessionConfig sessionConfig) {
         this.sessionConfig = sessionConfig;
     }
 
+    /**
+     * Returns the static resource handler for this context.
+     * @return the resource handler, or {@code null} if not configured
+     */
     public NettyResourceHandler getResourceHandler() {
         return resourceHandler;
     }
 
+    /**
+     * Sets the static resource handler for this context.
+     * @param resourceHandler the resource handler
+     */
     public void setResourceHandler(NettyResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
         if (resourceHandler != null && resourceHandler.getContextPath() == null) {
@@ -251,6 +332,11 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
+    /**
+     * Returns an unmodifiable map of all registered WebSocket endpoints
+     * (both exact paths and URI template patterns) and their associated listeners.
+     * @return an unmodifiable map of WebSocket endpoints
+     */
     public Map<String, NettyWebSocketListener> getWebSocketEndpoints() {
         Map<String, NettyWebSocketListener> map = new LinkedHashMap<>(exactWebSocketEndpoints);
         for (WebSocketEndpointTemplate template : templateWebSocketEndpoints) {
@@ -259,6 +345,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return Collections.unmodifiableMap(map);
     }
 
+    /**
+     * Sets the WebSocket endpoints for this context.
+     * @param endpoints a map of path patterns to WebSocket listeners
+     */
     public void setWebSocketEndpoints(Map<String, NettyWebSocketListener> endpoints) {
         this.exactWebSocketEndpoints.clear();
         this.templateWebSocketEndpoints.clear();
@@ -267,6 +357,13 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
+    /**
+     * Registers a WebSocket endpoint at the specified path.
+     * <p>If the path contains URI template variables (e.g. {@code {token}}),
+     * it is registered as a template endpoint.</p>
+     * @param path the endpoint path or URI template pattern
+     * @param listener the WebSocket listener to handle events
+     */
     public void addWebSocketEndpoint(String path, NettyWebSocketListener listener) {
         Assert.notNull(path, "path must not be null");
         Assert.notNull(listener, "listener must not be null");
@@ -279,6 +376,11 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
+    /**
+     * Matches the specified request path against registered WebSocket endpoints.
+     * @param path the request path to match
+     * @return the matching endpoint and extracted path parameters, or {@code null} if no match found
+     */
     @Nullable
     public WebSocketEndpointMatch matchWebSocketEndpoint(@NonNull String path) {
         String normalizedPath = (path.startsWith("/") ? path : "/" + path);
@@ -295,12 +397,21 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return null;
     }
 
+    /**
+     * Returns the {@link NettyWebSocketListener} matching the specified path.
+     * @param path the request path
+     * @return the matching WebSocket listener, or {@code null} if not found
+     */
     @Nullable
     public NettyWebSocketListener getWebSocketEndpoint(@NonNull String path) {
         WebSocketEndpointMatch match = matchWebSocketEndpoint(path);
         return (match != null ? match.getListener() : null);
     }
 
+    /**
+     * Returns whether any WebSocket endpoints are registered in this context.
+     * @return {@code true} if there are registered WebSocket endpoints, {@code false} otherwise
+     */
     public boolean hasWebSocketEndpoints() {
         return !exactWebSocketEndpoints.isEmpty() || !templateWebSocketEndpoints.isEmpty();
     }
@@ -346,14 +457,28 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return (webSocketConfig != null || webSocketServerContainerInitializer != null);
     }
 
+    /**
+     * Returns whether proxy address forwarding is enabled for this context.
+     * @return {@code true} if proxy address forwarding is enabled, {@code false} otherwise
+     */
     public boolean isProxyAddressForwarding() {
         return Boolean.TRUE.equals(proxyAddressForwarding);
     }
 
+    /**
+     * Sets whether proxy address forwarding is enabled for this context.
+     * @param proxyAddressForwarding {@code true} to enable, {@code false} to disable
+     */
     public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
         this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
+    /**
+     * Returns the logging group name for this context.
+     * <p>If not explicitly specified, attempts to resolve the name from the underlying
+     * {@link ActivityContext}, or the context path without the leading slash.</p>
+     * @return the logging group name, or {@code null} if not resolved
+     */
     @Nullable
     public String getLoggingGroup() {
         if (loggingGroup != null) {
@@ -371,6 +496,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         return null;
     }
 
+    /**
+     * Sets the logging group name for this context.
+     * @param loggingGroup the logging group name
+     */
     public void setLoggingGroup(String loggingGroup) {
         this.loggingGroup = loggingGroup;
     }
@@ -488,6 +617,12 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
     }
 
+    /**
+     * Loads the {@link AspectranConfig} from the specified location.
+     * @param location the configuration file location or resource path
+     * @return the loaded Aspectran configuration, or {@code null} if {@code location} is {@code null}
+     * @throws IOException if an error occurs while reading the configuration
+     */
     protected AspectranConfig loadAspectranConfig(String location) throws IOException {
         if (location == null) {
             return null;
