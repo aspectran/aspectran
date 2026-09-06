@@ -338,6 +338,14 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         this.webSocketServerContainerInitializer = webSocketServerContainerInitializer;
     }
 
+    /**
+     * Returns whether WebSocket support is configured for this context.
+     * @return true if WebSocket configuration or container initializer is present
+     */
+    public boolean hasWebSocketConfig() {
+        return (webSocketConfig != null || webSocketServerContainerInitializer != null);
+    }
+
     public boolean isProxyAddressForwarding() {
         return Boolean.TRUE.equals(proxyAddressForwarding);
     }
@@ -372,13 +380,12 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         createNettyService();
         initSessionManager();
 
-        if (nettyService.isOrphan() && !nettyService.isActive()) {
-            nettyService.start();
-        }
-
         if (webSocketServerContainerInitializer != null) {
             webSocketServerContainerInitializer.initialize(this);
-            exportServerEndpoints();
+        }
+
+        if (nettyService.isOrphan() && !nettyService.isActive()) {
+            nettyService.start();
         }
 
         if (resourceHandler != null && resourceHandler.getContextPath() == null) {
@@ -390,6 +397,8 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     protected void doStop() throws Exception {
         destroyNettyService();
         destroySessionManager();
+        exactWebSocketEndpoints.clear();
+        templateWebSocketEndpoints.clear();
     }
 
     private void createNettyService() throws Exception {
@@ -463,6 +472,9 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
      * within this context's {@link ActivityContext} to this Netty context.
      */
     public void exportServerEndpoints() {
+        if (!hasWebSocketConfig()) {
+            return;
+        }
         if (nettyService != null && nettyService.getActivityContext() != null) {
             try {
                 NettyServerEndpointExporter exporter = new NettyServerEndpointExporter(nettyService.getActivityContext(), this);

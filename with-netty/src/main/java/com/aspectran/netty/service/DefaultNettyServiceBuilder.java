@@ -75,6 +75,9 @@ public class DefaultNettyServiceBuilder {
             public void started() {
                 CoreServiceHolder.hold(nettyService);
                 nettyService.pauseTimeout = 0L;
+                if (nettyService.getNettyContext() != null) {
+                    nettyService.getNettyContext().exportServerEndpoints();
+                }
             }
 
             @Override
