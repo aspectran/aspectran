@@ -16,6 +16,7 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.request.FileParameterMap;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.component.bean.scope.RequestScope;
@@ -313,11 +314,24 @@ public interface RequestAdapter {
     void removeFileParameter(String name);
 
     /**
+     * Returns a mutable {@link FileParameterMap} of all request file parameters.
+     * @return the file parameter map
+     * @since 9.7.0
+     */
+    FileParameterMap getFileParameterMap();
+
+    /**
      * Copies all mappings from the given map to this request's file parameters.
      * @param fileParameterMap the map of file parameters to copy
      * @since 6.1.2
      */
     void putAllFileParameters(MultiValueMap<String, FileParameter> fileParameterMap);
+
+    /**
+     * Cleans up all temporary resources associated with file parameters in this request.
+     * @since 9.7.0
+     */
+    void cleanupFileParameters();
 
     /**
      * Checks if this request has any file parameters.

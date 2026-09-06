@@ -456,6 +456,27 @@ public abstract class AbstractRequest {
     }
 
     /**
+     * Cleans up all temporary resources associated with file parameters in this request.
+     */
+    public void cleanupFileParameters() {
+        if (hasFileParameters()) {
+            for (FileParameter[] fileParameters : fileParameterMap.values()) {
+                if (fileParameters != null) {
+                    for (FileParameter fileParameter : fileParameters) {
+                        if (fileParameter != null) {
+                            try {
+                                fileParameter.delete();
+                            } catch (Exception ignored) {
+                                // Ignore failure on cleanup
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * @return the character encoding of the request body.
      */
     public String getEncoding() {

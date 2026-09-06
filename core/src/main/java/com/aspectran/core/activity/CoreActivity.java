@@ -499,6 +499,7 @@ public class CoreActivity extends AdviceActivity {
                 if (getRequestAdapter().hasRequestScope()) {
                     getRequestAdapter().getRequestScope().destroy();
                 }
+                getRequestAdapter().cleanupFileParameters();
             }
             if (getResponseAdapter() != null && !isExceptionRaised()) {
                 getResponseAdapter().commit();

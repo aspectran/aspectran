@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Represents a file item that was received in a multipart/form-data request.
@@ -193,6 +194,31 @@ public class FileParameter {
     }
 
     /**
+     * Saves the uploaded file to the specified destination path by copying its contents.
+     * If the destination file already exists, a new unique filename is generated.
+     * @param destPath the destination path
+     * @return the saved path, which may have a different name if the original name was taken
+     * @throws IOException if an I/O error occurs
+     */
+    public Path saveAs(Path destPath) throws IOException {
+        return saveAs(destPath, false);
+    }
+
+    /**
+     * Saves the uploaded file to the specified destination path by copying its contents.
+     * @param destPath the destination path
+     * @param overwrite whether to overwrite if it already exists
+     * @return the saved path
+     * @throws IOException if an I/O error occurs
+     */
+    public Path saveAs(Path destPath, boolean overwrite) throws IOException {
+        if (destPath == null) {
+            throw new IllegalArgumentException("destPath cannot be null");
+        }
+        return saveAs(destPath.toFile(), overwrite).toPath();
+    }
+
+    /**
      * Moves the uploaded file to the specified destination.
      * @param destFile the destination file
      * @return the moved file reference
@@ -240,6 +266,31 @@ public class FileParameter {
     }
 
     /**
+     * Moves the uploaded file to the specified destination path.
+     * @param destPath the destination path
+     * @return the moved path reference
+     * @throws IOException if the file cannot be moved
+     * @see #moveTo(Path, boolean)
+     */
+    public Path moveTo(Path destPath) throws IOException {
+        return moveTo(destPath, false);
+    }
+
+    /**
+     * Moves the uploaded file to the specified destination path.
+     * @param destPath the destination path
+     * @param overwrite whether to overwrite the destination file if it exists
+     * @return the moved path reference
+     * @throws IOException if the file cannot be moved
+     */
+    public Path moveTo(Path destPath, boolean overwrite) throws IOException {
+        if (destPath == null) {
+            throw new IllegalArgumentException("destPath cannot be null");
+        }
+        return moveTo(destPath.toFile(), overwrite).toPath();
+    }
+
+    /**
      * Determines the destination file location based on the provided
      * target and overwrite flag.
      * @param destFile the desired destination
@@ -265,6 +316,15 @@ public class FileParameter {
      */
     public File getSavedFile() {
         return savedFile;
+    }
+
+    /**
+     * Returns the path currently saved on disk for this parameter.
+     * @return the saved path, or {@code null} if none has been persisted
+     */
+    @Nullable
+    public Path getSavedPath() {
+        return (savedFile != null ? savedFile.toPath() : null);
     }
 
     /**

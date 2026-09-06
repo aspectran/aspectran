@@ -36,11 +36,31 @@ public class SizeLimitExceededException extends RequestParseException {
     /**
      * Constructs a <code>SizeLimitExceededException</code>.
      * @param msg the detail message
+     * @param cause the root cause
+     */
+    public SizeLimitExceededException(String msg, Throwable cause) {
+        this(msg, -1L, -1L, cause);
+    }
+
+    /**
+     * Constructs a <code>SizeLimitExceededException</code>.
+     * @param msg the detail message
      * @param actual the actual size of the request
      * @param limit the maximum permitted size of the request
      */
     public SizeLimitExceededException(String msg, long actual, long limit) {
-        super(msg);
+        this(msg, actual, limit, null);
+    }
+
+    /**
+     * Constructs a <code>SizeLimitExceededException</code>.
+     * @param msg the detail message
+     * @param actual the actual size of the request
+     * @param limit the maximum permitted size of the request
+     * @param cause the root cause
+     */
+    public SizeLimitExceededException(String msg, long actual, long limit, Throwable cause) {
+        super(msg, cause);
         this.actual = actual;
         this.limit = limit;
     }

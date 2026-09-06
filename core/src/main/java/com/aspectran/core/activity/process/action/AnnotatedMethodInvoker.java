@@ -18,6 +18,8 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantTranslet;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.request.FileParameterMap;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -156,6 +158,16 @@ public abstract class AnnotatedMethodInvoker {
         if (type.isArray() && type.getComponentType() == Translet.class) {
             return new Translet[] { (translet != null ? translet : new InstantTranslet(activity)) };
         }
+        if (FileParameter.class.isAssignableFrom(type)) {
+            return (translet != null ? translet.getFileParameter(name) : null);
+        }
+        if (type.isArray() && FileParameter.class.isAssignableFrom(type.getComponentType())) {
+            return (translet != null ? translet.getFileParameterValues(name) : null);
+        }
+        if (type == FileParameterMap.class) {
+            return (translet != null && translet.getRequestAdapter() != null
+                    ? translet.getRequestAdapter().getFileParameterMap() : null);
+        }
 
         Object result = Void.TYPE;
         if (translet != null) {
@@ -258,6 +270,21 @@ public abstract class AnnotatedMethodInvoker {
                     }
                     break;
                 }
+            }
+
+            if (FileParameter.class.isAssignableFrom(setterType)) {
+                FileParameter fp = translet.getFileParameter(paramName);
+                if (fp != null) {
+                    BeanUtils.setProperty(model, name, fp);
+                }
+                continue;
+            }
+            if (setterType.isArray() && FileParameter.class.isAssignableFrom(setterType.getComponentType())) {
+                FileParameter[] fps = translet.getFileParameterValues(paramName);
+                if (fps != null) {
+                    BeanUtils.setProperty(model, name, fps);
+                }
+                continue;
             }
 
             Object value;

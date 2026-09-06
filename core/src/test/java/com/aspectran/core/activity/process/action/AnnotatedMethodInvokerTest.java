@@ -17,6 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ParameterBindingRule;
@@ -215,6 +216,80 @@ class AnnotatedMethodInvokerTest {
         });
     }
 
+    @Test
+    void testInvokeWithFileParameter(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+        activity.prepare("/test");
+
+        activity.perform(() -> {
+            FileParameter fileParam = new com.aspectran.core.activity.request.FileParameter(
+                    new java.io.File("test-image.png"), "image/png");
+            activity.getRequestAdapter().setFileParameter("uploadFile", fileParam);
+
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withFileParameter", com.aspectran.core.activity.request.FileParameter.class);
+
+            ParameterBindingRule pbr = new ParameterBindingRule();
+            pbr.setName("uploadFile");
+            pbr.setType(com.aspectran.core.activity.request.FileParameter.class);
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
+            assertEquals("test-image.png", result);
+            return null;
+        });
+    }
+
+    @Test
+    void testInvokeWithFileParametersArray(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+        activity.prepare("/test");
+
+        activity.perform(() -> {
+            com.aspectran.core.activity.request.FileParameter[] files = new com.aspectran.core.activity.request.FileParameter[] {
+                    new com.aspectran.core.activity.request.FileParameter(new java.io.File("file1.txt")),
+                    new com.aspectran.core.activity.request.FileParameter(new java.io.File("file2.txt"))
+            };
+            activity.getRequestAdapter().setFileParameter("files", files);
+
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withFileParameters", com.aspectran.core.activity.request.FileParameter[].class);
+
+            ParameterBindingRule pbr = new ParameterBindingRule();
+            pbr.setName("files");
+            pbr.setType(com.aspectran.core.activity.request.FileParameter[].class);
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
+            assertEquals(2, result);
+            return null;
+        });
+    }
+
+    @Test
+    void testInvokeWithUploadModel(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+        ParameterMap parameterMap = new ParameterMap();
+        parameterMap.setParameter("title", "My Document");
+        activity.setParameterMap(parameterMap);
+        activity.prepare("/test");
+
+        activity.perform(() -> {
+            com.aspectran.core.activity.request.FileParameter fileParam =
+                    new com.aspectran.core.activity.request.FileParameter(new java.io.File("doc.pdf"), "application/pdf");
+            activity.getRequestAdapter().setFileParameter("file", fileParam);
+
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withUploadModel", UploadModel.class);
+
+            ParameterBindingRule pbr = new ParameterBindingRule();
+            pbr.setName("model");
+            pbr.setType(UploadModel.class);
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
+            assertEquals("My Document:doc.pdf", result);
+            return null;
+        });
+    }
+
     public static class MockAction {
         public String simple(String name, int age) {
             return name + ":" + age;
@@ -234,6 +309,18 @@ class AnnotatedMethodInvokerTest {
 
         public TestModel withModel(TestModel model) {
             return model;
+        }
+
+        public String withFileParameter(com.aspectran.core.activity.request.FileParameter uploadFile) {
+            return (uploadFile != null ? uploadFile.getFileName() : null);
+        }
+
+        public int withFileParameters(com.aspectran.core.activity.request.FileParameter[] files) {
+            return (files != null ? files.length : 0);
+        }
+
+        public String withUploadModel(UploadModel model) {
+            return (model != null && model.getFile() != null ? model.getTitle() + ":" + model.getFile().getFileName() : null);
         }
     }
 
@@ -260,6 +347,27 @@ class AnnotatedMethodInvokerTest {
         @Override
         public String toString() {
             return name + ":" + age;
+        }
+    }
+
+    public static class UploadModel {
+        private String title;
+        private com.aspectran.core.activity.request.FileParameter file;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public com.aspectran.core.activity.request.FileParameter getFile() {
+            return file;
+        }
+
+        public void setFile(com.aspectran.core.activity.request.FileParameter file) {
+            this.file = file;
         }
     }
 
