@@ -16,7 +16,9 @@
 package com.aspectran.jetty.server.servlet;
 
 import com.aspectran.utils.ClassUtils;
+import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.Servlet;
+import jakarta.servlet.annotation.MultipartConfig;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
 
 import java.util.Map;
@@ -37,6 +39,10 @@ public class JettyServlet extends ServletHolder {
 
     public JettyServlet(String name, Class<? extends Servlet> servletClass) {
         super(name, servletClass);
+        MultipartConfig multipartConfig = servletClass.getAnnotation(MultipartConfig.class);
+        if (multipartConfig != null) {
+            setMultipartConfig(new MultipartConfigElement(multipartConfig));
+        }
     }
 
     public String[] getMappings() {
@@ -49,6 +55,14 @@ public class JettyServlet extends ServletHolder {
 
     public void setInitParams(Map<String, String> initParams) {
         setInitParameters(initParams);
+    }
+
+    public MultipartConfigElement getMultipartConfig() {
+        return getMultipartConfigElement();
+    }
+
+    public void setMultipartConfig(MultipartConfigElement multipartConfig) {
+        getRegistration().setMultipartConfig(multipartConfig);
     }
 
 }

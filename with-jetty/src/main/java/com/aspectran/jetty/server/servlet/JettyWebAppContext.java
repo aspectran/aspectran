@@ -22,6 +22,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.servlet.service.DefaultServletWebService;
 import com.aspectran.web.servlet.service.DefaultServletWebServiceBuilder;
+import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletContainerInitializer;
 import org.eclipse.jetty.ee.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
@@ -68,6 +69,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     private List<JettyErrorPage> errorPages;
 
     private JettyWebSocketServerContainerInitializer webSocketServerContainerInitializer;
+
+    private MultipartConfigElement multipartConfig;
 
     private DefaultServletWebService rootWebService;
 
@@ -192,12 +195,31 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     /**
+     * Returns the multipart configuration for this context.
+     * @return the multipart configuration
+     */
+    public MultipartConfigElement getMultipartConfig() {
+        return multipartConfig;
+    }
+
+    /**
+     * Sets the default multipart configuration for servlets in this context.
+     * @param multipartConfig the multipart configuration
+     */
+    public void setMultipartConfig(MultipartConfigElement multipartConfig) {
+        this.multipartConfig = multipartConfig;
+    }
+
+    /**
      * Sets the servlets for this context.
      * @param servlets an array of Jetty servlets
      */
     public void setServlets(JettyServlet[] servlets) {
         if (servlets != null) {
             for (JettyServlet servlet : servlets) {
+                if (servlet.getMultipartConfig() == null && multipartConfig != null) {
+                    servlet.setMultipartConfig(multipartConfig);
+                }
                 getServletHandler().addServlet(servlet);
                 ServletMapping mapping = new ServletMapping();
                 mapping.setServletName(servlet.getName());

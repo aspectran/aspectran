@@ -31,6 +31,14 @@
                     <value>/</value>
                 </property>
                 <property name="initOrder" valueType="int">1</property>
+                <property name="multipartConfig">
+                    <bean class="jakarta.servlet.MultipartConfigElement">
+                        <argument value=""/>
+                        <argument valueType="long">10485760</argument>
+                        <argument valueType="long">20971520</argument>
+                        <argument valueType="int">1048576</argument>
+                    </bean>
+                </property>
             </bean>
         </property>
         <property name="servletContainerInitializers" type="array">
