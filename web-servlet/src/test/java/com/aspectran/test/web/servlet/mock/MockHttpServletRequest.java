@@ -112,11 +112,24 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override public boolean isRequestedSessionIdValid() { return false; }
     @Override public boolean isRequestedSessionIdFromCookie() { return false; }
     @Override public boolean isRequestedSessionIdFromURL() { return false; }
+    private final java.util.List<jakarta.servlet.http.Part> parts = new java.util.ArrayList<>();
+
+    public void addPart(jakarta.servlet.http.Part part) {
+        this.parts.add(part);
+    }
+
     @Override public boolean authenticate(HttpServletResponse response) throws IOException, ServletException { return false; }
     @Override public void login(String username, String password) throws ServletException {}
     @Override public void logout() throws ServletException {}
-    @Override public Collection<jakarta.servlet.http.Part> getParts() throws IOException, ServletException { return null; }
-    @Override public jakarta.servlet.http.Part getPart(String name) throws IOException, ServletException { return null; }
+    @Override public Collection<jakarta.servlet.http.Part> getParts() throws IOException, ServletException { return parts; }
+    @Override public jakarta.servlet.http.Part getPart(String name) throws IOException, ServletException {
+        for (jakarta.servlet.http.Part p : parts) {
+            if (p.getName().equals(name)) {
+                return p;
+            }
+        }
+        return null;
+    }
     @Override public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException { return null; }
     @Override public Object getAttribute(String name) { return attributes.get(name); }
     @Override public Enumeration<String> getAttributeNames() { return Collections.enumeration(attributes.keySet()); }

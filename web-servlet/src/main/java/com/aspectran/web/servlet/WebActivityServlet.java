@@ -24,6 +24,7 @@ import com.aspectran.web.servlet.service.ServletWebService;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,6 +48,7 @@ import java.io.Serial;
  * the appropriate content length.
  * </p>
  */
+@MultipartConfig
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Serial

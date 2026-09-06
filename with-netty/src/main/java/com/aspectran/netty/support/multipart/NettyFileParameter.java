@@ -105,7 +105,13 @@ public class NettyFileParameter extends FileParameter {
 
     @Override
     public void delete() {
-        fileUpload.delete();
+        try {
+            fileUpload.delete();
+        } finally {
+            if (fileUpload.refCnt() > 0) {
+                fileUpload.release();
+            }
+        }
         super.delete();
     }
 

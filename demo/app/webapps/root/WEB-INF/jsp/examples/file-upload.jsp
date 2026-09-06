@@ -207,53 +207,60 @@
                 progress + '%'
             ).attr('aria-valuenow', progress).text(progress + '%');
         }).on('fileuploaddone', function (e, data) {
-            $.each(data.result.files, function (index, file) {
-                let node = $(data.context);
-                if (file.fileName) {
-                    let link = $('<a>')
-                        .attr('href', "files/" + file.key)
-                        .attr('target', '_blank');
-                    node.find(".col-auto canvas")
-                        .addClass("link")
-                        .click(function() {
-                            window.open(file.url);
-                        }).wrap(link);
-                    let fileLink = $('<a>')
-                        .attr('href', "files/" + file.key)
-                        .attr('target', '_blank')
-                        .attr('download', file.fileName)
-                        .text(file.fileName);
-                    node.find("p a.filename").replaceWith(fileLink);
-                    node.find("button.delete-btn")
-                        .data("file-key", file.key)
-                        .prop("disabled", false)
-                        .on('click', function () {
-                            let that = $(this);
-                            let fileKey = that.data("file-key");
-                            console.log("fileKey: ", fileKey);
-                            if (fileKey) {
-                                $.ajax({
-                                    url: url + "/" + fileKey,
-                                    type: 'delete',
-                                    success: function () {
-                                        that.closest('li').fadeOut();
-                                        setTimeout(function () {
-                                            that.closest('li').remove();
-                                        }, 500)
-                                    }
-                                });
-                            } else {
-                                that.closest('li').remove();
-                            }
-                        });
-                } else if (file.error) {
-                    let error = $('<div class="alert alert-danger p-1 m-0 mt-1"/>').text(file.error);
-                    node.find('.file-info').append(error);
-                }
-                setTimeout(function () {
-                    node.find(".progress").fadeOut();
-                }, 500);
-            });
+            let node = $(data.context);
+            if (data.result && data.result.files && data.result.files.length > 0) {
+                $.each(data.result.files, function (index, file) {
+                    if (file.fileName) {
+                        let link = $('<a>')
+                            .attr('href', "files/" + file.key)
+                            .attr('target', '_blank');
+                        node.find(".col-auto canvas")
+                            .addClass("link")
+                            .click(function() {
+                                window.open(file.url);
+                            }).wrap(link);
+                        let fileLink = $('<a>')
+                            .attr('href', "files/" + file.key)
+                            .attr('target', '_blank')
+                            .attr('download', file.fileName)
+                            .text(file.fileName);
+                        node.find("p a.filename").replaceWith(fileLink);
+                        node.find("button.delete-btn")
+                            .data("file-key", file.key)
+                            .prop("disabled", false)
+                            .on('click', function () {
+                                let that = $(this);
+                                let fileKey = that.data("file-key");
+                                console.log("fileKey: ", fileKey);
+                                if (fileKey) {
+                                    $.ajax({
+                                        url: url + "/" + fileKey,
+                                        type: 'delete',
+                                        success: function () {
+                                            that.closest('li').fadeOut();
+                                            setTimeout(function () {
+                                                that.closest('li').remove();
+                                            }, 500)
+                                        }
+                                    });
+                                } else {
+                                    that.closest('li').remove();
+                                }
+                            });
+                    } else if (file.error) {
+                        let error = $('<div class="alert alert-danger p-1 m-0 mt-1"/>').text(file.error);
+                        node.find('.file-info').append(error);
+                        node.find('.progress-bar').removeClass('bg-success').addClass('bg-danger');
+                    }
+                });
+            } else {
+                let error = $('<div class="alert alert-danger p-1 m-0 mt-1"/>').text('File upload failed.');
+                node.find('.file-info').append(error);
+                node.find('.progress-bar').removeClass('bg-success').addClass('bg-danger');
+            }
+            setTimeout(function () {
+                node.find(".progress").fadeOut();
+            }, 500);
         }).on('fileuploadfail', function (e, data) {
             $.each(data.files, function () {
                 let node = $(data.context);

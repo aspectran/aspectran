@@ -124,22 +124,23 @@ public class CommonsMultipartFileParameter extends FileParameter {
 
     /**
      * {@inheritDoc}
-     * <p>This operation is only available if the uploaded file is stored on disk
-     * (i.e., it is a {@link DiskFileItem}).</p>
-     * @throws IllegalStateException if the file is not stored on disk
+     * <p>If the file is stored on disk, it is moved directly. If it is stored in memory,
+     * it is written to the destination file and then deleted.</p>
      */
     @Override
     public File moveTo(File destFile, boolean overwrite) throws IOException {
-        File file = getFile();
-        if (file == null) {
-            throw new IllegalStateException("The uploaded temporary file does not exist");
-        }
         if (destFile == null) {
             throw new IllegalArgumentException("destFile can not be null");
         }
-
-        validateFile();
-        return super.moveTo(destFile, overwrite);
+        File file = getFile();
+        if (file != null) {
+            validateFile();
+            return super.moveTo(destFile, overwrite);
+        } else {
+            File saved = saveAs(destFile, overwrite);
+            delete();
+            return saved;
+        }
     }
 
     /**

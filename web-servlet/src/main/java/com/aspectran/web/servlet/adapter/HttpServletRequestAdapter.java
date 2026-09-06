@@ -21,6 +21,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.web.adapter.AbstractWebRequestAdapter;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.servlet.activity.RequestAttributeMap;
+import com.aspectran.web.servlet.support.util.ServletWebUtils;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -173,12 +175,28 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
         requestAttributeMap.setRequest(request);
         setAttributeMap(requestAttributeMap);
 
-        Map<String, String[]> parameters = request.getParameterMap();
-        if (!parameters.isEmpty()) {
-            getParameterMap().putAll(parameters);
+        String contentType = request.getContentType();
+        boolean multipart = (contentType != null &&
+                contentType.toLowerCase(Locale.ENGLISH).startsWith("multipart/"));
+
+        if (!multipart) {
+            Map<String, String[]> parameters = request.getParameterMap();
+            if (!parameters.isEmpty()) {
+                getParameterMap().putAll(parameters);
+            }
+        } else {
+            // For multipart requests, avoid calling request.getParameterMap() because
+            // in servlet containers configured with @MultipartConfig (such as Undertow),
+            // getParameterMap() triggers eager multipart form parsing and consumes the
+            // request InputStream, preventing custom multipart parsers (such as
+            // CommonsMultipartFormDataParser or InMemoryMultipartFormDataParser)
+            // from reading the stream.
+            Map<String, String[]> queryParameters = ServletWebUtils.parseQueryParameters(request);
+            if (!queryParameters.isEmpty()) {
+                getParameterMap().putAll(queryParameters);
+            }
         }
 
-        String contentType = request.getContentType();
         if (StringUtils.hasLength(contentType)) {
             try {
                 MediaType mediaType = MediaType.parseMediaType(contentType);
@@ -197,4 +215,3 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     }
 
 }
-

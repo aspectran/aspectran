@@ -17,12 +17,22 @@ package com.aspectran.web.servlet.support.util;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.util.UriUtils;
 import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Miscellaneous utility methods for web applications.
@@ -125,6 +135,82 @@ public class ServletWebUtils {
      */
     public static String getRemoteAddr(@NonNull Translet translet) {
         return WebUtils.getRemoteAddr(translet);
+    }
+
+    /**
+     * Parses the query string from the given {@link HttpServletRequest} into a {@link MultiValueMap}.
+     * <p>The character encoding specified on the request is used to decode the query parameters;
+     * if no character encoding is specified, UTF-8 is used as default.</p>
+     * @param request the current servlet request
+     * @return a {@link MultiValueMap} containing the parsed query parameters
+     */
+    @NonNull
+    public static MultiValueMap<String, String> parseQueryParams(@NonNull HttpServletRequest request) {
+        Assert.notNull(request, "request must not be null");
+        String queryString = request.getQueryString();
+        if (!StringUtils.hasText(queryString)) {
+            return UriUtils.parseQueryParams(null);
+        }
+        Charset charset = determineEncoding(request);
+        return UriUtils.parseQueryParams(queryString, charset);
+    }
+
+    /**
+     * Parses the query string from the given {@link Translet} into a {@link MultiValueMap}.
+     * @param translet the current translet
+     * @return a {@link MultiValueMap} containing the parsed query parameters
+     */
+    @NonNull
+    public static MultiValueMap<String, String> parseQueryParams(@NonNull Translet translet) {
+        Assert.notNull(translet, "translet must not be null");
+        HttpServletRequest request = translet.getRequestAdaptee();
+        return parseQueryParams(request);
+    }
+
+    /**
+     * Parses the query string from the given {@link HttpServletRequest} into a parameter map
+     * compatible with {@link HttpServletRequest#getParameterMap()}.
+     * <p>The character encoding specified on the request is used to decode the query parameters;
+     * if no character encoding is specified, UTF-8 is used as default.</p>
+     * @param request the current servlet request
+     * @return a map containing query parameter names as keys and parameter value arrays as values
+     */
+    @NonNull
+    public static Map<String, String[]> parseQueryParameters(@NonNull HttpServletRequest request) {
+        MultiValueMap<String, String> queryParams = parseQueryParams(request);
+        if (queryParams.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Map<String, String[]> parameterMap = new LinkedHashMap<>(queryParams.size());
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+            parameterMap.put(entry.getKey(), entry.getValue().toArray(new String[0]));
+        }
+        return parameterMap;
+    }
+
+    /**
+     * Parses the query string from the given {@link Translet} into a parameter map
+     * compatible with {@link HttpServletRequest#getParameterMap()}.
+     * @param translet the current translet
+     * @return a map containing query parameter names as keys and parameter value arrays as values
+     */
+    @NonNull
+    public static Map<String, String[]> parseQueryParameters(@NonNull Translet translet) {
+        Assert.notNull(translet, "translet must not be null");
+        HttpServletRequest request = translet.getRequestAdaptee();
+        return parseQueryParameters(request);
+    }
+
+    @NonNull
+    private static Charset determineEncoding(@NonNull HttpServletRequest request) {
+        String encoding = request.getCharacterEncoding();
+        if (encoding != null) {
+            try {
+                return Charset.forName(encoding);
+            } catch (Exception ignored) {
+            }
+        }
+        return StandardCharsets.UTF_8;
     }
 
 }

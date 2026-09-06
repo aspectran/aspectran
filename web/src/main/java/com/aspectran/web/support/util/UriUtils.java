@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -251,6 +252,61 @@ public class UriUtils {
         for (Map.Entry<String, List<String>> entry : params.entrySet()) {
             for (String value : entry.getValue()) {
                 result.add(encodeQueryParam(entry.getKey(), charset), encodeQueryParam(value, charset));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Parse the given query string into a {@link MultiValueMap} using UTF-8 encoding.
+     * @param queryString the query string to parse
+     * @return a {@link MultiValueMap} containing the parsed parameter names and values
+     */
+    @NonNull
+    public static MultiValueMap<String, String> parseQueryParams(@Nullable String queryString) {
+        return parseQueryParams(queryString, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Parse the given query string into a {@link MultiValueMap} using the specified character encoding.
+     * @param queryString the query string to parse
+     * @param charset the character encoding to use for decoding
+     * @return a {@link MultiValueMap} containing the parsed parameter names and values
+     */
+    @NonNull
+    public static MultiValueMap<String, String> parseQueryParams(
+            @Nullable String queryString,
+            @Nullable Charset charset) {
+        if (!StringUtils.hasText(queryString)) {
+            return new LinkedMultiValueMap<>(0);
+        }
+        if (charset == null) {
+            charset = StandardCharsets.UTF_8;
+        }
+        MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+        String[] pairs = StringUtils.split(queryString, "&");
+        for (String pair : pairs) {
+            if (pair.isEmpty()) {
+                continue;
+            }
+            int idx = pair.indexOf('=');
+            String name;
+            String value;
+            try {
+                if (idx > -1) {
+                    name = URLDecoder.decode(pair.substring(0, idx), charset);
+                    value = URLDecoder.decode(pair.substring(idx + 1), charset);
+                } else {
+                    name = URLDecoder.decode(pair, charset);
+                    value = "";
+                }
+                result.add(name, value);
+            } catch (Exception ignored) {
+                if (idx > -1) {
+                    result.add(pair.substring(0, idx), pair.substring(idx + 1));
+                } else {
+                    result.add(pair, "");
+                }
             }
         }
         return result;

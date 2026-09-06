@@ -22,6 +22,7 @@
             </bean>
         </property>
         <property name="scratchDir">%{system:aspectran.workPath:/work}/_webapps/%{tow.context.root.name}</property>
+        <property name="tempDir">%{system:aspectran.tempPath:/temp}/%{tow.context.root.name}</property>
         <property name="sessionManager">#{tow.context.root.sessionManager}</property>
         <property name="servletSessionConfig">
             <bean class="io.undertow.servlet.api.ServletSessionConfig">
@@ -44,6 +45,14 @@
                 </property>
                 <property name="loadOnStartup" valueType="int">1</property>
                 <property name="asyncSupported" valueType="boolean">true</property>
+                <property name="multipartConfig">
+                    <bean class="jakarta.servlet.MultipartConfigElement">
+                        <argument value=""/>
+                        <argument valueType="long">10485760</argument>
+                        <argument valueType="long">20971520</argument>
+                        <argument valueType="int">1048576</argument>
+                    </bean>
+                </property>
             </bean>
         </property>
         <property name="servletContainerInitializers" type="array">

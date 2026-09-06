@@ -36,8 +36,6 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.jspecify.annotations.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,8 +50,6 @@ import java.nio.charset.StandardCharsets;
  * <p>Created: 2026-09-02</p>
  */
 public class NettyMultipartFormDataParser implements MultipartFormDataParser {
-
-    private static final Logger logger = LoggerFactory.getLogger(NettyMultipartFormDataParser.class);
 
     private String tempFileDir;
 
@@ -148,31 +144,28 @@ public class NettyMultipartFormDataParser implements MultipartFormDataParser {
             while (decoder.hasNext()) {
                 InterfaceHttpData data = decoder.next();
                 if (data != null) {
-                    try {
-                        if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
-                            Attribute attribute = (Attribute) data;
-                            parameterMap.add(attribute.getName(), attribute.getValue());
-                        } else if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload) {
-                            FileUpload fileUpload = (FileUpload) data;
-                            if (fileUpload.isCompleted()) {
-                                String fileName = fileUpload.getFilename();
-                                if (StringUtils.hasLength(fileName)) {
-                                    if (maxFileSize >= 0L && fileUpload.length() > maxFileSize) {
-                                        throw new SizeLimitExceededException("Maximum file length exceeded; actual: " +
-                                                fileUpload.length() + "; permitted: " + maxFileSize,
-                                                fileUpload.length(), maxFileSize);
-                                    }
-                                    boolean valid = FilenameUtils.isValidFileExtension(fileName,
-                                            allowedFileExtensions, deniedFileExtensions);
-                                    if (valid) {
-                                        NettyFileParameter fileParameter = new NettyFileParameter(fileUpload);
-                                        fileParameterMap.add(fileUpload.getName(), fileParameter);
-                                    }
+                    if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
+                        Attribute attribute = (Attribute)data;
+                        parameterMap.add(attribute.getName(), attribute.getValue());
+                    } else if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload) {
+                        FileUpload fileUpload = (FileUpload)data;
+                        if (fileUpload.isCompleted()) {
+                            String fileName = fileUpload.getFilename();
+                            if (StringUtils.hasLength(fileName)) {
+                                if (maxFileSize >= 0L && fileUpload.length() > maxFileSize) {
+                                    throw new SizeLimitExceededException("Maximum file length exceeded; actual: " +
+                                            fileUpload.length() + "; permitted: " + maxFileSize,
+                                            fileUpload.length(), maxFileSize);
+                                }
+                                boolean valid = FilenameUtils.isValidFileExtension(fileName,
+                                        allowedFileExtensions, deniedFileExtensions);
+                                if (valid) {
+                                    decoder.removeHttpDataFromClean(fileUpload);
+                                    NettyFileParameter fileParameter = new NettyFileParameter(fileUpload.retain());
+                                    fileParameterMap.add(fileUpload.getName(), fileParameter);
                                 }
                             }
                         }
-                    } finally {
-                        data.release();
                     }
                 }
             }

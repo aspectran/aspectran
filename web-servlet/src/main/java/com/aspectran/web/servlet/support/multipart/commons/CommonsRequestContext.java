@@ -17,20 +17,20 @@ package com.aspectran.web.servlet.support.multipart.commons;
 
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
-import org.apache.commons.fileupload.RequestContext;
+import org.apache.commons.fileupload.UploadContext;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An adapter that wraps an {@link RequestAdapter} to provide a
- * {@link RequestContext} for the Apache Commons FileUpload library.
+ * An adapter that wraps an {@link RequestAdapter} to provide an
+ * {@link UploadContext} for the Apache Commons FileUpload library.
  *
  * <p>Created: 2019-07-31</p>
  *
  * @since 6.3.0
  */
-public class CommonsRequestContext implements RequestContext {
+public class CommonsRequestContext implements UploadContext {
 
     private final RequestAdapter requestAdapter;
 
@@ -46,6 +46,12 @@ public class CommonsRequestContext implements RequestContext {
     @Override
     public String getContentType() {
         return requestAdapter.getHeader(HttpHeaders.CONTENT_TYPE);
+    }
+
+    @Override
+    public long contentLength() {
+        String contentLength = requestAdapter.getHeader(HttpHeaders.CONTENT_LENGTH);
+        return (contentLength != null && !contentLength.isEmpty() ? Long.parseLong(contentLength) : -1L);
     }
 
     @Override
