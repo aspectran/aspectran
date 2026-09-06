@@ -117,18 +117,20 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 logger.info("Starting {}", getServiceName());
 
                 doStart();
-
-                logger.info("Started {}", getServiceName());
+                active = true;
 
                 for (ServiceLifeCycle serviceLifeCycle : subServices) {
                     serviceLifeCycle.start();
                 }
 
+                logger.info("Started {}", getServiceName());
+
                 if (serviceStateListener != null) {
                     serviceStateListener.started();
                 }
-
-                active = true;
+            } catch (Exception e) {
+                active = false;
+                throw e;
             } finally {
                 restoreThreadName(oldThreadName);
             }
@@ -209,15 +211,18 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 doStart();
                 active = true;
 
-                logger.info("Restarted {}", getServiceName());
-
                 for (ServiceLifeCycle serviceLifeCycle : subServices) {
                     serviceLifeCycle.start();
                 }
 
+                logger.info("Restarted {}", getServiceName());
+
                 if (serviceStateListener != null) {
                     serviceStateListener.started();
                 }
+            } catch (Exception e) {
+                active = false;
+                throw e;
             } finally {
                 restoreThreadName(oldThreadName);
             }

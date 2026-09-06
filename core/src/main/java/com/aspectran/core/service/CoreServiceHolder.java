@@ -111,7 +111,8 @@ public final class CoreServiceHolder {
         Assert.notNull(service, "service must not be null");
         Assert.state(allServices.contains(service), "Not a registered service: " + service);
         CoreService existing = servicesByLoader.get(classLoader);
-        Assert.state(existing != service, "The classloader is already mapped to another service: " + service);
+        Assert.state(existing == null || existing == service,
+                () -> "The classloader is already mapped to another service: " + existing);
         servicesByLoader.put(classLoader, service);
     }
 
@@ -125,7 +126,8 @@ public final class CoreServiceHolder {
         Assert.notNull(service, "service must not be null");
         Assert.state(allServices.contains(service), "Not a registered service: " + service);
         CoreService existing = servicesByClass.get(clazz);
-        Assert.state(existing != service, "The class is already mapped to another service: " + service);
+        Assert.state(existing == null || existing == service,
+                () -> "The class is already mapped to another service: " + existing);
         servicesByClass.put(clazz, service);
     }
 

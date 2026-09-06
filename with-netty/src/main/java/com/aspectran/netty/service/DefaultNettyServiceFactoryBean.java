@@ -15,6 +15,7 @@
  */
 package com.aspectran.netty.service;
 
+import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
@@ -29,7 +30,7 @@ import com.aspectran.utils.Assert;
  * <p>Created: 2026-09-02</p>
  */
 public class DefaultNettyServiceFactoryBean
-        implements FactoryBean<DefaultNettyService>, ActivityContextAware, InitializableBean {
+        implements FactoryBean<DefaultNettyService>, ActivityContextAware, InitializableBean, DisposableBean {
 
     private ActivityContext context;
 
@@ -65,6 +66,17 @@ public class DefaultNettyServiceFactoryBean
     @Override
     public DefaultNettyService getObject() {
         return nettyService;
+    }
+
+    @Override
+    public void destroy() {
+        if (nettyService != null) {
+            if (nettyService.isActive()) {
+                nettyService.stop();
+            }
+            nettyService.withdraw();
+            nettyService = null;
+        }
     }
 
 }

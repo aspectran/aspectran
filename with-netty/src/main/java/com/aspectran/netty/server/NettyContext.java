@@ -369,6 +369,30 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     @Override
     protected void doStart() throws Exception {
+        createNettyService();
+        initSessionManager();
+
+        if (nettyService.isOrphan() && !nettyService.isActive()) {
+            nettyService.start();
+        }
+
+        if (webSocketServerContainerInitializer != null) {
+            webSocketServerContainerInitializer.initialize(this);
+            exportServerEndpoints();
+        }
+
+        if (resourceHandler != null && resourceHandler.getContextPath() == null) {
+            resourceHandler.setContextPath(contextPath);
+        }
+    }
+
+    @Override
+    protected void doStop() throws Exception {
+        destroyNettyService();
+        destroySessionManager();
+    }
+
+    private void createNettyService() throws Exception {
         CoreService masterService = (activityContext != null ? activityContext.getMasterService() : null);
         if (aspectranConfig == null && aspectranConfigFile != null) {
             aspectranConfig = loadAspectranConfig(aspectranConfigFile);
@@ -387,7 +411,19 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         if (proxyAddressForwarding != null) {
             nettyService.setProxyAddressForwarding(proxyAddressForwarding);
         }
+    }
 
+    private void destroyNettyService() {
+        if (nettyService != null) {
+            if (nettyService.isActive()) {
+                nettyService.stop();
+            }
+            nettyService.withdraw();
+            nettyService = null;
+        }
+    }
+
+    private void initSessionManager() throws Exception {
         if (sessionManager instanceof NettySessionManager nettySessionManager) {
             if (sessionConfig == null) {
                 sessionConfig = nettySessionManager.getSessionConfig();
@@ -410,18 +446,15 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
             }
             nettyService.setSessionManager(sessionManager);
         }
+    }
 
-        if (nettyService.isOrphan() && !nettyService.isActive()) {
-            nettyService.start();
-        }
-
-        if (webSocketServerContainerInitializer != null) {
-            webSocketServerContainerInitializer.initialize(this);
-            exportServerEndpoints();
-        }
-
-        if (resourceHandler != null && resourceHandler.getContextPath() == null) {
-            resourceHandler.setContextPath(contextPath);
+    private void destroySessionManager() throws Exception {
+        if (sessionManager != null) {
+            if (sessionManager instanceof Component component && component.isInitialized() && !component.isDestroyed()) {
+                component.destroy();
+            } else if (sessionManager instanceof DisposableBean disposable) {
+                disposable.destroy();
+            }
         }
     }
 
@@ -439,20 +472,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
                 }
             } catch (Exception e) {
                 logger.warn("Failed to auto-register @ServerEndpoint for NettyContext [{}]", getDisplayContextPath(), e);
-            }
-        }
-    }
-
-    @Override
-    protected void doStop() throws Exception {
-        if (nettyService != null && nettyService.isActive()) {
-            nettyService.stop();
-        }
-        if (sessionManager != null) {
-            if (sessionManager instanceof Component component && component.isInitialized() && !component.isDestroyed()) {
-                component.destroy();
-            } else if (sessionManager instanceof DisposableBean disposable) {
-                disposable.destroy();
             }
         }
     }
