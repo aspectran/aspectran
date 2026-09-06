@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.RequestToDelete;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
@@ -90,28 +91,20 @@ public class SimpleFileUploadActivity {
     @RequestToPost("/files")
     @Transform(FormatType.JSON)
     @Action("files")
-    public Collection<UploadedFile> upload(@NonNull Translet translet) throws IOException {
-        FileParameter fileParameter = translet.getFileParameter("file");
-        if (fileParameter != null) {
-            String key = UUID.randomUUID().toString();
-            String ext = FilenameUtils.getExtension(fileParameter.getFileName());
-            if (StringUtils.hasLength(ext)) {
-                key += "." + ext.toLowerCase();
+    public Collection<UploadedFile> upload(@Qualifier("file") FileParameter[] files) throws IOException {
+        if (files != null && files.length > 0) {
+            List<UploadedFile> uploadedFileList = new ArrayList<>(files.length);
+            for (FileParameter file : files) {
+                if (file.getFileSize() > 0) {
+                    UploadedFile uploadedFile = UploadedFile.of(file);
+                    if (uploadedFile != null) {
+                        uploadedFile.setUrl("/examples/file-upload/files/" + uploadedFile.getKey());
+                        addUploadedFile(uploadedFile);
+                        uploadedFileList.add(uploadedFile);
+                    }
+                }
             }
-            UploadedFile uploadedFile = new UploadedFile();
-            uploadedFile.setKey(key);
-            uploadedFile.setFileName(fileParameter.getFileName());
-            uploadedFile.setFileSize(fileParameter.getFileSize());
-            uploadedFile.setHumanFileSize(DataSizeUtils.toHumanFriendlyByteSize(fileParameter.getFileSize()));
-            uploadedFile.setFileType((fileParameter.getContentType()));
-            uploadedFile.setUrl("/examples/file-upload/files/" + key);
-            uploadedFile.setBytes(fileParameter.getBytes());
-
-            addUploadedFile(uploadedFile);
-
-            List<UploadedFile> files = new ArrayList<>();
-            files.add(uploadedFile);
-            return files;
+            return (!uploadedFileList.isEmpty() ? uploadedFileList : null);
         } else {
             return null;
         }

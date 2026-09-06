@@ -15,10 +15,16 @@
  */
 package com.aspectran.demo.examples.upload;
 
+import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.utils.DataSizeUtils;
+import com.aspectran.utils.FilenameUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.NonSerializable;
 import com.aspectran.utils.json.JsonBuilder;
+import org.jspecify.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -107,6 +113,32 @@ public class UploadedFile {
         tsb.append("fileType", fileType);
         tsb.append("url", url);
         return tsb.toString();
+    }
+
+    /**
+     * Creates an {@code UploadedFile} instance from the given {@link FileParameter}.
+     * @param fileParameter the file parameter to create from
+     * @return a new {@code UploadedFile} instance, or {@code null} if fileParameter is null
+     * @throws IOException if an I/O error occurs while reading the file bytes
+     */
+    @Nullable
+    public static UploadedFile of(@Nullable FileParameter fileParameter) throws IOException {
+        if (fileParameter == null) {
+            return null;
+        }
+        String key = UUID.randomUUID().toString();
+        String ext = FilenameUtils.getExtension(fileParameter.getFileName());
+        if (StringUtils.hasLength(ext)) {
+            key += "." + ext.toLowerCase();
+        }
+        UploadedFile uploadedFile = new UploadedFile();
+        uploadedFile.setKey(key);
+        uploadedFile.setFileName(fileParameter.getFileName());
+        uploadedFile.setFileSize(fileParameter.getFileSize());
+        uploadedFile.setHumanFileSize(DataSizeUtils.toHumanFriendlyByteSize(fileParameter.getFileSize()));
+        uploadedFile.setFileType(fileParameter.getContentType());
+        uploadedFile.setBytes(fileParameter.getBytes());
+        return uploadedFile;
     }
 
     public static void main(String[] args) {

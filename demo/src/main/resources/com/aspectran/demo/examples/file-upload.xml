@@ -20,13 +20,42 @@
             }
         </joinpoint>
         <settings>
-            <setting name="multipartFormDataParser" value="imageFileUploader"/>
+            <!-- Available parsers: standardFileUploader, commonsFileUploader, inMemoryFileUploader -->
+            <setting name="multipartFormDataParser" value="standardFileUploader"/>
         </settings>
     </aspect>
 
-    <bean id="imageFileUploader" class="com.aspectran.web.servlet.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
+    <!-- Standard Jakarta Servlet Multipart Parser (recommended) -->
+    <bean id="standardFileUploader"
+          class="com.aspectran.web.servlet.support.multipart.standard.StandardServletMultipartFormDataParserFactoryBean">
         <description>
-            Required to handle multipart form data.
+            Handles multipart form data using Jakarta Servlet 3.0+ Part API.
+        </description>
+        <properties>
+            <item name="maxRequestSize" value="10M"/>
+            <item name="maxFileSize" value="5M"/>
+            <item name="allowedFileExtensions" value="jpg,jpeg,png,gif"/>
+        </properties>
+    </bean>
+
+    <!-- Apache Commons FileUpload Parser -->
+    <bean id="commonsFileUploader"
+          class="com.aspectran.web.servlet.support.multipart.commons.CommonsMultipartFormDataParserFactoryBean">
+        <description>
+            Handles multipart form data using Apache Commons FileUpload.
+        </description>
+        <properties>
+            <item name="maxRequestSize" value="10M"/>
+            <item name="maxFileSize" value="5M"/>
+            <item name="allowedFileExtensions" value="jpg,jpeg,png,gif"/>
+        </properties>
+    </bean>
+
+    <!-- In-Memory Multipart Parser -->
+    <bean id="inMemoryFileUploader"
+          class="com.aspectran.web.servlet.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
+        <description>
+            Handles multipart form data purely in memory without creating temporary files.
         </description>
         <properties>
             <item name="maxRequestSize" value="6M"/>

@@ -51,7 +51,7 @@
                 <ul>
                     <li>The maximum file size for uploads in this demo is <strong>500KB</strong>.</li>
                     <li>Only image files (<strong>JPG, GIF, PNG</strong>) are allowed in this demo.</li>
-                    <li>Up to 30 files will be stored in the memory, and older files will be deleted.</li>
+                    <li>Up to 12 files will be stored in the memory, and older files will be deleted.</li>
                     <li>You can <strong>drag &amp; drop</strong> files from your desktop on this webpage (see <a
                             href="https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support">Browser
                         support</a>).
@@ -142,7 +142,7 @@
             dataType: 'json',
             autoUpload: true,
             acceptFileTypes: /([.\/])(gif|jpe?g|png)$/i,
-            maxFileSize: 1000000,
+            maxFileSize: 512000,
             // Enable image resizing, except for Android and Opera,
             // which actually support image resizing, but fail to
             // send Blob objects via XHR requests:
