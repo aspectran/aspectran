@@ -72,6 +72,8 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private DefaultNettyService nettyService;
 
+    private int order;
+
     private String name;
 
     private String contextPath = "";
@@ -135,6 +137,47 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     }
 
     /**
+     * Returns the {@link ActivityContext} of this Netty context.
+     * @return the activity context, or {@code null} if not yet available
+     */
+    @Nullable
+    public ActivityContext getActivityContext() {
+        if (nettyService != null && nettyService.getActivityContext() != null) {
+            return nettyService.getActivityContext();
+        }
+        return activityContext;
+    }
+
+    @Override
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.activityContext = context;
+    }
+
+    /**
+     * Returns the {@link DefaultNettyService} associated with this context.
+     * @return the Netty service, or {@code null} if not yet initialized
+     */
+    public DefaultNettyService getNettyService() {
+        return nettyService;
+    }
+
+    /**
+     * Returns the deployment order of this context.
+     * @return the order
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets the deployment order of this context.
+     * @param order the order
+     */
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    /**
      * Returns the name of this context.
      * <p>If not explicitly set, attempts to resolve the name from the underlying
      * {@link ActivityContext}, or returns {@code "root"} if this is the root context,
@@ -164,39 +207,6 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Returns whether this context is the root context (i.e. empty context path or {@code "/"}).
-     * @return {@code true} if this context is the root context, {@code false} otherwise
-     */
-    public boolean isRootContext() {
-        return (contextPath.isEmpty() || "/".equals(contextPath));
-    }
-
-    @Override
-    public void setActivityContext(@NonNull ActivityContext context) {
-        this.activityContext = context;
-    }
-
-    /**
-     * Returns the {@link DefaultNettyService} associated with this context.
-     * @return the Netty service, or {@code null} if not yet initialized
-     */
-    public DefaultNettyService getNettyService() {
-        return nettyService;
-    }
-
-    /**
-     * Returns the {@link ActivityContext} of this Netty context.
-     * @return the activity context, or {@code null} if not yet available
-     */
-    @Nullable
-    public ActivityContext getActivityContext() {
-        if (nettyService != null && nettyService.getActivityContext() != null) {
-            return nettyService.getActivityContext();
-        }
-        return activityContext;
     }
 
     /**
@@ -239,6 +249,14 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
      */
     public String getDisplayContextPath() {
         return (contextPath.isEmpty() ? "/" : contextPath);
+    }
+
+    /**
+     * Returns whether this context is the root context (i.e. empty context path or {@code "/"}).
+     * @return {@code true} if this context is the root context, {@code false} otherwise
+     */
+    public boolean isRootContext() {
+        return (contextPath.isEmpty() || "/".equals(contextPath));
     }
 
     /**
@@ -506,19 +524,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     @Override
     protected void doStart() throws Exception {
-        createNettyService();
-        initSessionManager();
-
-        if (webSocketServerContainerInitializer != null) {
-            webSocketServerContainerInitializer.initialize(this);
-        }
+        initialize();
 
         if (nettyService.isOrphan() && !nettyService.isActive()) {
             nettyService.start();
-        }
-
-        if (resourceHandler != null && resourceHandler.getContextPath() == null) {
-            resourceHandler.setContextPath(contextPath);
         }
     }
 
@@ -528,6 +537,28 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         destroySessionManager();
         exactWebSocketEndpoints.clear();
         templateWebSocketEndpoints.clear();
+    }
+
+    /**
+     * Initializes the Netty service and session manager for this context.
+     * <p>Prepares the underlying {@link DefaultNettyService} and session manager
+     * without starting the service yet. This allows sibling contexts to safely
+     * resolve this context and its session manager during server startup.</p>
+     * @throws Exception if an error occurs during initialization
+     */
+    public void initialize() throws Exception {
+        if (nettyService == null) {
+            createNettyService();
+            initSessionManager();
+
+            if (webSocketServerContainerInitializer != null) {
+                webSocketServerContainerInitializer.initialize(this);
+            }
+
+            if (resourceHandler != null && resourceHandler.getContextPath() == null) {
+                resourceHandler.setContextPath(contextPath);
+            }
+        }
     }
 
     private void createNettyService() throws Exception {

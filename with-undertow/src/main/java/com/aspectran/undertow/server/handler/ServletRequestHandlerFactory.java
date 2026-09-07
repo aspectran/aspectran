@@ -26,10 +26,10 @@ import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.PathUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.web.servlet.service.DefaultServletWebService;
-import com.aspectran.web.servlet.service.DefaultServletWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.service.WebServiceClassLoader;
+import com.aspectran.web.servlet.service.DefaultServletWebService;
+import com.aspectran.web.servlet.service.DefaultServletWebServiceBuilder;
 import com.aspectran.web.servlet.service.ServletWebService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
@@ -44,6 +44,7 @@ import io.undertow.servlet.core.ServletContainerImpl;
 import jakarta.servlet.ServletContext;
 import org.jspecify.annotations.NonNull;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -173,6 +174,16 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
             towServletContexts = getActivityContext().getBeanRegistry().getBeansOfType(TowServletContext.class);
         }
         if (towServletContexts != null) {
+            // Sort contexts: root context takes priority, then by order ascending
+            Arrays.sort(towServletContexts, (c1, c2) -> {
+                boolean root1 = c1.isRootContext();
+                boolean root2 = c2.isRootContext();
+                if (root1 != root2) {
+                    return root1 ? -1 : 1;
+                }
+                return Integer.compare(c1.getOrder(), c2.getOrder());
+            });
+
             DeploymentManager[] managers = new DeploymentManager[towServletContexts.length];
             for (int i = 0; i < towServletContexts.length; i++) {
                 TowServletContext towServletContext = towServletContexts[i];
@@ -209,38 +220,57 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         if (servletContainer == null) {
             return;
         }
-        for (String deploymentName : servletContainer.listDeployments()) {
-            DeploymentManager manager = servletContainer.getDeployment(deploymentName);
-            if (manager != null) {
-                Deployment deployment = manager.getDeployment();
-                SessionManager sessionManager = deployment.getSessionManager();
-                ServletContext servletContext = deployment.getServletContext();
+        if (towServletContexts != null && towServletContexts.length > 0) {
+            // Stop and undeploy child contexts first in reverse order of startup (LIFO)
+            for (int i = towServletContexts.length - 1; i > 0; i--) {
+                TowServletContext towServletContext = towServletContexts[i];
+                disposeDeployment(towServletContext.getDeploymentName());
+            }
+            // Finally stop and undeploy the root context
+            disposeDeployment(towServletContexts[0].getDeploymentName());
+        }
+        servletContainer = null;
+    }
 
-                DefaultServletWebService webService = null;
+    private void disposeDeployment(String deploymentName) throws Exception {
+        if (servletContainer == null || deploymentName == null) {
+            return;
+        }
+        DeploymentManager manager = servletContainer.getDeployment(deploymentName);
+        if (manager != null && manager.getState() != DeploymentManager.State.UNDEPLOYED) {
+            Deployment deployment = manager.getDeployment();
+            SessionManager sessionManager = (deployment != null ? deployment.getSessionManager() : null);
+            ServletContext servletContext = (deployment != null ? deployment.getServletContext() : null);
+
+            DefaultServletWebService webService = null;
+            if (servletContext != null) {
                 try {
                     webService = ServletWebService.findWebService(servletContext);
                 } catch (IllegalStateException e) {
                     // ignored if webService was not created or bound
                 }
-                if (webService != null && webService.isActive()) {
-                    webService.pause();
-                }
+            }
+            if (webService != null && webService.isActive()) {
+                webService.pause();
+            }
 
+            if (deployment != null) {
                 TowWebSocketServerContainerInitializer.destroy(deployment);
+            }
 
+            if (manager.getState() == DeploymentManager.State.STARTED) {
                 manager.stop();
-                manager.undeploy();
+            }
+            manager.undeploy();
 
-                if (webService != null) {
-                    disposeRootWebService(webService);
-                }
+            if (webService != null) {
+                disposeRootWebService(webService);
+            }
 
-                if (sessionManager instanceof TowSessionManager towSessionManager) {
-                    towSessionManager.stop(); // for lazy stop
-                }
+            if (sessionManager instanceof TowSessionManager towSessionManager) {
+                towSessionManager.stop(); // for lazy stop
             }
         }
-        servletContainer = null;
     }
 
     /**

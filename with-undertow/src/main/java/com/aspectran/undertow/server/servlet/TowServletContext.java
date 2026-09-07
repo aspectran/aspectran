@@ -49,9 +49,11 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     private ActivityContext context;
 
-    private TowSessionManager sessionManager;
+    private int order;
 
     private Path scratchDir;
+
+    private TowSessionManager sessionManager;
 
     /**
      * Instantiates a new Tow servlet context.
@@ -85,6 +87,31 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     }
 
     /**
+     * Returns the deployment order of this servlet context.
+     * @return the order
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets the deployment order of this servlet context.
+     * @param order the order
+     */
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    /**
+     * Returns whether this context is the root context.
+     * @return true if this is the root context; false otherwise
+     */
+    public boolean isRootContext() {
+        String cp = getContextPath();
+        return (cp == null || cp.isEmpty() || "/".equals(cp));
+    }
+
+    /**
      * Sets the scratch directory for this servlet context.
      * @param scratchDir the scratch directory
      * @throws IOException if an I/O error occurs
@@ -102,6 +129,18 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         applyScratchDirToJspServlets();
     }
 
+    private void applyScratchDirToJspServlets() {
+        if (scratchDir != null) {
+            for (ServletInfo servletInfo : getServlets().values()) {
+                if (JspServlet.class.isAssignableFrom(servletInfo.getServletClass())) {
+                    if (!servletInfo.getInitParams().containsKey("scratchdir")) {
+                        servletInfo.addInitParam("scratchdir", scratchDir.toAbsolutePath().toString());
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Sets the temporary directory for this servlet context.
      * @param tempDir the temporary directory
@@ -114,18 +153,6 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
             throw new IOException("Could not create temporary directory: " + dir);
         }
         setTempDir(dir);
-    }
-
-    private void applyScratchDirToJspServlets() {
-        if (scratchDir != null) {
-            for (ServletInfo servletInfo : getServlets().values()) {
-                if (JspServlet.class.isAssignableFrom(servletInfo.getServletClass())) {
-                    if (!servletInfo.getInitParams().containsKey("scratchdir")) {
-                        servletInfo.addInitParam("scratchdir", scratchDir.toAbsolutePath().toString());
-                    }
-                }
-            }
-        }
     }
 
     /**

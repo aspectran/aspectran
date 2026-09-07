@@ -591,17 +591,37 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         return getSessionManager(path);
     }
 
+    @NonNull
+    private List<NettyContext> getOrderedContexts() {
+        List<NettyContext> orderedContexts = new ArrayList<>(contextRouter.getContexts());
+        // Sort contexts: root context takes priority, then by order ascending
+        orderedContexts.sort((c1, c2) -> {
+            boolean root1 = c1.isRootContext();
+            boolean root2 = c2.isRootContext();
+            if (root1 != root2) {
+                return root1 ? -1 : 1;
+            }
+            return Integer.compare(c1.getOrder(), c2.getOrder());
+        });
+        return orderedContexts;
+    }
+
     @Override
     protected void doStart() throws Exception {
         if (contextRouter.isEmpty()) {
             throw new IllegalStateException("No NettyContext configured on " + this);
         }
 
-        for (NettyContext context : contextRouter.getContexts()) {
+        List<NettyContext> orderedContexts = getOrderedContexts();
+        for (NettyContext context : orderedContexts) {
+            if (proxyAddressForwarding && !context.isProxyAddressForwarding()) {
+                context.setProxyAddressForwarding(true);
+            }
+            context.initialize();
+        }
+
+        for (NettyContext context : orderedContexts) {
             if (!context.isStarted()) {
-                if (proxyAddressForwarding && !context.isProxyAddressForwarding()) {
-                    context.setProxyAddressForwarding(true);
-                }
                 context.start();
             }
         }
@@ -701,16 +721,7 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
 
     @Override
     protected void doStop() {
-        for (NettyContext context : contextRouter.getContexts()) {
-            if (context.isStarted()) {
-                try {
-                    context.stop();
-                } catch (Exception e) {
-                    logger.warn("Failed to stop NettyContext: {}", context, e);
-                }
-            }
-        }
-
+        // Step 1: Close listener channels to stop accepting new connections
         for (Channel channel : activeChannels) {
             try {
                 if (channel.isOpen()) {
@@ -722,10 +733,12 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
         }
         activeChannels.clear();
 
+        // Step 2: Await completion of in-flight requests (graceful drain)
         if (requestExecutor != null) {
             requestExecutor.shutdown();
             try {
                 if (!requestExecutor.awaitTermination(shutdownTimeoutSecs, TimeUnit.SECONDS)) {
+                    logger.warn("Request executor did not terminate within {} seconds; forcing shutdown", shutdownTimeoutSecs);
                     requestExecutor.shutdownNow();
                 }
             } catch (InterruptedException e) {
@@ -735,6 +748,20 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             requestExecutor = null;
         }
 
+        // Step 3: Stop application contexts in reverse order of startup (LIFO)
+        List<NettyContext> orderedContexts = getOrderedContexts();
+        for (int i = orderedContexts.size() - 1; i >= 0; i--) {
+            NettyContext context = orderedContexts.get(i);
+            if (context.isStarted()) {
+                try {
+                    context.stop();
+                } catch (Exception e) {
+                    logger.warn("Failed to stop NettyContext: {}", context, e);
+                }
+            }
+        }
+
+        // Step 4: Shut down Netty event loop groups
         if (bossGroup != null) {
             bossGroup.shutdownGracefully(0, shutdownTimeoutSecs, TimeUnit.SECONDS);
             bossGroup = null;

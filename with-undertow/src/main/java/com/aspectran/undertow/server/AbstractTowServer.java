@@ -339,7 +339,10 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         HttpHandler rootHandler = this.handler;
         this.handler = null;
         if (rootHandler instanceof GracefulShutdownHandler shutdownHandler) {
+            // Step 1: Reject new incoming requests
             shutdownHandler.shutdown();
+
+            // Step 2: Register a listener to dispose of contexts after all active requests complete
             shutdownHandler.addShutdownListener(shutdownSuccessful -> {
                 try {
                     if (requestHandlerFactory != null) {
@@ -349,6 +352,8 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
                     logger.error("TowServer shutdown failed", e);
                 }
             });
+
+            // Step 3: Await completion of in-flight requests (graceful drain)
             try {
                 if (getShutdownTimeoutSecs() > 0) {
                     boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
@@ -363,6 +368,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
                 logger.error("Unable to gracefully stop Undertow server");
             }
         } else if (requestHandlerFactory != null) {
+            // Forceful shutdown: dispose of contexts immediately without waiting
             try {
                 requestHandlerFactory.dispose();
             } catch (Exception e) {
