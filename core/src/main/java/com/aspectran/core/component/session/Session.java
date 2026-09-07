@@ -102,6 +102,11 @@ public interface Session {
     void setMaxInactiveInterval(int secs);
 
     /**
+     * Returns the remaining time until this session becomes inactive.
+     */
+    long getRemainingInactiveInterval();
+
+    /**
      * Returns {@code true} if the client does not yet know about the session
      * or if the client chooses not to join the session.
      * A session is considered "new" if it has been created by the server but

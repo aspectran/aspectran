@@ -203,6 +203,17 @@ public class ManagedSession implements Session {
         }
     }
 
+    @Override
+    public long getRemainingInactiveInterval() {
+        try (AutoLock ignored = autoLock.lock()) {
+            if (sessionData.getInactiveInterval() <= 0L) {
+                return -1L;
+            }
+            long remaining = sessionData.getExpiry() - System.currentTimeMillis();
+            return (remaining > 0 ? remaining : 0L);
+        }
+    }
+
     /**
      * Reduces the inactive interval for this session, typically for new sessions.
      */

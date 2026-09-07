@@ -182,10 +182,18 @@ public class SessionData implements Serializable {
         this.inactiveInterval = inactiveInterval;
     }
 
+    /**
+     * Returns the additional interval of time that can be added to the session's inactive period.
+     * @return the extra inactive interval in milliseconds
+     */
     protected long getExtraInactiveInterval() {
         return extraInactiveInterval;
     }
 
+    /**
+     * Sets the additional interval of time that can be added to the session's inactive period.
+     * @param extraInactiveInterval the extra inactive interval in milliseconds
+     */
     protected void setExtraInactiveInterval(long extraInactiveInterval) {
         this.extraInactiveInterval = extraInactiveInterval;
     }
@@ -198,6 +206,7 @@ public class SessionData implements Serializable {
         if (this.inactiveInterval > inactiveInterval) {
             this.extraInactiveInterval = this.inactiveInterval - inactiveInterval;
             this.inactiveInterval = inactiveInterval;
+            this.expiry -= this.extraInactiveInterval; // Reduce the expiry time by the reduced amount
         } else {
             this.extraInactiveInterval = 0L;
         }
