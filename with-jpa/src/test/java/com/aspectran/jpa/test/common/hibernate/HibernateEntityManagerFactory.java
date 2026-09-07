@@ -27,6 +27,8 @@ import jakarta.persistence.PersistenceUnitTransactionType;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.EnvironmentSettings;
 import org.hibernate.cfg.JdbcSettings;
+import org.hibernate.cfg.TransactionSettings;
+import org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.tool.schema.Action;
 
@@ -54,6 +56,7 @@ public class HibernateEntityManagerFactory extends EntityManagerFactoryBean {
         configuration.provider(HibernatePersistenceProvider.class.getName());
         configuration.transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
         configuration.property(JdbcSettings.JAKARTA_NON_JTA_DATASOURCE, dataSource);
+        configuration.property(TransactionSettings.JTA_PLATFORM, NoJtaPlatform.INSTANCE);
         configuration.property(EnvironmentSettings.CLASSLOADERS, getActivityContext().getClassLoader());
     }
 
