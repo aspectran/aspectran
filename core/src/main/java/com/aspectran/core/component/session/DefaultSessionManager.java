@@ -308,4 +308,11 @@ public class DefaultSessionManager
         super.doInitialize();
     }
 
+    @Override
+    public void destroy() {
+        if (isAvailable()) {
+            super.destroy();
+        }
+    }
+
 }

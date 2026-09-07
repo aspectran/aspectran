@@ -577,8 +577,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         }
 
         if (sessionManager != null) {
-            if (sessionManager instanceof Component component && !component.isInitialized()) {
-                component.initialize();
+            if (sessionManager instanceof Component component) {
+                if (!component.isInitialized()) {
+                    component.initialize();
+                }
             } else if (sessionManager instanceof InitializableBean initializable) {
                 initializable.initialize();
             }
@@ -588,8 +590,10 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
 
     private void destroySessionManager() throws Exception {
         if (sessionManager != null) {
-            if (sessionManager instanceof Component component && component.isInitialized() && !component.isDestroyed()) {
-                component.destroy();
+            if (sessionManager instanceof Component component) {
+                if (component.isInitialized() && !component.isDestroyed()) {
+                    component.destroy();
+                }
             } else if (sessionManager instanceof DisposableBean disposable) {
                 disposable.destroy();
             }

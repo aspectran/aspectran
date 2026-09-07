@@ -314,6 +314,14 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
     }
 
     /**
+     * Returns whether the root {@link HttpHandler} is set.
+     * @return true if the root HTTP handler is set
+     */
+    public boolean hasHandler() {
+        return (handler != null);
+    }
+
+    /**
      * Returns the root {@link HttpHandler} for the server.
      * @return the root HTTP handler
      */
@@ -328,11 +336,15 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      * Otherwise, it disposes of resources immediately.</p>
      */
     protected void shutdown() {
-        if (getHandler() instanceof GracefulShutdownHandler shutdownHandler) {
+        HttpHandler rootHandler = this.handler;
+        this.handler = null;
+        if (rootHandler instanceof GracefulShutdownHandler shutdownHandler) {
             shutdownHandler.shutdown();
             shutdownHandler.addShutdownListener(shutdownSuccessful -> {
                 try {
-                    getRequestHandlerFactory().dispose();
+                    if (requestHandlerFactory != null) {
+                        requestHandlerFactory.dispose();
+                    }
                 } catch (Exception e) {
                     logger.error("TowServer shutdown failed", e);
                 }
@@ -350,9 +362,9 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
             } catch (Exception ex) {
                 logger.error("Unable to gracefully stop Undertow server");
             }
-        } else {
+        } else if (requestHandlerFactory != null) {
             try {
-                getRequestHandlerFactory().dispose();
+                requestHandlerFactory.dispose();
             } catch (Exception e) {
                 logger.error("TowServer shutdown failed", e);
             }

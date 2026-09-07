@@ -173,7 +173,9 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
             towServletContexts = getActivityContext().getBeanRegistry().getBeansOfType(TowServletContext.class);
         }
         if (towServletContexts != null) {
-            for (TowServletContext towServletContext : towServletContexts) {
+            DeploymentManager[] managers = new DeploymentManager[towServletContexts.length];
+            for (int i = 0; i < towServletContexts.length; i++) {
+                TowServletContext towServletContext = towServletContexts[i];
                 ClassLoader webServiceClassLoader = new WebServiceClassLoader(getActivityContext().getClassLoader());
                 towServletContext.setClassLoader(webServiceClassLoader);
 
@@ -183,7 +185,11 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
                 DeploymentManager manager = servletContainer.addDeployment(towServletContext);
                 manager.deploy();
-
+                managers[i] = manager;
+            }
+            for (int i = 0; i < towServletContexts.length; i++) {
+                TowServletContext towServletContext = towServletContexts[i];
+                DeploymentManager manager = managers[i];
                 ServletContext servletContext = manager.getDeployment().getServletContext();
                 DefaultServletWebService rootWebService = createRootWebService(servletContext);
                 if (towServletContext.getTowSessionManager() != null) {
@@ -200,15 +206,23 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
      * @throws Exception if an error occurs during undeployment
      */
     private void disposeServletContainer() throws Exception {
-        for (String deploymentName : getServletContainer().listDeployments()) {
-            DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
+        if (servletContainer == null) {
+            return;
+        }
+        for (String deploymentName : servletContainer.listDeployments()) {
+            DeploymentManager manager = servletContainer.getDeployment(deploymentName);
             if (manager != null) {
                 Deployment deployment = manager.getDeployment();
                 SessionManager sessionManager = deployment.getSessionManager();
                 ServletContext servletContext = deployment.getServletContext();
 
-                DefaultServletWebService webService = ServletWebService.findWebService(servletContext);
-                if (webService.isActive()) {
+                DefaultServletWebService webService = null;
+                try {
+                    webService = ServletWebService.findWebService(servletContext);
+                } catch (IllegalStateException e) {
+                    // ignored if webService was not created or bound
+                }
+                if (webService != null && webService.isActive()) {
                     webService.pause();
                 }
 
@@ -217,7 +231,9 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 manager.stop();
                 manager.undeploy();
 
-                disposeRootWebService(webService);
+                if (webService != null) {
+                    disposeRootWebService(webService);
+                }
 
                 if (sessionManager instanceof TowSessionManager towSessionManager) {
                     towSessionManager.stop(); // for lazy stop

@@ -15,7 +15,6 @@
  */
 package com.aspectran.netty.server.session;
 
-import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.session.DefaultSessionManager;
 
 /**
@@ -23,7 +22,7 @@ import com.aspectran.core.component.session.DefaultSessionManager;
  *
  * <p>Created: 2026-09-02</p>
  */
-public class NettySessionManager extends DefaultSessionManager implements InitializableBean {
+public class NettySessionManager extends DefaultSessionManager {
 
     private NettySessionConfig sessionConfig = new NettySessionConfig();
 
@@ -41,13 +40,6 @@ public class NettySessionManager extends DefaultSessionManager implements Initia
      */
     public void setSessionConfig(NettySessionConfig sessionConfig) {
         this.sessionConfig = (sessionConfig != null ? sessionConfig : new NettySessionConfig());
-    }
-
-    @Override
-    public void initialize() throws Exception {
-        if (isInitializable()) {
-            super.initialize();
-        }
     }
 
 }

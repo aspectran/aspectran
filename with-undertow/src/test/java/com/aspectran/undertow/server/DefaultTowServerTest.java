@@ -77,4 +77,11 @@ class DefaultTowServerTest {
         assertEquals(result1, result2);
     }
 
+    @Test
+    void testDestroyWithoutStart() {
+        DefaultTowServer server = new DefaultTowServer();
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(server::destroy);
+        org.junit.jupiter.api.Assertions.assertFalse(server.hasHandler());
+    }
+
 }
