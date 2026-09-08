@@ -185,11 +185,11 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Checks if this activity replaced a previously current one (i.e., has a pending activity).
-     * @return {@code true} if there is a pending activity; {@code false} otherwise
+     * Checks if this activity is the original one and was not created by another activity.
+     * @return {@code true} if there is no pending (previously saved) activity; {@code false} otherwise
      */
     protected boolean isOriginalActivity() {
-        return (pendingActivity != null);
+        return (pendingActivity == null);
     }
 
     @Override
