@@ -117,8 +117,9 @@ public interface Session {
     boolean isNew();
 
     /**
-     * Returns whether this session is temporarily resident in the session store.
-     * @return true if this session is temporarily resident in the session store
+     * Determines whether this session is a temporary resident.
+     * @return {@code true} if the session is considered a temporary resident,
+     *      {@code false} otherwise
      */
     boolean isTempResident();
 
