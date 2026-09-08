@@ -58,70 +58,62 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public String getId() {
-        return getSession(true).getId();
+        Session sess = getSession(true);
+        return (sess != null ? sess.getId() : null);
     }
 
     @Override
     public long getCreationTime() {
-        return getSession(true).getCreationTime();
+        Session sess = getSession(true);
+        return (sess != null ? sess.getCreationTime() : 0L);
     }
 
     @Override
     public long getLastAccessedTime() {
-        return getSession(true).getLastAccessedTime();
+        Session sess = getSession(true);
+        return (sess != null ? sess.getLastAccessedTime() : 0L);
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        return getSession(true).getMaxInactiveInterval();
+        Session sess = getSession(true);
+        return (sess != null ? sess.getMaxInactiveInterval() : 0);
     }
 
+    @Override
     public void setMaxInactiveInterval(int interval) {
-        getSession(true).setMaxInactiveInterval(interval);
+        Session sess = getSession(true);
+        if (sess != null) {
+            sess.setMaxInactiveInterval(interval);
+        }
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        Session session = getSession(false);
-        return (session != null ? Collections.enumeration(session.getAttributeNames()) : null);
+        Session sess = getSession(false);
+        return (sess != null ? Collections.enumeration(sess.getAttributeNames()) : Collections.emptyEnumeration());
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>Does not create a session if one does not exist.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        Session session = getSession(false);
-        return (session != null ? (T)session.getAttribute(name) : null);
+        Session sess = getSession(false);
+        return (sess != null ? (T)sess.getAttribute(name) : null);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>Creates a session if one does not exist and the value is not null.
-     */
     @Override
     public void setAttribute(String name, Object value) {
-        if (value != null) {
-            getSession(true).setAttribute(name, value);
-        } else {
-            Session session = getSession(false);
-            if (session != null) {
-                session.removeAttribute(name);
-            }
+        Session sess = getSession(true);
+        if (sess != null) {
+            sess.setAttribute(name, value);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>Does not create a session if one does not exist.
-     */
     @Override
     public void removeAttribute(String name) {
-        Session session = getSession(false);
-        if (session != null) {
-            session.removeAttribute(name);
+        Session sess = getSession(false);
+        if (sess != null) {
+            sess.removeAttribute(name);
         }
     }
 
@@ -131,9 +123,9 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
      */
     @Override
     public void invalidate() {
-        Session session = getSession(false);
-        if (session != null) {
-            session.invalidate(getAdaptee());
+        Session sess = getSession(false);
+        if (sess != null) {
+            sess.invalidate(getAdaptee());
         }
     }
 
@@ -148,8 +140,8 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public boolean isNew() {
-        Session session = getSession(false);
-        return (session == null || newSession);
+        Session sess = getSession(false);
+        return (sess == null || newSession);
     }
 
     /**
