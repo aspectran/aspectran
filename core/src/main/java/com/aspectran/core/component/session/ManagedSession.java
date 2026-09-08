@@ -187,11 +187,17 @@ public class ManagedSession implements Session {
     @Override
     public void setMaxInactiveInterval(int inactiveIntervalSecs) {
         try (AutoLock ignored = autoLock.lock()) {
-            sessionData.restoreInactiveInterval();
+            // Promote new sessions to normal sessions immediately when the inactive interval is explicitly configured
+            boolean resided = sessionData.restoreInactiveInterval();
+
             long inactiveInterval = Math.max(TimeUnit.SECONDS.toMillis(inactiveIntervalSecs), -1L);
             sessionData.setInactiveInterval(inactiveInterval);
             sessionData.calcAndSetExpiry(System.currentTimeMillis());
             sessionData.setDirty(true);
+
+            if (resided) {
+                sessionManager.onSessionResided(this);
+            }
             if (logger.isDebugEnabled()) {
                 if (inactiveIntervalSecs <= 0) {
                     logger.debug("Session {} is now immortal (maxInactiveInterval={})",
@@ -268,7 +274,7 @@ public class ManagedSession implements Session {
     @Override
     public boolean isTempResident() {
         try (AutoLock ignored = autoLock.lock()) {
-            return (resident && sessionData.getExtraInactiveInterval() > 0);
+            return (resident && sessionData.getExtraInactiveInterval() > 0L);
         }
     }
 

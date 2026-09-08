@@ -558,7 +558,21 @@ class DefaultSessionManagerTest {
                 "After promotion, session should no longer be a temporary resident");
 
         session.complete();
-        logger.info("TempResident status transitions verified for session {}", sessionId);
+
+        // Promote by setting max inactive interval
+        String sessionId2 = sessionManager.createSessionId();
+        ManagedSession session2 = sessionManager.createSession(sessionId2);
+        assertTrue(session2.isTempResident(),
+                "New session with reduced interval should be a temporary resident");
+
+        session2.setMaxInactiveInterval(1800);
+        assertFalse(session2.isTempResident(),
+                "After setMaxInactiveInterval, session should no longer be a temporary resident");
+        assertEquals(1800, session2.getMaxInactiveInterval());
+
+        session2.complete();
+
+        logger.info("TempResident status transitions verified for session {} and {}", sessionId, sessionId2);
     }
 
     /**
