@@ -15,6 +15,7 @@
  */
 package com.aspectran.netty.server.websocket;
 
+import com.aspectran.core.component.session.Session;
 import com.aspectran.utils.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -68,6 +69,8 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
     private volatile int maxBinaryMessageBufferSize;
 
     private volatile long maxIdleTimeout;
+
+    private volatile Session httpSession;
 
     /**
      * Creates a new WebSocket session with basic connection information.
@@ -222,6 +225,20 @@ public class DefaultNettyWebSocketSession implements NettyWebSocketSession {
     @Nullable
     public Object removeAttribute(String name) {
         return attributes.remove(name);
+    }
+
+    @Override
+    @Nullable
+    public Session getHttpSession() {
+        return httpSession;
+    }
+
+    /**
+     * Sets the HTTP session associated with this WebSocket session.
+     * @param httpSession the HTTP session
+     */
+    public void setHttpSession(@Nullable Session httpSession) {
+        this.httpSession = httpSession;
     }
 
     @Override

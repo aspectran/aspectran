@@ -15,6 +15,8 @@
  */
 package com.aspectran.netty.server.websocket;
 
+import com.aspectran.core.component.session.Session;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import com.aspectran.netty.server.DefaultNettyServer;
@@ -38,6 +40,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -189,6 +193,66 @@ class NettyWebSocketServerTest {
 
         ws1.sendClose(WebSocket.NORMAL_CLOSURE, "Bye").get(5, TimeUnit.SECONDS);
         ws2.sendClose(WebSocket.NORMAL_CLOSURE, "Bye").get(5, TimeUnit.SECONDS);
+    }
+
+    @Test
+    void testWebSocketGracefulCloseOnHttpSessionInvalidation() throws Exception {
+        NettyContext rootContext = nettyServer.getContextRouter().match("/");
+        assertNotNull(rootContext);
+        SessionManager sessionManager = rootContext.getSessionManager();
+        assertNotNull(sessionManager);
+
+        String sessionId = sessionManager.createSessionId();
+        Session httpSession = sessionManager.createSession(sessionId);
+        assertNotNull(httpSession);
+
+        HttpClient client = HttpClient.newHttpClient();
+        CompletableFuture<Void> openFuture = new CompletableFuture<>();
+        CompletableFuture<String> echoFuture = new CompletableFuture<>();
+        CompletableFuture<Integer> closeCodeFuture = new CompletableFuture<>();
+
+        WebSocket ws = client.newWebSocketBuilder()
+                .header("Cookie", "JSESSIONID=" + httpSession.getId())
+                .buildAsync(URI.create("ws://127.0.0.1:" + port + "/echo-ws"), new WebSocket.Listener() {
+                    @Override
+                    public void onOpen(WebSocket webSocket) {
+                        openFuture.complete(null);
+                        WebSocket.Listener.super.onOpen(webSocket);
+                    }
+
+                    @Override
+                    public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
+                        echoFuture.complete(data.toString());
+                        return WebSocket.Listener.super.onText(webSocket, data, last);
+                    }
+
+                    @Override
+                    public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
+                        closeCodeFuture.complete(statusCode);
+                        return WebSocket.Listener.super.onClose(webSocket, statusCode, reason);
+                    }
+                })
+                .get(5, TimeUnit.SECONDS);
+
+        openFuture.get(5, TimeUnit.SECONDS);
+        ws.sendText("ping", true);
+        assertEquals("Echo: ping", echoFuture.get(5, TimeUnit.SECONDS));
+
+        NettyWebSocketServerContainerInitializer.WebSocketSessions sessions =
+                (NettyWebSocketServerContainerInitializer.WebSocketSessions)
+                httpSession.getAttribute(NettyWebSocketServerContainerInitializer.WEBSOCKET_SESSIONS_ATTRIBUTE);
+        assertNotNull(sessions);
+        assertEquals(1, sessions.size());
+
+        NettyWebSocketSession boundWsSession = sessions.iterator().next();
+        assertSame(httpSession, boundWsSession.getHttpSession());
+
+        // Invalidate HTTP session
+        httpSession.invalidate();
+
+        // Expect the WebSocket connection to be closed with status 1008 (POLICY_VIOLATION)
+        int receivedCloseCode = closeCodeFuture.get(5, TimeUnit.SECONDS);
+        assertEquals(1008, receivedCloseCode);
     }
 
 }

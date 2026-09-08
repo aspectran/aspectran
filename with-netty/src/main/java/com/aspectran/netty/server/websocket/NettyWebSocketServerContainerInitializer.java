@@ -15,8 +15,15 @@
  */
 package com.aspectran.netty.server.websocket;
 
+import com.aspectran.core.component.session.NonPersistentValue;
+import com.aspectran.core.component.session.Session;
+import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.netty.server.NettyContext;
 import org.jspecify.annotations.NonNull;
+
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Initializer for WebSocket support in a {@link NettyContext}.
@@ -24,6 +31,9 @@ import org.jspecify.annotations.NonNull;
  * <p>Created: 2026-09-04</p>
  */
 public class NettyWebSocketServerContainerInitializer extends NettyWebSocketConfig {
+
+    public static final String WEBSOCKET_SESSIONS_ATTRIBUTE =
+            NettyWebSocketServerContainerInitializer.class.getName() + ".WebSocketSessions";
 
     /**
      * Returns the maximum idle timeout in milliseconds.
@@ -59,6 +69,81 @@ public class NettyWebSocketServerContainerInitializer extends NettyWebSocketConf
         if (nettyContext.getWebSocketConfig() == null) {
             nettyContext.setWebSocketConfig(this);
         }
+        nettyContext.ensureWebSocketGracefulCloseListener();
+    }
+
+    /**
+     * Binds a WebSocket session to an HTTP session, ensuring that the WebSocket connection
+     * is tracked and gracefully closed when the HTTP session is invalidated or destroyed.
+     * @param httpSession the HTTP session
+     * @param webSocketSession the WebSocket session
+     */
+    public static void bindSession(@NonNull Session httpSession, @NonNull NettyWebSocketSession webSocketSession) {
+        WebSocketSessions connections;
+        synchronized (httpSession) {
+            connections = httpSession.getAttribute(WEBSOCKET_SESSIONS_ATTRIBUTE);
+            if (connections == null) {
+                connections = new WebSocketSessions();
+                httpSession.setAttribute(WEBSOCKET_SESSIONS_ATTRIBUTE, NonPersistentValue.wrap(connections));
+            }
+        }
+        WebSocketSessions sessions = connections;
+        sessions.add(webSocketSession);
+        webSocketSession.getChannel().closeFuture().addListener(future -> sessions.remove(webSocketSession));
+    }
+
+    /**
+     * Set of {@link NettyWebSocketSession}s associated with an HTTP session.
+     */
+    public static class WebSocketSessions extends CopyOnWriteArraySet<NettyWebSocketSession> {
+
+        @Serial
+        private static final long serialVersionUID = 2121556475462496509L;
+
+    }
+
+    /**
+     * A {@link SessionListener} that closes WebSocket connections associated with an HTTP session
+     * when the session is destroyed, or when the WebSocket connections attribute in the session
+     * is updated or removed, preventing socket connection leaks.
+     */
+    public static class WebSocketGracefulCloseListener implements SessionListener {
+
+        @Override
+        public void sessionDestroyed(@NonNull Session session) {
+            Object value = session.getAttribute(WEBSOCKET_SESSIONS_ATTRIBUTE);
+            if (value != null) {
+                closeWebSockets(value);
+            }
+        }
+
+        @Override
+        public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
+            if (WEBSOCKET_SESSIONS_ATTRIBUTE.equals(name) && oldValue != null && oldValue != newValue) {
+                closeWebSockets(oldValue);
+            }
+        }
+
+        @Override
+        public void attributeRemoved(Session session, String name, Object oldValue) {
+            if (WEBSOCKET_SESSIONS_ATTRIBUTE.equals(name) && oldValue != null) {
+                closeWebSockets(oldValue);
+            }
+        }
+
+        private void closeWebSockets(@NonNull Object value) {
+            if (value instanceof WebSocketSessions connections) {
+                if (!connections.isEmpty()) {
+                    for (NettyWebSocketSession session : new ArrayList<>(connections)) {
+                        if (session != null && session.isOpen()) {
+                            session.close(NettyWebSocketSession.POLICY_VIOLATION, null);
+                        }
+                    }
+                    connections.clear();
+                }
+            }
+        }
+
     }
 
 }

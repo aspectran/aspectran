@@ -55,6 +55,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Represents an application context deployed at a specific context path on a {@link NettyServer}.
@@ -99,6 +100,8 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     private String loggingGroup;
 
     private Boolean proxyAddressForwarding;
+
+    private final AtomicBoolean webSocketCloseListenerRegistered = new AtomicBoolean();
 
     /**
      * Constructs a new {@code NettyContext} with the default root context path.
@@ -313,6 +316,9 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
      */
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
+        if (sessionManager != null) {
+            ensureWebSocketGracefulCloseListener();
+        }
     }
 
     /**
@@ -320,7 +326,13 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
      * @return the session configuration, or {@code null} if not configured
      */
     public NettySessionConfig getSessionConfig() {
-        return sessionConfig;
+        if (sessionConfig != null) {
+            return sessionConfig;
+        }
+        if (nettyService != null) {
+            return nettyService.getSessionConfig();
+        }
+        return null;
     }
 
     /**
@@ -392,6 +404,7 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         } else {
             exactWebSocketEndpoints.put(normalizedPath, listener);
         }
+        ensureWebSocketGracefulCloseListener();
     }
 
     /**
@@ -465,6 +478,22 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
     public void setWebSocketServerContainerInitializer(
             NettyWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
         this.webSocketServerContainerInitializer = webSocketServerContainerInitializer;
+        if (webSocketServerContainerInitializer != null) {
+            ensureWebSocketGracefulCloseListener();
+        }
+    }
+
+    /**
+     * Ensures that {@link NettyWebSocketServerContainerInitializer.WebSocketGracefulCloseListener}
+     * is registered with the session manager if WebSocket support is configured and a session manager is present.
+     */
+    public void ensureWebSocketGracefulCloseListener() {
+        if (hasWebSocketEndpoints() || hasWebSocketConfig()) {
+            SessionManager sm = getSessionManager();
+            if (sm != null && webSocketCloseListenerRegistered.compareAndSet(false, true)) {
+                sm.addSessionListener(new NettyWebSocketServerContainerInitializer.WebSocketGracefulCloseListener());
+            }
+        }
     }
 
     /**
@@ -537,6 +566,7 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
         destroySessionManager();
         exactWebSocketEndpoints.clear();
         templateWebSocketEndpoints.clear();
+        webSocketCloseListenerRegistered.set(false);
     }
 
     /**
@@ -616,6 +646,7 @@ public class NettyContext extends AbstractLifeCycle implements ActivityContextAw
                 initializable.initialize();
             }
             nettyService.setSessionManager(sessionManager);
+            ensureWebSocketGracefulCloseListener();
         }
     }
 

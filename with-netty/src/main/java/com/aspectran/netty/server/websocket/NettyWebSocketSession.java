@@ -15,6 +15,7 @@
  */
 package com.aspectran.netty.server.websocket;
 
+import com.aspectran.core.component.session.Session;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -31,6 +32,16 @@ import java.util.Map;
  * <p>Created: 2026-09-02</p>
  */
 public interface NettyWebSocketSession {
+
+    /**
+     * WebSocket close status code 1000 (Normal Closure).
+     */
+    int NORMAL_CLOSURE = 1000;
+
+    /**
+     * WebSocket close status code 1008 (Policy Violation).
+     */
+    int POLICY_VIOLATION = 1008;
 
     /**
      * Returns the unique identifier for this WebSocket session.
@@ -118,6 +129,13 @@ public interface NettyWebSocketSession {
      */
     @Nullable
     Object removeAttribute(String name);
+
+    /**
+     * Returns the HTTP session associated with this WebSocket session, if any.
+     * @return the HTTP session, or {@code null} if no HTTP session is bound
+     */
+    @Nullable
+    Session getHttpSession();
 
     /**
      * Returns whether the underlying connection channel is active and open.

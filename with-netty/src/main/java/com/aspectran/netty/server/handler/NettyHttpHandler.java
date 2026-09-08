@@ -15,14 +15,18 @@
  */
 package com.aspectran.netty.server.handler;
 
+import com.aspectran.core.component.session.Session;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.netty.server.NettyContext;
 import com.aspectran.netty.server.NettyContextRouter;
 import com.aspectran.netty.server.handler.logging.ChannelLoggingGroupHelper;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
+import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.websocket.DefaultNettyWebSocketSession;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
 import com.aspectran.netty.server.websocket.NettyWebSocketHandler;
 import com.aspectran.netty.server.websocket.NettyWebSocketListener;
+import com.aspectran.netty.server.websocket.NettyWebSocketServerContainerInitializer;
 import com.aspectran.netty.server.websocket.WebSocketEndpointMatch;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.LoggingGroupHelper;
@@ -231,12 +235,36 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
             return;
         }
 
+        Session httpSession = null;
+        if (context != null) {
+            SessionManager sessionManager = context.getSessionManager();
+            if (sessionManager != null) {
+                NettySessionConfig sessionConfig = context.getSessionConfig();
+                if (sessionConfig == null) {
+                    sessionConfig = new NettySessionConfig();
+                }
+                String sessionId = sessionConfig.findSessionId(request);
+                if (sessionId != null) {
+                    httpSession = sessionManager.getSession(sessionId);
+                    if (httpSession != null && !httpSession.isValid()) {
+                        httpSession = null;
+                    }
+                }
+            }
+        }
+        final Session finalHttpSession = httpSession;
+
         handshaker.handshake(ctx.channel(), request).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 ctx.channel().eventLoop().execute(() -> {
                     DefaultNettyWebSocketSession session = new DefaultNettyWebSocketSession(
                             ctx.channel(), request.uri(), path, request.headers(), handshaker,
                             match.getPathParameters(), webSocketConfig);
+
+                    if (finalHttpSession != null && finalHttpSession.isValid()) {
+                        session.setHttpSession(finalHttpSession);
+                        NettyWebSocketServerContainerInitializer.bindSession(finalHttpSession, session);
+                    }
 
                     String wsGroup = ChannelLoggingGroupHelper.get(ctx.channel());
                     if (wsGroup != null) {
