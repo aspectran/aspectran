@@ -1,0 +1,71 @@
+context: {
+    rules: classpath:config/shell/session-sample-root-context.xml
+    resources: [
+    ]
+    autoReload: {
+        scanIntervalSeconds: 5
+        enabled: false
+    }
+    profiles: {
+    }
+}
+scheduler: {
+    startDelaySeconds: 3
+    waitOnShutdown: true
+    enabled: false
+}
+shell: {
+    style: {
+         primary: GRAY
+         secondary: green
+         success: cyan
+         danger: red
+         warning: YELLOW
+         info: BLUE
+    }
+    greetings: (
+        |
+        |     ___                         __
+        |    /   |  ___  ____  ___  ___  / /____   ___  ____
+        |   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
+        |  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
+        | /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Shell
+        |=========== /_/ =============================================
+        |:: Built with Aspectran :: #{class:com.aspectran.core.AboutMe^version}
+        |
+        |Session Manager Sample Shell Application
+        |
+        |The shell has a built-in session (configured in shell.session).
+        |You can maintain state across commands using the session.
+        |
+        |Available commands:
+        |  login        - Log in (username, role)
+        |  logout       - Log out (invalidates the session)
+        |  whoami       - Show currently logged-in user
+        |  session-info - Show detailed session metadata
+        |  help         - Show all available commands
+        |  quit         - Exit the shell
+        |
+    )
+    prompt: "session-sample> "
+    commands: [
+        com.aspectran.shell.command.builtins.TransletCommand
+        com.aspectran.shell.command.builtins.AspectCommand
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.EchoCommand
+        com.aspectran.shell.command.builtins.EvaluateCommand
+        com.aspectran.shell.command.builtins.HistoryCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.VerboseCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.RestartCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
+    session: {
+        workerName: shell-sample
+        maxIdleSeconds: 300
+        scavengingIntervalSeconds: 60
+        enabled: true
+    }
+    verbose: true
+}

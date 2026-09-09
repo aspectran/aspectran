@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description style="apon">
+        |
+        |Available commands for the Session Sample Shell Application:
+        |
+        |   login        Logs in with a username and role, and stores user info in the session.
+        |                  Parameters:
+        |                    username (required)  - the name of the user to log in
+        |                    role     (optional)  - the role of the user (default: USER)
+        |                  Usage:
+        |                    login
+        |                    login --username=Aspectran --role=SUPER_ADMIN
+        |
+        |   logout       Logs out the current user by invalidating the session.
+        |
+        |   whoami       Shows information about the currently logged-in user.
+        |
+        |   session-info Displays detailed metadata of the current session.
+        |
+    </description>
+
+    <!-- Sample activity bean - no SessionManager injection needed;
+         the built-in session is accessed via Translet.getSessionAdapter() -->
+    <bean id="sessionSampleActivity"
+          class="com.aspectran.shell.sample.SessionSampleActivity">
+        <description>
+            Sample activity bean that demonstrates login, logout, and session inspection
+            using the shell's built-in SessionManager via Translet.getSessionAdapter().
+        </description>
+    </bean>
+
+    <!-- login translet -->
+    <translet name="login">
+        <description style="apon">
+            |
+            |   Logs in with a username and role, and stores user info in the session.
+            |
+            |   Parameters:
+            |     username (required)  - the name of the user to log in
+            |     role     (optional)  - the role of the user (default: USER)
+            |
+            |   Usage:
+            |     login
+            |     login --username=Aspectran --role=SUPER_ADMIN
+            |
+        </description>
+        <parameters>
+            <item name="username" mandatory="true"/>
+            <item name="role">${role:USER}</item>
+        </parameters>
+        <action id="result" bean="sessionSampleActivity" method="login"/>
+        <transform format="text">
+            <template engine="token" style="apon">
+                |@{result}
+            </template>
+        </transform>
+    </translet>
+
+    <!-- logout translet -->
+    <translet name="logout">
+        <description style="apon">
+            |
+            |   Logs out the current user by invalidating the session.
+            |
+        </description>
+        <action id="result" bean="sessionSampleActivity" method="logout"/>
+        <transform format="text">
+            <template engine="token" style="apon">
+                |@{result}
+            </template>
+        </transform>
+    </translet>
+
+    <!-- whoami translet -->
+    <translet name="whoami">
+        <description style="apon">
+            |
+            |   Shows information about the currently logged-in user.
+            |
+        </description>
+        <action id="result" bean="sessionSampleActivity" method="whoami"/>
+        <transform format="text">
+            <template engine="token" style="apon">
+                |@{result}
+            </template>
+        </transform>
+    </translet>
+
+    <!-- session-info translet -->
+    <translet name="session-info">
+        <description style="apon">
+            |
+            |   Displays detailed metadata of the current session.
+            |
+        </description>
+        <action id="result" bean="sessionSampleActivity" method="sessionInfo"/>
+        <transform format="text">
+            <template engine="token" style="apon">
+                |@{result}
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>
