@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.LinkedMultiValueMap;
@@ -135,13 +136,6 @@ public class UriUtils {
         String path;
         if (location.startsWith("/")) {
             path = location;
-            if (StringUtils.hasLength(contextPath) && !"/".equals(contextPath)) {
-                String cp = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
-                if (cp.endsWith("/")) {
-                    cp = cp.substring(0, cp.length() - 1);
-                }
-                path = cp + path;
-            }
         } else {
             int queryIndex = location.indexOf('?');
             int fragmentIndex = location.indexOf('#');
@@ -244,22 +238,23 @@ public class UriUtils {
     }
 
     /**
-     * Constructs an absolute URL using information from a {@link RequestAdapter}.
-     * @param requestAdapter the request adapter
+     * Constructs an absolute URL using information from an {@link Activity}.
+     * @param activity the current activity
      * @param location the target path or absolute URL
      * @return the absolute URL
      */
     @Nullable
-    public static String makeAbsoluteUrl(RequestAdapter requestAdapter, String location) {
+    public static String makeAbsoluteUrl(Activity activity, String location) {
         if (location == null || isAbsoluteUrl(location)) {
             return location;
         }
+        RequestAdapter requestAdapter = (activity != null ? activity.getRequestAdapter() : null);
         if (requestAdapter instanceof WebRequestAdapter webRequestAdapter) {
             return makeAbsoluteUrl(
                     webRequestAdapter.getScheme(),
                     webRequestAdapter.getServerName(),
                     webRequestAdapter.getServerPort(),
-                    webRequestAdapter.getContextPath(),
+                    activity.getReverseContextPath(),
                     webRequestAdapter.getRequestURI(),
                     location
             );

@@ -55,6 +55,23 @@ class NettyProxyAddressForwardingTest {
     }
 
     @Test
+    void testForwardedHeadersStandardHttpsPort() {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        FullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");
+        req.headers().set(X_FORWARDED_FOR, "203.0.113.195");
+        req.headers().set(X_FORWARDED_PROTO, "https");
+        req.headers().set(X_FORWARDED_PORT, "443");
+        req.headers().set(X_FORWARDED_HOST, "public.aspectran.com");
+
+        NettyRequestAdapter adapter = new NettyRequestAdapter(
+                MethodType.GET, req, channel.pipeline().firstContext(), "/", true);
+
+        assertEquals("https", adapter.getScheme());
+        assertEquals(443, adapter.getServerPort());
+        assertEquals("public.aspectran.com", adapter.getServerName());
+    }
+
+    @Test
     void testForwardedHeadersWhenDisabled() {
         EmbeddedChannel channel = new EmbeddedChannel();
         FullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");

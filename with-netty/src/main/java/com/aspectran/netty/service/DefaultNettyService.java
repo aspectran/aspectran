@@ -122,7 +122,7 @@ public class DefaultNettyService extends AbstractNettyService {
             requestName = decodedPath;
         }
         final MethodType requestMethod = MethodType.resolve(request.method().name(), MethodType.GET);
-        final String reverseContextPath = (isProxyAddressForwarding() ? getReverseContextPath(request, contextPath) : null);
+        final String reverseContextPath = getReverseContextPath(request, contextPath);
 
         if (logger.isDebugEnabled()) {
             logger.debug(getRequestInfo(ctx, request, reverseContextPath, requestName, requestMethod));
@@ -172,7 +172,12 @@ public class DefaultNettyService extends AbstractNettyService {
                 !StringUtils.endsWith(activity.getRequestName(), ActivityContext.NAME_SEPARATOR_CHAR)) {
             String requestNameWithTrailingSlash = activity.getRequestName() + ActivityContext.NAME_SEPARATOR_CHAR;
             if (getActivityContext().getTransletRuleRegistry().contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
-                String location = getContextPath() + requestNameWithTrailingSlash;
+                String location;
+                if (StringUtils.hasLength(activity.getReverseContextPath())) {
+                    location = activity.getReverseContextPath() + requestNameWithTrailingSlash;
+                } else {
+                    location = requestNameWithTrailingSlash;
+                }
                 FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.MOVED_PERMANENTLY);
                 response.headers().set(HttpHeaderNames.LOCATION, location);
                 response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
@@ -276,7 +281,10 @@ public class DefaultNettyService extends AbstractNettyService {
 
     @Nullable
     private String getReverseContextPath(@NonNull FullHttpRequest request, String defaultContextPath) {
-        return WebUtils.getReverseContextPath(request.headers().get(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+        if (isProxyAddressForwarding()) {
+            return WebUtils.getReverseContextPath(request.headers().get(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+        }
+        return defaultContextPath;
     }
 
     @NonNull

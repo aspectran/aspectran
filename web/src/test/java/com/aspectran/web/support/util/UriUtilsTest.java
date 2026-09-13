@@ -90,16 +90,18 @@ class UriUtilsTest {
     void testMakeAbsoluteUrl() {
         assertEquals("http://localhost:8080/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/auth/login"));
-        assertEquals("http://localhost:8080/console/auth/login",
+        assertEquals("http://localhost:8080/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/auth/login"));
         assertEquals("http://localhost:8080/console/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "auth/login"));
-        assertEquals("http://localhost:8080/console/console/auth/login",
+        assertEquals("http://localhost:8080/console/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/login"));
-        assertEquals("http://localhost:8080/console/console?referrer=test",
+        assertEquals("http://localhost:8080/console?referrer=test",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console?referrer=test"));
         assertEquals("http://localhost:8080/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/", "/auth/login"));
+        assertEquals("https://public.aspectran.com/console/auth/login?referrer=/",
+                UriUtils.makeAbsoluteUrl("https", "public.aspectran.com", 443, "/console", "/console/auth/login?referrer=/"));
         assertEquals("https://example.com/external",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "https://example.com/external"));
     }

@@ -82,7 +82,7 @@ public class DefaultServletWebService extends AbstractServletWebService {
 
         final String requestName = WebUtils.getRelativePath(getContextPath(), requestUri);
         final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        final String reverseContextPath = (isProxyAddressForwarding() ? getReverseContextPath(request, getContextPath()) : null);
+        final String reverseContextPath = getReverseContextPath(request, getContextPath());
 
         if (logger.isDebugEnabled()) {
             logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
@@ -206,9 +206,9 @@ public class DefaultServletWebService extends AbstractServletWebService {
             if (transletRuleRegistry.contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
                 String location;
                 if (StringUtils.hasLength(activity.getReverseContextPath())) {
-                    location = activity.getReverseContextPath() + activity.getRequestName() + ActivityContext.NAME_SEPARATOR;
+                    location = activity.getReverseContextPath() + requestNameWithTrailingSlash;
                 } else {
-                    location = activity.getRequestName() + ActivityContext.NAME_SEPARATOR;
+                    location = requestNameWithTrailingSlash;
                 }
                 activity.getResponse().setHeader(HttpHeaders.LOCATION, location);
                 activity.getResponse().setHeader(HttpHeaders.CONNECTION, "close");
@@ -286,7 +286,10 @@ public class DefaultServletWebService extends AbstractServletWebService {
 
     @Nullable
     private String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
-        return WebUtils.getReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+        if (isProxyAddressForwarding()) {
+            return WebUtils.getReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+        }
+        return defaultContextPath;
     }
 
     @NonNull

@@ -236,7 +236,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void redirect(String location) throws IOException {
         setStatus(HttpStatus.FOUND.value());
-        reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity.getRequestAdapter(), location);
+        reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity, location);
     }
 
     /**

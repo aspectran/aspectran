@@ -287,7 +287,7 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void redirect(String location) {
         setStatus(HttpStatus.FOUND.value());
-        reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity.getRequestAdapter(), location);
+        reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity, location);
     }
 
     @Override

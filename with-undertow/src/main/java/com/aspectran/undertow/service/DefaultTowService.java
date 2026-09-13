@@ -88,7 +88,7 @@ public class DefaultTowService extends AbstractTowService {
             requestName = exchange.getRequestURI();
         }
         final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
-        final String reverseContextPath = (isProxyAddressForwarding() ? getReverseContextPath(exchange, exchange.getResolvedPath()) : null);
+        final String reverseContextPath = getReverseContextPath(exchange, exchange.getResolvedPath());
 
         if (logger.isDebugEnabled()) {
             logger.debug(getRequestInfo(exchange, reverseContextPath, requestName, requestMethod));
@@ -148,7 +148,13 @@ public class DefaultTowService extends AbstractTowService {
                 !StringUtils.endsWith(activity.getRequestName(), ActivityContext.NAME_SEPARATOR_CHAR)) {
             String requestNameWithTrailingSlash = activity.getRequestName() + ActivityContext.NAME_SEPARATOR_CHAR;
             if (getActivityContext().getTransletRuleRegistry().contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
-                activity.getExchange().getResponseHeaders().put(Headers.LOCATION, requestNameWithTrailingSlash);
+                String location;
+                if (StringUtils.hasLength(activity.getReverseContextPath())) {
+                    location = activity.getReverseContextPath() + requestNameWithTrailingSlash;
+                } else {
+                    location = requestNameWithTrailingSlash;
+                }
+                activity.getExchange().getResponseHeaders().put(Headers.LOCATION, location);
                 activity.getExchange().getResponseHeaders().put(Headers.CONNECTION, "close");
                 sendError(activity.getExchange(), HttpStatus.MOVED_PERMANENTLY, null);
                 return;
@@ -233,8 +239,11 @@ public class DefaultTowService extends AbstractTowService {
 
     @Nullable
     private String getReverseContextPath(@NonNull HttpServerExchange exchange, String defaultContextPath) {
-        return WebUtils.getReverseContextPath(
-                exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+        if (isProxyAddressForwarding()) {
+            return WebUtils.getReverseContextPath(
+                    exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+        }
+        return defaultContextPath;
     }
 
     @NonNull

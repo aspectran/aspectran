@@ -147,6 +147,9 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
 
     @Override
     public int getServerPort() {
+        if (isProxyAddressForwarding()) {
+            return super.getServerPort();
+        }
         int port = super.getServerPort();
         if (port != 80 && port != 443) {
             return port;
