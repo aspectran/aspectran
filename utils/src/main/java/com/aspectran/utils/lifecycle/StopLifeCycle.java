@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A {@link LifeCycle} implementation that, when started, will stop another specified {@link LifeCycle}.
  * <p>This class acts as a listener to its own lifecycle. When this {@code StopLifeCycle} instance
- * transitions to the {@link LifeCycle#STARTED} state, it triggers the {@link LifeCycle#stop()} method
+ * transitions to the {@link LifeCycle.State#STARTED} state, it triggers the {@link LifeCycle#stop()} method
  * on the {@code LifeCycle} component it wraps.</p>
  */
 public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listener {

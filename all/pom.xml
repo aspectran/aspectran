@@ -143,6 +143,12 @@
         </dependency>
         <!-- All optional dependencies of modules -->
         <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.6.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>5.0.0-B13</version>
@@ -233,6 +239,7 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <sourcepath>${generatedSourceDir}</sourcepath>
                     <groups>
                         <group>
                             <title>Core</title>
@@ -274,6 +281,15 @@
                     <overview>${project.basedir}/src/main/javadoc/overview.html</overview>
                     <stylesheetfile>${stylesheetfile}</stylesheetfile>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Clean everything once finished so that IDE doesn't find the unpacked files -->
