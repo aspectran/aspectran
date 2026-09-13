@@ -92,10 +92,34 @@ public class UriUtils {
      */
     @Nullable
     public static String makeAbsoluteUrl(String scheme, String host, String location) {
+        return makeAbsoluteUrl(scheme, host, null, location);
+    }
+
+    /**
+     * Constructs an absolute URL using scheme, host (which may include port), context path,
+     * and location path.
+     * If the given location is already an absolute URL, it is returned as is.
+     * @param scheme the scheme (e.g. "http", "https")
+     * @param host the host or host:port
+     * @param contextPath the application context path, or null
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(String scheme, String host, @Nullable String contextPath, String location) {
         if (location == null || isAbsoluteUrl(location)) {
             return location;
         }
         String path = (location.startsWith("/") ? location : PathUtils.cleanPath("/" + location));
+        if (StringUtils.hasLength(contextPath) && !"/".equals(contextPath)) {
+            String cp = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
+            if (cp.endsWith("/")) {
+                cp = cp.substring(0, cp.length() - 1);
+            }
+            if (!path.equals(cp) && !path.startsWith(cp + "/") && !path.startsWith(cp + "?") && !path.startsWith(cp + "#")) {
+                path = cp + path;
+            }
+        }
         if (StringUtils.hasLength(scheme) && StringUtils.hasLength(host)) {
             return scheme + "://" + host + path;
         }
@@ -113,13 +137,33 @@ public class UriUtils {
      */
     @Nullable
     public static String makeAbsoluteUrl(String scheme, String serverName, int serverPort, String location) {
+        return makeAbsoluteUrl(scheme, serverName, serverPort, null, location);
+    }
+
+    /**
+     * Constructs an absolute URL using scheme, server name, server port, context path, and location path.
+     * Default HTTP (80) and HTTPS (443) ports are omitted from the authority part.
+     * @param scheme the scheme (e.g. "http", "https")
+     * @param serverName the server host name
+     * @param serverPort the server port number
+     * @param contextPath the application context path, or null
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(
+            String scheme,
+            String serverName,
+            int serverPort,
+            @Nullable String contextPath,
+            String location) {
         if (location == null || isAbsoluteUrl(location)) {
             return location;
         }
         boolean defaultPort = ("http".equals(scheme) && serverPort == 80) ||
                 ("https".equals(scheme) && serverPort == 443) || serverPort <= 0;
         String host = (defaultPort ? serverName : serverName + ":" + serverPort);
-        return makeAbsoluteUrl(scheme, host, location);
+        return makeAbsoluteUrl(scheme, host, contextPath, location);
     }
 
     /**
@@ -138,6 +182,7 @@ public class UriUtils {
                     webRequestAdapter.getScheme(),
                     webRequestAdapter.getServerName(),
                     webRequestAdapter.getServerPort(),
+                    webRequestAdapter.getContextPath(),
                     location
             );
         }
