@@ -286,12 +286,20 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void redirect(String location) {
+        if (!activity.isResponded() && activity.getTranslet() != null) {
+            activity.getTranslet().redirect(location);
+            return;
+        }
         setStatus(HttpStatus.FOUND.value());
         reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity, location);
     }
 
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) {
+        if (!activity.isResponded() && activity.getTranslet() != null) {
+            activity.getTranslet().redirect(redirectRule);
+            return WebUtils.getRedirectTarget(redirectRule, activity);
+        }
         RedirectTarget redirectTarget = WebUtils.getRedirectTarget(redirectRule, activity);
         String path = redirectTarget.getLocation();
         redirect(path);
