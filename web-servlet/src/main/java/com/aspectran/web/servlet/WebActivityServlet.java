@@ -69,6 +69,18 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         super();
     }
 
+    /**
+     * Provides access to the web service instance associated with this servlet.
+     * @return the initialized {@code DefaultServletWebService} instance
+     * @throws IllegalStateException if the web service is not initialized
+     */
+    protected DefaultServletWebService getWebService() {
+        if (webService == null) {
+            throw new IllegalStateException("Web service is not initialized");
+        }
+        return webService;
+    }
+
     @Override
     public void init() throws ServletException {
         try {

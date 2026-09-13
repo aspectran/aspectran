@@ -31,7 +31,6 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.servlet.activity.ServletWebActivity;
-import com.aspectran.web.servlet.support.util.ServletWebUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.AsyncContext;
@@ -83,7 +82,7 @@ public class DefaultServletWebService extends AbstractServletWebService {
 
         final String requestName = WebUtils.getRelativePath(getContextPath(), requestUri);
         final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        final String reverseContextPath = ServletWebUtils.getReverseContextPath(request, getContextPath());
+        final String reverseContextPath = (isProxyAddressForwarding() ? getReverseContextPath(request, getContextPath()) : null);
 
         if (logger.isDebugEnabled()) {
             logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
@@ -281,8 +280,26 @@ public class DefaultServletWebService extends AbstractServletWebService {
         }
         sb.append(requestName).append(" ");
         sb.append(request.getProtocol()).append(" ");
-        sb.append(ServletWebUtils.getRemoteAddr(request));
+        sb.append(getRemoteAddr(request));
         return sb.toString();
+    }
+
+    @Nullable
+    private String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
+        return WebUtils.getReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+    }
+
+    @NonNull
+    private String getRemoteAddr(@NonNull HttpServletRequest request) {
+        if (isProxyAddressForwarding()) {
+            String forwardedFor = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
+            String remoteAddr = WebUtils.parseForwardedFor(forwardedFor);
+            if (remoteAddr != null) {
+                return remoteAddr;
+            }
+        }
+        String remoteAddr = request.getRemoteAddr();
+        return (remoteAddr != null ? remoteAddr : "127.0.0.1");
     }
 
     /**

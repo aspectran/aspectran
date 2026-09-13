@@ -58,6 +58,8 @@ public abstract class AbstractServletWebService extends DefaultCoreService imple
 
     private boolean legacyHeadHandling = true;
 
+    private boolean proxyAddressForwarding;
+
     AbstractServletWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
         super(parentService, derived);
         this.contextPath = StringUtils.nullToEmpty(servletContext.getContextPath());
@@ -139,6 +141,16 @@ public abstract class AbstractServletWebService extends DefaultCoreService imple
     }
 
     @Override
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    @Override
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
+    }
+
+    @Override
     protected void afterContextLoaded() throws Exception {
         super.afterContextLoaded();
         setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
@@ -198,6 +210,10 @@ public abstract class AbstractServletWebService extends DefaultCoreService imple
 
         if (webConfig.isLegacyHeadHandling()) {
             setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
+        }
+
+        if (webConfig.hasProxyAddressForwarding()) {
+            setProxyAddressForwarding(webConfig.isProxyAddressForwarding());
         }
 
         AcceptableConfig acceptableConfig = webConfig.getAcceptableConfig();

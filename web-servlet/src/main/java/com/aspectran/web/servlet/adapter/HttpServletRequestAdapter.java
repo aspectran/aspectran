@@ -129,21 +129,36 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
 
     @Override
     public String getScheme() {
+        if (isProxyAddressForwarding()) {
+            return super.getScheme();
+        }
         return getHttpServletRequest().getScheme();
     }
 
     @Override
     public String getServerName() {
+        if (isProxyAddressForwarding()) {
+            return super.getServerName();
+        }
         return getHttpServletRequest().getServerName();
     }
 
     @Override
     public int getServerPort() {
+        if (isProxyAddressForwarding()) {
+            return super.getServerPort();
+        }
         return getHttpServletRequest().getServerPort();
     }
 
     @Override
     public String getRemoteAddr() {
+        if (isProxyAddressForwarding()) {
+            String remoteAddr = super.getRemoteAddr();
+            if (remoteAddr != null) {
+                return remoteAddr;
+            }
+        }
         return getHttpServletRequest().getRemoteAddr();
     }
 

@@ -15,10 +15,13 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.PathUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.web.adapter.WebRequestAdapter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -31,6 +34,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * <p>This class is a clone of org.springframework.web.util.UriUtils</p>
@@ -58,6 +62,86 @@ public class UriUtils {
      * This class cannot be instantiated.
      */
     private UriUtils() {
+    }
+
+    // RFC-3986 (URI Generic Syntax) states:
+    // URI    = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+    // scheme = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+    private static final Pattern SCHEME_PATTERN = Pattern.compile("^[a-zA-Z][a-zA-Z0-9+-.]*:.*");
+
+    /**
+     * Determines whether the given location is an absolute URL, i.e. it starts with
+     * a valid URI scheme as defined by RFC 3986.
+     * @param location the location to check
+     * @return {@code true} if the location is an absolute URL; {@code false} otherwise
+     */
+    public static boolean isAbsoluteUrl(@Nullable String location) {
+        if (location != null && location.contains(":")) {
+            return SCHEME_PATTERN.matcher(location).matches();
+        }
+        return false;
+    }
+
+    /**
+     * Constructs an absolute URL using scheme, host (which may include port), and location path.
+     * If the given location is already an absolute URL, it is returned as is.
+     * @param scheme the scheme (e.g. "http", "https")
+     * @param host the host or host:port
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(String scheme, String host, String location) {
+        if (location == null || isAbsoluteUrl(location)) {
+            return location;
+        }
+        String path = (location.startsWith("/") ? location : PathUtils.cleanPath("/" + location));
+        if (StringUtils.hasLength(scheme) && StringUtils.hasLength(host)) {
+            return scheme + "://" + host + path;
+        }
+        return path;
+    }
+
+    /**
+     * Constructs an absolute URL using scheme, server name, server port, and location path.
+     * Default HTTP (80) and HTTPS (443) ports are omitted from the authority part.
+     * @param scheme the scheme (e.g. "http", "https")
+     * @param serverName the server host name
+     * @param serverPort the server port number
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(String scheme, String serverName, int serverPort, String location) {
+        if (location == null || isAbsoluteUrl(location)) {
+            return location;
+        }
+        boolean defaultPort = ("http".equals(scheme) && serverPort == 80) ||
+                ("https".equals(scheme) && serverPort == 443) || serverPort <= 0;
+        String host = (defaultPort ? serverName : serverName + ":" + serverPort);
+        return makeAbsoluteUrl(scheme, host, location);
+    }
+
+    /**
+     * Constructs an absolute URL using information from a {@link RequestAdapter}.
+     * @param requestAdapter the request adapter
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(RequestAdapter requestAdapter, String location) {
+        if (location == null || isAbsoluteUrl(location)) {
+            return location;
+        }
+        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter) {
+            return makeAbsoluteUrl(
+                    webRequestAdapter.getScheme(),
+                    webRequestAdapter.getServerName(),
+                    webRequestAdapter.getServerPort(),
+                    location
+            );
+        }
+        return location;
     }
 
     /**

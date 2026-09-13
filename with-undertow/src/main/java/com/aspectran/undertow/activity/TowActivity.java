@@ -209,6 +209,7 @@ public class TowActivity extends CoreActivity {
             }
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
+            requestAdapter.setProxyAddressForwarding(towService.isProxyAddressForwarding());
             if (getPendingActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (StringUtils.hasLength(maxRequestSizeSetting)) {

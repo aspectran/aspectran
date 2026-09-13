@@ -122,7 +122,7 @@ public class DefaultNettyService extends AbstractNettyService {
             requestName = decodedPath;
         }
         final MethodType requestMethod = MethodType.resolve(request.method().name(), MethodType.GET);
-        final String reverseContextPath = getReverseContextPath(request, contextPath);
+        final String reverseContextPath = (isProxyAddressForwarding() ? getReverseContextPath(request, contextPath) : null);
 
         if (logger.isDebugEnabled()) {
             logger.debug(getRequestInfo(ctx, request, reverseContextPath, requestName, requestMethod));
@@ -281,6 +281,13 @@ public class DefaultNettyService extends AbstractNettyService {
 
     @NonNull
     private String getRemoteAddr(@NonNull ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
+        if (isProxyAddressForwarding()) {
+            String forwardedFor = request.headers().get(HttpHeaders.X_FORWARDED_FOR);
+            String remoteAddr = WebUtils.parseForwardedFor(forwardedFor);
+            if (remoteAddr != null) {
+                return remoteAddr;
+            }
+        }
         String fallbackRemoteAddr = null;
         SocketAddress address = ctx.channel().remoteAddress();
         if (address instanceof InetSocketAddress inetSocketAddress) {
@@ -288,9 +295,7 @@ public class DefaultNettyService extends AbstractNettyService {
         } else if (address != null) {
             fallbackRemoteAddr = address.toString();
         }
-        String forwardedFor = (isProxyAddressForwarding() ? request.headers().get(HttpHeaders.X_FORWARDED_FOR) : null);
-        String remoteAddr = WebUtils.getRemoteAddr(forwardedFor, fallbackRemoteAddr);
-        return (remoteAddr != null ? remoteAddr : "127.0.0.1");
+        return (fallbackRemoteAddr != null ? fallbackRemoteAddr : "127.0.0.1");
     }
 
 }

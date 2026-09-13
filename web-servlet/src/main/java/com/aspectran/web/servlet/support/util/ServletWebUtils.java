@@ -19,9 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.util.UriUtils;
-import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
@@ -82,59 +80,6 @@ public class ServletWebUtils {
         Assert.hasLength(cookieName, "Cookie name must not be null or empty");
         HttpServletRequest request = translet.getRequestAdaptee();
         return getCookie(request, cookieName);
-    }
-
-    /**
-     * Determines the context path to be used for reverse-proxy scenarios.
-     * <p>This method inspects the {@code X-Forwarded-Path} header. If the header
-     * is present, it is returned (with any trailing slash removed). This is useful
-     * when an application is running behind a reverse proxy that alters the context path.
-     * @param request the current servlet request
-     * @return the reverse context path from the header, or {@code null} if the header is not found
-     * @see HttpHeaders#X_FORWARDED_PATH
-     */
-    @Nullable
-    public static String getReverseContextPath(@NonNull HttpServletRequest request) {
-        Assert.notNull(request, "request must not be null");
-        return WebUtils.parseReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH));
-    }
-
-    /**
-     * Determines the context path to be used for reverse-proxy scenarios,
-     * falling back to a default context path.
-     * @param request the current servlet request
-     * @param defaultContextPath the default context path to return if the
-     *      {@code X-Forwarded-Path} header is not present
-     * @return the reverse context path from the header, or the default context path
-     * @see #getReverseContextPath(HttpServletRequest)
-     */
-    @Nullable
-    public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
-        Assert.notNull(request, "request must not be null");
-        return WebUtils.getReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
-    }
-
-    /**
-     * Extracts the remote client IP address from the servlet request.
-     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
-     * falling back to the remote address of the underlying servlet request.
-     * @param request the current servlet request
-     * @return the remote IP address
-     */
-    public static String getRemoteAddr(@NonNull HttpServletRequest request) {
-        Assert.notNull(request, "request must not be null");
-        return WebUtils.getRemoteAddr(request.getHeader(HttpHeaders.X_FORWARDED_FOR), request.getRemoteAddr());
-    }
-
-    /**
-     * Extracts the remote client IP address from the translet.
-     * Checks the {@code X-Forwarded-For} header first for proxies/load balancers,
-     * falling back to the remote address of the underlying servlet request.
-     * @param translet the current translet
-     * @return the remote IP address
-     */
-    public static String getRemoteAddr(@NonNull Translet translet) {
-        return WebUtils.getRemoteAddr(translet);
     }
 
     /**

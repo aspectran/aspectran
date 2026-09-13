@@ -16,7 +16,8 @@
 package com.aspectran.web.servlet;
 
 import com.aspectran.utils.net.IpAddressUtils;
-import com.aspectran.web.servlet.support.util.ServletWebUtils;
+import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -63,7 +64,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     @Override
     public void service(@NonNull HttpServletRequest req, @NonNull HttpServletResponse res) throws IOException {
-        String remoteAddr = ServletWebUtils.getRemoteAddr(req);
+        String remoteAddr = getRemoteAddr(req);
         if (allowedAddresses == null || !IpAddressUtils.isAllowedIp(remoteAddr, allowedAddresses)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Access Denied: {}", remoteAddr);
@@ -73,6 +74,11 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
         }
 
         super.service(req, res);
+    }
+
+    private String getRemoteAddr(@NonNull HttpServletRequest req) {
+        String forwardedFor = (getWebService().isProxyAddressForwarding() ? req.getHeader(HttpHeaders.X_FORWARDED_FOR) : null);
+        return WebUtils.resolveRemoteAddr(forwardedFor, req.getRemoteAddr());
     }
 
 }

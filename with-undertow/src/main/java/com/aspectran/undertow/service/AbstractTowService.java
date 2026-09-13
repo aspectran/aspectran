@@ -46,6 +46,8 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
 
     private boolean trailingSlashRedirect;
 
+    private boolean proxyAddressForwarding;
+
     /**
      * Instantiates a new AbstractTowService.
      * @param parentService the parent core service
@@ -137,6 +139,16 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
         this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
+    @Override
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    @Override
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
+    }
+
     /**
      * Overrides the default configuration process to apply web-specific settings.
      * @param aspectranConfig the main Aspectran configuration
@@ -167,6 +179,10 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
 
         if (webConfig.hasTrailingSlashRedirect()) {
             setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        }
+
+        if (webConfig.hasProxyAddressForwarding()) {
+            setProxyAddressForwarding(webConfig.isProxyAddressForwarding());
         }
 
         AcceptableConfig acceptableConfig = webConfig.getAcceptableConfig();

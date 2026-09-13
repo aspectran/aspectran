@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_FOR;
-import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_HOST;
-import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_PORT;
-import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_PROTO;
 import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_SSL;
 
 /**
@@ -56,8 +52,6 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
     private final ChannelHandlerContext ctx;
 
     private final String contextPath;
-
-    private final boolean proxyAddressForwarding;
 
     private boolean headersObtained;
 
@@ -78,7 +72,7 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
         super(requestMethod, request);
         this.ctx = ctx;
         this.contextPath = (contextPath != null ? contextPath : StringUtils.EMPTY);
-        this.proxyAddressForwarding = proxyAddressForwarding;
+        setProxyAddressForwarding(proxyAddressForwarding);
     }
 
     /**
@@ -94,14 +88,6 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
             ChannelHandlerContext ctx,
             String contextPath) {
         this(requestMethod, request, ctx, contextPath, false);
-    }
-
-    /**
-     * Returns whether proxy address forwarding headers (X-Forwarded-*) are respected.
-     * @return true if proxy address forwarding is enabled; false otherwise
-     */
-    public boolean isProxyAddressForwarding() {
-        return proxyAddressForwarding;
     }
 
     /**
@@ -142,13 +128,12 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
 
     @Override
     public String getScheme() {
-        if (proxyAddressForwarding) {
-            HttpHeaders headers = getHttpRequest().headers();
-            String proto = headers.get(X_FORWARDED_PROTO);
-            if (StringUtils.hasText(proto)) {
-                int idx = proto.indexOf(',');
-                return (idx != -1 ? proto.substring(0, idx).trim() : proto.trim()).toLowerCase(Locale.ROOT);
+        if (isProxyAddressForwarding()) {
+            String scheme = super.getScheme();
+            if (!"http".equals(scheme)) {
+                return scheme;
             }
+            HttpHeaders headers = getHttpRequest().headers();
             String ssl = headers.get(X_FORWARDED_SSL);
             if ("on".equalsIgnoreCase(ssl)) {
                 return "https";
@@ -157,40 +142,39 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
         if (ctx != null && ctx.pipeline().get(SslHandler.class) != null) {
             return "https";
         }
-        return "http";
-    }
-
-    @Override
-    public String getServerName() {
-        if (proxyAddressForwarding) {
-            HttpHeaders headers = getHttpRequest().headers();
-            String hostHeader = headers.get(X_FORWARDED_HOST);
-            if (StringUtils.hasText(hostHeader)) {
-                int idx = hostHeader.indexOf(',');
-                String host = (idx != -1 ? hostHeader.substring(0, idx).trim() : hostHeader.trim());
-                int colonIdx = host.indexOf(':');
-                return (colonIdx != -1 ? host.substring(0, colonIdx) : host);
-            }
-        }
-        return super.getServerName();
+        return super.getScheme();
     }
 
     @Override
     public int getServerPort() {
-        if (proxyAddressForwarding) {
-            HttpHeaders headers = getHttpRequest().headers();
-            String portHeader = headers.get(X_FORWARDED_PORT);
-            if (StringUtils.hasText(portHeader)) {
-                try {
-                    int idx = portHeader.indexOf(',');
-                    String portStr = (idx != -1 ? portHeader.substring(0, idx).trim() : portHeader.trim());
-                    return Integer.parseInt(portStr);
-                } catch (NumberFormatException e) {
-                    // ignore
+        int port = super.getServerPort();
+        if (port != 80 && port != 443) {
+            return port;
+        }
+        if (ctx != null) {
+            SocketAddress socketAddress = ctx.channel().localAddress();
+            if (socketAddress instanceof InetSocketAddress inetSocketAddress) {
+                return inetSocketAddress.getPort();
+            }
+        }
+        return port;
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        String remoteAddr = super.getRemoteAddr();
+        if (remoteAddr != null) {
+            return remoteAddr;
+        }
+        if (ctx != null) {
+            SocketAddress socketAddress = ctx.channel().remoteAddress();
+            if (socketAddress instanceof InetSocketAddress inetSocketAddress) {
+                if (inetSocketAddress.getAddress() != null) {
+                    return inetSocketAddress.getAddress().getHostAddress();
                 }
             }
         }
-        return ("https".equalsIgnoreCase(getScheme()) ? 443 : 80);
+        return null;
     }
 
     @Override
@@ -212,24 +196,6 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
         FullHttpRequest request = getHttpRequest();
         if (request != null) {
             return new QueryStringDecoder(request.uri()).rawQuery();
-        }
-        return null;
-    }
-
-    public String getRemoteAddr() {
-        if (proxyAddressForwarding) {
-            HttpHeaders headers = getHttpRequest().headers();
-            String forwardedFor = headers.get(X_FORWARDED_FOR);
-            if (StringUtils.hasText(forwardedFor)) {
-                int idx = forwardedFor.indexOf(',');
-                return (idx != -1 ? forwardedFor.substring(0, idx).trim() : forwardedFor.trim());
-            }
-        }
-        if (ctx != null && ctx.channel() != null) {
-            SocketAddress remoteAddress = ctx.channel().remoteAddress();
-            if (remoteAddress instanceof InetSocketAddress inetAddress) {
-                return inetAddress.getAddress().getHostAddress();
-            }
         }
         return null;
     }

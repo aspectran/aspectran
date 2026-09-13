@@ -100,20 +100,48 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
 
     @Override
     public String getScheme() {
+        if (isProxyAddressForwarding()) {
+            return super.getScheme();
+        }
         HttpServerExchange exchange = getAdaptee();
         return exchange.getRequestScheme();
     }
 
     @Override
     public String getServerName() {
+        if (isProxyAddressForwarding()) {
+            return super.getServerName();
+        }
         HttpServerExchange exchange = getAdaptee();
         return exchange.getHostName();
     }
 
     @Override
     public int getServerPort() {
+        if (isProxyAddressForwarding()) {
+            return super.getServerPort();
+        }
         HttpServerExchange exchange = getAdaptee();
         return exchange.getHostPort();
+    }
+
+    @Override
+    @Nullable
+    public String getRemoteAddr() {
+        if (isProxyAddressForwarding()) {
+            String remoteAddr = super.getRemoteAddr();
+            if (remoteAddr != null) {
+                return remoteAddr;
+            }
+        }
+        HttpServerExchange exchange = getAdaptee();
+        if (exchange != null) {
+            InetSocketAddress sourceAddress = exchange.getSourceAddress();
+            if (sourceAddress != null && sourceAddress.getAddress() != null) {
+                return sourceAddress.getAddress().getHostAddress();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -138,18 +166,6 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
     public String getQueryString() {
         HttpServerExchange exchange = getAdaptee();
         return exchange.getQueryString();
-    }
-
-    @Nullable
-    public String getRemoteAddr() {
-        HttpServerExchange exchange = getAdaptee();
-        if (exchange != null) {
-            InetSocketAddress sourceAddress = exchange.getSourceAddress();
-            if (sourceAddress != null && sourceAddress.getAddress() != null) {
-                return sourceAddress.getAddress().getHostAddress();
-            }
-        }
-        return null;
     }
 
     /**

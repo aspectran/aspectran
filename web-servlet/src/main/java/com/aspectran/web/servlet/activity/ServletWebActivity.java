@@ -235,8 +235,8 @@ public class ServletWebActivity extends CoreActivity {
                 setSessionAdapter(sessionAdapter);
             }
 
-            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(
-                    getTranslet().getRequestMethod(), request);
+            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
+            requestAdapter.setProxyAddressForwarding(webService.isProxyAddressForwarding());
             if (getPendingActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (StringUtils.hasLength(maxRequestSizeSetting)) {

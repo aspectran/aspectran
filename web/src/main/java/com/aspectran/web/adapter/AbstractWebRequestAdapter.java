@@ -23,6 +23,7 @@ import com.aspectran.utils.apon.Parameters;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
+import com.aspectran.web.support.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,8 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractWebRequestAdapter.class);
 
+    private boolean proxyAddressForwarding;
+
     private MediaType mediaType;
 
     private boolean bodyObtained;
@@ -50,6 +53,22 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
      */
     public AbstractWebRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod, adaptee);
+    }
+
+    /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    /**
+     * Sets whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @param proxyAddressForwarding true to enable proxy address forwarding; false otherwise
+     */
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
     @Override
@@ -103,15 +122,27 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
 
     @Override
     public String getScheme() {
-        String scheme = getHeader(HttpHeaders.X_FORWARDED_PROTO);
-        if (StringUtils.hasLength(scheme)) {
-            return scheme;
+        if (proxyAddressForwarding) {
+            String scheme = getHeader(HttpHeaders.X_FORWARDED_PROTO);
+            if (StringUtils.hasLength(scheme)) {
+                int idx = scheme.indexOf(',');
+                return (idx != -1 ? scheme.substring(0, idx).trim() : scheme.trim()).toLowerCase();
+            }
         }
         return "http";
     }
 
     @Override
     public String getServerName() {
+        if (proxyAddressForwarding) {
+            String forwardedHost = getHeader(HttpHeaders.X_FORWARDED_HOST);
+            if (StringUtils.hasLength(forwardedHost)) {
+                int idx = forwardedHost.indexOf(',');
+                String host = (idx != -1 ? forwardedHost.substring(0, idx).trim() : forwardedHost.trim());
+                int colonIdx = host.indexOf(':');
+                return (colonIdx != -1 ? host.substring(0, colonIdx) : host);
+            }
+        }
         String host = getHeader(HttpHeaders.HOST);
         if (StringUtils.hasLength(host)) {
             int idx = host.indexOf(':');
@@ -122,12 +153,16 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
 
     @Override
     public int getServerPort() {
-        String forwardedPort = getHeader(HttpHeaders.X_FORWARDED_PORT);
-        if (StringUtils.hasLength(forwardedPort)) {
-            try {
-                return Integer.parseInt(forwardedPort);
-            } catch (NumberFormatException e) {
-                // ignore
+        if (proxyAddressForwarding) {
+            String forwardedPort = getHeader(HttpHeaders.X_FORWARDED_PORT);
+            if (StringUtils.hasLength(forwardedPort)) {
+                try {
+                    int idx = forwardedPort.indexOf(',');
+                    String portStr = (idx != -1 ? forwardedPort.substring(0, idx).trim() : forwardedPort.trim());
+                    return Integer.parseInt(portStr);
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
             }
         }
         String host = getHeader(HttpHeaders.HOST);
@@ -146,6 +181,13 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
 
     @Override
     public String getRemoteAddr() {
+        if (proxyAddressForwarding) {
+            String forwardedFor = getHeader(HttpHeaders.X_FORWARDED_FOR);
+            String remoteAddr = WebUtils.parseForwardedFor(forwardedFor);
+            if (remoteAddr != null) {
+                return remoteAddr;
+            }
+        }
         return null;
     }
 

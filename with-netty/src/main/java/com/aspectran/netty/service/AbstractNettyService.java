@@ -65,16 +65,6 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
     }
 
     @Override
-    public boolean isProxyAddressForwarding() {
-        return proxyAddressForwarding;
-    }
-
-    @Override
-    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
-        this.proxyAddressForwarding = proxyAddressForwarding;
-    }
-
-    @Override
     public boolean isSessionAdaptable() {
         return sessionManager != null;
     }
@@ -179,6 +169,16 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
     }
 
     @Override
+    public boolean isProxyAddressForwarding() {
+        return proxyAddressForwarding;
+    }
+
+    @Override
+    public void setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        this.proxyAddressForwarding = proxyAddressForwarding;
+    }
+
+    @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
         super.configure(aspectranConfig);
 
@@ -206,6 +206,10 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
         if (webConfig.hasTrailingSlashRedirect()) {
             setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        }
+
+        if (webConfig.hasProxyAddressForwarding()) {
+            setProxyAddressForwarding(webConfig.isProxyAddressForwarding());
         }
 
         AcceptableConfig acceptableConfig = webConfig.getAcceptableConfig();

@@ -15,16 +15,14 @@
  */
 package com.aspectran.netty.adapter;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.netty.activity.NettyActivity;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.PathUtils;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
-import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
+import com.aspectran.web.support.util.UriUtils;
 import com.aspectran.web.support.util.WebUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
@@ -50,8 +48,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.stream.Collectors;
-
-import static com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol.PROXY_PROTOCOL_AWARE_SETTING_NAME;
 
 /**
  * An adapter that wraps Netty's response mechanism, exposing it as a
@@ -291,26 +287,7 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void redirect(String location) {
         setStatus(HttpStatus.FOUND.value());
-        if (isAbsoluteUrl(location)) {
-            reservedRedirectLocation = location;
-        } else {
-            boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
-            if (proxyProtocolAware) {
-                Translet translet = activity.getTranslet();
-                String locationForwarded = SendRedirectBasedOnXForwardedProtocol.getLocationForwarded(translet, location);
-                if (locationForwarded != null) {
-                    headers.set(HttpHeaderNames.LOCATION, locationForwarded);
-                    return;
-                }
-            }
-            String realPath;
-            if (location.startsWith("/")) {
-                realPath = location;
-            } else {
-                realPath = PathUtils.cleanPath("/" + location);
-            }
-            reservedRedirectLocation = realPath;
-        }
+        reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity.getRequestAdapter(), location);
     }
 
     @Override
@@ -324,10 +301,6 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
     @Override
     public String transformPath(String path) {
         return path;
-    }
-
-    private static boolean isAbsoluteUrl(String location) {
-        return (location != null && (location.startsWith("http://") || location.startsWith("https://")));
     }
 
     /**

@@ -23,7 +23,6 @@ import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
 import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -31,8 +30,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collection;
-
-import static com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol.PROXY_PROTOCOL_AWARE_SETTING_NAME;
 
 /**
  * An adapter that wraps a {@link jakarta.servlet.http.HttpServletResponse},
@@ -159,10 +156,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public void redirect(String location) throws IOException {
-        boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
-        if (proxyProtocolAware) {
-            location = SendRedirectBasedOnXForwardedProtocol.getLocation(activity.getTranslet(), location);
-        }
         reservedRedirectLocation = location;
     }
 

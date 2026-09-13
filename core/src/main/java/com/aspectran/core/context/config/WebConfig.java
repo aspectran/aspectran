@@ -36,6 +36,9 @@ public class WebConfig extends DefaultParameters {
     /** Whether to enable legacy HEAD request handling. */
     private static final ParameterKey legacyHeadHandling;
 
+    /** Whether to honor proxy address forwarding headers (X-Forwarded-*). */
+    private static final ParameterKey proxyAddressForwarding;
+
     /** The configuration for acceptable request patterns. */
     private static final ParameterKey acceptable;
 
@@ -46,6 +49,7 @@ public class WebConfig extends DefaultParameters {
         defaultServletName = new ParameterKey("defaultServletName", ValueType.STRING);
         trailingSlashRedirect = new ParameterKey("trailingSlashRedirect", ValueType.BOOLEAN);
         legacyHeadHandling = new ParameterKey("legacyHeadHandling", ValueType.BOOLEAN);
+        proxyAddressForwarding = new ParameterKey("proxyAddressForwarding", ValueType.BOOLEAN);
         acceptable = new ParameterKey("acceptable", AcceptableConfig.class);
 
         parameterKeys = new ParameterKey[] {
@@ -53,6 +57,7 @@ public class WebConfig extends DefaultParameters {
                 defaultServletName,
                 trailingSlashRedirect,
                 legacyHeadHandling,
+                proxyAddressForwarding,
                 acceptable
         };
     }
@@ -149,6 +154,32 @@ public class WebConfig extends DefaultParameters {
      */
     public WebConfig setLegacyHeadHandling(boolean legacyHeadHandling) {
         putValue(WebConfig.legacyHeadHandling, legacyHeadHandling);
+        return this;
+    }
+
+    /**
+     * Returns whether the proxy address forwarding setting is present.
+     * @return true if the setting is present, false otherwise
+     */
+    public boolean hasProxyAddressForwarding() {
+        return hasValue(proxyAddressForwarding);
+    }
+
+    /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @return true if enabled, false otherwise
+     */
+    public boolean isProxyAddressForwarding() {
+        return getBoolean(proxyAddressForwarding, false);
+    }
+
+    /**
+     * Sets whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @param proxyAddressForwarding true to enable, false otherwise
+     * @return this {@code WebConfig} instance
+     */
+    public WebConfig setProxyAddressForwarding(boolean proxyAddressForwarding) {
+        putValue(WebConfig.proxyAddressForwarding, proxyAddressForwarding);
         return this;
     }
 

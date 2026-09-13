@@ -60,4 +60,16 @@ public interface WebService extends CoreService {
      */
     void removeAttribute(String name);
 
+    /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
+    boolean isProxyAddressForwarding();
+
+    /**
+     * Sets whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @param proxyAddressForwarding true to enable proxy address forwarding; false otherwise
+     */
+    void setProxyAddressForwarding(boolean proxyAddressForwarding);
+
 }

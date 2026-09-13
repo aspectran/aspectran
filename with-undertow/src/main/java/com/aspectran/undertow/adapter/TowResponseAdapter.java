@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.adapter;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -23,14 +22,12 @@ import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
-import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
+import com.aspectran.web.support.util.UriUtils;
 import com.aspectran.web.support.util.WebUtils;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.CanonicalPathUtils;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
-import io.undertow.util.URLUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,8 +36,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.stream.Collectors;
-
-import static com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol.PROXY_PROTOCOL_AWARE_SETTING_NAME;
 
 /**
  * An adapter that wraps an Undertow {@link HttpServerExchange}, exposing it as a
@@ -241,27 +236,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void redirect(String location) throws IOException {
         setStatus(HttpStatus.FOUND.value());
-        if (URLUtils.isAbsoluteUrl(location)) { //absolute url
-            reservedRedirectLocation = location;
-        } else {
-            boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
-            if (proxyProtocolAware) {
-                Translet translet = activity.getTranslet();
-                String locationForwarded = SendRedirectBasedOnXForwardedProtocol.getLocationForwarded(translet, location);
-                if (locationForwarded != null) {
-                    getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, locationForwarded);
-                    return;
-                }
-            }
-            String realPath;
-            if (location.startsWith("/")) {
-                realPath = location;
-            } else {
-                realPath = CanonicalPathUtils.canonicalize(location);
-            }
-            reservedRedirectLocation = getHttpServerExchange().getRequestScheme() + "://" +
-                    getHttpServerExchange().getHostAndPort() + realPath;
-        }
+        reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity.getRequestAdapter(), location);
     }
 
     /**

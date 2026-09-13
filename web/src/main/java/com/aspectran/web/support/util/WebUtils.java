@@ -368,7 +368,10 @@ public class WebUtils {
      */
     @Nullable
     public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter) {
-        return parseReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH));
+        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter && webRequestAdapter.isProxyAddressForwarding()) {
+            return parseReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH));
+        }
+        return null;
     }
 
     /**
@@ -382,46 +385,17 @@ public class WebUtils {
      */
     @Nullable
     public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter, String defaultContextPath) {
-        return getReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
-    }
-
-    /**
-     * Extracts the client IP address from the {@code X-Forwarded-For} header value.
-     * <p>If the header contains multiple comma-separated IP addresses, the first IP
-     * (the original client) is returned with leading and trailing whitespace trimmed.</p>
-     * @param forwardedFor the value of the {@code X-Forwarded-For} header
-     * @return the client IP address, or {@code null} if forwardedFor is empty
-     */
-    @Nullable
-    public static String parseRemoteAddr(String forwardedFor) {
-        if (StringUtils.hasLength(forwardedFor)) {
-            if (forwardedFor.contains(",")) {
-                return StringUtils.tokenize(forwardedFor, ",", true)[0];
-            } else {
-                return forwardedFor.trim();
-            }
+        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter && webRequestAdapter.isProxyAddressForwarding()) {
+            return getReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
         }
-        return null;
-    }
-
-    /**
-     * Determines the remote IP address, preferring the IP from the {@code X-Forwarded-For}
-     * header if present, and falling back to the specified fallback remote address.
-     * @param forwardedFor the value of the {@code X-Forwarded-For} header
-     * @param fallbackRemoteAddr the fallback IP address (e.g. from the underlying socket)
-     * @return the resolved remote IP address
-     */
-    @Nullable
-    public static String getRemoteAddr(String forwardedFor, String fallbackRemoteAddr) {
-        String remoteAddr = parseRemoteAddr(forwardedFor);
-        return (remoteAddr != null ? remoteAddr : fallbackRemoteAddr);
+        return defaultContextPath;
     }
 
     /**
      * Extracts the remote client IP address from the request adapter.
      * <p>If the adapter is a {@link WebRequestAdapter}, the {@code X-Forwarded-For} header
-     * is inspected first. If that is not present, its {@link WebRequestAdapter#getRemoteAddr()}
-     * method is checked.</p>
+     * is inspected first if proxy address forwarding is enabled. Otherwise, its
+     * {@link WebRequestAdapter#getRemoteAddr()} method is returned.</p>
      * @param requestAdapter the current request adapter
      * @return the remote IP address, or {@code null} if not determinable
      */
@@ -429,8 +403,11 @@ public class WebUtils {
     public static String getRemoteAddr(@NonNull RequestAdapter requestAdapter) {
         Assert.notNull(requestAdapter, "requestAdapter must not be null");
         if (requestAdapter instanceof WebRequestAdapter webRequestAdapter) {
-            return getRemoteAddr(webRequestAdapter.getHeader(HttpHeaders.X_FORWARDED_FOR),
-                    webRequestAdapter.getRemoteAddr());
+            if (webRequestAdapter.isProxyAddressForwarding()) {
+                return resolveRemoteAddr(webRequestAdapter.getHeader(HttpHeaders.X_FORWARDED_FOR),
+                        webRequestAdapter.getRemoteAddr());
+            }
+            return webRequestAdapter.getRemoteAddr();
         }
         return null;
     }
@@ -457,6 +434,38 @@ public class WebUtils {
         Assert.notNull(translet, "translet must not be null");
         RequestAdapter requestAdapter = translet.getRequestAdapter();
         return (requestAdapter != null ? getRemoteAddr(requestAdapter) : null);
+    }
+
+    /**
+     * Determines the remote IP address, preferring the IP from the {@code X-Forwarded-For}
+     * header if present, and falling back to the specified fallback remote address.
+     * @param forwardedFor the value of the {@code X-Forwarded-For} header
+     * @param fallbackRemoteAddr the fallback IP address (e.g. from the underlying socket)
+     * @return the resolved remote IP address
+     */
+    @Nullable
+    public static String resolveRemoteAddr(String forwardedFor, String fallbackRemoteAddr) {
+        String remoteAddr = parseForwardedFor(forwardedFor);
+        return (remoteAddr != null ? remoteAddr : fallbackRemoteAddr);
+    }
+
+    /**
+     * Extracts the client IP address from the {@code X-Forwarded-For} header value.
+     * <p>If the header contains multiple comma-separated IP addresses, the first IP
+     * (the original client) is returned with leading and trailing whitespace trimmed.</p>
+     * @param forwardedFor the value of the {@code X-Forwarded-For} header
+     * @return the extracted IP address, or {@code null} if absent or empty
+     */
+    @Nullable
+    public static String parseForwardedFor(String forwardedFor) {
+        if (StringUtils.hasLength(forwardedFor)) {
+            if (forwardedFor.contains(",")) {
+                return StringUtils.tokenize(forwardedFor, ",", true)[0];
+            } else {
+                return forwardedFor.trim();
+            }
+        }
+        return null;
     }
 
     /**
@@ -557,5 +566,3 @@ public class WebUtils {
     }
 
 }
-
-

@@ -48,19 +48,19 @@ class WebUtilsTest {
     }
 
     @Test
-    void testParseRemoteAddr() {
-        assertNull(WebUtils.parseRemoteAddr(null));
-        assertNull(WebUtils.parseRemoteAddr(""));
-        assertEquals("203.0.113.195", WebUtils.parseRemoteAddr("203.0.113.195"));
-        assertEquals("203.0.113.195", WebUtils.parseRemoteAddr("203.0.113.195, 70.41.3.18, 150.172.238.178"));
-        assertEquals("203.0.113.195", WebUtils.parseRemoteAddr("  203.0.113.195  , 70.41.3.18"));
+    void testParseForwardedFor() {
+        assertNull(WebUtils.parseForwardedFor(null));
+        assertNull(WebUtils.parseForwardedFor(""));
+        assertEquals("203.0.113.195", WebUtils.parseForwardedFor("203.0.113.195"));
+        assertEquals("203.0.113.195", WebUtils.parseForwardedFor("203.0.113.195, 70.41.3.18, 150.172.238.178"));
+        assertEquals("203.0.113.195", WebUtils.parseForwardedFor("  203.0.113.195  , 70.41.3.18"));
     }
 
     @Test
-    void testGetRemoteAddr() {
-        assertEquals("203.0.113.195", WebUtils.getRemoteAddr("203.0.113.195, 70.41.3.18", "127.0.0.1"));
-        assertEquals("127.0.0.1", WebUtils.getRemoteAddr(null, "127.0.0.1"));
-        assertEquals("127.0.0.1", WebUtils.getRemoteAddr("", "127.0.0.1"));
+    void testResolveRemoteAddr() {
+        assertEquals("203.0.113.195", WebUtils.resolveRemoteAddr("203.0.113.195, 70.41.3.18", "127.0.0.1"));
+        assertEquals("127.0.0.1", WebUtils.resolveRemoteAddr(null, "127.0.0.1"));
+        assertEquals("127.0.0.1", WebUtils.resolveRemoteAddr("", "127.0.0.1"));
     }
 
     @Test
@@ -98,8 +98,12 @@ class WebUtilsTest {
         adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_FOR, "");
         assertEquals("192.168.1.100", WebUtils.getRemoteAddr(adapter));
 
-        // With X-Forwarded-For header, prefers X-Forwarded-For
+        // With X-Forwarded-For header but proxyAddressForwarding disabled, fallback to getRemoteAddr()
         adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_FOR, "203.0.113.195, 70.41.3.18");
+        assertEquals("192.168.1.100", WebUtils.getRemoteAddr(adapter));
+
+        // With X-Forwarded-For header and proxyAddressForwarding enabled, prefers X-Forwarded-For
+        adapter.setProxyAddressForwarding(true);
         assertEquals("203.0.113.195", WebUtils.getRemoteAddr(adapter));
 
         // Non-WebRequestAdapter returns null

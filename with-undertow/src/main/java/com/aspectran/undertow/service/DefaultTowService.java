@@ -88,7 +88,7 @@ public class DefaultTowService extends AbstractTowService {
             requestName = exchange.getRequestURI();
         }
         final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
-        final String reverseContextPath = getReverseContextPath(exchange, exchange.getResolvedPath());
+        final String reverseContextPath = (isProxyAddressForwarding() ? getReverseContextPath(exchange, exchange.getResolvedPath()) : null);
 
         if (logger.isDebugEnabled()) {
             logger.debug(getRequestInfo(exchange, reverseContextPath, requestName, requestMethod));
@@ -227,11 +227,7 @@ public class DefaultTowService extends AbstractTowService {
         }
         sb.append(requestName).append(" ");
         sb.append(exchange.getProtocol()).append(" ");
-        String fallbackRemoteAddr = (exchange.getSourceAddress() != null && exchange.getSourceAddress().getAddress() != null
-                ? exchange.getSourceAddress().getAddress().getHostAddress() : null);
-        String remoteAddr = WebUtils.getRemoteAddr(
-                exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR), fallbackRemoteAddr);
-        sb.append(remoteAddr);
+        sb.append(getRemoteAddr(exchange));
         return sb.toString();
     }
 
@@ -239,6 +235,21 @@ public class DefaultTowService extends AbstractTowService {
     private String getReverseContextPath(@NonNull HttpServerExchange exchange, String defaultContextPath) {
         return WebUtils.getReverseContextPath(
                 exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
+    }
+
+    @NonNull
+    private String getRemoteAddr(@NonNull HttpServerExchange exchange) {
+        if (isProxyAddressForwarding()) {
+            String forwardedFor = exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR);
+            String remoteAddr = WebUtils.parseForwardedFor(forwardedFor);
+            if (remoteAddr != null) {
+                return remoteAddr;
+            }
+        }
+        if (exchange.getSourceAddress() != null && exchange.getSourceAddress().getAddress() != null) {
+            return exchange.getSourceAddress().getAddress().getHostAddress();
+        }
+        return "127.0.0.1";
     }
 
     /**

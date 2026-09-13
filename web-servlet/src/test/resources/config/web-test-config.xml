@@ -26,7 +26,6 @@
             <setting name="format.prettyPrint" value="true"/>
             <setting name="format.indentSize" value="2"/>
             <setting name="viewDispatcher" value="jspViewDispatcher"/>
-            <setting name="proxyProtocolAware" value="true"/>
         </settings>
     </aspect>
 

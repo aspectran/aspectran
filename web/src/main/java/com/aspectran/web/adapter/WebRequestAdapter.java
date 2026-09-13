@@ -29,6 +29,18 @@ import com.aspectran.web.support.http.MediaType;
 public interface WebRequestAdapter extends RequestAdapter {
 
     /**
+     * Returns whether proxy address forwarding headers (X-Forwarded-*) are trusted.
+     * @return true if proxy address forwarding is enabled; false otherwise
+     */
+    boolean isProxyAddressForwarding();
+
+    /**
+     * Returns the {@link MediaType} of the request body.
+     * @return the media type, or {@code null} if not specified
+     */
+    MediaType getMediaType();
+
+    /**
      * Returns the name of the scheme used to make this request,
      * for example, {@code http} or {@code https}.
      * @return a string specifying the name of the scheme
@@ -71,12 +83,6 @@ public interface WebRequestAdapter extends RequestAdapter {
      * @return a string containing the query string, or {@code null} if the URL contains no query string
      */
     String getQueryString();
-
-    /**
-     * Returns the {@link MediaType} of the request body.
-     * @return the media type, or {@code null} if not specified
-     */
-    MediaType getMediaType();
 
     /**
      * Pre-parses the native request to initialize this adapter.
