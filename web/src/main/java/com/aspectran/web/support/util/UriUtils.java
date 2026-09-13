@@ -92,7 +92,7 @@ public class UriUtils {
      */
     @Nullable
     public static String makeAbsoluteUrl(String scheme, String host, String location) {
-        return makeAbsoluteUrl(scheme, host, null, location);
+        return makeAbsoluteUrl(scheme, host, null, null, location);
     }
 
     /**
@@ -107,19 +107,73 @@ public class UriUtils {
      */
     @Nullable
     public static String makeAbsoluteUrl(String scheme, String host, @Nullable String contextPath, String location) {
+        return makeAbsoluteUrl(scheme, host, contextPath, null, location);
+    }
+
+    /**
+     * Constructs an absolute URL using scheme, host (which may include port), context path,
+     * current request URI, and location path.
+     * If the given location is already an absolute URL, it is returned as is.
+     * @param scheme the scheme (e.g. "http", "https")
+     * @param host the host or host:port
+     * @param contextPath the application context path, or null
+     * @param requestUri the current request URI, or null
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(
+            String scheme,
+            String host,
+            @Nullable String contextPath,
+            @Nullable String requestUri,
+            String location) {
         if (location == null || isAbsoluteUrl(location)) {
             return location;
         }
-        String path = (location.startsWith("/") ? location : PathUtils.cleanPath("/" + location));
-        if (StringUtils.hasLength(contextPath) && !"/".equals(contextPath)) {
-            String cp = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
-            if (cp.endsWith("/")) {
-                cp = cp.substring(0, cp.length() - 1);
-            }
-            if (!path.equals(cp) && !path.startsWith(cp + "/") && !path.startsWith(cp + "?") && !path.startsWith(cp + "#")) {
+
+        String path;
+        if (location.startsWith("/")) {
+            path = location;
+            if (StringUtils.hasLength(contextPath) && !"/".equals(contextPath)) {
+                String cp = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
+                if (cp.endsWith("/")) {
+                    cp = cp.substring(0, cp.length() - 1);
+                }
                 path = cp + path;
             }
+        } else {
+            int queryIndex = location.indexOf('?');
+            int fragmentIndex = location.indexOf('#');
+            int end = location.length();
+            if (queryIndex != -1) {
+                end = queryIndex;
+            }
+            if (fragmentIndex != -1 && fragmentIndex < end) {
+                end = fragmentIndex;
+            }
+            String pathPart = location.substring(0, end);
+            String extraPart = location.substring(end);
+
+            if (pathPart.isEmpty()) {
+                String targetPath = (StringUtils.hasLength(requestUri) ? requestUri :
+                        (StringUtils.hasLength(contextPath) ? contextPath : "/"));
+                path = targetPath + extraPart;
+            } else {
+                String basePath;
+                if (StringUtils.hasLength(requestUri)) {
+                    int lastSlash = requestUri.lastIndexOf('/');
+                    basePath = (lastSlash != -1 ? requestUri.substring(0, lastSlash + 1) : "/");
+                } else if (StringUtils.hasLength(contextPath) && !"/".equals(contextPath)) {
+                    basePath = (contextPath.startsWith("/") ? contextPath : "/" + contextPath);
+                    basePath = (basePath.endsWith("/") ? basePath : basePath + "/");
+                } else {
+                    basePath = "/";
+                }
+                path = PathUtils.cleanPath(basePath + pathPart) + extraPart;
+            }
         }
+
         if (StringUtils.hasLength(scheme) && StringUtils.hasLength(host)) {
             return scheme + "://" + host + path;
         }
@@ -137,7 +191,7 @@ public class UriUtils {
      */
     @Nullable
     public static String makeAbsoluteUrl(String scheme, String serverName, int serverPort, String location) {
-        return makeAbsoluteUrl(scheme, serverName, serverPort, null, location);
+        return makeAbsoluteUrl(scheme, serverName, serverPort, null, null, location);
     }
 
     /**
@@ -157,13 +211,36 @@ public class UriUtils {
             int serverPort,
             @Nullable String contextPath,
             String location) {
+        return makeAbsoluteUrl(scheme, serverName, serverPort, contextPath, null, location);
+    }
+
+    /**
+     * Constructs an absolute URL using scheme, server name, server port, context path,
+     * current request URI, and location path.
+     * Default HTTP (80) and HTTPS (443) ports are omitted from the authority part.
+     * @param scheme the scheme (e.g. "http", "https")
+     * @param serverName the server host name
+     * @param serverPort the server port number
+     * @param contextPath the application context path, or null
+     * @param requestUri the current request URI, or null
+     * @param location the target path or absolute URL
+     * @return the absolute URL
+     */
+    @Nullable
+    public static String makeAbsoluteUrl(
+            String scheme,
+            String serverName,
+            int serverPort,
+            @Nullable String contextPath,
+            @Nullable String requestUri,
+            String location) {
         if (location == null || isAbsoluteUrl(location)) {
             return location;
         }
         boolean defaultPort = ("http".equals(scheme) && serverPort == 80) ||
                 ("https".equals(scheme) && serverPort == 443) || serverPort <= 0;
         String host = (defaultPort ? serverName : serverName + ":" + serverPort);
-        return makeAbsoluteUrl(scheme, host, contextPath, location);
+        return makeAbsoluteUrl(scheme, host, contextPath, requestUri, location);
     }
 
     /**
@@ -183,6 +260,7 @@ public class UriUtils {
                     webRequestAdapter.getServerName(),
                     webRequestAdapter.getServerPort(),
                     webRequestAdapter.getContextPath(),
+                    webRequestAdapter.getRequestURI(),
                     location
             );
         }

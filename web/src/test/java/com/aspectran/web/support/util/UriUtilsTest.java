@@ -94,14 +94,31 @@ class UriUtilsTest {
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/auth/login"));
         assertEquals("http://localhost:8080/console/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "auth/login"));
-        assertEquals("http://localhost:8080/console/auth/login",
+        assertEquals("http://localhost:8080/console/console/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/login"));
-        assertEquals("http://localhost:8080/console?referrer=test",
+        assertEquals("http://localhost:8080/console/console?referrer=test",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console?referrer=test"));
         assertEquals("http://localhost:8080/auth/login",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/", "/auth/login"));
         assertEquals("https://example.com/external",
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "https://example.com/external"));
+    }
+
+    @Test
+    void testMakeAbsoluteUrlRelativePaths() {
+        // Relative to requestUri
+        assertEquals("http://localhost:8080/console/auth/login",
+                UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/check", "login"));
+        assertEquals("http://localhost:8080/console/dashboard",
+                UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/sub/check", "../../dashboard"));
+        assertEquals("http://localhost:8080/console/auth/login?file=../image.png&dir=a/b",
+                UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/check", "login?file=../image.png&dir=a/b"));
+        assertEquals("http://localhost:8080/console/auth/login#section1",
+                UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/check", "login#section1"));
+        assertEquals("http://localhost:8080/console/auth/login?q=test#top",
+                UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/check", "login?q=test#top"));
+        assertEquals("http://localhost:8080/console/auth/check?page=1",
+                UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/check", "?page=1"));
     }
 
 }
