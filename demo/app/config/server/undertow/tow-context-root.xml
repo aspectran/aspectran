@@ -90,7 +90,7 @@
             <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
                     <properties>
-                        <item name="storeDir">/work/_sessions/tow</item>
+                        <item name="storeDir">%{system:aspectran.workPath:/work}/_sessions/tow</item>
                     </properties>
                 </bean>
             </item>
