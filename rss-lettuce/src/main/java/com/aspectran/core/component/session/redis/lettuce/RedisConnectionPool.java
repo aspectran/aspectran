@@ -22,9 +22,10 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Redis connection pool based on Lettuce and Apache Commons Pool.
+ * Thread-safe, lock-free Redis connection pool based on Lettuce multiplexing.
  *
  * <p>Created: 2019/12/08</p>
  */
@@ -68,7 +69,11 @@ public class RedisConnectionPool extends AbstractConnectionPool<StatefulRedisCon
 
     @Override
     protected void shutdownClient(@NonNull RedisClient client) {
-        client.shutdown();
+        try {
+            client.shutdownAsync(0, 100, TimeUnit.MILLISECONDS).get(1, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            client.shutdown();
+        }
     }
 
 }

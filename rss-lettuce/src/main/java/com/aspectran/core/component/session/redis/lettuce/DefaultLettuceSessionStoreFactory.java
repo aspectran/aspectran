@@ -55,6 +55,8 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
         }
         RedisConnectionPool pool = new RedisConnectionPool(poolConfig);
         DefaultLettuceSessionStore sessionStore = new DefaultLettuceSessionStore(pool);
+        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
+        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
         if (getNonPersistentAttributes() != null) {
             sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
         }

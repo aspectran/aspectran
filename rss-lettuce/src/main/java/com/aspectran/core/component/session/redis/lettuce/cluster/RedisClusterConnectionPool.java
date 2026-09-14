@@ -25,9 +25,10 @@ import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Redis Cluster connection pool based on Lettuce and Apache Commons Pool.
+ * Redis Cluster connection pool based on Lettuce multiplexing.
  *
  * <p>Created: 2019/12/08</p>
  */
@@ -76,7 +77,11 @@ public class RedisClusterConnectionPool
 
     @Override
     protected void shutdownClient(@NonNull RedisClusterClient client) {
-        client.shutdown();
+        try {
+            client.shutdownAsync(0, 100, TimeUnit.MILLISECONDS).get(1, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            client.shutdown();
+        }
     }
 
 }

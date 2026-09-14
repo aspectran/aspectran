@@ -59,6 +59,8 @@ public class PrimaryReplicaLettuceSessionStoreFactory extends AbstractSessionSto
         }
         RedisPrimaryReplicaConnectionPool pool = new RedisPrimaryReplicaConnectionPool(poolConfig);
         PrimaryReplicaLettuceSessionStore sessionStore = new PrimaryReplicaLettuceSessionStore(pool);
+        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
+        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
         if (getNonPersistentAttributes() != null) {
             sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
         }

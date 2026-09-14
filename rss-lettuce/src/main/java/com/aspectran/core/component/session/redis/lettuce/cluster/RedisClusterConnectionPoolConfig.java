@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.component.session.redis.lettuce.cluster;
 
-import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPoolConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.RedisClusterURIUtil;
-import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 
 import java.net.URI;
 import java.time.Duration;
@@ -39,8 +37,7 @@ import java.util.List;
  * <bean id="redisClusterConnectionPoolConfig" class="com.aspectran.core.component.session.redis.lettuce.cluster.RedisClusterConnectionPoolConfig">
  *     <property name="uri" value="redis://node1:6379,node2:6379,node3:6379"/>
  *     <property name="timeout" value="5s"/>
- *     <property name="maxTotal" value="50"/>
- *     <property name="maxIdle" value="20"/>
+ *     <property name="poolSize" value="8"/>
  * </bean>
  * }</pre>
  *
@@ -49,13 +46,12 @@ import java.util.List;
  * RedisClusterConnectionPoolConfig config = new RedisClusterConnectionPoolConfig();
  * config.setNodes("redis://node1:6379", "redis://node2:6379", "redis://node3:6379");
  * config.setTimeout(Duration.ofSeconds(5));
- * config.setMaxTotal(50);
+ * config.setPoolSize(8);
  * }</pre>
  *
  * <p>Created: 2019/12/07</p>
  */
-public class RedisClusterConnectionPoolConfig
-        extends AbstractConnectionPoolConfig<StatefulRedisClusterConnection<String, SessionData>> {
+public class RedisClusterConnectionPoolConfig extends AbstractConnectionPoolConfig {
 
     private RedisURI[] redisURIs;
 
@@ -149,6 +145,7 @@ public class RedisClusterConnectionPoolConfig
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURIs", redisURIs);
+        tsb.append("poolSize", getPoolSize());
         tsb.append("clusterClientOptions", getClusterClientOptions());
         tsb.append("clientResources", getClientResources());
         return tsb.toString();

@@ -55,6 +55,8 @@ public class ClusterLettuceSessionStoreFactory extends AbstractSessionStoreFacto
         }
         RedisClusterConnectionPool pool = new RedisClusterConnectionPool(poolConfig);
         ClusterLettuceSessionStore sessionStore = new ClusterLettuceSessionStore(pool);
+        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
+        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
         if (getNonPersistentAttributes() != null) {
             sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
         }

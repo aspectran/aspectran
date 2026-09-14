@@ -17,19 +17,29 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.utils.Assert;
 import io.lettuce.core.api.StatefulConnection;
-import io.lettuce.core.support.ConnectionPoolSupport;
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPoolConfig.DEFAULT_POOL_SIZE;
 
 /**
- * Abstract base class for Lettuce-based connection pools.
- * <p>
- * This class provides the core infrastructure for managing the lifecycle of
- * a {@link GenericObjectPool}, including initialization and destruction logic.
- * Subclasses must implement methods to create the specific Lettuce client
- * (e.g., {@code RedisClient}, {@code RedisClusterClient}), establish a
- * connection, and shut down the client.
- * </p>
+ * Abstract base class for Lettuce-based thread-safe, lock-free Redis connection pools.
+ * <p>Instead of relying on heavy pool synchronization (e.g. Apache Commons Pool2)
+ * which causes severe lock contention under high concurrency (e.g. Java 21 Virtual Threads),
+ * this implementation maintains a striped set of shared {@link StatefulConnection}
+ * instances. Each shared connection is wrapped in a proxy whose {@code close()} method
+ * is a no-op, allowing callers to use standard {@code try-with-resources} blocks without
+ * closing the underlying multiplexed socket connections.</p>
  *
  * @param <T> the type of connection object
  * @param <C> the type of the Lettuce client
@@ -38,13 +48,17 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  * <p>Created: 2025/10/20</p>
  */
 public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>, C, P
-        extends GenericObjectPoolConfig<T>> implements ConnectionPool<T> {
+        extends AbstractConnectionPoolConfig> implements ConnectionPool<T> {
 
     protected final P poolConfig;
 
     protected C client;
 
-    protected GenericObjectPool<T> pool;
+    private T[] sharedConnections;
+
+    private T[] proxyConnections;
+
+    private final AtomicInteger connectionIndex = new AtomicInteger();
 
     /**
      * Instantiates a new AbstractConnectionPool.
@@ -60,27 +74,88 @@ public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>,
 
     @Override
     public T getConnection() throws Exception {
-        Assert.state(pool != null, "No " + this.getClass().getSimpleName() + " configured");
-        return pool.borrowObject();
+        Assert.state(proxyConnections != null && proxyConnections.length > 0,
+                () -> getClass().getSimpleName() + " is not initialized");
+        int idx = (connectionIndex.getAndIncrement() & 0x7FFFFFFF) % proxyConnections.length;
+        return proxyConnections[idx];
     }
 
     @Override
+    public boolean isAvailable() {
+        if (client == null || sharedConnections == null) {
+            return false;
+        }
+        for (T connection : sharedConnections) {
+            if (connection != null && connection.isOpen()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public void initialize(SessionDataCodec codec) {
-        Assert.state(pool == null, this.getClass().getSimpleName() + " is already configured");
+        Assert.state(client == null, () -> getClass().getSimpleName() + " is already configured");
         this.client = createClient();
-        this.pool = ConnectionPoolSupport.createGenericObjectPool(() -> connect(client, codec), poolConfig);
+
+        int poolSize = (poolConfig != null ? poolConfig.getPoolSize() : DEFAULT_POOL_SIZE);
+        if (poolSize <= 0) {
+            poolSize = DEFAULT_POOL_SIZE;
+        }
+        poolSize = Math.clamp(poolSize, 2, 32);
+
+        sharedConnections = (T[]) new StatefulConnection<?, ?>[poolSize];
+        proxyConnections = (T[]) new StatefulConnection<?, ?>[poolSize];
+        for (int i = 0; i < poolSize; i++) {
+            sharedConnections[i] = connect(client, codec);
+            proxyConnections[i] = wrapSharedConnection(sharedConnections[i]);
+        }
     }
 
     @Override
     public void destroy() {
-        if (pool != null) {
-            pool.close();
-            pool = null;
+        if (sharedConnections != null) {
+            for (T connection : sharedConnections) {
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+            sharedConnections = null;
+            proxyConnections = null;
         }
         if (client != null) {
-            shutdownClient(client);
+            try {
+                shutdownClient(client);
+            } catch (Exception e) {
+                // ignore
+            }
             client = null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @NonNull
+    private T wrapSharedConnection(@NonNull T connection) {
+        Class<?>[] interfaces = getInterfaces(connection.getClass());
+        return (T) Proxy.newProxyInstance(
+                connection.getClass().getClassLoader(),
+                interfaces,
+                new SharedConnectionInvocationHandler(connection)
+        );
+    }
+
+    private static Class<?> @NonNull [] getInterfaces(Class<?> clazz) {
+        Set<Class<?>> interfaces = new LinkedHashSet<>();
+        while (clazz != null) {
+            interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
+            clazz = clazz.getSuperclass();
+        }
+        return interfaces.toArray(new Class<?>[0]);
     }
 
     /**
@@ -102,5 +177,36 @@ public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>,
      * @param client the client to shut down
      */
     protected abstract void shutdownClient(C client);
+
+    private static class SharedConnectionInvocationHandler implements InvocationHandler {
+
+        private final StatefulConnection<?, ?> delegate;
+
+        SharedConnectionInvocationHandler(StatefulConnection<?, ?> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        @Nullable
+        public Object invoke(Object proxy, @NonNull Method method, Object[] args) throws Throwable {
+            String methodName = method.getName();
+            if ("close".equals(methodName) && (args == null || args.length == 0)) {
+                // No-op: keep the shared connection open
+                return null;
+            }
+            if ("closeAsync".equals(methodName) && (args == null || args.length == 0)) {
+                return CompletableFuture.completedFuture(null);
+            }
+            if ("isOpen".equals(methodName) && (args == null || args.length == 0)) {
+                return delegate.isOpen();
+            }
+            try {
+                return method.invoke(delegate, args);
+            } catch (InvocationTargetException e) {
+                throw e.getTargetException();
+            }
+        }
+
+    }
 
 }

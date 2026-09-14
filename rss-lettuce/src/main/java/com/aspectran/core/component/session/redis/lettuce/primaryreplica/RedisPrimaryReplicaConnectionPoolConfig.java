@@ -15,12 +15,10 @@
  */
 package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
-import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPoolConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.cluster.RedisClusterURIUtil;
 
 import java.net.URI;
@@ -38,7 +36,7 @@ import java.util.List;
  * <bean id="redisPrimaryReplicaConfig" class="com.aspectran.core.component.session.redis.lettuce.primaryreplica.RedisPrimaryReplicaConnectionPoolConfig">
  *     <property name="uri" value="redis://primary:6379,replica1:6379"/>
  *     <property name="timeout" value="5s"/>
- *     <property name="maxTotal" value="30"/>
+ *     <property name="poolSize" value="8"/>
  * </bean>
  * }</pre>
  *
@@ -47,13 +45,12 @@ import java.util.List;
  * RedisPrimaryReplicaConnectionPoolConfig config = new RedisPrimaryReplicaConnectionPoolConfig();
  * config.setNodes("redis://primary:6379", "redis://replica1:6379");
  * config.setTimeout("5s");
- * config.setMaxTotal(30);
+ * config.setPoolSize(8);
  * }</pre>
  *
  * <p>Created: 2019/12/08</p>
  */
-public class RedisPrimaryReplicaConnectionPoolConfig
-        extends AbstractConnectionPoolConfig<StatefulRedisConnection<String, SessionData>> {
+public class RedisPrimaryReplicaConnectionPoolConfig extends AbstractConnectionPoolConfig {
 
     private RedisURI[] redisURIs;
 
@@ -124,6 +121,7 @@ public class RedisPrimaryReplicaConnectionPoolConfig
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURIs", redisURIs);
+        tsb.append("poolSize", getPoolSize());
         tsb.append("clientOptions", getClientOptions());
         tsb.append("clientResources", getClientResources());
         return tsb.toString();

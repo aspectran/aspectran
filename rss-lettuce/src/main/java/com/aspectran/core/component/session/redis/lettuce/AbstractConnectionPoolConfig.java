@@ -18,41 +18,67 @@ package com.aspectran.core.component.session.redis.lettuce;
 import com.aspectran.utils.StringUtils;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.resource.ClientResources;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 
 /**
  * Abstract base class for Lettuce-backed Redis connection pool configurations.
- * <p>Extends Apache Commons Pool's {@link GenericObjectPoolConfig} to provide common
- * Redis configuration parameters across standalone, cluster, and primary-replica topologies.</p>
+ * <p>Provides common Redis configuration parameters across standalone, cluster,
+ * and primary-replica topologies, managing endpoints, timeouts, client options,
+ * client resources, and the number of shared connections.</p>
  *
  * <h2>Supported Configuration Properties</h2>
  * <ul>
- *   <li>{@code uri} / {@code redisURI} — The target Redis endpoint(s) to connect to</li>
+ *   <li>{@code uri} / {@code redisURI} / {@code redisURIs} — The target Redis endpoint(s) to connect to</li>
  *   <li>{@code timeout} — Connection and command timeout (e.g., {@code "5s"}, {@code "5000ms"}, {@code "1m"})</li>
+ *   <li>{@code poolSize} — Number of shared multiplexed connections (default: 8)</li>
  *   <li>{@code clientOptions} — Optional {@link ClientOptions} applied to the underlying Lettuce client</li>
  *   <li>{@code clientResources} — Optional {@link ClientResources} for custom thread pools or DNS resolvers</li>
- *   <li>Pool sizing knobs — {@code maxTotal}, {@code maxIdle}, {@code minIdle}, etc. inherited from {@link GenericObjectPoolConfig}</li>
  * </ul>
- *
- * @param <T> the type of connection object stored in the pool
  *
  * <p>Created: 2026/08/14</p>
  */
-public abstract class AbstractConnectionPoolConfig<T> extends GenericObjectPoolConfig<T> {
+public abstract class AbstractConnectionPoolConfig {
+
+    protected static final int DEFAULT_POOL_SIZE = 8;
+
+    private int poolSize = DEFAULT_POOL_SIZE;
 
     private ClientOptions clientOptions;
 
     private ClientResources clientResources;
 
     /**
-     * Creates a new config with default pooling parameters inherited from
-     * {@link GenericObjectPoolConfig}.
+     * Creates a new config with default pooling parameters.
      */
     public AbstractConnectionPoolConfig() {
-        super();
+    }
+
+    /**
+     * Returns the size of the shared connection pool.
+     * @return the pool size
+     */
+    public int getPoolSize() {
+        return poolSize;
+    }
+
+    /**
+     * Sets the size of the shared connection pool.
+     * @param poolSize the pool size
+     */
+    public void setPoolSize(int poolSize) {
+        this.poolSize = poolSize;
+    }
+
+    /**
+     * Sets the size of the shared connection pool as a string.
+     * @param poolSize the pool size string
+     */
+    public void setPoolSize(String poolSize) {
+        if (StringUtils.hasText(poolSize)) {
+            setPoolSize(Integer.parseInt(poolSize.trim()));
+        }
     }
 
     /**

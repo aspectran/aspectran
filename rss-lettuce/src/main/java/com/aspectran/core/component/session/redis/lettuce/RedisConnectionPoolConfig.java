@@ -15,11 +15,9 @@
  */
 package com.aspectran.core.component.session.redis.lettuce;
 
-import com.aspectran.core.component.session.SessionData;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
 
 import java.time.Duration;
 
@@ -33,9 +31,7 @@ import java.time.Duration;
  * <bean id="redisConnectionPoolConfig" class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
  *     <property name="uri" value="redis://localhost:6379/0"/>
  *     <property name="timeout" value="5s"/>
- *     <property name="maxTotal" value="20"/>
- *     <property name="maxIdle" value="10"/>
- *     <property name="minIdle" value="5"/>
+ *     <property name="poolSize" value="8"/>
  * </bean>
  * }</pre>
  *
@@ -44,13 +40,12 @@ import java.time.Duration;
  * RedisConnectionPoolConfig config = new RedisConnectionPoolConfig();
  * config.setUri("redis://localhost:6379/0");
  * config.setTimeout("5s");
- * config.setMaxTotal(20);
+ * config.setPoolSize(8);
  * }</pre>
  *
  * <p>Created: 2019/12/07</p>
  */
-public class RedisConnectionPoolConfig
-        extends AbstractConnectionPoolConfig<StatefulRedisConnection<String, SessionData>> {
+public class RedisConnectionPoolConfig extends AbstractConnectionPoolConfig {
 
     private RedisURI redisURI;
 
@@ -105,6 +100,7 @@ public class RedisConnectionPoolConfig
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURI", redisURI);
+        tsb.append("poolSize", getPoolSize());
         tsb.append("clientOptions", getClientOptions());
         tsb.append("clientResources", getClientResources());
         return tsb.toString();

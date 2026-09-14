@@ -35,6 +35,12 @@ public interface ConnectionPool<T> {
     T getConnection() throws Exception;
 
     /**
+     * Checks if the connection pool is active and available.
+     * @return {@code true} if the pool is initialized and at least one shared connection is open, otherwise {@code false}
+     */
+    boolean isAvailable();
+
+    /**
      * Initializes the pool with the given session codec for value serialization.
      * @param codec the codec used to encode/decode {@code SessionData}
      */
