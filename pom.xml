@@ -134,6 +134,7 @@
         <taglibs-standard.version>10.0.2</taglibs-standard.version>
 
         <httpclient5.version>5.6.4</httpclient5.version>
+        <netty.version>4.2.18.Final</netty.version>
     </properties>
 
     <dependencyManagement>
@@ -186,6 +187,14 @@
                 <groupId>org.apache.httpcomponents.client5</groupId>
                 <artifactId>httpclient5</artifactId>
                 <version>${httpclient5.version}</version>
+            </dependency>
+            <!-- Netty BOM -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -32,21 +32,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.netty</automatic.module.name>
-        <netty.version>4.2.18.Final</netty.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Netty BOM -->
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>${netty.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
