@@ -133,6 +133,7 @@
         <jasper.version>10.1.55</jasper.version>
         <taglibs-standard.version>10.0.2</taglibs-standard.version>
 
+        <ognl.version>3.4.13</ognl.version>
         <httpclient5.version>5.6.4</httpclient5.version>
         <netty.version>4.2.18.Final</netty.version>
     </properties>
@@ -181,6 +182,12 @@
                 <artifactId>awaitility</artifactId>
                 <version>4.3.0</version>
                 <optional>true</optional>
+            </dependency>
+            <!-- OGNL -->
+            <dependency>
+                <groupId>ognl</groupId>
+                <artifactId>ognl</artifactId>
+                <version>${ognl.version}</version>
             </dependency>
             <!-- Apache HttpComponents -->
             <dependency>
