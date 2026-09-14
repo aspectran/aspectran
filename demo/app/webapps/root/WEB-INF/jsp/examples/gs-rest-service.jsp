@@ -65,7 +65,9 @@
     <div class="col-12" style="position:relative;">
         <span id="response-status" class="float-start badge bg-secondary"
               style="font-size:2em;position:absolute;top:-30px;right:10px;border-radius:50%;">200</span>
-        <pre id="response-body" style="min-height:100px;max-height:300px;"></pre>
+        <div class="border rounded bg-body-tertiary p-2 mb-3">
+            <pre id="response-body" class="m-0" style="min-height:100px;max-height:300px;"></pre>
+        </div>
     </div>
 </div>
 <script>

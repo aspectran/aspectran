@@ -16,7 +16,7 @@
           scope="prototype">
         <property name="contextPath">/</property>
         <property name="war">/webapps/%{jetty.context.root.name}</property>
-        <property name="tempDirectory">/work/_webapps/%{jetty.context.root.name}</property>
+        <property name="tempDirectory">%{system:aspectran.workPath:/work}/_webapps/%{jetty.context.root.name}</property>
         <property name="tempDirectoryPersistent" valueType="boolean">true</property>
         <property name="defaultsDescriptor">/config/server/jetty/webdefault-ee10.xml</property>
         <property name="sessionHandler">#{jetty.context.root.sessionHandler}</property>
