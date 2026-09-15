@@ -393,7 +393,8 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
             return true;
         }
         try (AutoLock ignored = session.lock()) {
-            if (session.isExpiredAt(now)) {
+            // Allow a small grace tolerance (100ms) to compensate for timer scheduler jitter
+            if (session.isExpiredAt(now + 100L)) {
                 // In cluster mode with a persistent store, check if the session is still active on another node
                 if (sessionCache.checkActiveInStore(session, now)) {
                     return true;
