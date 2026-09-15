@@ -657,6 +657,7 @@ class DefaultSessionManagerTest {
             SessionData storeData = store.load(sessionId);
             assertNotNull(storeData);
             storeData.calcAndSetExpiry(System.currentTimeMillis() + 60000L); // 1 minute in the future
+            storeData.setDirty(true);
             store.save(sessionId, storeData);
 
             // Wait for background inactivity timer to trigger silent eviction

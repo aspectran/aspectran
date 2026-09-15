@@ -109,13 +109,16 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     /**
      * Sets the minimum time in seconds between save operations.
-     * <p>Saves normally occur every time a request finishes with a session.
-     * If the session data has not changed (is not "dirty"), a save can be skipped.
-     * However, if only the last access time has changed, frequent saves can cause
-     * performance overhead, especially with slow persistence layers.
-     * <p>A value of 0 (default) means the session is saved if it is dirty or if the
-     * save period is exceeded. A non-zero value ensures that even if the session
-     * is not dirty, it will be saved if the time since the last save exceeds this period.
+     * <p>When a client request completes without modifying session attributes (non-dirty)
+     * and only the last access time is updated, frequent writes to the persistent store can
+     * cause unnecessary I/O overhead. This setting specifies the minimum interval between saves.</p>
+     * <ul>
+     *   <li>{@code 0} (default): Saves the session to the store immediately whenever it is dirty
+     *       or upon completion of each request.</li>
+     *   <li>{@code > 0}: Even if the session attributes are not dirty, the session is saved to the
+     *       store only if the elapsed time since the last save exceeds or equals {@code savePeriodSecs},
+     *       ensuring the expiration time in the store is refreshed periodically without excessive I/O.</li>
+     * </ul>
      * @param savePeriodSecs the minimum save period in seconds
      */
     public void setSavePeriodSecs(int savePeriodSecs) {
@@ -184,8 +187,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             logger.trace(tsb.toString());
         }
 
-        // save session if attribute changed or never been saved or time between saves exceeds threshold
-        if (data.isDirty() || lastSaved <= 0 || elapsed > savePeriodMs) {
+        // save session if attribute changed or never been saved or savePeriod is 0 or time between saves exceeds threshold
+        if (data.isDirty() || lastSaved <= 0 || savePeriodMs == 0 || elapsed >= savePeriodMs) {
             // set the last saved time to now
             data.setLastSaved(now);
             try {
