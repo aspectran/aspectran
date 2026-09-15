@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import org.jspecify.annotations.NonNull;
 
 import static com.aspectran.core.component.session.AbstractSessionStore.DEFAULT_GRACE_PERIOD_SECS;
 import static com.aspectran.core.component.session.AbstractSessionStore.DEFAULT_SAVE_PERIOD_SECS;
@@ -69,6 +70,18 @@ public abstract class AbstractSessionStoreFactory implements SessionStoreFactory
     @Override
     public void setNonPersistentAttributes(String[] nonPersistentAttributes) {
         this.nonPersistentAttributes = nonPersistentAttributes;
+    }
+
+    /**
+     * Configures the common session store options on the given {@link AbstractSessionStore}.
+     * @param sessionStore the session store to configure
+     */
+    protected void setSessionStoreOptions(@NonNull AbstractSessionStore sessionStore) {
+        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
+        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
+        if (getNonPersistentAttributes() != null && getNonPersistentAttributes().length > 0) {
+            sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
+        }
     }
 
 }

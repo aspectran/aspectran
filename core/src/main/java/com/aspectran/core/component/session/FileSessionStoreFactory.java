@@ -15,7 +15,10 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +29,8 @@ import java.io.IOException;
  * <p>Created: 2019/12/06</p>
  */
 public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileSessionStoreFactory.class);
 
     private String storeDir;
 
@@ -82,10 +87,9 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
         }
         FileSessionStore sessionStore = new FileSessionStore(storeDir);
         sessionStore.setDeleteUnrestorableFiles(isDeleteUnrestorableFiles());
-        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
-        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
-        if (getNonPersistentAttributes() != null && getNonPersistentAttributes().length > 0) {
-            sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
+        setSessionStoreOptions(sessionStore);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Created {} {}", ObjectUtils.simpleIdentityToString(sessionStore), sessionStore);
         }
         return sessionStore;
     }

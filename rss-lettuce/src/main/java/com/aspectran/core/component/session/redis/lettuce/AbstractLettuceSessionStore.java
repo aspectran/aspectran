@@ -17,6 +17,7 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.AbstractSessionStore;
 import com.aspectran.core.component.session.SessionData;
+import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.ScanIterator;
 import io.lettuce.core.api.StatefulConnection;
@@ -158,6 +159,16 @@ public abstract class AbstractLettuceSessionStore<
             }
         });
         return all;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("pool", getPool());
+        tsb.append("gracePeriodSecs", getGracePeriodSecs());
+        tsb.append("savePeriodSecs", getSavePeriodSecs());
+        tsb.append("nonPersistentAttributes", getNonPersistentAttributes());
+        return tsb.toString();
     }
 
 }

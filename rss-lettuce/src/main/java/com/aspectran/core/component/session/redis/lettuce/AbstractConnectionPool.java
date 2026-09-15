@@ -16,9 +16,13 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.api.StatefulConnection;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +53,8 @@ import static com.aspectran.core.component.session.redis.lettuce.AbstractConnect
  */
 public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>, C, P
         extends AbstractConnectionPoolConfig> implements ConnectionPool<T> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractConnectionPool.class);
 
     protected final P poolConfig;
 
@@ -111,31 +117,51 @@ public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>,
             sharedConnections[i] = connect(client, codec);
             proxyConnections[i] = wrapSharedConnection(sharedConnections[i]);
         }
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Initialized {} with {} connection(s) {}",
+                    ObjectUtils.simpleIdentityToString(this), sharedConnections.length, poolConfig);
+        }
     }
 
     @Override
     public void destroy() {
+        int connectionCount = 0;
         if (sharedConnections != null) {
+            connectionCount = sharedConnections.length;
             for (T connection : sharedConnections) {
                 if (connection != null) {
                     try {
                         connection.close();
                     } catch (Exception e) {
-                        // ignore
+                        logger.warn("Failed to close shared connection", e);
                     }
                 }
             }
             sharedConnections = null;
             proxyConnections = null;
         }
+
         if (client != null) {
             try {
                 shutdownClient(client);
             } catch (Exception e) {
-                // ignore
+                logger.warn("Failed to shutdown Lettuce client", e);
             }
             client = null;
         }
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Destroyed {} and closed {} connection(s) {}",
+                    ObjectUtils.simpleIdentityToString(this), connectionCount, poolConfig);
+        }
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("poolConfig", poolConfig);
+        return tsb.toString();
     }
 
     @SuppressWarnings("unchecked")

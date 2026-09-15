@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.AbstractSessionStoreFactory;
+import com.aspectran.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,15 +51,11 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
 
     @Override
     public DefaultLettuceSessionStore createSessionStore() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("RedisConnectionPoolConfig {}", poolConfig);
-        }
         RedisConnectionPool pool = new RedisConnectionPool(poolConfig);
         DefaultLettuceSessionStore sessionStore = new DefaultLettuceSessionStore(pool);
-        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
-        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
-        if (getNonPersistentAttributes() != null) {
-            sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
+        setSessionStoreOptions(sessionStore);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Created {} {}", ObjectUtils.simpleIdentityToString(sessionStore), sessionStore);
         }
         return sessionStore;
     }
