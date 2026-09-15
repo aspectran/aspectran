@@ -355,8 +355,12 @@ public class JsrWebSocketSession implements Session {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Session that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Session that)) {
+            return false;
+        }
         return Objects.equals(getId(), that.getId());
     }
 
