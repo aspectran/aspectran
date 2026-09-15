@@ -49,11 +49,32 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
         this.poolConfig = poolConfig;
     }
 
+    private String expiryIndexKey;
+
+    /**
+     * Returns the key used for the session expiration sorted set index.
+     * @return the expiration index key
+     */
+    public String getExpiryIndexKey() {
+        return expiryIndexKey;
+    }
+
+    /**
+     * Sets the key used for the session expiration sorted set index.
+     * @param expiryIndexKey the expiration index key
+     */
+    public void setExpiryIndexKey(String expiryIndexKey) {
+        this.expiryIndexKey = expiryIndexKey;
+    }
+
     @Override
     public DefaultLettuceSessionStore createSessionStore() {
         RedisConnectionPool pool = new RedisConnectionPool(poolConfig);
         DefaultLettuceSessionStore sessionStore = new DefaultLettuceSessionStore(pool);
         setSessionStoreOptions(sessionStore);
+        if (expiryIndexKey != null) {
+            sessionStore.setExpiryIndexKey(expiryIndexKey);
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Created {} {}", ObjectUtils.simpleIdentityToString(sessionStore), sessionStore);
         }

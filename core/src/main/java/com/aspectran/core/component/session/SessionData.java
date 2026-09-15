@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -76,6 +77,15 @@ public class SessionData implements Serializable {
 
     /** The timestamp when the session was last saved to the store */
     private long lastSaved;
+
+    /**
+     * Instantiates a new SessionData with only an ID.
+     * @param id the session ID
+     */
+    private SessionData(String id) {
+        this.id = id;
+        this.created = 0L;
+    }
 
     /**
      * Instantiates a new SessionData.
@@ -124,6 +134,14 @@ public class SessionData implements Serializable {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * Returns whether this instance only contains the session ID.
+     * @return true if ID-only, false otherwise
+     */
+    public boolean isIdOnly() {
+        return (created == 0L);
     }
 
     /**
@@ -375,6 +393,22 @@ public class SessionData implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SessionData that)) {
+            return false;
+        }
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", id);
@@ -387,6 +421,16 @@ public class SessionData implements Serializable {
         }
         tsb.append("expiry", expiry);
         return tsb.toString();
+    }
+
+    /**
+     * Creates an ID-only SessionData instance used for indexing.
+     * @param id the session ID
+     * @return an ID-only SessionData instance
+     */
+    @NonNull
+    public static SessionData of(String id) {
+        return new SessionData(id);
     }
 
     /**

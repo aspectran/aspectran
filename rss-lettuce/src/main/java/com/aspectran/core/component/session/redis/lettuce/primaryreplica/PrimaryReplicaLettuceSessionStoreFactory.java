@@ -49,6 +49,24 @@ public class PrimaryReplicaLettuceSessionStoreFactory extends AbstractSessionSto
         this.poolConfig = poolConfig;
     }
 
+    private String expiryIndexKey;
+
+    /**
+     * Returns the key used for the session expiration sorted set index.
+     * @return the expiration index key
+     */
+    public String getExpiryIndexKey() {
+        return expiryIndexKey;
+    }
+
+    /**
+     * Sets the key used for the session expiration sorted set index.
+     * @param expiryIndexKey the expiration index key
+     */
+    public void setExpiryIndexKey(String expiryIndexKey) {
+        this.expiryIndexKey = expiryIndexKey;
+    }
+
     /**
      * Creates a new {@link PrimaryReplicaLettuceSessionStore} instance.
      * @return a new {@link PrimaryReplicaLettuceSessionStore}
@@ -58,6 +76,9 @@ public class PrimaryReplicaLettuceSessionStoreFactory extends AbstractSessionSto
         RedisPrimaryReplicaConnectionPool pool = new RedisPrimaryReplicaConnectionPool(poolConfig);
         PrimaryReplicaLettuceSessionStore sessionStore = new PrimaryReplicaLettuceSessionStore(pool);
         setSessionStoreOptions(sessionStore);
+        if (expiryIndexKey != null) {
+            sessionStore.setExpiryIndexKey(expiryIndexKey);
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Created {} {}", ObjectUtils.simpleIdentityToString(sessionStore), sessionStore);
         }

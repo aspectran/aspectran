@@ -18,14 +18,18 @@ package com.aspectran.core.component.session.redis.lettuce;
 import com.aspectran.core.component.session.AbstractSessionStore;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.utils.ToStringBuilder;
+import io.lettuce.core.Range;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.ScanIterator;
 import io.lettuce.core.api.StatefulConnection;
 import io.lettuce.core.api.sync.RedisKeyCommands;
+import io.lettuce.core.api.sync.RedisSortedSetCommands;
 import io.lettuce.core.api.sync.RedisStringCommands;
 import org.jspecify.annotations.NonNull;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -46,8 +50,30 @@ import java.util.function.Function;
  */
 public abstract class AbstractLettuceSessionStore<
         C extends StatefulConnection<String, SessionData>,
-        CMD extends RedisKeyCommands<String, SessionData> & RedisStringCommands<String, SessionData>
+        CMD extends RedisKeyCommands<String, SessionData> &
+                    RedisStringCommands<String, SessionData> &
+                    RedisSortedSetCommands<String, SessionData>
         > extends AbstractSessionStore {
+
+    private static final String DEFAULT_EXPIRY_INDEX_KEY = "aspectran:session:expiry";
+
+    private String expiryIndexKey = DEFAULT_EXPIRY_INDEX_KEY;
+
+    /**
+     * Returns the key used for the session expiration sorted set index.
+     * @return the expiration index key
+     */
+    public String getExpiryIndexKey() {
+        return expiryIndexKey;
+    }
+
+    /**
+     * Sets the key used for the session expiration sorted set index.
+     * @param expiryIndexKey the expiration index key
+     */
+    public void setExpiryIndexKey(String expiryIndexKey) {
+        this.expiryIndexKey = expiryIndexKey;
+    }
 
     /**
      * Returns the connection pool.
@@ -88,8 +114,10 @@ public abstract class AbstractLettuceSessionStore<
             ScanIterator<String> scanIterator = ScanIterator.scan(c);
             while (scanIterator.hasNext()) {
                 String key = scanIterator.next();
-                SessionData data = c.get(key);
-                func.accept(data);
+                if (!expiryIndexKey.equals(key)) {
+                    SessionData data = c.get(key);
+                    func.accept(data);
+                }
             }
             return null;
         });
@@ -104,6 +132,7 @@ public abstract class AbstractLettuceSessionStore<
     public boolean delete(String id) {
         return sync(c -> {
             Long deleted = c.del(id);
+            c.zrem(expiryIndexKey, SessionData.of(id));
             return (deleted != null && deleted > 0L);
         });
     }
@@ -123,48 +152,79 @@ public abstract class AbstractLettuceSessionStore<
 
     @Override
     public void doSave(String id, SessionData data) {
-        sync(c -> c.set(id, data));
+        sync(c -> {
+            c.set(id, data);
+            long expiry = data.getExpiry();
+            if (expiry > 0L) {
+                c.zadd(expiryIndexKey, (double)expiry, SessionData.of(id));
+            } else {
+                c.zrem(expiryIndexKey, SessionData.of(id));
+            }
+            return null;
+        });
     }
 
     @Override
     public Set<String> doGetExpired(long time) {
-        Set<String> expired = new HashSet<>();
-        // iterate over the saved sessions and work out which have expired
-        scan(sessionData -> {
-            if (sessionData != null) {
-                long expiry = sessionData.getExpiry();
-                if (expiry > 0 && expiry <= time) {
-                    expired.add(sessionData.getId());
+        return sync(c -> {
+            List<SessionData> expiredSessions = c.zrangebyscore(
+                    expiryIndexKey,
+                    Range.create(0.0, (double)time)
+            );
+            if (expiredSessions == null || expiredSessions.isEmpty()) {
+                return Collections.emptySet();
+            }
+            Set<String> expiredIds = new HashSet<>(expiredSessions.size());
+            for (SessionData data : expiredSessions) {
+                if (data != null && data.getId() != null) {
+                    expiredIds.add(data.getId());
                 }
             }
+            return expiredIds;
         });
-        return expired;
     }
 
     @Override
     public void doCleanOrphans(long time) {
-        // Unnecessary
+        sync(c -> {
+            List<SessionData> expiredSessions = c.zrangebyscore(
+                    expiryIndexKey,
+                    Range.create(0.0, (double)time)
+            );
+            if (expiredSessions != null && !expiredSessions.isEmpty()) {
+                for (SessionData data : expiredSessions) {
+                    if (data != null && data.getId() != null) {
+                        c.del(data.getId());
+                    }
+                }
+                c.zremrangebyscore(expiryIndexKey, Range.create(0.0, (double)time));
+            }
+            return null;
+        });
     }
 
     @Override
     public Set<String> getAllSessions() {
-        long now = System.currentTimeMillis();
-        Set<String> all = new HashSet<>();
-        scan(sessionData -> {
-            if (sessionData != null) {
-                long expiry = sessionData.getExpiry();
-                if (expiry <= 0 || expiry > now) {
-                    all.add(sessionData.getId());
+        return sync(c -> {
+            List<SessionData> allSessions = c.zrange(expiryIndexKey, 0, -1);
+            if (allSessions == null || allSessions.isEmpty()) {
+                return Collections.emptySet();
+            }
+            Set<String> all = new HashSet<>(allSessions.size());
+            for (SessionData data : allSessions) {
+                if (data != null && data.getId() != null) {
+                    all.add(data.getId());
                 }
             }
+            return all;
         });
-        return all;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("pool", getPool());
+        tsb.append("expiryIndexKey", expiryIndexKey);
         tsb.append("gracePeriodSecs", getGracePeriodSecs());
         tsb.append("savePeriodSecs", getSavePeriodSecs());
         tsb.append("nonPersistentAttributes", getNonPersistentAttributes());

@@ -33,6 +33,9 @@ import java.util.Set;
  */
 public class SessionDataCodec implements RedisCodec<String, SessionData> {
 
+    private static final byte MAGIC_FULL = 0x00;
+    private static final byte MAGIC_ID_ONLY = 0x01;
+
     private final Set<String> nonPersistentAttributes;
 
     /**
@@ -57,11 +60,30 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
      */
     @Override
     public SessionData decodeValue(ByteBuffer bytes) {
+        if (bytes == null || !bytes.hasRemaining()) {
+            return null;
+        }
         try {
-            byte[] array = new byte[bytes.remaining()];
-            bytes.get(array);
-            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(array)) {
-                return SessionData.deserialize(inputStream);
+            byte tag = bytes.get();
+            if (tag == MAGIC_ID_ONLY) {
+                byte[] array = new byte[bytes.remaining()];
+                bytes.get(array);
+                String id = new String(array, StandardCharsets.UTF_8);
+                return SessionData.of(id);
+            } else if (tag == MAGIC_FULL) {
+                byte[] array = new byte[bytes.remaining()];
+                bytes.get(array);
+                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(array)) {
+                    return SessionData.deserialize(inputStream);
+                }
+            } else {
+                // Fallback for legacy format without tag
+                bytes.position(bytes.position() - 1);
+                byte[] array = new byte[bytes.remaining()];
+                bytes.get(array);
+                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(array)) {
+                    return SessionData.deserialize(inputStream);
+                }
             }
         } catch (Exception e) {
             throw new SessionDataSerializationException("Error decoding session data", e);
@@ -83,8 +105,20 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
      */
     @Override
     public ByteBuffer encodeValue(SessionData value) {
+        if (value == null) {
+            return ByteBuffer.allocate(0);
+        }
+        if (value.isIdOnly()) {
+            byte[] idBytes = value.getId().getBytes(StandardCharsets.UTF_8);
+            ByteBuffer buffer = ByteBuffer.allocate(1 + idBytes.length);
+            buffer.put(MAGIC_ID_ONLY);
+            buffer.put(idBytes);
+            buffer.flip();
+            return buffer;
+        }
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(MAGIC_FULL);
             SessionData.serialize(value, outputStream, nonPersistentAttributes);
             return ByteBuffer.wrap(outputStream.toByteArray());
         } catch (IOException e) {

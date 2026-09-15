@@ -289,4 +289,36 @@ class DefaultLettuceSessionStoreTest {
         assertEquals(customObject, loadedData.getAttribute("custom-object-data"));
     }
 
+    @Test
+    void testExpiryIndexCleanOrphans() {
+        long now = System.currentTimeMillis();
+        SessionData session1 = new SessionData("orphan-1", now, 1000);
+        SessionData session2 = new SessionData("orphan-2", now, 10000);
+
+        sessionStore.doSave(session1.getId(), session1);
+        sessionStore.doSave(session2.getId(), session2);
+
+        // Clean orphans expired before now + 2000
+        sessionStore.doCleanOrphans(now + 2000);
+
+        Set<String> expired = sessionStore.doGetExpired(now + 2000);
+        assertTrue(expired.isEmpty(), "Orphan-1 index should have been cleaned");
+        assertNull(sessionStore.load("orphan-1"), "Orphan-1 data should have been deleted from Redis");
+        assertNotNull(sessionStore.load("orphan-2"), "Orphan-2 data should remain in Redis");
+    }
+
+    @Test
+    void testGetAllSessionsWithIndex() {
+        long now = System.currentTimeMillis();
+        SessionData session1 = new SessionData("indexed-1", now, 10000);
+        SessionData session2 = new SessionData("indexed-2", now, 20000);
+
+        sessionStore.doSave(session1.getId(), session1);
+        sessionStore.doSave(session2.getId(), session2);
+
+        Set<String> allSessions = sessionStore.getAllSessions();
+        assertTrue(allSessions.contains("indexed-1"));
+        assertTrue(allSessions.contains("indexed-2"));
+    }
+
 }
