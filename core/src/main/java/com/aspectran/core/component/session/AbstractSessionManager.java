@@ -395,6 +395,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         try (AutoLock ignored = session.lock()) {
             // In cluster mode with a persistent store, check first if the session is still active on another node
             if (sessionCache.checkActiveInStore(session, now)) {
+                onSessionEvicted(session);
                 return true;
             }
             if (session.isExpiredAt(now)) {
