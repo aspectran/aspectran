@@ -168,6 +168,13 @@ public abstract class AbstractLettuceSessionStore<
     @Override
     public Set<String> doGetExpired(long time) {
         return sync(c -> {
+            String lockKey = expiryIndexKey + ":scavenge-lock";
+            long lockTtl = Math.max(30, getGracePeriodSecs());
+            String lockResult = c.set(lockKey, SessionData.of("locked"), SetArgs.Builder.nx().ex(lockTtl));
+            if (!"OK".equals(lockResult)) {
+                // Another node is currently scavenging expired sessions from the store
+                return Collections.emptySet();
+            }
             List<SessionData> expiredSessions = c.zrangebyscore(
                     expiryIndexKey,
                     Range.create(0.0, (double)time)

@@ -226,31 +226,30 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
         checkAvailable();
 
-        // check the backing store to find other sessions
-        // that expired long ago (ie cannot be actively managed by any node)
         long now = System.currentTimeMillis();
-        Set<String> expired = null;
+        Set<String> expired = new HashSet<>();
 
-        // if we have never checked for old expired sessions, then only find
-        // those that are very old so we don't find sessions that other nodes
-        // that are also starting up find
+        // Check local candidates first
+        for (String id : candidates) {
+            if (!checkExpiry(id, now)) {
+                expired.add(id);
+            }
+        }
+
+        // Check the backing store for unmanaged expired sessions
         long time = 0L;
         if (lastExpiryCheckTime <= 0L) {
             time = now - getGracePeriodMillis(3);
         } else {
-            // only do the check once every gracePeriod to avoid expensive searches,
-            // and find sessions that expired at least one gracePeriod ago
             long gracePeriod = getGracePeriodMillis(1);
             if (now > lastExpiryCheckTime + gracePeriod) {
                 time = now - gracePeriod;
             }
         }
         if (time > 0L) {
-            expired = doGetExpired(time);
-            for (String id : candidates) {
-                if (!expired.contains(id) && !checkExpiry(id, time)) {
-                    expired.add(id);
-                }
+            Set<String> storeExpired = doGetExpired(time);
+            if (storeExpired != null && !storeExpired.isEmpty()) {
+                expired.addAll(storeExpired);
             }
             lastExpiryCheckTime = time;
         }
