@@ -160,6 +160,13 @@ public interface SessionCache {
     ManagedSession delete(String id) throws Exception;
 
     /**
+     * Evicts a session from the in-memory cache without deleting it from the {@link SessionStore}.
+     * @param session the session to evict
+     * @return the session that was evicted, or null if not found
+     */
+    ManagedSession evict(ManagedSession session);
+
+    /**
      * Renews the ID of a session in both the cache and the {@link SessionStore}.
      * @param oldId the current session ID
      * @param newId the new session ID
@@ -182,6 +189,16 @@ public interface SessionCache {
      * @return true if the session was evicted, false otherwise
      */
     boolean checkInactiveSession(ManagedSession session);
+
+    /**
+     * In cluster mode, checks if a session that reached local expiration is still active in the store.
+     * If the session is still active in the store (e.g. updated on another node), it is silently
+     * evicted from the in-memory cache.
+     * @param session the session to check
+     * @param now the current timestamp
+     * @return true if the session was still active in the store and silently evicted, false otherwise
+     */
+    boolean checkActiveInStore(ManagedSession session, long now);
 
     /**
      * Removes all unmanaged (orphan) sessions that expired at or before the given time.

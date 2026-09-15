@@ -618,6 +618,68 @@ class DefaultSessionManagerTest {
                 stats.getNumberOfCreated(), stats.getNumberOfExpired(), stats.getNumberOfActives());
     }
 
+    /**
+     * In cluster mode, when a session reaches local expiration but is still active in the store
+     * (e.g. updated by another node), the local node should silently evict it without firing
+     * {@code sessionDestroyed}.
+     */
+    @Test
+    void testClusteredSilentEvictionOnStoreActiveSession() throws Exception {
+        File tempDir = new File("./target/_sessions", "aspectran-cluster-test-" + System.currentTimeMillis());
+        tempDir.mkdirs();
+        try {
+            SessionManagerConfig config = new SessionManagerConfig(new AponLines()
+                    .line("workerName", "nodeA")
+                    .line("clusterEnabled", true)
+                    .line("maxIdleSeconds", 1)
+                    .line("saveOnCreate", true)
+                    .line("scavengingIntervalSeconds", 10)
+                    .block("fileStore")
+                    .line("storeDir", tempDir.getAbsolutePath())
+                    .end()
+                    .toString());
+
+            sessionManager = new DefaultSessionManager();
+            sessionManager.setSessionManagerConfig(config);
+            sessionManager.initialize();
+
+            TrackingSessionListener listener = new TrackingSessionListener();
+            sessionManager.addSessionListener(listener);
+
+            SessionAgent agent = new SessionAgent(sessionManager);
+            Session session = agent.getSession(true);
+            assertNotNull(session);
+            String sessionId = session.getId();
+            agent.complete();
+
+            // Simulate that another node (Node B) updated the session in the store with an extended expiry
+            SessionStore store = ((AbstractSessionCache) sessionManager.getSessionCache()).getSessionStore();
+            SessionData storeData = store.load(sessionId);
+            assertNotNull(storeData);
+            storeData.calcAndSetExpiry(System.currentTimeMillis() + 60000L); // 1 minute in the future
+            store.save(sessionId, storeData);
+
+            // Wait for background inactivity timer to trigger silent eviction
+            await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+                // Session should have been silently evicted from cache
+                assertFalse(sessionManager.getSessionCache().contains(sessionId),
+                        "Session should be silently evicted from local cache");
+            });
+
+            // sessionDestroyed should NOT have been called because session is still alive in store
+            assertFalse(listener.destroyedSessionIds.contains(sessionId),
+                    "sessionDestroyed should NOT be fired for active store session");
+        } finally {
+            File[] files = tempDir.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    f.delete();
+                }
+            }
+            tempDir.delete();
+        }
+    }
+
     // ========================================================================
     // Helper classes
     // ========================================================================

@@ -324,6 +324,12 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
             // Remove the Session object from the session store and any backing data store
             ManagedSession session = sessionCache.delete(id);
             if (invalidate && session != null) {
+                // In cluster mode with a persistent store and TIMEOUT reason:
+                // Only the node that actually deleted the session from the store should fire the destroy listener.
+                boolean shouldNotifyListeners = !sessionCache.isClusterEnabled() ||
+                        reason != Session.DestroyedReason.TIMEOUT ||
+                        session.isDeletedInStore();
+
                 // start invalidating if it is not already begun, and call the listeners
                 try {
                     if (session.beginInvalidate()) {
@@ -332,7 +338,9 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                                 if (reason != null) {
                                     session.setDestroyedReason(reason);
                                 }
-                                onSessionDestroyed(session);
+                                if (shouldNotifyListeners) {
+                                    onSessionDestroyed(session);
+                                }
                             }
                         } catch (Exception e) {
                             logger.warn("Error during Session destroy listener", e);
@@ -386,6 +394,10 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         }
         try (AutoLock ignored = session.lock()) {
             if (session.isExpiredAt(now)) {
+                // In cluster mode with a persistent store, check if the session is still active on another node
+                if (sessionCache.checkActiveInStore(session, now)) {
+                    return true;
+                }
                 // instead of expiring the session directly here, accumulate a list of
                 // session ids that need to be expired. This is an efficiency measure: as
                 // the expiration involves the SessionStore doing a delete, it is

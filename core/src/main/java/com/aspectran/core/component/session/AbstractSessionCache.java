@@ -401,17 +401,35 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     public ManagedSession delete(String id) throws Exception {
         // get the session, if it's not in memory, this will load it
         ManagedSession session = get(id, true);
+        boolean deleted = true;
         // Always delete it from the backing data store
         if (sessionStore != null) {
-            boolean deleted = sessionStore.delete(id);
+            deleted = sessionStore.delete(id);
             if (logger.isTraceEnabled()) {
                 logger.trace("Session {} deleted in {}: {}", id, storeName, deleted);
             }
         }
         // delete it from the session object store
         if (session != null) {
-            session.setResident(false);
+            try (AutoLock ignored = session.lock()) {
+                session.setDeletedInStore(deleted);
+                session.setResident(false);
+                return doDelete(id);
+            }
         }
+        return null;
+    }
+
+    @Override
+    public ManagedSession evict(ManagedSession session) {
+        if (session == null) {
+            return null;
+        }
+        String id = session.getId();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Evict session id={} from {}", id, thisName);
+        }
+        session.setResident(false);
         return doDelete(id);
     }
 
@@ -554,6 +572,26 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             }
         } catch (Exception e) {
             logger.warn("Passivation of idle session {} failed", session.getId(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkActiveInStore(ManagedSession session, long now) {
+        if (session == null || !isClusterEnabled() || sessionStore == null) {
+            return false;
+        }
+        String id = session.getId();
+        try {
+            SessionData data = sessionStore.load(id);
+            if (data != null && !data.isExpiredAt(now)) {
+                // The session has been updated on another node and is still active.
+                // Silently evict from local cache without invalidating or restarting timer.
+                evict(session);
+                return true;
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to check session store for session expiration: id={}", id, e);
         }
         return false;
     }

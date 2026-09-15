@@ -53,6 +53,8 @@ public class ManagedSession implements Session {
 
     private boolean resident;
 
+    private boolean deletedInStore = true;
+
     private int requests;
 
     private State state = State.VALID;
@@ -269,6 +271,22 @@ public class ManagedSession implements Session {
         if (!resident) {
             inactivityTimer.destroy();
         }
+    }
+
+    /**
+     * Returns whether the session was successfully deleted from the persistent store.
+     * @return true if deleted from the store, false otherwise
+     */
+    protected boolean isDeletedInStore() {
+        return deletedInStore;
+    }
+
+    /**
+     * Sets whether the session was successfully deleted from the persistent store.
+     * @param deletedInStore true if deleted from the store, false otherwise
+     */
+    protected void setDeletedInStore(boolean deletedInStore) {
+        this.deletedInStore = deletedInStore;
     }
 
     @Override
