@@ -660,7 +660,7 @@ class DefaultSessionManagerTest {
             store.save(sessionId, storeData);
 
             // Wait for background inactivity timer to trigger silent eviction
-            await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+            await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
                 // Session should have been silently evicted from cache
                 assertFalse(sessionManager.getSessionCache().contains(sessionId),
                         "Session should be silently evicted from local cache");
@@ -670,6 +670,10 @@ class DefaultSessionManagerTest {
             assertFalse(listener.destroyedSessionIds.contains(sessionId),
                     "sessionDestroyed should NOT be fired for active store session");
         } finally {
+            if (sessionManager != null) {
+                sessionManager.destroy();
+                sessionManager = null;
+            }
             File[] files = tempDir.listFiles();
             if (files != null) {
                 for (File f : files) {

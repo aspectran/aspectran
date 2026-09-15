@@ -80,10 +80,7 @@ public class SessionInactivityTimer {
                     // it hasn't expired, we need to reset the timer
                     if (!expired && session.isResident()) {
                         // session wasn't expired or evicted, we need to reset the timer
-                        long timeout = session.calculateInactivityTimeout(now);
-                        if (timeout >= 0) {
-                            SessionInactivityTimer.this.schedule(Math.max(timeout, 10L));
-                        }
+                        SessionInactivityTimer.this.schedule(session.calculateInactivityTimeout(now));
                     }
                 }
             }
