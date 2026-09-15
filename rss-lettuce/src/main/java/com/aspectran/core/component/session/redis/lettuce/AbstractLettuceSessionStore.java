@@ -21,6 +21,7 @@ import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.ScanIterator;
+import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.StatefulConnection;
 import io.lettuce.core.api.sync.RedisKeyCommands;
 import io.lettuce.core.api.sync.RedisSortedSetCommands;
@@ -187,6 +188,13 @@ public abstract class AbstractLettuceSessionStore<
     @Override
     public void doCleanOrphans(long time) {
         sync(c -> {
+            String lockKey = expiryIndexKey + ":clean-lock";
+            long lockTtl = Math.max(60, getGracePeriodSecs());
+            String lockResult = c.set(lockKey, SessionData.of("locked"), SetArgs.Builder.nx().ex(lockTtl));
+            if (!"OK".equals(lockResult)) {
+                // Another node is currently cleaning orphans or cleaned recently
+                return null;
+            }
             List<SessionData> expiredSessions = c.zrangebyscore(
                     expiryIndexKey,
                     Range.create(0.0, (double)time)
