@@ -26,6 +26,7 @@ import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.server.handlers.ProxyPeerAddressHandler;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.ServletContainer;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -379,14 +380,41 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
 
     @Override
     public DeploymentManager getDeploymentManager(String deploymentName) {
-        Assert.notNull(deploymentName, "deploymentName must not be null");
-        return getRequestHandlerFactory().getServletContainer().getDeployment(deploymentName);
+        ServletContainer container = getRequestHandlerFactory().getServletContainer();
+        if (container == null) {
+            return null;
+        }
+        if (deploymentName == null || deploymentName.isEmpty() || "/".equals(deploymentName) || "root".equalsIgnoreCase(deploymentName)) {
+            DeploymentManager manager = container.getDeploymentByPath("/");
+            if (manager != null) {
+                return manager;
+            }
+            if (container.listDeployments().size() == 1) {
+                return container.getDeployment(container.listDeployments().iterator().next());
+            }
+            return null;
+        }
+        DeploymentManager manager = container.getDeployment(deploymentName);
+        if (manager == null) {
+            String path = (deploymentName.startsWith("/") ? deploymentName : "/" + deploymentName);
+            manager = container.getDeploymentByPath(path);
+        }
+        return manager;
     }
 
     @Override
     public DeploymentManager getDeploymentManagerByPath(String path) {
         Assert.notNull(path, "path must not be null");
-        return getRequestHandlerFactory().getServletContainer().getDeploymentByPath(path);
+        ServletContainer container = getRequestHandlerFactory().getServletContainer();
+        if (container == null) {
+            return null;
+        }
+        String normalized = (path.startsWith("/") ? path : "/" + path);
+        DeploymentManager manager = container.getDeploymentByPath(normalized);
+        if (manager == null && !normalized.equals(path)) {
+            manager = container.getDeploymentByPath(path);
+        }
+        return manager;
     }
 
     /**
@@ -395,21 +423,19 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      */
     @Override
     public SessionManager getSessionManager() {
-        return getSessionManagerByPath("/");
+        return getSessionManager((String)null);
     }
 
     @Override
     public SessionManager getSessionManager(String deploymentName) {
         DeploymentManager deploymentManager = getDeploymentManager(deploymentName);
-        Assert.state(deploymentManager != null, "Deployment named '" + deploymentName + "' not found");
-        return getSessionManager(deploymentManager);
+        return (deploymentManager != null ? getSessionManager(deploymentManager) : null);
     }
 
     @Override
     public SessionManager getSessionManagerByPath(String path) {
         DeploymentManager deploymentManager = getDeploymentManagerByPath(path);
-        Assert.state(deploymentManager != null, "Deployment with path '\" + path + \"' not found");
-        return getSessionManager(deploymentManager);
+        return (deploymentManager != null ? getSessionManager(deploymentManager) : null);
     }
 
     /**

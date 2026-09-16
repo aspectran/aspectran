@@ -15,6 +15,7 @@
  */
 package com.aspectran.netty.support;
 
+import com.aspectran.core.component.session.DefaultSessionListenerRegistration;
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionManager;
@@ -41,10 +42,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test case for {@link SessionListenerRegistrationBean} and session manager lookup in {@link NettyServer}.
+ * Test case for {@link DefaultSessionListenerRegistration} and session manager lookup in {@link NettyServer}.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SessionListenerRegistrationBeanTest {
+class DefaultSessionListenerRegistrationTest {
 
     private EmbeddedAspectran aspectran;
 
@@ -101,11 +102,11 @@ class SessionListenerRegistrationBeanTest {
 
     @Test
     void testRegisterAndRemoveRootSessionListener() throws IOException {
-        SessionListenerRegistrationBean registrationBean = new SessionListenerRegistrationBean();
-        registrationBean.setActivityContext(((CoreService) aspectran).getActivityContext());
+        DefaultSessionListenerRegistration registration = new DefaultSessionListenerRegistration();
+        registration.setActivityContext(((CoreService) aspectran).getActivityContext());
 
         CountingSessionListener listener = new CountingSessionListener();
-        registrationBean.register(listener);
+        registration.register(listener);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet req1 = new HttpGet("http://127.0.0.1:" + port + "/session");
@@ -118,7 +119,7 @@ class SessionListenerRegistrationBeanTest {
         assertEquals(1, listener.createdCount.get(), "SessionCreated event should have been fired once");
 
         // Remove listener
-        registrationBean.remove(listener);
+        registration.remove(listener);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet req2 = new HttpGet("http://127.0.0.1:" + port + "/session");
@@ -133,11 +134,11 @@ class SessionListenerRegistrationBeanTest {
 
     @Test
     void testRegisterAndRemoveAdminSessionListener() throws IOException {
-        SessionListenerRegistrationBean registrationBean = new SessionListenerRegistrationBean(null, "/admin");
-        registrationBean.setActivityContext(((CoreService) aspectran).getActivityContext());
+        DefaultSessionListenerRegistration registration = new DefaultSessionListenerRegistration((String) null, "/admin");
+        registration.setActivityContext(((CoreService) aspectran).getActivityContext());
 
         CountingSessionListener listener = new CountingSessionListener();
-        registrationBean.register(listener);
+        registration.register(listener);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet req = new HttpGet("http://127.0.0.1:" + port + "/admin/session");
@@ -149,16 +150,16 @@ class SessionListenerRegistrationBeanTest {
 
         assertEquals(1, listener.createdCount.get(), "Admin sessionCreated event should have been fired once");
 
-        registrationBean.remove(listener);
+        registration.remove(listener);
     }
 
     @Test
     void testRegisterWithExplicitDeploymentName() throws IOException {
-        SessionListenerRegistrationBean registrationBean = new SessionListenerRegistrationBean();
-        registrationBean.setActivityContext(((CoreService) aspectran).getActivityContext());
+        DefaultSessionListenerRegistration registration = new DefaultSessionListenerRegistration();
+        registration.setActivityContext(((CoreService) aspectran).getActivityContext());
 
         CountingSessionListener listener = new CountingSessionListener();
-        registrationBean.register(listener, "/admin");
+        registration.register(listener, "/admin");
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet req = new HttpGet("http://127.0.0.1:" + port + "/admin/session");
@@ -170,16 +171,16 @@ class SessionListenerRegistrationBeanTest {
 
         assertEquals(1, listener.createdCount.get(), "SessionCreated should fire for explicitly specified /admin context");
 
-        registrationBean.remove(listener, "/admin");
+        registration.remove(listener, "/admin");
     }
 
     @Test
     void testRegisterWithRootContextName() throws IOException {
-        SessionListenerRegistrationBean registrationBean = new SessionListenerRegistrationBean();
-        registrationBean.setActivityContext(((CoreService) aspectran).getActivityContext());
+        DefaultSessionListenerRegistration registration = new DefaultSessionListenerRegistration();
+        registration.setActivityContext(((CoreService) aspectran).getActivityContext());
 
         CountingSessionListener listener = new CountingSessionListener();
-        registrationBean.register(listener, "root");
+        registration.register(listener, "root");
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet req = new HttpGet("http://127.0.0.1:" + port + "/session");
@@ -191,16 +192,16 @@ class SessionListenerRegistrationBeanTest {
 
         assertEquals(1, listener.createdCount.get(), "SessionCreated should fire when registered with context name 'root'");
 
-        registrationBean.remove(listener, "root");
+        registration.remove(listener, "root");
     }
 
     @Test
     void testRegisterWithNettyServerId() throws IOException {
-        SessionListenerRegistrationBean registrationBean = new SessionListenerRegistrationBean("netty.server", "/admin");
-        registrationBean.setActivityContext(((CoreService) aspectran).getActivityContext());
+        DefaultSessionListenerRegistration registration = new DefaultSessionListenerRegistration("netty.server", "/admin");
+        registration.setActivityContext(((CoreService) aspectran).getActivityContext());
 
         CountingSessionListener listener = new CountingSessionListener();
-        registrationBean.register(listener);
+        registration.register(listener);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet req = new HttpGet("http://127.0.0.1:" + port + "/admin/session");
@@ -212,7 +213,7 @@ class SessionListenerRegistrationBeanTest {
 
         assertEquals(1, listener.createdCount.get(), "SessionCreated should fire when nettyServerId is explicitly provided");
 
-        registrationBean.remove(listener);
+        registration.remove(listener);
     }
 
     private static class CountingSessionListener implements SessionListener {

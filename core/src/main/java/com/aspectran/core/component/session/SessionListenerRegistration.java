@@ -31,11 +31,11 @@ public interface SessionListenerRegistration {
     void register(SessionListener listener);
 
     /**
-     * Registers a session listener for a specific deployment.
+     * Registers a session listener for a specific deployment or context path.
      * @param listener the session listener to register
-     * @param deploymentName the name of the deployment
+     * @param nameOrPath the deployment name or context path
      */
-    void register(SessionListener listener, String deploymentName);
+    void register(SessionListener listener, String nameOrPath);
 
     /**
      * Removes a session listener.
@@ -44,10 +44,10 @@ public interface SessionListenerRegistration {
     void remove(SessionListener listener);
 
     /**
-     * Removes a session listener for a specific deployment.
+     * Removes a session listener for a specific deployment or context path.
      * @param listener the session listener to remove
-     * @param deploymentName the name of the deployment
+     * @param nameOrPath the deployment name or context path
      */
-    void remove(SessionListener listener, String deploymentName);
+    void remove(SessionListener listener, String nameOrPath);
 
 }
