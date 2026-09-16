@@ -33,10 +33,10 @@ import java.util.Set;
 public interface SessionManager {
 
     /**
-     * Returns the worker name for the session manager.
-     * @return the worker name
+     * Returns the routing identifier used as a suffix for session IDs (e.g. for sticky sessions).
+     * @return the routing identifier, or {@code null} if not configured
      */
-    String getWorkerName();
+    String getRouteId();
 
     /**
      * Returns the scheduler used for session-related tasks, such as scavenging.

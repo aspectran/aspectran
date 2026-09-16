@@ -60,6 +60,8 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
 
     private int defaultSessionTimeout = Integer.MIN_VALUE;
 
+    private String deploymentName;
+
     @Override
     public void setActivityContext(ActivityContext context) {
         sessionManager.setActivityContext(context);
@@ -128,7 +130,15 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
 
     @Override
     public String getDeploymentName() {
-        return sessionManager.getWorkerName();
+        return deploymentName;
+    }
+
+    /**
+     * Sets the deployment name that uniquely identifies this session manager.
+     * @param deploymentName the deployment name
+     */
+    public void setDeploymentName(String deploymentName) {
+        this.deploymentName = deploymentName;
     }
 
     @Override

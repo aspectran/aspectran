@@ -62,7 +62,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
-        workerName: shell-sample
+        routeId: shell-sample
         maxIdleSeconds: 300
         scavengingIntervalSeconds: 60
         enabled: true

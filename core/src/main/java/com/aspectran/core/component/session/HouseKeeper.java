@@ -180,10 +180,8 @@ public class HouseKeeper extends AbstractLifeCycle {
             ToStringBuilder tsb = new ToStringBuilder(super.toString());
             tsb.append("scavengingInterval", scavengingInterval);
             return tsb + " used by " + sessionManager.getComponentName();
-        } else if (sessionManager.getWorkerName() != null) {
-            return super.toString() + "(" + sessionManager.getWorkerName() + ")";
         } else {
-            return super.toString();
+            return super.toString() + " used by " + sessionManager.getComponentName();
         }
     }
 

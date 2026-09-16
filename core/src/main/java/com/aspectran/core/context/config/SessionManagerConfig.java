@@ -28,8 +28,8 @@ import com.aspectran.utils.apon.VariableParameters;
  */
 public class SessionManagerConfig extends DefaultParameters {
 
-    /** The name of the session worker. */
-    private static final ParameterKey workerName;
+    /** The routing identifier used as a suffix for session IDs (e.g. for sticky sessions). */
+    private static final ParameterKey routeId;
 
     /** The maximum number of active sessions. */
     private static final ParameterKey maxActiveSessions;
@@ -70,7 +70,7 @@ public class SessionManagerConfig extends DefaultParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        workerName = new ParameterKey("workerName", ValueType.STRING);
+        routeId = new ParameterKey("routeId", ValueType.STRING);
         maxActiveSessions = new ParameterKey("maxActiveSessions", ValueType.INT);
         maxIdleSeconds = new ParameterKey("maxIdleSeconds", ValueType.INT);
         evictionIdleSeconds = new ParameterKey("evictionIdleSeconds", ValueType.INT);
@@ -85,7 +85,7 @@ public class SessionManagerConfig extends DefaultParameters {
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
-                workerName,
+                routeId,
                 maxActiveSessions,
                 maxIdleSeconds,
                 evictionIdleSeconds,
@@ -129,28 +129,28 @@ public class SessionManagerConfig extends DefaultParameters {
     }
 
     /**
-     * Returns whether the worker name is set.
-     * @return true if the worker name is set, false otherwise
+     * Returns whether the route ID is set.
+     * @return true if the route ID is set, false otherwise
      */
-    public boolean hasWorkerName() {
-        return hasValue(workerName);
+    public boolean hasRouteId() {
+        return hasValue(routeId);
     }
 
     /**
-     * Returns the name of the session worker.
-     * @return the worker name
+     * Returns the route ID.
+     * @return the route ID
      */
-    public String getWorkerName() {
-        return getString(workerName);
+    public String getRouteId() {
+        return getString(routeId);
     }
 
     /**
-     * Sets the name of the session worker.
-     * @param workerName the worker name
+     * Sets the route ID.
+     * @param routeId the route ID
      * @return this {@code SessionManagerConfig} instance
      */
-    public SessionManagerConfig setWorkerName(String workerName) {
-        putValue(SessionManagerConfig.workerName, workerName);
+    public SessionManagerConfig setRouteId(String routeId) {
+        putValue(SessionManagerConfig.routeId, routeId);
         return this;
     }
 

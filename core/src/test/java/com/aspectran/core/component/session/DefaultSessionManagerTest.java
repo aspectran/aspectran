@@ -79,7 +79,7 @@ class DefaultSessionManagerTest {
     @Test
     void testNewSessionExpirationByMaxIdleSecondsForNew() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test1")
+                .line("routeId", "test1")
                 .line("maxIdleSeconds", 30)
                 .line("maxIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
@@ -127,7 +127,7 @@ class DefaultSessionManagerTest {
     @Test
     void testNewSessionPromotionToNormalSession() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test2")
+                .line("routeId", "test2")
                 .line("maxIdleSeconds", 10)
                 .line("maxIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
@@ -174,7 +174,7 @@ class DefaultSessionManagerTest {
     @Test
     void testNormalSessionExpirationAfterPromotion() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test3")
+                .line("routeId", "test3")
                 .line("maxIdleSeconds", 2)
                 .line("maxIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
@@ -231,7 +231,7 @@ class DefaultSessionManagerTest {
         storeDir.mkdirs();
 
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test4")
+                .line("routeId", "test4")
                 .line("maxIdleSeconds", 30)
                 .line("maxIdleSecondsForNew", 15)
                 .line("evictionIdleSeconds", 10)
@@ -294,7 +294,7 @@ class DefaultSessionManagerTest {
     @Test
     void testDualTimeoutNewVsNormalSession() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test5")
+                .line("routeId", "test5")
                 .line("maxIdleSeconds", 10)
                 .line("maxIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
@@ -346,7 +346,7 @@ class DefaultSessionManagerTest {
     @Test
     void testNewSessionWithoutMaxIdleSecondsForNew() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test6")
+                .line("routeId", "test6")
                 .line("maxIdleSeconds", 2)
                 .line("scavengingIntervalSeconds", 1)
                 .toString());
@@ -383,7 +383,7 @@ class DefaultSessionManagerTest {
     @Test
     void testMaxIdleSecondsForNewGreaterThanMaxIdleSeconds() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test7")
+                .line("routeId", "test7")
                 .line("maxIdleSeconds", 5)
                 .line("maxIdleSecondsForNew", 10)
                 .line("scavengingIntervalSeconds", 1)
@@ -412,7 +412,7 @@ class DefaultSessionManagerTest {
     @Test
     void testBulkNewSessionExpiration() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test8")
+                .line("routeId", "test8")
                 .line("maxIdleSeconds", 30)
                 .line("maxIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
@@ -462,7 +462,7 @@ class DefaultSessionManagerTest {
         storeDir.mkdirs();
 
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test9")
+                .line("routeId", "test9")
                 .line("maxIdleSeconds", 5)
                 .line("maxIdleSecondsForNew", 3)
                 .line("evictionIdleSeconds", 10)
@@ -534,7 +534,7 @@ class DefaultSessionManagerTest {
     @Test
     void testTempResidentStatus() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test10")
+                .line("routeId", "test10")
                 .line("maxIdleSeconds", 30)
                 .line("maxIdleSecondsForNew", 5)
                 .line("scavengingIntervalSeconds", 1)
@@ -582,7 +582,7 @@ class DefaultSessionManagerTest {
     @Test
     void testSessionStatisticsTracking() throws Exception {
         SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                .line("workerName", "test11")
+                .line("routeId", "test11")
                 .line("maxIdleSeconds", 10)
                 .line("maxIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
@@ -629,7 +629,7 @@ class DefaultSessionManagerTest {
         tempDir.mkdirs();
         try {
             SessionManagerConfig config = new SessionManagerConfig(new AponLines()
-                    .line("workerName", "nodeA")
+                    .line("routeId", "nodeA")
                     .line("clusterEnabled", true)
                     .line("maxIdleSeconds", 1)
                     .line("saveOnCreate", true)
@@ -687,6 +687,39 @@ class DefaultSessionManagerTest {
 
     // ========================================================================
     // Helper classes
+    @Test
+    void testSessionIdWithoutRouteId() throws Exception {
+        SessionManagerConfig config = new SessionManagerConfig(new AponLines()
+                .line("maxIdleSeconds", 30)
+                .toString());
+
+        sessionManager = new DefaultSessionManager();
+        sessionManager.setSessionManagerConfig(config);
+        sessionManager.initialize();
+
+        assertNull(sessionManager.getRouteId());
+        String sessionId = sessionManager.createSessionId();
+        assertNotNull(sessionId);
+        assertFalse(sessionId.contains("."), "Session ID without routeId should not contain '.'");
+    }
+
+    @Test
+    void testSessionIdWithRouteId() throws Exception {
+        SessionManagerConfig config = new SessionManagerConfig(new AponLines()
+                .line("routeId", "n1")
+                .line("maxIdleSeconds", 30)
+                .toString());
+
+        sessionManager = new DefaultSessionManager();
+        sessionManager.setSessionManagerConfig(config);
+        sessionManager.initialize();
+
+        assertEquals("n1", sessionManager.getRouteId());
+        String sessionId = sessionManager.createSessionId();
+        assertNotNull(sessionId);
+        assertTrue(sessionId.endsWith(".n1"), "Session ID with routeId should end with .n1");
+    }
+
     // ========================================================================
 
     /**

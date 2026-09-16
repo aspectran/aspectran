@@ -58,7 +58,7 @@ class InstantActivityTest {
     @NonNull
     private SessionManager createSessionManager() throws Exception {
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
-        sessionManagerConfig.setWorkerName("t0");
+        sessionManagerConfig.setRouteId("t0");
         DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setActivityContext(context);
         sessionManager.setSessionManagerConfig(sessionManagerConfig);

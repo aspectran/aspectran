@@ -47,8 +47,6 @@ public class DefaultSessionManager
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionManager.class);
 
-    private static final String UNNAMED_WORKER_PREFIX = "unnamed";
-
     private static final AtomicInteger uniqueNumberIssuer = new AtomicInteger();
 
     private ApplicationAdapter applicationAdapter;
@@ -67,12 +65,12 @@ public class DefaultSessionManager
     }
 
     /**
-     * Instantiates a new DefaultSessionManager with a specific worker name.
-     * @param workerName the worker name, which must be unique in a cluster
+     * Instantiates a new DefaultSessionManager with a specific route ID.
+     * @param routeId the route ID used as a suffix for session IDs
      */
-    public DefaultSessionManager(String workerName) {
+    public DefaultSessionManager(String routeId) {
         super();
-        setWorkerName(workerName);
+        setRouteId(routeId);
     }
 
     @Override
@@ -151,7 +149,7 @@ public class DefaultSessionManager
      * This method performs the following steps:
      * <ol>
      *   <li>Reads settings from {@link SessionManagerConfig}.</li>
-     *   <li>Sets the worker name and session timeout policies.</li>
+     *   <li>Sets the route ID and session timeout policies.</li>
      *   <li>Initializes the {@link Scheduler} for background tasks.</li>
      *   <li>Creates and starts the {@link HouseKeeper} for session scavenging.</li>
      *   <li>Initializes the {@link SessionIdGenerator}.</li>
@@ -169,7 +167,6 @@ public class DefaultSessionManager
             if (logger.isDebugEnabled()) {
                 logger.debug("Initializing {}", getComponentName());
             }
-            setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Initializing {}", ToStringBuilder.toString(getComponentName(), sessionManagerConfig));
@@ -177,11 +174,8 @@ public class DefaultSessionManager
             if (sessionManagerConfig.isClusterEnabled()) {
                 clusterEnabled = true;
             }
-            if (sessionManagerConfig.hasWorkerName()) {
-                uniqueNumberIssuer.getAndIncrement();
-                setWorkerName(sessionManagerConfig.getWorkerName());
-            } else {
-                setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
+            if (sessionManagerConfig.hasRouteId()) {
+                setRouteId(sessionManagerConfig.getRouteId());
             }
             if (sessionManagerConfig.hasMaxIdleSeconds()) {
                 setDefaultMaxIdleSecs(Math.max(sessionManagerConfig.getMaxIdleSeconds(), -1));
@@ -197,12 +191,7 @@ public class DefaultSessionManager
         }
 
         if (getScheduler() == null) {
-            String schedulerName;
-            if (getWorkerName() != null) {
-                schedulerName = "SM worker-" + getWorkerName();
-            } else {
-                schedulerName = String.format("SM worker-@%x", hashCode());
-            }
+            String schedulerName = "SessionScheduler-" + uniqueNumberIssuer.getAndIncrement();
             Scheduler scheduler = new SessionScheduler(schedulerName, classLoader);
             setScheduler(scheduler);
         }
@@ -213,7 +202,7 @@ public class DefaultSessionManager
         }
 
         if (getSessionIdGenerator() == null) {
-            SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(getWorkerName());
+            SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(getRouteId());
             setSessionIdGenerator(sessionIdGenerator);
         }
 

@@ -58,7 +58,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     private final Set<String> candidateSessionIdsForExpiry = ConcurrentHashMap.newKeySet();
 
-    private String workerName;
+    private String routeId;
 
     private Scheduler scheduler;
 
@@ -90,23 +90,23 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     public abstract ClassLoader getClassLoader();
 
     @Override
-    public String getWorkerName() {
-        return workerName;
+    public String getRouteId() {
+        return routeId;
     }
 
     /**
-     * Sets the worker name for this session manager.
-     * In a clustered environment, this name must be unique for each node.
-     * @param workerName the unique name for this node
+     * Sets the route ID for this session manager.
+     * In a clustered environment, this is used as a suffix for session IDs (e.g. for sticky sessions).
+     * @param routeId the route ID
      */
-    protected void setWorkerName(String workerName) {
-        if (this.workerName != null) {
-            throw new IllegalStateException("workerName already set");
+    protected void setRouteId(String routeId) {
+        if (this.routeId != null) {
+            throw new IllegalStateException("routeId already set");
         }
-        if (workerName != null && workerName.contains(".")) {
-            throw new IllegalArgumentException("Worker name cannot contain '.'");
+        if (routeId != null && routeId.contains(".")) {
+            throw new IllegalArgumentException("Route ID cannot contain '.'");
         }
-        this.workerName = workerName;
+        this.routeId = routeId;
     }
 
     @Override
@@ -172,7 +172,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     @Override
     public void setDefaultMaxIdleSecs(int defaultMaxIdleSecs) {
         this.defaultMaxIdleSecs = defaultMaxIdleSecs;
-        if (logger.isDebugEnabled()) {
+        if (isInitialized() && logger.isDebugEnabled()) {
             logger.debug("{} default maxIdleSecs={}", getComponentName(), defaultMaxIdleSecs);
         }
     }
@@ -637,15 +637,6 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         scheduler.stop();
         if (sessionCache instanceof AbstractComponent component) {
             component.destroy();
-        }
-    }
-
-    @Override
-    public String getComponentName() {
-        if (getWorkerName() != null) {
-            return super.getComponentName() + "(" + getWorkerName() + ")";
-        } else {
-            return super.getComponentName();
         }
     }
 

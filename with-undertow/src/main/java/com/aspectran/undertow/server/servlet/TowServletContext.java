@@ -171,6 +171,9 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         this.sessionManager = towSessionManager;
         setSessionManagerFactory(deployment -> {
             if (towSessionManager != null) {
+                if (towSessionManager.getDeploymentName() == null) {
+                    towSessionManager.setDeploymentName(deployment.getDeploymentInfo().getDeploymentName());
+                }
                 towSessionManager.setClassLoader(getClassLoader());
                 try {
                     towSessionManager.initialize();

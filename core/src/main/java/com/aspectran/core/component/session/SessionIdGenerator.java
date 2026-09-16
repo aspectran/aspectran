@@ -36,7 +36,7 @@ public class SessionIdGenerator {
 
     private static final AtomicLong COUNTER = new AtomicLong();
 
-    private final String workerName;
+    private final String routeId;
 
     private final Random random;
 
@@ -50,15 +50,23 @@ public class SessionIdGenerator {
     }
 
     /**
-     * Instantiates a new SessionIdGenerator.
-     * @param workerName the worker name
+     * Instantiates a new SessionIdGenerator with a specific route ID.
+     * @param routeId the route ID used as a suffix for generated session IDs
      */
-    public SessionIdGenerator(String workerName) {
-        if (workerName != null && workerName.contains(".")) {
-            throw new IllegalArgumentException("Worker name cannot contain '.'");
+    public SessionIdGenerator(String routeId) {
+        if (routeId != null && routeId.contains(".")) {
+            throw new IllegalArgumentException("Route ID cannot contain '.'");
         }
-        this.workerName = workerName;
+        this.routeId = routeId;
         this.random = initRandom();
+    }
+
+    /**
+     * Returns the route ID.
+     * @return the route ID, or {@code null} if not configured
+     */
+    public String getRouteId() {
+        return routeId;
     }
 
     /**
@@ -90,8 +98,8 @@ public class SessionIdGenerator {
         id.append(Long.toString(r0, Character.MAX_RADIX));
         id.append(Long.toString(r1, Character.MAX_RADIX));
         id.append(COUNTER.getAndIncrement());
-        if (workerName != null) {
-            id.append(".").append(workerName);
+        if (routeId != null) {
+            id.append(".").append(routeId);
         }
         return id.toString();
     }
