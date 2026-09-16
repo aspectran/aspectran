@@ -268,16 +268,6 @@ public class DefaultSessionManager
                     }
                     sessionCache.setSaveOnCreate(saveOnCreate);
                 }
-                if (sessionManagerConfig.hasSaveOnInactiveEviction()) {
-                    boolean saveOnInactiveEviction = sessionManagerConfig.getSaveOnInactiveEviction();
-                    if (sessionStore == null && saveOnInactiveEviction) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Fixed to saveOnInactiveEviction=false because there is no session store");
-                        }
-                        saveOnInactiveEviction = false;
-                    }
-                    sessionCache.setSaveOnInactiveEviction(saveOnInactiveEviction);
-                }
                 if (sessionManagerConfig.hasRemoveUnloadableSessions()) {
                     boolean removeUnloadableSessions = sessionManagerConfig.getRemoveUnloadableSessions();
                     if (sessionStore == null && removeUnloadableSessions) {

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.concurrent.AutoLock;
 import org.slf4j.Logger;
@@ -127,7 +128,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                 if (restoredSessions > 0) {
                     getStatistics().sessionCreated(restoredSessions);
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Restored {} sessions from {}", restoredSessions, getSessionStoreName());
+                        logger.debug("Restored {} sessions from session store", restoredSessions);
                     }
                 }
             }
@@ -201,9 +202,10 @@ public class DefaultSessionCache extends AbstractSessionCache {
         tsb.append("evictionIdleSecs", getEvictionIdleSecs());
         tsb.append("evictionIdleSecsForNew", getEvictionIdleSecsForNew());
         tsb.appendForce("saveOnCreate", isSaveOnCreate());
-        tsb.appendForce("saveOnInactiveEviction", isSaveOnInactiveEviction());
         tsb.appendForce("clusterEnabled", isClusterEnabled());
-        tsb.append("store", getSessionStoreName());
+        if (getSessionStore() != null) {
+            tsb.append("sessionStore", ObjectUtils.simpleIdentityToString(getSessionStore()));
+        }
         return tsb.toString();
     }
 

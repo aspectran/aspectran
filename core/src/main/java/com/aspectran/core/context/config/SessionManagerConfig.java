@@ -52,9 +52,6 @@ public class SessionManagerConfig extends DefaultParameters {
     /** Whether to save session data on creation. */
     private static final ParameterKey saveOnCreate;
 
-    /** Whether to save session data when it is evicted for being inactive. */
-    private static final ParameterKey saveOnInactiveEviction;
-
     /** Whether to remove session files that cannot be restored. */
     private static final ParameterKey removeUnloadableSessions;
 
@@ -78,7 +75,6 @@ public class SessionManagerConfig extends DefaultParameters {
         evictionIdleSecondsForNew = new ParameterKey("evictionIdleSecondsForNew", ValueType.INT);
         scavengingIntervalSeconds = new ParameterKey("scavengingIntervalSeconds", ValueType.INT);
         saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
-        saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
         clusterEnabled = new ParameterKey("clusterEnabled", ValueType.BOOLEAN);
@@ -93,7 +89,6 @@ public class SessionManagerConfig extends DefaultParameters {
                 evictionIdleSecondsForNew,
                 scavengingIntervalSeconds,
                 saveOnCreate,
-                saveOnInactiveEviction,
                 removeUnloadableSessions,
                 fileStore,
                 clusterEnabled,
@@ -333,32 +328,6 @@ public class SessionManagerConfig extends DefaultParameters {
      */
     public SessionManagerConfig setSaveOnCreate(boolean saveOnCreate) {
         putValue(SessionManagerConfig.saveOnCreate, saveOnCreate);
-        return this;
-    }
-
-    /**
-     * Returns whether to save session data on inactive eviction.
-     * @return true to save on eviction, false otherwise
-     */
-    public boolean hasSaveOnInactiveEviction() {
-        return hasValue(saveOnInactiveEviction);
-    }
-
-    /**
-     * Returns whether to save session data when it is evicted for being inactive.
-     * @return true to save on eviction, false otherwise
-     */
-    public boolean getSaveOnInactiveEviction() {
-        return getBoolean(saveOnInactiveEviction, false);
-    }
-
-    /**
-     * Sets whether to save session data when it is evicted for being inactive.
-     * @param saveOnInactiveEviction true to save on eviction, false otherwise
-     * @return this {@code SessionManagerConfig} instance
-     */
-    public SessionManagerConfig setSaveOnInactiveEviction(boolean saveOnInactiveEviction) {
-        putValue(SessionManagerConfig.saveOnInactiveEviction, saveOnInactiveEviction);
         return this;
     }
 

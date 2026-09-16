@@ -222,7 +222,6 @@ class DefaultSessionManagerTest {
      *   <li>maxIdleSecondsForNew = 15 (long enough to not expire during the test)</li>
      *   <li>evictionIdleSeconds = 10</li>
      *   <li>evictionIdleSecondsForNew = 1 (evict from cache after 1 second)</li>
-     *   <li>saveOnInactiveEviction = true</li>
      * </ul>
      */
     @Test
@@ -237,7 +236,6 @@ class DefaultSessionManagerTest {
                 .line("evictionIdleSeconds", 10)
                 .line("evictionIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
-                .line("saveOnInactiveEviction", true)
                 .block("fileStore")
                 .line("storeDir", storeDir.getCanonicalFile())
                 .line("gracePeriodSeconds", 0)
@@ -469,7 +467,6 @@ class DefaultSessionManagerTest {
                 .line("evictionIdleSecondsForNew", 1)
                 .line("scavengingIntervalSeconds", 1)
                 .line("saveOnCreate", true)
-                .line("saveOnInactiveEviction", true)
                 .block("fileStore")
                 .line("storeDir", storeDir.getCanonicalFile())
                 .line("gracePeriodSeconds", 0)

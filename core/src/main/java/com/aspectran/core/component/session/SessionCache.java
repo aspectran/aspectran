@@ -77,18 +77,6 @@ public interface SessionCache {
     boolean isSaveOnCreate();
 
     /**
-     * Checks if a session should be saved to the store before being evicted due to inactivity.
-     * @return true if sessions are saved before eviction, false otherwise
-     */
-    boolean isSaveOnInactiveEviction();
-
-    /**
-     * Sets the policy for whether a session should be saved before being evicted due to inactivity.
-     * @param saveOnEvict true to save sessions before eviction, false otherwise
-     */
-    void setSaveOnInactiveEviction(boolean saveOnEvict);
-
-    /**
      * Checks if sessions that cannot be loaded from the store should be removed.
      * @return true to remove unloadable sessions, false otherwise
      */
