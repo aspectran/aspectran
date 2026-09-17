@@ -62,7 +62,7 @@ class ClusterLettuceSessionStoreFactoryTest {
     static void startContainer() {
         redisCluster = new GenericContainer<>(DockerImageName.parse("grokzen/redis-cluster:6.2.1"))
                 .withExposedPorts(7000, 7001, 7002, 7003, 7004, 7005)
-                .waitingFor(Wait.forLogMessage(".*Cluster state changed: ok.*\\n", 1))
+                .waitingFor(Wait.forLogMessage(".*Cluster state changed: ok.*\\n", 6))
                 .withStartupTimeout(Duration.ofMinutes(2));
         redisCluster.start();
 
