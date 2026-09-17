@@ -15,12 +15,15 @@
  */
 package com.aspectran.core.component.aspect.pointcut;
 
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.PointcutRule;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -84,6 +87,61 @@ class WildcardPointcutTest {
         Pointcut wildcardPointcut = new WildcardPointcut(pprList);
 
         assertTrue(wildcardPointcut.matches("/translet", "id", "name", null));
+    }
+
+    @Test
+    void pipelinePatternTest() throws IllegalRuleException {
+        PointcutRule pointcutRule = PointcutRule.newInstance(new String[] {
+                "+: /user/**|/order/**@userService|orderService^get*|find*"
+        });
+        Pointcut wildcardPointcut = PointcutFactory.createPointcut(pointcutRule);
+
+        assertTrue(wildcardPointcut.matches("/user/profile", "userService", null, "getUser"));
+        assertTrue(wildcardPointcut.matches("/order/view", "orderService", null, "findOrder"));
+        assertTrue(wildcardPointcut.matches("/user/list", "orderService", null, "getOrders"));
+        assertTrue(wildcardPointcut.matches("/order/detail", "userService", null, "findUser"));
+
+        assertFalse(wildcardPointcut.matches("/item/list", "userService", null, "getUser"));
+        assertFalse(wildcardPointcut.matches("/user/profile", "itemService", null, "getUser"));
+        assertFalse(wildcardPointcut.matches("/user/profile", "userService", null, "deleteUser"));
+    }
+
+    @Test
+    void methodOnlyPatternTest() throws IllegalRuleException {
+        PointcutRule pointcutRule = PointcutRule.newInstance(new String[] {
+                "+: @^get*"
+        });
+        Pointcut wildcardPointcut = PointcutFactory.createPointcut(pointcutRule);
+
+        assertTrue(wildcardPointcut.matches("/any/translet", "anyBean", "any.Class", "getName"));
+        assertTrue(wildcardPointcut.matches(null, null, null, "getUser"));
+        assertFalse(wildcardPointcut.matches("/any/translet", "anyBean", "any.Class", "setName"));
+    }
+
+    @Test
+    void transletAndMethodPatternTest() throws IllegalRuleException {
+        PointcutRule pointcutRule = PointcutRule.newInstance(new String[] {
+                "+: /api/**@^get*|find*"
+        });
+        Pointcut wildcardPointcut = PointcutFactory.createPointcut(pointcutRule);
+
+        assertTrue(wildcardPointcut.matches("/api/v1/users", "userService", "com.example.UserService", "getUser"));
+        assertTrue(wildcardPointcut.matches("/api/v1/orders", null, null, "findOrder"));
+        assertFalse(wildcardPointcut.matches("/admin/users", "userService", "com.example.UserService", "getUser"));
+        assertFalse(wildcardPointcut.matches("/api/v1/users", "userService", "com.example.UserService", "deleteUser"));
+    }
+
+    @Test
+    void pipelineWithClassDirectiveTest() throws IllegalRuleException {
+        PointcutRule pointcutRule = PointcutRule.newInstance(new String[] {
+                "+: /api/**@class:com.example.*Service|**.OtherService^get*|find*"
+        });
+        Pointcut wildcardPointcut = PointcutFactory.createPointcut(pointcutRule);
+
+        assertTrue(wildcardPointcut.matches("/api/v1/users", "anyBeanId", "com.example.UserService", "getUsers"));
+        assertTrue(wildcardPointcut.matches("/api/v1/orders", "anyBeanId", "org.sample.OtherService", "findOrders"));
+        assertFalse(wildcardPointcut.matches("/api/v1/users", "anyBeanId", "com.other.SampleService", "getUsers"));
+        assertFalse(wildcardPointcut.matches("/api/v1/users", "anyBeanId", "com.example.UserService", "updateUsers"));
     }
 
 }
