@@ -285,7 +285,7 @@ public class InvokeAction implements Executable {
      * @return an array of resolved argument objects
      */
     @NonNull
-    private static Object[] createArguments(
+    private static Object @NonNull [] createArguments(
             @NonNull Activity activity, @NonNull ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) {
         Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
         int size = argumentItemRuleMap.size();
