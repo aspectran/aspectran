@@ -27,6 +27,11 @@ import java.util.Set;
  */
 public interface WebService extends CoreService {
 
+    @Override
+    default boolean isWebService() {
+        return true;
+    }
+
     /**
      * Returns whether session adaptation is enabled for this web service.
      * @return {@code true} if session adaptation is enabled, {@code false} otherwise

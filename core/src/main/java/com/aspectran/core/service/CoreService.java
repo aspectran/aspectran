@@ -69,6 +69,14 @@ public interface CoreService {
     boolean isDerived();
 
     /**
+     * Returns whether this service is a web service.
+     * @return {@code true} if this service is a web service, {@code false} otherwise
+     */
+    default boolean isWebService() {
+        return false;
+    }
+
+    /**
      * Returns the name of this service.
      * @return the service name
      */
