@@ -111,7 +111,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="<aspectran:url value="/anatomy/viewer"/>">Anatomy</a></li>
                 </ul>
-                <div class="quick-search-box m-2 mx-md-3 m-lg-0">
+                <div class="quick-search-box mx-3 my-2 m-lg-0">
                     <form name="google_quick_search" role="search">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
@@ -119,7 +119,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="settings d-flex justify-content-end align-items-center gap-2 m-2 mx-md-3 m-lg-0">
+                <div class="settings d-flex justify-content-end align-items-center gap-2 mx-3 my-2 m-lg-0">
                     <div class="theme-toggler dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
                             <i class="bi theme-icon-active"></i>
