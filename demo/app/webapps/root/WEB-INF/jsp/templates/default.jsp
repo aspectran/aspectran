@@ -202,7 +202,7 @@
 <div class="container">
     <div id="up-to-top" class="row">
         <div class="col text-end">
-            <a class="btn" href="#top-of-page"><i class="bi bi-chevron-up"></i></a>
+            <a href="#top-of-page"><i class="bi bi-chevron-up"></i></a>
         </div>
     </div>
 </div>
