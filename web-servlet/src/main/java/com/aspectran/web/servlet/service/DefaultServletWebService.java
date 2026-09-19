@@ -251,12 +251,26 @@ public class DefaultServletWebService extends AbstractServletWebService {
         }
     }
 
-    private void sendError(HttpServletResponse response, int sc, String msg) {
+    private void sendError(@NonNull HttpServletResponse response, int sc, @Nullable String msg) {
+        sendError(response, sc, msg, null);
+    }
+
+    private void sendError(
+            @NonNull HttpServletResponse response,
+            int sc,
+            @Nullable String msg,
+            @Nullable String retryAfter) {
         if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Response");
             tsb.append("code", sc);
             tsb.append("message", msg);
+            if (retryAfter != null) {
+                tsb.append("retryAfter", retryAfter);
+            }
             logger.debug(tsb.toString());
+        }
+        if (retryAfter != null) {
+            response.setHeader(HttpHeaders.RETRY_AFTER, retryAfter);
         }
         try {
             if (msg != null) {
@@ -352,18 +366,19 @@ public class DefaultServletWebService extends AbstractServletWebService {
                 }
                 response.setHeader(HttpHeaders.CONNECTION, "close");
                 String msg = "Service is temporarily unavailable. Please try again later.";
+                String retryAfter = null;
                 if (pauseTimeout > 0L) {
                     long remainingMillis = pauseTimeout - System.currentTimeMillis();
                     if (remainingMillis > 0) {
                         long remainingSeconds = remainingMillis / 1000L;
                         if (remainingSeconds > 0) {
-                            response.setHeader(HttpHeaders.RETRY_AFTER, String.valueOf(remainingSeconds));
+                            retryAfter = String.valueOf(remainingSeconds);
                         }
                         msg = "Service is temporarily unavailable. Please try again in " +
                                 DurationUtils.toHumanReadableMillis(remainingMillis) + ".";
                     }
                 }
-                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, msg);
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, msg, retryAfter);
                 return true;
             } else {
                 // If a temporary pause has expired, reset the timeout and allow requests.

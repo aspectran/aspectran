@@ -214,17 +214,36 @@ public class DefaultNettyService extends AbstractNettyService {
         }
     }
 
-    private void sendError(ChannelHandlerContext ctx, FullHttpRequest request, HttpResponseStatus status, String msg) {
+    private void sendError(
+            @NonNull ChannelHandlerContext ctx,
+            @Nullable FullHttpRequest request,
+            @NonNull HttpResponseStatus status,
+            @Nullable String msg) {
+        sendError(ctx, request, status, msg, null);
+    }
+
+    private void sendError(
+            @NonNull ChannelHandlerContext ctx,
+            @Nullable FullHttpRequest request,
+            @NonNull HttpResponseStatus status,
+            @Nullable String msg,
+            @Nullable String retryAfter) {
         if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Response");
             tsb.append("code", status.code());
             tsb.append("message", msg);
+            if (retryAfter != null) {
+                tsb.append("retryAfter", retryAfter);
+            }
             logger.debug(tsb.toString());
         }
         ByteBuf content = (msg != null ? Unpooled.copiedBuffer(msg, StandardCharsets.UTF_8) : Unpooled.EMPTY_BUFFER);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, content);
         if (msg != null) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
+        }
+        if (retryAfter != null) {
+            response.headers().set(HttpHeaderNames.RETRY_AFTER, retryAfter);
         }
         HttpUtil.setContentLength(response, content.readableBytes());
         boolean keepAlive = request != null && HttpUtil.isKeepAlive(request) && status.code() < 400;
@@ -235,30 +254,6 @@ public class DefaultNettyService extends AbstractNettyService {
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         }
-    }
-
-    private boolean checkPaused(ChannelHandlerContext ctx, FullHttpRequest request) {
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L) {
-                logger.warn("NettyService is not yet started");
-                sendError(ctx, request, HttpResponseStatus.SERVICE_UNAVAILABLE, null);
-                return true;
-            } else if (pauseTimeout == -2L) {
-                logger.warn("NettyService is not available");
-                sendError(ctx, request, HttpResponseStatus.SERVICE_UNAVAILABLE, null);
-                return true;
-            } else if (pauseTimeout > 0L) {
-                if (pauseTimeout >= System.currentTimeMillis()) {
-                    logger.warn("NettyService is paused; Service will resume after {}",
-                            DurationUtils.toHumanReadableMillis(pauseTimeout - System.currentTimeMillis()));
-                    sendError(ctx, request, HttpResponseStatus.SERVICE_UNAVAILABLE, null);
-                    return true;
-                } else {
-                    pauseTimeout = 0L;
-                }
-            }
-        }
-        return false;
     }
 
     @NonNull
@@ -304,6 +299,75 @@ public class DefaultNettyService extends AbstractNettyService {
             fallbackRemoteAddr = address.toString();
         }
         return (fallbackRemoteAddr != null ? fallbackRemoteAddr : "127.0.0.1");
+    }
+
+    /**
+     * Checks if the service is currently paused and, if so, sends a 503 Service Unavailable response.
+     * @param ctx the channel handler context
+     * @param request the current HTTP request
+     * @return true if the service is paused, false otherwise
+     */
+    private boolean checkPaused(@NonNull ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
+        // A value of 0L means the service is active.
+        // A value of -1L means the service is paused indefinitely.
+        // A value of -2L means the service is not yet started.
+        // Any other positive value is the time in milliseconds until the service is paused.
+        if (pauseTimeout != 0L) {
+            // If the service is not yet started, wait for it to start.
+            // This is necessary because a request can come in before the service is fully initialized.
+            if (pauseTimeout == -2L) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is not yet started, waiting for it to start...", getServiceName());
+                }
+                while (pauseTimeout == -2L) {
+                    try {
+                        // Poll every 100ms to see if the state has changed.
+                        Thread.sleep(100L);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.warn("Interrupted while waiting for service to start", e);
+                        sendError(ctx, request, HttpResponseStatus.SERVICE_UNAVAILABLE,
+                                "Service is starting. Please try again in a moment.");
+                        return true;
+                    }
+                }
+                // If the service has started successfully, pauseTimeout will be 0L.
+                // In this case, we can proceed with the request.
+                if (pauseTimeout == 0L) {
+                    return false;
+                }
+                // If the service state changes to paused (-1L) during startup,
+                // fall through to the next check.
+            }
+
+            // Check if the service is paused (indefinitely or temporarily).
+            // This check is separate from the one above to handle the race condition where
+            // the service is paused while it is starting up.
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is paused, so did not respond to requests", getServiceName());
+                }
+                String msg = "Service is temporarily unavailable. Please try again later.";
+                String retryAfter = null;
+                if (pauseTimeout > 0L) {
+                    long remainingMillis = pauseTimeout - System.currentTimeMillis();
+                    if (remainingMillis > 0) {
+                        long remainingSeconds = remainingMillis / 1000L;
+                        if (remainingSeconds > 0) {
+                            retryAfter = String.valueOf(remainingSeconds);
+                        }
+                        msg = "Service is temporarily unavailable. Please try again in " +
+                                DurationUtils.toHumanReadableMillis(remainingMillis) + ".";
+                    }
+                }
+                sendError(ctx, request, HttpResponseStatus.SERVICE_UNAVAILABLE, msg, retryAfter);
+                return true;
+            } else {
+                // If a temporary pause has expired, reset the timeout and allow requests.
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
 }

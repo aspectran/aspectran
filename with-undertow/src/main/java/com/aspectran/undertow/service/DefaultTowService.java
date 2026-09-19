@@ -199,12 +199,33 @@ public class DefaultTowService extends AbstractTowService {
      * @param status the HTTP status to send
      * @param msg the reason phrase to send
      */
-    private void sendError(@NonNull HttpServerExchange exchange, @NonNull HttpStatus status, String msg) {
+    private void sendError(@NonNull HttpServerExchange exchange, @NonNull HttpStatus status, @Nullable String msg) {
+        sendError(exchange, status, msg, null);
+    }
+
+    /**
+     * Sends a specific HTTP error status, message, and retry-after header to the client.
+     * @param exchange the current HTTP exchange
+     * @param status the HTTP status to send
+     * @param msg the reason phrase to send
+     * @param retryAfter the retry-after header value in seconds
+     */
+    private void sendError(
+            @NonNull HttpServerExchange exchange,
+            @NonNull HttpStatus status,
+            @Nullable String msg,
+            @Nullable String retryAfter) {
         if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Response");
             tsb.append("code", status.value());
             tsb.append("message", msg);
+            if (retryAfter != null) {
+                tsb.append("retryAfter", retryAfter);
+            }
             logger.debug(tsb.toString());
+        }
+        if (retryAfter != null) {
+            exchange.getResponseHeaders().put(Headers.RETRY_AFTER, retryAfter);
         }
         exchange.setStatusCode(status.value());
         if (msg != null) {
@@ -304,22 +325,23 @@ public class DefaultTowService extends AbstractTowService {
             // the service is paused while it is starting up.
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("{} is paused, so did not respond to requests.", getServiceName());
+                    logger.debug("{} is paused, so did not respond to requests", getServiceName());
                 }
                 exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
                 String msg = "Service is temporarily unavailable. Please try again later.";
+                String retryAfter = null;
                 if (pauseTimeout > 0L) {
                     long remainingMillis = pauseTimeout - System.currentTimeMillis();
                     if (remainingMillis > 0) {
                         long remainingSeconds = remainingMillis / 1000L;
                         if (remainingSeconds > 0) {
-                            exchange.getResponseHeaders().put(Headers.RETRY_AFTER, String.valueOf(remainingSeconds));
+                            retryAfter = String.valueOf(remainingSeconds);
                         }
                         msg = "Service is temporarily unavailable. Please try again in " +
                                 DurationUtils.toHumanReadableMillis(remainingMillis) + ".";
                     }
                 }
-                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, msg);
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, msg, retryAfter);
                 return true;
             } else {
                 // If a temporary pause has expired, reset the timeout and allow requests.
