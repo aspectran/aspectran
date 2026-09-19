@@ -62,9 +62,10 @@ class ClusterLettuceSessionStoreFactoryTest {
     static void startContainer() {
         redisCluster = new GenericContainer<>(DockerImageName.parse("grokzen/redis-cluster:6.2.1"))
                 .withExposedPorts(7000, 7001, 7002, 7003, 7004, 7005)
-                .waitingFor(Wait.forLogMessage(".*Cluster state changed: ok.*", 3))
+                .waitingFor(Wait.forListeningPorts())
                 .withStartupTimeout(Duration.ofMinutes(2));
         redisCluster.start();
+        waitForClusterReady(redisCluster);
 
         ClientResources resources = ClientResources.builder()
                 .socketAddressResolver(new SocketAddressResolver() {
@@ -98,6 +99,19 @@ class ClusterLettuceSessionStoreFactoryTest {
         if (redisCluster != null) {
             redisCluster.stop();
         }
+    }
+
+    private static void waitForClusterReady(GenericContainer<?> container) {
+        await().atMost(Duration.ofMinutes(1))
+                .pollInterval(Duration.ofMillis(500))
+                .ignoreExceptions()
+                .until(() -> {
+                    org.testcontainers.containers.Container.ExecResult result = container.execInContainer(
+                            "redis-cli", "--cluster", "check", "127.0.0.1:7000"
+                    );
+                    return result.getExitCode() == 0 &&
+                            result.getStdout().contains("[OK] All 16384 slots covered.");
+                });
     }
 
     @BeforeEach
