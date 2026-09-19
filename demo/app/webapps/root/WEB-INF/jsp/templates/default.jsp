@@ -113,7 +113,7 @@
                 </ul>
                 <div class="quick-search-box mx-3 my-2 m-lg-0">
                     <form name="google_quick_search" role="search">
-                        <div class="input-group">
+                        <div class="input-group flex-nowrap">
                             <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
                             <button class="btn btn-outline-secondary text-white" type="button" id="top-bar-quick-search-btn"><i class="bi bi-search"></i></button>
                         </div>
