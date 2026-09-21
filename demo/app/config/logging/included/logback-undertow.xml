@@ -9,7 +9,7 @@
         </discriminator>
         <sift>
             <appender name="FILE-ACCESSLOG-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${aspectran.basePath:-app}/logs/${LOGGING_GROUP}-access.log</file>
+                <file>${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/${LOGGING_GROUP}-access.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
                     <fileNamePattern>${aspectran.basePath:-app}/logs/archived/${LOGGING_GROUP}-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                     <maxFileSize>10MB</maxFileSize>
