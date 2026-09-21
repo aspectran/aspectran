@@ -18,15 +18,23 @@ package com.aspectran.web.websocket.jsr356;
 import com.aspectran.utils.Assert;
 import jakarta.websocket.Session;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
  * A simplified abstract WebSocket endpoint that manages a thread-safe collection of
- * authorized sessions and provides convenient methods for broadcasting messages.
+ * authorized sessions and provides convenient methods for broadcasting messages
+ * both synchronously and asynchronously with guaranteed in-order delivery.
  * <p>This class is ideal for typical WebSocket use cases where messages need to be
  * sent to multiple clients.
  * </p>
@@ -35,8 +43,16 @@ import java.util.function.Predicate;
  */
 public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     /** A thread-safe collection of authorized sessions */
     private final Set<Session> sessions = new CopyOnWriteArraySet<>();
+
+    /** Per-session message queue for serialized asynchronous sending */
+    private final ConcurrentMap<String, ConcurrentLinkedQueue<String>> messageQueues = new ConcurrentHashMap<>();
+
+    /** Per-session flag indicating if an asynchronous send operation is currently in progress */
+    private final ConcurrentMap<String, AtomicBoolean> sendingFlags = new ConcurrentHashMap<>();
 
     /**
      * Adds a session to the collection of authorized sessions.
@@ -53,6 +69,8 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     protected void removeSession(Session session) {
         synchronized (sessions) {
             if (sessions.remove(session)) {
+                messageQueues.remove(session.getId());
+                sendingFlags.remove(session.getId());
                 onSessionRemoved(session);
             }
         }
@@ -118,7 +136,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * Sends a message to all authorized sessions.
+     * Sends a message to all authorized sessions synchronously.
      * @param message the text message to send
      */
     public void broadcast(String message) {
@@ -128,7 +146,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * Sends a message to all authorized sessions except for the one to be skipped.
+     * Sends a message to all authorized sessions except for the one to be skipped synchronously.
      * @param message the text message to send
      * @param sessionToSkip the session to exclude from the broadcast
      */
@@ -141,7 +159,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * Sends a message to authorized sessions that match the given predicate.
+     * Sends a message to authorized sessions that match the given predicate synchronously.
      * @param message the text message to send
      * @param predicate the predicate to apply to each session
      */
@@ -155,14 +173,112 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * Sends a text message to the given session asynchronously.
+     * Sends a message to all authorized sessions asynchronously with guaranteed FIFO ordering.
+     * @param message the text message to send
+     */
+    public void broadcastAsync(String message) {
+        for (Session session : sessions) {
+            sendTextAsync(session, message);
+        }
+    }
+
+    /**
+     * Sends a message to all authorized sessions except for the one to be skipped asynchronously.
+     * @param message the text message to send
+     * @param sessionToSkip the session to exclude from the broadcast
+     */
+    public void broadcastAsync(String message, Session sessionToSkip) {
+        for (Session session : sessions) {
+            if (session != sessionToSkip) {
+                sendTextAsync(session, message);
+            }
+        }
+    }
+
+    /**
+     * Sends a message to authorized sessions that match the given predicate asynchronously.
+     * @param message the text message to send
+     * @param predicate the predicate to apply to each session
+     */
+    public void broadcastAsync(String message, Predicate<Session> predicate) {
+        Assert.notNull(predicate, "predicate must not be null");
+        for (Session session : sessions) {
+            if (session.isOpen() && predicate.test(session)) {
+                sendTextAsync(session, message);
+            }
+        }
+    }
+
+    /**
+     * Sends a text message to the given session synchronously.
+     * The sending is synchronized on the session to prevent concurrent writes.
      * @param session the session to send the message to
      * @param text the text message to send
      */
     public void sendText(Session session, String text) {
         Assert.notNull(session, "session must not be null");
         if (session.isOpen()) {
-            session.getAsyncRemote().sendText(text);
+            try {
+                synchronized (session) {
+                    if (session.isOpen()) {
+                        session.getBasicRemote().sendText(text);
+                    }
+                }
+            } catch (IOException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Failed to send text synchronously to session {}", session.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sends a text message to the given session asynchronously with guaranteed FIFO ordering.
+     * Messages are queued per session and drained sequentially via {@link jakarta.websocket.SendHandler}.
+     * @param session the session to send the message to
+     * @param text the text message to send
+     */
+    public void sendTextAsync(Session session, String text) {
+        Assert.notNull(session, "session must not be null");
+        if (!session.isOpen()) {
+            return;
+        }
+        String sessionId = session.getId();
+        ConcurrentLinkedQueue<String> queue = messageQueues.computeIfAbsent(sessionId, k -> new ConcurrentLinkedQueue<>());
+        queue.offer(text);
+        drainQueue(session, queue);
+    }
+
+    private void drainQueue(@NonNull Session session, ConcurrentLinkedQueue<String> queue) {
+        String sessionId = session.getId();
+        AtomicBoolean isSending = sendingFlags.computeIfAbsent(sessionId, k -> new AtomicBoolean(false));
+        if (isSending.compareAndSet(false, true)) {
+            String message = queue.poll();
+            if (message != null && session.isOpen()) {
+                try {
+                    session.getAsyncRemote().sendText(message, result -> {
+                        isSending.set(false);
+                        if (result.isOK()) {
+                            if (!queue.isEmpty() && session.isOpen()) {
+                                drainQueue(session, queue);
+                            }
+                        } else {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Failed to send text asynchronously to session {}", sessionId, result.getException());
+                            }
+                            queue.clear();
+                        }
+                    });
+                } catch (Exception e) {
+                    isSending.set(false);
+                    queue.clear();
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Failed to initiate asynchronous text send to session {}", sessionId, e);
+                    }
+                }
+            } else {
+                isSending.set(false);
+            }
         }
     }
 
