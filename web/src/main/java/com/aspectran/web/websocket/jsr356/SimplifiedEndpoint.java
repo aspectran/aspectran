@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -173,6 +174,43 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
+     * Sends multiple messages to all authorized sessions synchronously.
+     * @param messages the text messages to send
+     */
+    public void broadcast(Iterable<String> messages) {
+        for (Session session : sessions) {
+            sendText(session, messages);
+        }
+    }
+
+    /**
+     * Sends multiple messages to all authorized sessions except for the one to be skipped synchronously.
+     * @param messages the text messages to send
+     * @param sessionToSkip the session to exclude from the broadcast
+     */
+    public void broadcast(Iterable<String> messages, Session sessionToSkip) {
+        for (Session session : sessions) {
+            if (session != sessionToSkip) {
+                sendText(session, messages);
+            }
+        }
+    }
+
+    /**
+     * Sends multiple messages to authorized sessions that match the given predicate synchronously.
+     * @param messages the text messages to send
+     * @param predicate the predicate to apply to each session
+     */
+    public void broadcast(Iterable<String> messages, Predicate<Session> predicate) {
+        Assert.notNull(predicate, "predicate must not be null");
+        for (Session session : sessions) {
+            if (session.isOpen() && predicate.test(session)) {
+                sendText(session, messages);
+            }
+        }
+    }
+
+    /**
      * Sends a message to all authorized sessions asynchronously with guaranteed FIFO ordering.
      * @param message the text message to send
      */
@@ -210,6 +248,43 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
+     * Sends multiple messages to all authorized sessions asynchronously with guaranteed FIFO ordering.
+     * @param messages the text messages to send
+     */
+    public void broadcastAsync(Collection<String> messages) {
+        for (Session session : sessions) {
+            sendTextAsync(session, messages);
+        }
+    }
+
+    /**
+     * Sends multiple messages to all authorized sessions except for the one to be skipped asynchronously.
+     * @param messages the text messages to send
+     * @param sessionToSkip the session to exclude from the broadcast
+     */
+    public void broadcastAsync(Collection<String> messages, Session sessionToSkip) {
+        for (Session session : sessions) {
+            if (session != sessionToSkip) {
+                sendTextAsync(session, messages);
+            }
+        }
+    }
+
+    /**
+     * Sends multiple messages to authorized sessions that match the given predicate asynchronously.
+     * @param messages the text messages to send
+     * @param predicate the predicate to apply to each session
+     */
+    public void broadcastAsync(Collection<String> messages, Predicate<Session> predicate) {
+        Assert.notNull(predicate, "predicate must not be null");
+        for (Session session : sessions) {
+            if (session.isOpen() && predicate.test(session)) {
+                sendTextAsync(session, messages);
+            }
+        }
+    }
+
+    /**
      * Sends a text message to the given session synchronously.
      * The sending is synchronized on the session to prevent concurrent writes.
      * @param session the session to send the message to
@@ -233,6 +308,35 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
+     * Sends multiple text messages to the given session synchronously.
+     * The sending is synchronized on the session to ensure all messages are sent sequentially
+     * in a single atomic lock, preventing interleaving from other threads.
+     * @param session the session to send the messages to
+     * @param texts the text messages to send
+     */
+    public void sendText(Session session, @NonNull Iterable<String> texts) {
+        Assert.notNull(session, "session must not be null");
+        Assert.notNull(texts, "texts must not be null");
+        if (session.isOpen()) {
+            try {
+                synchronized (session) {
+                    if (session.isOpen()) {
+                        for (String text : texts) {
+                            if (text != null && session.isOpen()) {
+                                session.getBasicRemote().sendText(text);
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Failed to send texts synchronously to session {}", session.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * Sends a text message to the given session asynchronously with guaranteed FIFO ordering.
      * Messages are queued per session and drained sequentially via {@link jakarta.websocket.SendHandler}.
      * @param session the session to send the message to
@@ -246,6 +350,24 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
         String sessionId = session.getId();
         ConcurrentLinkedQueue<String> queue = messageQueues.computeIfAbsent(sessionId, k -> new ConcurrentLinkedQueue<>());
         queue.offer(text);
+        drainQueue(session, queue);
+    }
+
+    /**
+     * Sends multiple text messages to the given session asynchronously with guaranteed FIFO ordering.
+     * Messages are queued per session and drained sequentially via {@link jakarta.websocket.SendHandler}.
+     * @param session the session to send the messages to
+     * @param texts the collection of text messages to send
+     */
+    public void sendTextAsync(Session session, @NonNull Collection<String> texts) {
+        Assert.notNull(session, "session must not be null");
+        Assert.notNull(texts, "texts must not be null");
+        if (!session.isOpen() || texts.isEmpty()) {
+            return;
+        }
+        String sessionId = session.getId();
+        ConcurrentLinkedQueue<String> queue = messageQueues.computeIfAbsent(sessionId, k -> new ConcurrentLinkedQueue<>());
+        queue.addAll(texts);
         drainQueue(session, queue);
     }
 
