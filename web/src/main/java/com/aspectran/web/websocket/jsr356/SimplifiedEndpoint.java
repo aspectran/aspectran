@@ -49,11 +49,8 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     /** A thread-safe collection of authorized sessions */
     private final Set<Session> sessions = new CopyOnWriteArraySet<>();
 
-    /** Per-session message queue for serialized asynchronous sending */
-    private final ConcurrentMap<String, ConcurrentLinkedQueue<String>> messageQueues = new ConcurrentHashMap<>();
-
-    /** Per-session flag indicating if an asynchronous send operation is currently in progress */
-    private final ConcurrentMap<String, AtomicBoolean> sendingFlags = new ConcurrentHashMap<>();
+    /** Per-session message queue and send state for serialized asynchronous sending */
+    private final ConcurrentMap<String, SessionSendQueue> sendQueues = new ConcurrentHashMap<>();
 
     /**
      * Adds a session to the collection of authorized sessions.
@@ -68,11 +65,21 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
     @Override
     protected void removeSession(Session session) {
+        if (session == null) {
+            return;
+        }
         synchronized (sessions) {
             if (sessions.remove(session)) {
-                messageQueues.remove(session.getId());
-                sendingFlags.remove(session.getId());
-                onSessionRemoved(session);
+                String sessionId = session.getId();
+                SessionSendQueue sendQueue = sendQueues.remove(sessionId);
+                if (sendQueue != null) {
+                    sendQueue.clear();
+                }
+                try {
+                    onSessionRemoved(session);
+                } catch (Exception e) {
+                    logger.error("Error occurred while executing onSessionRemoved for session {}", sessionId, e);
+                }
             }
         }
     }
@@ -90,11 +97,9 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
      */
     public boolean containsSession(Predicate<Session> predicate) {
         Assert.notNull(predicate, "predicate must not be null");
-        synchronized (sessions) {
-            for (Session session : sessions) {
-                if (session.isOpen() && predicate.test(session)) {
-                    return true;
-                }
+        for (Session session : sessions) {
+            if (session.isOpen() && predicate.test(session)) {
+                return true;
             }
         }
         return false;
@@ -107,11 +112,9 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
      */
     protected Session findSession(String sessionId) {
         Assert.notNull(sessionId, "sessionId must not be null");
-        synchronized (sessions) {
-            for (Session session : sessions) {
-                if (sessionId.equals(session.getId())) {
-                    return session;
-                }
+        for (Session session : sessions) {
+            if (sessionId.equals(session.getId())) {
+                return session;
             }
         }
         return null;
@@ -314,7 +317,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
      * @param session the session to send the messages to
      * @param texts the text messages to send
      */
-    public void sendText(Session session, @NonNull Iterable<String> texts) {
+    public void sendText(Session session, Iterable<String> texts) {
         Assert.notNull(session, "session must not be null");
         Assert.notNull(texts, "texts must not be null");
         if (session.isOpen()) {
@@ -344,13 +347,13 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
      */
     public void sendTextAsync(Session session, String text) {
         Assert.notNull(session, "session must not be null");
-        if (!session.isOpen()) {
+        if (!session.isOpen() || !sessions.contains(session)) {
             return;
         }
         String sessionId = session.getId();
-        ConcurrentLinkedQueue<String> queue = messageQueues.computeIfAbsent(sessionId, k -> new ConcurrentLinkedQueue<>());
-        queue.offer(text);
-        drainQueue(session, queue);
+        SessionSendQueue sendQueue = sendQueues.computeIfAbsent(sessionId, k -> new SessionSendQueue());
+        sendQueue.queue.offer(text);
+        drainQueue(session, sendQueue);
     }
 
     /**
@@ -359,49 +362,67 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
      * @param session the session to send the messages to
      * @param texts the collection of text messages to send
      */
-    public void sendTextAsync(Session session, @NonNull Collection<String> texts) {
+    public void sendTextAsync(Session session, Collection<String> texts) {
         Assert.notNull(session, "session must not be null");
         Assert.notNull(texts, "texts must not be null");
-        if (!session.isOpen() || texts.isEmpty()) {
+        if (!session.isOpen() || texts.isEmpty() || !sessions.contains(session)) {
             return;
         }
         String sessionId = session.getId();
-        ConcurrentLinkedQueue<String> queue = messageQueues.computeIfAbsent(sessionId, k -> new ConcurrentLinkedQueue<>());
-        queue.addAll(texts);
-        drainQueue(session, queue);
+        SessionSendQueue sendQueue = sendQueues.computeIfAbsent(sessionId, k -> new SessionSendQueue());
+        sendQueue.queue.addAll(texts);
+        drainQueue(session, sendQueue);
     }
 
-    private void drainQueue(@NonNull Session session, ConcurrentLinkedQueue<String> queue) {
+    private void drainQueue(@NonNull Session session, SessionSendQueue sendQueue) {
         String sessionId = session.getId();
-        AtomicBoolean isSending = sendingFlags.computeIfAbsent(sessionId, k -> new AtomicBoolean(false));
-        if (isSending.compareAndSet(false, true)) {
-            String message = queue.poll();
+        if (!session.isOpen()) {
+            sendQueue.clear();
+            sendQueues.remove(sessionId);
+            return;
+        }
+        if (sendQueue.isSending.compareAndSet(false, true)) {
+            String message = sendQueue.queue.poll();
             if (message != null && session.isOpen()) {
                 try {
                     session.getAsyncRemote().sendText(message, result -> {
-                        isSending.set(false);
+                        sendQueue.isSending.set(false);
                         if (result.isOK()) {
-                            if (!queue.isEmpty() && session.isOpen()) {
-                                drainQueue(session, queue);
+                            if (!sendQueue.queue.isEmpty() && session.isOpen()) {
+                                drainQueue(session, sendQueue);
                             }
                         } else {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Failed to send text asynchronously to session {}", sessionId, result.getException());
                             }
-                            queue.clear();
+                            sendQueue.clear();
+                            sendQueues.remove(sessionId);
                         }
                     });
                 } catch (Exception e) {
-                    isSending.set(false);
-                    queue.clear();
+                    sendQueue.isSending.set(false);
+                    sendQueue.clear();
+                    sendQueues.remove(sessionId);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Failed to initiate asynchronous text send to session {}", sessionId, e);
                     }
                 }
             } else {
-                isSending.set(false);
+                sendQueue.isSending.set(false);
             }
         }
+    }
+
+    private static class SessionSendQueue {
+
+        private final ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
+
+        private final AtomicBoolean isSending = new AtomicBoolean(false);
+
+        private void clear() {
+            queue.clear();
+        }
+
     }
 
 }

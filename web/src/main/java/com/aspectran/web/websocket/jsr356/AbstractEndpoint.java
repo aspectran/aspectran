@@ -106,7 +106,7 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
      * @param reason the reason for closing
      */
     @OnClose
-    public void doOnClose(Session session, CloseReason reason) {
+    public void doOnClose(@NonNull Session session, CloseReason reason) {
         setLoggingGroup();
         if (logger.isDebugEnabled()) {
             logger.debug("Websocket session {} has been closed. Reason: {}", session.getId(), reason);
@@ -127,7 +127,9 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         }
         try {
             removeSession(session);
-            session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
+            if (session.isOpen()) {
+                session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
