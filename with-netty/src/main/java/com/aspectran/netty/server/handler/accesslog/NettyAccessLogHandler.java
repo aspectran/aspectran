@@ -29,6 +29,7 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+import io.netty.handler.codec.http2.Http2StreamChannel;
 import io.netty.util.AttributeKey;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -193,7 +194,11 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
 
             data.method = request.method().name();
             data.uri = request.uri();
-            data.protocol = request.protocolVersion().text();
+            if (ctx.channel() instanceof Http2StreamChannel) {
+                data.protocol = "HTTP/2.0";
+            } else {
+                data.protocol = request.protocolVersion().text();
+            }
             data.requestLine = data.method + " " + data.uri + " " + data.protocol;
             data.headers = request.headers();
 

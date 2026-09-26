@@ -677,8 +677,17 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
                 bootstrap.group(bossGroup, workerGroup)
                         .channel(channelClass)
                         .option(ChannelOption.SO_BACKLOG, listenerConfig.getBacklog())
-                        .option(ChannelOption.SO_REUSEADDR, listenerConfig.isReuseAddress())
-                        .childOption(ChannelOption.TCP_NODELAY, listenerConfig.isTcpNoDelay())
+                        .option(ChannelOption.SO_REUSEADDR, listenerConfig.isReuseAddress());
+
+                if (listenerConfig.getReceiveBufferSize() > 0) {
+                    bootstrap.option(ChannelOption.SO_RCVBUF, listenerConfig.getReceiveBufferSize());
+                    bootstrap.childOption(ChannelOption.SO_RCVBUF, listenerConfig.getReceiveBufferSize());
+                }
+                if (listenerConfig.getSendBufferSize() > 0) {
+                    bootstrap.childOption(ChannelOption.SO_SNDBUF, listenerConfig.getSendBufferSize());
+                }
+
+                bootstrap.childOption(ChannelOption.TCP_NODELAY, listenerConfig.isTcpNoDelay())
                         .childOption(ChannelOption.SO_KEEPALIVE, listenerConfig.isKeepAlive())
                         .childHandler(createChannelInitializer(listenerConfig));
 

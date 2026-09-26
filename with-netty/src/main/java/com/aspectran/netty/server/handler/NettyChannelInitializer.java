@@ -21,22 +21,37 @@ import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.encoding.NettyEncodingHandler;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpServerUpgradeHandler;
+import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
+import io.netty.handler.codec.http2.Http2CodecUtil;
+import io.netty.handler.codec.http2.Http2FrameCodec;
+import io.netty.handler.codec.http2.Http2FrameCodecBuilder;
+import io.netty.handler.codec.http2.Http2MultiplexHandler;
+import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
+import io.netty.handler.codec.http2.Http2Settings;
+import io.netty.handler.codec.http2.Http2StreamChannel;
+import io.netty.handler.codec.http2.Http2StreamFrameToHttpObjectCodec;
+import io.netty.handler.ssl.ApplicationProtocolNames;
+import io.netty.handler.ssl.ApplicationProtocolNegotiationHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.AsciiString;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Netty {@link ChannelInitializer} implementation for configuring the HTTP pipeline.
+ * Netty {@link ChannelInitializer} implementation for configuring the HTTP/1.1 and HTTP/2 pipelines.
  *
  * <p>Created: 2026-09-02</p>
  */
@@ -44,7 +59,17 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     public static final String SSL_HANDLER_NAME = "ssl";
 
+    public static final String ALPN_HANDLER_NAME = "alpn";
+
     public static final String IDLE_STATE_HANDLER_NAME = "idleState";
+
+    public static final String HTTP2_UPGRADE_HANDLER_NAME = "h2cUpgrade";
+
+    public static final String HTTP2_CODEC_HANDLER_NAME = "http2Codec";
+
+    public static final String HTTP2_MULTIPLEX_HANDLER_NAME = "http2Multiplex";
+
+    public static final String HTTP2_STREAM_CODEC_HANDLER_NAME = "http2StreamCodec";
 
     public static final String HTTP_CODEC_HANDLER_NAME = "codec";
 
@@ -177,20 +202,81 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(@NonNull SocketChannel ch) throws Exception {
         ChannelPipeline p = ch.pipeline();
 
-        if (listenerConfig != null && listenerConfig.isSsl()) {
+        boolean isSsl = (listenerConfig != null && listenerConfig.isSsl());
+        boolean isHttp2 = (listenerConfig != null && listenerConfig.isHttp2());
+
+        if (isSsl) {
             SslContext sslContext = listenerConfig.getSslContext();
             if (sslContext == null) {
                 sslContext = listenerConfig.buildSslContext();
             }
             p.addLast(SSL_HANDLER_NAME, sslContext.newHandler(ch.alloc()));
+
+            if (idleTimeout > 0) {
+                p.addLast(IDLE_STATE_HANDLER_NAME, new IdleStateHandler(idleTimeout, 0, 0, TimeUnit.MILLISECONDS));
+            }
+
+            if (isHttp2) {
+                p.addLast(ALPN_HANDLER_NAME, new Http2OrHttp11NegotiationHandler());
+            } else {
+                p.addLast(HTTP_CODEC_HANDLER_NAME, createHttpServerCodec());
+                configureHttpPipeline(p);
+            }
+        } else {
+            if (idleTimeout > 0) {
+                p.addLast(IDLE_STATE_HANDLER_NAME, new IdleStateHandler(idleTimeout, 0, 0, TimeUnit.MILLISECONDS));
+            }
+
+            if (isHttp2) {
+                HttpServerCodec sourceCodec = createHttpServerCodec();
+                Http2FrameCodec frameCodec = createHttp2FrameCodec();
+                Http2MultiplexHandler multiplexHandler = createHttp2MultiplexHandler();
+
+                HttpServerUpgradeHandler.UpgradeCodecFactory upgradeCodecFactory = protocol -> {
+                    if (AsciiString.contentEquals(Http2CodecUtil.HTTP_UPGRADE_PROTOCOL_NAME, protocol)) {
+                        return new Http2ServerUpgradeCodec(frameCodec, multiplexHandler);
+                    }
+                    return null;
+                };
+                HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, upgradeCodecFactory);
+                CleartextHttp2ServerUpgradeHandler cleartextHandler = new CleartextHttp2ServerUpgradeHandler(
+                        sourceCodec, upgradeHandler, new PriorKnowledgeHandler(frameCodec, multiplexHandler));
+
+                p.addLast(HTTP2_UPGRADE_HANDLER_NAME, cleartextHandler);
+                configureHttpPipeline(p);
+            } else {
+                p.addLast(HTTP_CODEC_HANDLER_NAME, createHttpServerCodec());
+                configureHttpPipeline(p);
+            }
         }
+    }
 
-        if (idleTimeout > 0) {
-            p.addLast(IDLE_STATE_HANDLER_NAME, new IdleStateHandler(idleTimeout, 0, 0, TimeUnit.MILLISECONDS));
+    @NonNull
+    private HttpServerCodec createHttpServerCodec() {
+        if (listenerConfig != null) {
+            return new HttpServerCodec(
+                    listenerConfig.getMaxInitialLineLength(),
+                    listenerConfig.getMaxHeaderSize(),
+                    listenerConfig.getMaxChunkSize());
         }
+        return new HttpServerCodec();
+    }
 
-        p.addLast(HTTP_CODEC_HANDLER_NAME, new HttpServerCodec());
+    private Http2FrameCodec createHttp2FrameCodec() {
+        Http2FrameCodecBuilder builder = Http2FrameCodecBuilder.forServer();
+        if (listenerConfig != null) {
+            Http2Settings settings = listenerConfig.getHttp2Settings();
+            if (settings != null) {
+                builder.initialSettings(settings);
+            }
+            if (listenerConfig.getHttp2GracefulShutdownTimeoutMillis() > 0) {
+                builder.gracefulShutdownTimeoutMillis(listenerConfig.getHttp2GracefulShutdownTimeoutMillis());
+            }
+        }
+        return builder.build();
+    }
 
+    private void configureHttpPipeline(@NonNull ChannelPipeline p) {
         if (encodingHandler != null) {
             p.addLast(COMPRESSOR_HANDLER_NAME, encodingHandler.createContentCompressor());
         } else if (contentCompression) {
@@ -216,6 +302,60 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         p.addLast(HTTP_HANDLER_NAME, new NettyHttpHandler(contextRouter, requestExecutor, loggingGroupHandler, proxyAddressForwarding));
+    }
+
+    @NonNull
+    private Http2MultiplexHandler createHttp2MultiplexHandler() {
+        return new Http2MultiplexHandler(new Http2StreamChannelInitializer());
+    }
+
+    private final class Http2OrHttp11NegotiationHandler extends ApplicationProtocolNegotiationHandler {
+
+        Http2OrHttp11NegotiationHandler() {
+            super(ApplicationProtocolNames.HTTP_1_1);
+        }
+
+        @Override
+        protected void configurePipeline(ChannelHandlerContext ctx, String protocol) {
+            if (ApplicationProtocolNames.HTTP_2.equals(protocol)) {
+                ctx.pipeline().addLast(HTTP2_CODEC_HANDLER_NAME, createHttp2FrameCodec());
+                ctx.pipeline().addLast(HTTP2_MULTIPLEX_HANDLER_NAME, createHttp2MultiplexHandler());
+            } else if (ApplicationProtocolNames.HTTP_1_1.equals(protocol)) {
+                ctx.pipeline().addLast(HTTP_CODEC_HANDLER_NAME, createHttpServerCodec());
+                configureHttpPipeline(ctx.pipeline());
+            } else {
+                throw new IllegalStateException("Unsupported protocol: " + protocol);
+            }
+        }
+    }
+
+    private final class Http2StreamChannelInitializer extends ChannelInitializer<Http2StreamChannel> {
+
+        @Override
+        protected void initChannel(@NonNull Http2StreamChannel ch) {
+            ChannelPipeline p = ch.pipeline();
+            p.addLast(HTTP2_STREAM_CODEC_HANDLER_NAME, new Http2StreamFrameToHttpObjectCodec(true));
+            configureHttpPipeline(p);
+        }
+    }
+
+    private static final class PriorKnowledgeHandler extends ChannelInboundHandlerAdapter {
+
+        private final Http2FrameCodec frameCodec;
+        private final Http2MultiplexHandler multiplexHandler;
+
+        PriorKnowledgeHandler(Http2FrameCodec frameCodec, Http2MultiplexHandler multiplexHandler) {
+            this.frameCodec = frameCodec;
+            this.multiplexHandler = multiplexHandler;
+        }
+
+        @Override
+        public void handlerAdded(@NonNull ChannelHandlerContext ctx) {
+            ctx.pipeline()
+                    .addBefore(ctx.name(), HTTP2_CODEC_HANDLER_NAME, frameCodec)
+                    .addBefore(ctx.name(), HTTP2_MULTIPLEX_HANDLER_NAME, multiplexHandler)
+                    .remove(this);
+        }
     }
 
 }

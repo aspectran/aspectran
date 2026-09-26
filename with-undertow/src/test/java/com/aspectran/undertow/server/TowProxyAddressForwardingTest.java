@@ -60,7 +60,7 @@ class TowProxyAddressForwardingTest {
     }
 
     @Test
-    void testWithoutProxyAddressForwarding() throws Exception {
+    void testWithoutProxyAddressForwarding() {
         HttpServerExchange exchange = new HttpServerExchange(null);
         exchange.setRequestScheme("http");
         exchange.setSourceAddress(new InetSocketAddress("127.0.0.1", 12345));

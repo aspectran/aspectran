@@ -139,8 +139,11 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
                 return "https";
             }
         }
-        if (ctx != null && ctx.pipeline().get(SslHandler.class) != null) {
-            return "https";
+        if (ctx != null) {
+            if (ctx.pipeline().get(SslHandler.class) != null ||
+                    (ctx.channel().parent() != null && ctx.channel().parent().pipeline().get(SslHandler.class) != null)) {
+                return "https";
+            }
         }
         return super.getScheme();
     }

@@ -41,8 +41,8 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http2.Http2StreamChannel;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import org.jspecify.annotations.NonNull;
@@ -107,6 +107,8 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
     private volatile String[] indexFiles = DEFAULT_INDEX_FILES;
 
     private volatile boolean blockProtectedDirectories = true;
+
+    private volatile int chunkSize = 65536; // 64KB
 
     /**
      * Creates a new instance with auto-release disabled for unhandled requests.
@@ -321,6 +323,22 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
         this.indexFiles = indexFiles;
     }
 
+    /**
+     * Returns the chunk size in bytes used for file streaming.
+     * @return the chunk size in bytes
+     */
+    public int getChunkSize() {
+        return chunkSize;
+    }
+
+    /**
+     * Sets the chunk size in bytes used for file streaming.
+     * @param chunkSize the chunk size in bytes
+     */
+    public void setChunkSize(int chunkSize) {
+        this.chunkSize = (chunkSize > 0 ? chunkSize : 65536);
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         if (!handle(ctx, request)) {
@@ -439,13 +457,14 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
 
         try {
             long fileLength = raf.length();
-            HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+            HttpResponse response = new DefaultHttpResponse(request.protocolVersion(), HttpResponseStatus.OK);
             HttpUtil.setContentLength(response, fileLength);
             setContentTypeHeader(response, file);
             setDateAndCacheHeaders(response, file);
 
+            boolean isHttp2Stream = (ctx.channel() instanceof Http2StreamChannel);
             boolean keepAlive = HttpUtil.isKeepAlive(request);
-            if (keepAlive) {
+            if (!isHttp2Stream && keepAlive) {
                 HttpUtil.setKeepAlive(response, true);
             }
 
@@ -456,27 +475,28 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
             if (HttpMethod.HEAD.equals(method)) {
                 ChannelFuture future = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
                 raf.close();
-                if (!keepAlive) {
+                if (!isHttp2Stream && !keepAlive) {
                     future.addListener(ChannelFutureListener.CLOSE);
                 }
                 return true;
             }
 
             // Write the content
-            ChannelFuture sendFileFuture;
             ChannelFuture lastContentFuture;
-            if (ctx.pipeline().get(SslHandler.class) != null ||
-                    ctx.pipeline().get(HttpContentCompressor.class) != null) {
-                // Cannot use zero-copy with SSL or HTTP content compression
-                sendFileFuture = ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)), ctx.newProgressivePromise());
-                lastContentFuture = sendFileFuture;
+            boolean hasSslOrCompression = (ctx.pipeline().get(SslHandler.class) != null ||
+                    ctx.pipeline().get(HttpContentCompressor.class) != null ||
+                    (ctx.channel().parent() != null && ctx.channel().parent().pipeline().get(SslHandler.class) != null));
+
+            if (isHttp2Stream || hasSslOrCompression) {
+                // Cannot use zero-copy with HTTP/2 stream, SSL, or HTTP content compression
+                lastContentFuture = ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, chunkSize)));
             } else {
-                // Zero-copy file transfer
-                sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
+                // Zero-copy file transfer for cleartext HTTP/1.x
+                ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength));
                 lastContentFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
             }
 
-            if (!keepAlive) {
+            if (!isHttp2Stream && !keepAlive) {
                 lastContentFuture.addListener(ChannelFutureListener.CLOSE);
             }
             return true;
@@ -564,11 +584,14 @@ public class NettyResourceHandler extends SimpleChannelInboundHandler<FullHttpRe
      * @param ctx the channel handler context
      * @param request the incoming HTTP request
      */
-    protected static void sendNotModified(ChannelHandlerContext ctx, FullHttpRequest request) {
-        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_MODIFIED);
+    protected static void sendNotModified(@NonNull ChannelHandlerContext ctx, @NonNull FullHttpRequest request) {
+        FullHttpResponse response = new DefaultFullHttpResponse(request.protocolVersion(), HttpResponseStatus.NOT_MODIFIED);
         setDateHeader(response);
+        boolean isHttp2Stream = (ctx.channel() instanceof Http2StreamChannel);
         boolean keepAlive = HttpUtil.isKeepAlive(request);
-        if (keepAlive) {
+        if (isHttp2Stream) {
+            ctx.writeAndFlush(response);
+        } else if (keepAlive) {
             HttpUtil.setKeepAlive(response, true);
             ctx.writeAndFlush(response);
         } else {

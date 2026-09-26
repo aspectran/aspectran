@@ -66,6 +66,10 @@ public class HttpsListenerConfig {
 
     private String trustStorePassword;
 
+    private KeyManager[] keyManagers;
+
+    private TrustManager[] trustManagers;
+
     /**
      * Returns the port number for the listener.
      * @return the port number
@@ -242,14 +246,30 @@ public class HttpsListenerConfig {
         this.trustStorePassword = trustStorePassword;
     }
 
+    public KeyManager[] getKeyManagers() {
+        return keyManagers;
+    }
+
+    public void setKeyManagers(KeyManager... keyManagers) {
+        this.keyManagers = keyManagers;
+    }
+
+    public TrustManager[] getTrustManagers() {
+        return trustManagers;
+    }
+
+    public void setTrustManagers(TrustManager... trustManagers) {
+        this.trustManagers = trustManagers;
+    }
+
     /**
      * Creates and returns an Undertow {@link Undertow.ListenerBuilder} based on this configuration.
      * @return a configured listener builder for an HTTPS connector
      * @throws IOException if the SSL context cannot be initialized
      */
     Undertow.ListenerBuilder getListenerBuilder() throws IOException {
-        KeyManager[] keyManagers = getKeyManagers();
-        TrustManager[] trustManagers = getTrustManagers();
+        KeyManager[] keyManagers = (this.keyManagers != null ? this.keyManagers : createKeyManagers());
+        TrustManager[] trustManagers = (this.trustManagers != null ? this.trustManagers : createTrustManagers());
 
         Undertow.ListenerBuilder listenerBuilder = new Undertow.ListenerBuilder();
         listenerBuilder.setType(Undertow.ListenerType.HTTPS);
@@ -265,7 +285,7 @@ public class HttpsListenerConfig {
      * @return an array of key managers
      * @throws IOException if the keystore cannot be loaded or initialized
      */
-    private KeyManager[] getKeyManagers() throws IOException {
+    private KeyManager[] createKeyManagers() throws IOException {
         try {
             KeyStore keyStore = loadKeyStore(keyStoreType, keyStoreProvider, keyStorePath, keyStorePassword);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory
@@ -301,7 +321,7 @@ public class HttpsListenerConfig {
      * @return an array of trust managers
      * @throws IOException if the truststore cannot be loaded or initialized
      */
-    private TrustManager[] getTrustManagers() throws IOException {
+    private TrustManager[] createTrustManagers() throws IOException {
         try {
             KeyStore store = loadTrustStore(trustStoreType, trustStoreProvider, trustStorePath, trustStorePassword);
             TrustManagerFactory trustManagerFactory = TrustManagerFactory

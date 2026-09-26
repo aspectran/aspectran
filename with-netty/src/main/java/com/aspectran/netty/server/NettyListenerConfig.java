@@ -17,6 +17,9 @@ package com.aspectran.netty.server;
 
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.ToStringBuilder;
+import io.netty.handler.codec.http2.Http2Settings;
+import io.netty.handler.ssl.ApplicationProtocolConfig;
+import io.netty.handler.ssl.ApplicationProtocolNames;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 
@@ -26,7 +29,7 @@ import java.security.KeyStore;
 
 /**
  * Configuration options for a Netty listener.
- * <p>Supports configuring host, port, socket options, and SSL/TLS settings.</p>
+ * <p>Supports configuring host, port, socket options, SSL/TLS, and HTTP/2 settings.</p>
  *
  * <p>Created: 2026-09-02</p>
  */
@@ -41,6 +44,8 @@ public class NettyListenerConfig {
     private int actualPort = -1;
 
     private boolean ssl;
+
+    private boolean http2;
 
     private SslContext sslContext;
 
@@ -59,6 +64,30 @@ public class NettyListenerConfig {
     private boolean keepAlive = true;
 
     private boolean reuseAddress = true;
+
+    private int receiveBufferSize;
+
+    private int sendBufferSize;
+
+    private int maxInitialLineLength = 4096;
+
+    private int maxHeaderSize = 8192;
+
+    private int maxChunkSize = 8192;
+
+    private Long http2HeaderTableSize;
+
+    private Boolean http2EnablePush;
+
+    private Long http2MaxConcurrentStreams;
+
+    private Integer http2InitialWindowSize;
+
+    private Integer http2MaxFrameSize;
+
+    private Long http2MaxHeaderListSize;
+
+    private long http2GracefulShutdownTimeoutMillis;
 
     /**
      * Constructs a new {@code NettyListenerConfig} with default host and port.
@@ -122,6 +151,14 @@ public class NettyListenerConfig {
 
     public void setSsl(boolean ssl) {
         this.ssl = ssl;
+    }
+
+    public boolean isHttp2() {
+        return http2;
+    }
+
+    public void setHttp2(boolean http2) {
+        this.http2 = http2;
     }
 
     public SslContext getSslContext() {
@@ -199,6 +236,151 @@ public class NettyListenerConfig {
         this.reuseAddress = reuseAddress;
     }
 
+    public int getReceiveBufferSize() {
+        return receiveBufferSize;
+    }
+
+    public void setReceiveBufferSize(int receiveBufferSize) {
+        this.receiveBufferSize = receiveBufferSize;
+    }
+
+    public int getSendBufferSize() {
+        return sendBufferSize;
+    }
+
+    public void setSendBufferSize(int sendBufferSize) {
+        this.sendBufferSize = sendBufferSize;
+    }
+
+    public int getMaxInitialLineLength() {
+        return maxInitialLineLength;
+    }
+
+    public void setMaxInitialLineLength(int maxInitialLineLength) {
+        this.maxInitialLineLength = maxInitialLineLength;
+    }
+
+    public int getMaxHeaderSize() {
+        return maxHeaderSize;
+    }
+
+    public void setMaxHeaderSize(int maxHeaderSize) {
+        this.maxHeaderSize = maxHeaderSize;
+    }
+
+    public int getMaxChunkSize() {
+        return maxChunkSize;
+    }
+
+    public void setMaxChunkSize(int maxChunkSize) {
+        this.maxChunkSize = maxChunkSize;
+    }
+
+    public Long getHttp2HeaderTableSize() {
+        return http2HeaderTableSize;
+    }
+
+    public void setHttp2HeaderTableSize(long http2HeaderTableSize) {
+        this.http2HeaderTableSize = http2HeaderTableSize;
+    }
+
+    public Boolean getHttp2EnablePush() {
+        return http2EnablePush;
+    }
+
+    public void setHttp2EnablePush(boolean http2EnablePush) {
+        this.http2EnablePush = http2EnablePush;
+    }
+
+    public Long getHttp2MaxConcurrentStreams() {
+        return http2MaxConcurrentStreams;
+    }
+
+    public void setHttp2MaxConcurrentStreams(long http2MaxConcurrentStreams) {
+        this.http2MaxConcurrentStreams = http2MaxConcurrentStreams;
+    }
+
+    public Integer getHttp2InitialWindowSize() {
+        return http2InitialWindowSize;
+    }
+
+    public void setHttp2InitialWindowSize(int http2InitialWindowSize) {
+        this.http2InitialWindowSize = http2InitialWindowSize;
+    }
+
+    public Integer getHttp2MaxFrameSize() {
+        return http2MaxFrameSize;
+    }
+
+    public void setHttp2MaxFrameSize(int http2MaxFrameSize) {
+        this.http2MaxFrameSize = http2MaxFrameSize;
+    }
+
+    public Long getHttp2MaxHeaderListSize() {
+        return http2MaxHeaderListSize;
+    }
+
+    public void setHttp2MaxHeaderListSize(long http2MaxHeaderListSize) {
+        this.http2MaxHeaderListSize = http2MaxHeaderListSize;
+    }
+
+    public long getHttp2GracefulShutdownTimeoutMillis() {
+        return http2GracefulShutdownTimeoutMillis;
+    }
+
+    public void setHttp2GracefulShutdownTimeoutMillis(long http2GracefulShutdownTimeoutMillis) {
+        this.http2GracefulShutdownTimeoutMillis = http2GracefulShutdownTimeoutMillis;
+    }
+
+    /**
+     * Builds and returns an {@link Http2Settings} instance
+     * containing all configured HTTP/2 settings, or {@code null} if none are configured.
+     * @return the configured HTTP/2 settings, or {@code null}
+     */
+    public Http2Settings getHttp2Settings() {
+        Http2Settings settings = null;
+        if (http2HeaderTableSize != null) {
+            settings = new Http2Settings();
+            settings.headerTableSize(http2HeaderTableSize);
+        }
+        if (http2EnablePush != null) {
+            if (settings == null) {
+                settings = new Http2Settings();
+            }
+            settings.pushEnabled(http2EnablePush);
+        }
+        if (http2MaxConcurrentStreams != null) {
+            if (settings == null) {
+                settings = new Http2Settings();
+            }
+            settings.maxConcurrentStreams(http2MaxConcurrentStreams);
+        }
+        if (http2InitialWindowSize != null) {
+            if (settings == null) {
+                settings = new Http2Settings();
+            }
+            settings.initialWindowSize(http2InitialWindowSize);
+        }
+        if (http2MaxFrameSize != null) {
+            if (settings == null) {
+                settings = new Http2Settings();
+            }
+            settings.maxFrameSize(http2MaxFrameSize);
+        }
+        if (http2MaxHeaderListSize != null) {
+            if (settings == null) {
+                settings = new Http2Settings();
+            }
+            settings.maxHeaderListSize(http2MaxHeaderListSize);
+        } else if (maxHeaderSize > 0) {
+            if (settings == null) {
+                settings = new Http2Settings();
+            }
+            settings.maxHeaderListSize(maxHeaderSize);
+        }
+        return settings;
+    }
+
     /**
      * Creates and configures an {@link SslContext} based on the keyStore configuration.
      * @return a configured {@link SslContext}
@@ -222,7 +404,18 @@ public class NettyListenerConfig {
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         kmf.init(keyStore, keyPass);
 
-        this.sslContext = SslContextBuilder.forServer(kmf).build();
+        SslContextBuilder builder = SslContextBuilder.forServer(kmf);
+        if (http2) {
+            ApplicationProtocolConfig apc = new ApplicationProtocolConfig(
+                    ApplicationProtocolConfig.Protocol.ALPN,
+                    ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
+                    ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
+                    ApplicationProtocolNames.HTTP_2,
+                    ApplicationProtocolNames.HTTP_1_1);
+            builder.applicationProtocolConfig(apc);
+        }
+
+        this.sslContext = builder.build();
         return this.sslContext;
     }
 
@@ -233,6 +426,7 @@ public class NettyListenerConfig {
         tsb.append("host", host);
         tsb.append("port", getActualPort());
         tsb.append("ssl", ssl);
+        tsb.append("http2", http2);
         return tsb.toString();
     }
 

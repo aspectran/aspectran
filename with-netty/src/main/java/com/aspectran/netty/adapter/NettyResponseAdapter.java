@@ -39,7 +39,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http2.Http2StreamChannel;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -245,12 +245,12 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
 
         final FullHttpResponse response;
         if (isLegacyHead()) {
-            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.EMPTY_BUFFER);
+            response = new DefaultFullHttpResponse(request.protocolVersion(), status, Unpooled.EMPTY_BUFFER);
             if (content != Unpooled.EMPTY_BUFFER) {
                 content.release();
             }
         } else {
-            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, content);
+            response = new DefaultFullHttpResponse(request.protocolVersion(), status, content);
         }
         response.headers().set(headers);
 
@@ -266,7 +266,9 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
             }
         }
 
-        if (isKeepAlive()) {
+        if (isHttp2()) {
+            ctx.writeAndFlush(response);
+        } else if (isKeepAlive()) {
             HttpUtil.setKeepAlive(response, true);
             ctx.writeAndFlush(response);
         } else {
@@ -279,6 +281,11 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
     private boolean isLegacyHead() {
         return HttpMethod.HEAD.equals(request.method()) &&
                 activity.getNettyService().isLegacyHeadHandling();
+    }
+
+    private boolean isHttp2() {
+        return (request.protocolVersion() != null && request.protocolVersion().majorVersion() >= 2) ||
+                (ctx != null && ctx.channel() instanceof Http2StreamChannel);
     }
 
     private boolean isKeepAlive() {

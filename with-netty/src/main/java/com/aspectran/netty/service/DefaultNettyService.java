@@ -44,6 +44,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http2.Http2StreamChannel;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -269,7 +270,11 @@ public class DefaultNettyService extends AbstractNettyService {
             sb.append(reverseContextPath);
         }
         sb.append(requestName).append(" ");
-        sb.append(request.protocolVersion().text()).append(" ");
+        if (ctx.channel() instanceof Http2StreamChannel) {
+            sb.append("HTTP/2.0 ");
+        } else {
+            sb.append(request.protocolVersion().text()).append(" ");
+        }
         sb.append(getRemoteAddr(ctx, request));
         return sb.toString();
     }
