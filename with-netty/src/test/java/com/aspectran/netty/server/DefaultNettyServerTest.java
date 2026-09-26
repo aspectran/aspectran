@@ -20,6 +20,7 @@ import com.aspectran.embed.service.EmbeddedAspectran;
 import com.aspectran.netty.server.handler.resource.NettyResourceHandler;
 import com.aspectran.utils.ResourceUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -96,6 +97,46 @@ class DefaultNettyServerTest {
                 return EntityUtils.toString(res.getEntity()).trim();
             });
             assertTrue(response.contains("Hello Netty World!"), "Response should contain expected greeting");
+        }
+    }
+
+    @Test
+    void testHeadRequest() throws IOException {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpHead request = new HttpHead("http://127.0.0.1:" + port + "/hello");
+            httpClient.execute(request, res -> {
+                assertEquals(200, res.getCode());
+                Header contentLengthHeader = res.getFirstHeader("Content-Length");
+                assertNotNull(contentLengthHeader, "Content-Length header should be present on HEAD response");
+                assertTrue(Long.parseLong(contentLengthHeader.getValue()) > 0);
+                return null;
+            });
+        }
+    }
+
+    @Test
+    void testRedirect() throws IOException {
+        try (CloseableHttpClient httpClient = HttpClients.custom().disableRedirectHandling().build()) {
+            HttpGet request = new HttpGet("http://127.0.0.1:" + port + "/redirect");
+            httpClient.execute(request, res -> {
+                assertEquals(302, res.getCode());
+                Header locationHeader = res.getFirstHeader("Location");
+                assertNotNull(locationHeader);
+                assertEquals("http://127.0.0.1:" + port + "/hello?referrer=/", locationHeader.getValue());
+                Header contentLength = res.getFirstHeader("Content-Length");
+                assertNotNull(contentLength);
+                assertEquals("0", contentLength.getValue());
+                return null;
+            });
+        }
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet("http://127.0.0.1:" + port + "/redirect");
+            String response = httpClient.execute(request, res -> {
+                assertEquals(200, res.getCode());
+                return EntityUtils.toString(res.getEntity()).trim();
+            });
+            assertTrue(response.contains("Hello Netty World!"));
         }
     }
 

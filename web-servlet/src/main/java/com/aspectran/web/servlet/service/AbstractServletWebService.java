@@ -208,7 +208,7 @@ public abstract class AbstractServletWebService extends DefaultCoreService imple
             setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         }
 
-        if (webConfig.isLegacyHeadHandling()) {
+        if (webConfig.hasLegacyHeadHandling()) {
             setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
         }
 

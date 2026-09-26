@@ -53,6 +53,8 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
     private boolean trailingSlashRedirect;
 
+    private boolean legacyHeadHandling = true;
+
     private boolean proxyAddressForwarding;
 
     /**
@@ -169,6 +171,19 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
     }
 
     @Override
+    public boolean isLegacyHeadHandling() {
+        return legacyHeadHandling;
+    }
+
+    /**
+     * Sets whether legacy HTTP HEAD request handling is enabled.
+     * @param legacyHeadHandling {@code true} to enable legacy HEAD handling; {@code false} otherwise
+     */
+    public void setLegacyHeadHandling(boolean legacyHeadHandling) {
+        this.legacyHeadHandling = legacyHeadHandling;
+    }
+
+    @Override
     public boolean isProxyAddressForwarding() {
         return proxyAddressForwarding;
     }
@@ -206,6 +221,10 @@ public abstract class AbstractNettyService extends DefaultCoreService implements
 
         if (webConfig.hasTrailingSlashRedirect()) {
             setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        }
+
+        if (webConfig.hasLegacyHeadHandling()) {
+            setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
         }
 
         if (webConfig.hasProxyAddressForwarding()) {

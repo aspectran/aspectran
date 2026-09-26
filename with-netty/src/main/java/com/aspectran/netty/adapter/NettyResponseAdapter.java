@@ -36,6 +36,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
@@ -240,17 +241,32 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
         }
 
         ByteBuf content = (buffer != null ? buffer : Unpooled.EMPTY_BUFFER);
-        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, content);
+        int contentLength = content.readableBytes();
+
+        final FullHttpResponse response;
+        if (isLegacyHead()) {
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.EMPTY_BUFFER);
+            if (content != Unpooled.EMPTY_BUFFER) {
+                content.release();
+            }
+        } else {
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, content);
+        }
         response.headers().set(headers);
 
         if (contentType != null && !response.headers().contains(HttpHeaderNames.CONTENT_TYPE)) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, getContentType());
         }
 
-        boolean keepAlive = HttpUtil.isKeepAlive(request) && status.code() < HttpResponseStatus.BAD_REQUEST.code();
-        HttpUtil.setContentLength(response, content.readableBytes());
+        if (!response.headers().contains(HttpHeaderNames.CONTENT_LENGTH)) {
+            if (status.code() >= HttpResponseStatus.OK.code() &&
+                    !status.equals(HttpResponseStatus.NO_CONTENT) &&
+                    !status.equals(HttpResponseStatus.NOT_MODIFIED)) {
+                HttpUtil.setContentLength(response, contentLength);
+            }
+        }
 
-        if (keepAlive) {
+        if (isKeepAlive()) {
             HttpUtil.setKeepAlive(response, true);
             ctx.writeAndFlush(response);
         } else {
@@ -258,6 +274,15 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
             ChannelFuture future = ctx.writeAndFlush(response);
             future.addListener(ChannelFutureListener.CLOSE);
         }
+    }
+
+    private boolean isLegacyHead() {
+        return HttpMethod.HEAD.equals(request.method()) &&
+                activity.getNettyService().isLegacyHeadHandling();
+    }
+
+    private boolean isKeepAlive() {
+        return HttpUtil.isKeepAlive(request) && status.code() < HttpResponseStatus.BAD_REQUEST.code();
     }
 
     /**

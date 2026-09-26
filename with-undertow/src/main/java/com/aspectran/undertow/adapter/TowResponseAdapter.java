@@ -28,6 +28,8 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
+import io.undertow.util.Methods;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -52,6 +54,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     private String charset;
 
     private Writer writer;
+
+    private OutputStream outputStream;
+
+    private TowNoBodyOutputStream noBodyOutputStream;
 
     private ResponseState responseState = ResponseState.NONE;
 
@@ -177,8 +183,16 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         Assert.state(responseState != ResponseState.WRITER,
                 "Cannot call getOutputStream(), getWriter() already called");
         responseState = ResponseState.STREAM;
-        ifStartBlocking();
-        return getHttpServerExchange().getOutputStream();
+        if (outputStream == null) {
+            if (isLegacyHead()) {
+                noBodyOutputStream = new TowNoBodyOutputStream();
+                outputStream = noBodyOutputStream;
+            } else {
+                ifStartBlocking();
+                outputStream = getHttpServerExchange().getOutputStream();
+            }
+        }
+        return outputStream;
     }
 
     /**
@@ -191,8 +205,16 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
             Assert.state(responseState != ResponseState.STREAM,
                     "Cannot call getWriter(), getOutputStream() already called");
             responseState = ResponseState.WRITER;
-            ifStartBlocking();
-            writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());
+            if (outputStream == null) {
+                if (isLegacyHead()) {
+                    noBodyOutputStream = new TowNoBodyOutputStream();
+                    outputStream = noBodyOutputStream;
+                } else {
+                    ifStartBlocking();
+                    outputStream = getHttpServerExchange().getOutputStream();
+                }
+            }
+            writer = new OutputStreamWriter(outputStream, getEncoding());
         }
         return writer;
     }
@@ -210,8 +232,19 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         }
         if (writer != null) {
             writer.flush();
-        } else if (getHttpServerExchange().isBlocking() && getHttpServerExchange().isResponseStarted()) {
-            getHttpServerExchange().getOutputStream().flush();
+        } else if (outputStream != null) {
+            outputStream.flush();
+        }
+
+        if (noBodyOutputStream != null) {
+            int status = getStatus();
+            if (!getHttpServerExchange().getResponseHeaders().contains(Headers.CONTENT_LENGTH)) {
+                if (status >= HttpStatus.OK.value() &&
+                        status != HttpStatus.NO_CONTENT.value() &&
+                        status != HttpStatus.NOT_MODIFIED.value()) {
+                    getHttpServerExchange().setResponseContentLength(noBodyOutputStream.getContentLength());
+                }
+            }
         }
     }
 
@@ -224,6 +257,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         if (responseState == ResponseState.WRITER) {
             writer = null;
         }
+        outputStream = null;
+        noBodyOutputStream = null;
         getHttpServerExchange().getResponseHeaders().clear();
         setStatus(HttpStatus.OK.value());
     }
@@ -295,6 +330,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         return getAdaptee();
     }
 
+    private boolean isLegacyHead() {
+        return Methods.HEAD.equals(getHttpServerExchange().getRequestMethod()) &&
+                activity.getTowService().isLegacyHeadHandling();
+    }
+
     /**
      * Represents the state of the response output.
      */
@@ -302,6 +342,32 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         NONE,
         STREAM,
         WRITER
+    }
+
+    /**
+     * An {@link OutputStream} that swallows all its data and counts bytes.
+     */
+    private static class TowNoBodyOutputStream extends OutputStream {
+
+        private long contentLength = 0;
+
+        @Override
+        public void write(int b) {
+            contentLength++;
+        }
+
+        @Override
+        public void write(byte @NonNull [] b, int off, int len) {
+            if (off < 0 || len < 0 || off + len > b.length) {
+                throw new IndexOutOfBoundsException();
+            }
+            contentLength += len;
+        }
+
+        public long getContentLength() {
+            return contentLength;
+        }
+
     }
 
 }

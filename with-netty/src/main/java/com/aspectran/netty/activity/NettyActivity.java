@@ -105,6 +105,7 @@ public class NettyActivity extends CoreActivity {
      * Returns the Netty service managing this activity.
      * @return the Netty service
      */
+    @NonNull
     public NettyService getNettyService() {
         return nettyService;
     }

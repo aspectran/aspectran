@@ -37,6 +37,12 @@ public interface TowService extends WebService {
     ResourceManager getResourceManager();
 
     /**
+     * Returns whether legacy HTTP HEAD request handling is enabled.
+     * @return true if legacy HEAD handling is enabled; false otherwise
+     */
+    boolean isLegacyHeadHandling();
+
+    /**
      * Processes an incoming HTTP request using the Undertow {@link HttpServerExchange}.
      * This is the main entry point for handling web requests in this service.
      * @param exchange the HTTP request/response exchange

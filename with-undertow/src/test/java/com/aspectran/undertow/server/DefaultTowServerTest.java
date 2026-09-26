@@ -21,8 +21,10 @@ import com.aspectran.embed.service.EmbeddedAspectran;
 import com.aspectran.utils.FileCopyUtils;
 import com.aspectran.utils.ResourceUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,6 +36,8 @@ import java.io.IOException;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DefaultTowServerTest {
@@ -75,6 +79,20 @@ class DefaultTowServerTest {
         }
 
         assertEquals(result1, result2);
+    }
+
+    @Test
+    void testHeadRequest() throws IOException {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpHead request = new HttpHead("http://127.0.0.1:8099/hello_jsp");
+            httpClient.execute(request, response -> {
+                assertEquals(200, response.getCode());
+                Header contentLengthHeader = response.getFirstHeader("Content-Length");
+                assertNotNull(contentLengthHeader, "Content-Length header should be present on HEAD response");
+                assertTrue(Long.parseLong(contentLengthHeader.getValue()) > 0);
+                return null;
+            });
+        }
     }
 
     @Test

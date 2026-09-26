@@ -63,6 +63,12 @@ public interface NettyService extends WebService {
     void setContextPath(String contextPath);
 
     /**
+     * Returns whether legacy HTTP HEAD request handling is enabled.
+     * @return true if legacy HEAD handling is enabled; false otherwise
+     */
+    boolean isLegacyHeadHandling();
+
+    /**
      * Processes an incoming HTTP request using Netty's {@link ChannelHandlerContext} and {@link FullHttpRequest}.
      * @param ctx the Netty channel handler context
      * @param request the full HTTP request

@@ -96,6 +96,15 @@ public class TowActivity extends CoreActivity {
     }
 
     /**
+     * Returns the Undertow service associated with this activity.
+     * @return the Undertow service
+     */
+    @NonNull
+    public TowService getTowService() {
+        return towService;
+    }
+
+    /**
      * Returns the resource manager for serving static files.
      * @return the static resource manager
      */

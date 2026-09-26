@@ -32,6 +32,10 @@
         <transform format="json"/>
     </translet>
 
+    <translet name="/redirect">
+        <redirect path="/hello?referrer=/"/>
+    </translet>
+
     <bean id="testSessionBean" class="com.aspectran.netty.server.TestSessionBean"/>
 
 </aspectran>
