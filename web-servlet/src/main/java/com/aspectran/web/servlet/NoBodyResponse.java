@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.servlet;
 
+import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,24 +48,21 @@ class NoBodyResponse extends HttpServletResponseWrapper {
         noBody = new NoBodyOutputStream();
     }
 
-    void setContentLength() {
-        if (!didSetContentLength) {
-            if (writer != null) {
-                writer.flush();
-            }
-            setContentLength(noBody.getContentLength());
-        }
-    }
-
     @Override
-    public void setContentLength(int len) {
-        super.setContentLength(len);
+    public void sendError(int sc, String msg) throws IOException {
+        super.sendError(sc, msg);
         didSetContentLength = true;
     }
 
     @Override
-    public void setContentLengthLong(long len) {
-        super.setContentLengthLong(len);
+    public void sendError(int sc) throws IOException {
+        super.sendError(sc);
+        didSetContentLength = true;
+    }
+
+    @Override
+    public void sendRedirect(String location) throws IOException {
+        super.sendRedirect(location);
         didSetContentLength = true;
     }
 
@@ -93,9 +91,55 @@ class NoBodyResponse extends HttpServletResponseWrapper {
     }
 
     private void checkHeader(String name) {
-        if ("content-length".equalsIgnoreCase(name)) {
+        if (HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(name)) {
             didSetContentLength = true;
         }
+    }
+
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        if (writer != null) {
+            throw new IllegalStateException("Illegal to call getOutputStream() after getWriter() has been called");
+        }
+        usingOutputStream = true;
+        return noBody;
+    }
+
+    @Override
+    public PrintWriter getWriter() throws UnsupportedEncodingException {
+        if (usingOutputStream) {
+            throw new IllegalStateException("Illegal to call getWriter() after getOutputStream() has been called");
+        }
+        if (writer == null) {
+            writer = new PrintWriter(new OutputStreamWriter(noBody, getCharacterEncoding()));
+        }
+        return writer;
+    }
+
+    void setContentLength() {
+        if (!didSetContentLength && !isCommitted()) {
+            int status = getStatus();
+            if (status >= SC_OK && status != SC_NO_CONTENT && status != SC_NOT_MODIFIED) {
+                if (writer != null) {
+                    writer.flush();
+                }
+                if (usingOutputStream || writer != null) {
+                    setContentLength(noBody.getContentLength());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setContentLength(int len) {
+        super.setContentLength(len);
+        didSetContentLength = true;
+    }
+
+    @Override
+    public void setContentLengthLong(long len) {
+        super.setContentLengthLong(len);
+        didSetContentLength = true;
     }
 
     @Override
@@ -119,26 +163,6 @@ class NoBodyResponse extends HttpServletResponseWrapper {
             }
         }
         noBody.reset();
-    }
-
-    @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-        if (writer != null) {
-            throw new IllegalStateException("Illegal to call getOutputStream() after getWriter() has been called");
-        }
-        usingOutputStream = true;
-        return noBody;
-    }
-
-    @Override
-    public PrintWriter getWriter() throws UnsupportedEncodingException {
-        if (usingOutputStream) {
-            throw new IllegalStateException("Illegal to call getWriter() after getOutputStream() has been called");
-        }
-        if (writer == null) {
-            writer = new PrintWriter(new OutputStreamWriter(noBody, getCharacterEncoding()));
-        }
-        return writer;
     }
 
     /**
