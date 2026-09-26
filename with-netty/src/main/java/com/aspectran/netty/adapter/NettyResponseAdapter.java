@@ -20,7 +20,6 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.netty.activity.NettyActivity;
 import com.aspectran.utils.Assert;
-import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.util.UriUtils;
 import com.aspectran.web.support.util.WebUtils;
@@ -248,7 +247,7 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, getContentType());
         }
 
-        boolean keepAlive = HttpUtil.isKeepAlive(request) && status.code() < 400;
+        boolean keepAlive = HttpUtil.isKeepAlive(request) && status.code() < HttpResponseStatus.BAD_REQUEST.code();
         HttpUtil.setContentLength(response, content.readableBytes());
 
         if (keepAlive) {
@@ -290,7 +289,7 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
             activity.getTranslet().redirect(location);
             return;
         }
-        setStatus(HttpStatus.FOUND.value());
+        setStatus(HttpResponseStatus.FOUND.code());
         reservedRedirectLocation = UriUtils.makeAbsoluteUrl(activity, location);
     }
 
