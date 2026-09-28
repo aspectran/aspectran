@@ -191,7 +191,11 @@ public class CommandExecutor {
             }
             return commandResult;
         } catch (Exception e) {
-            logger.error("Error executing daemon command {}", command, e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Failed to execute daemon command: {}", command, e);
+            } else {
+                logger.warn("Failed to execute daemon command: {} ({})", command, e.getMessage());
+            }
             String message = "[FAILED] An unexpected error occurred while executing the command '" +
                     command.getDescriptor().getName() + "'.";
             String error = ExceptionUtils.getStacktrace(e);

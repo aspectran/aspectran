@@ -173,7 +173,11 @@ public class DefaultDaemonService extends AbstractDaemonService {
             AponReader.read(apon, parameters);
             return execute(parameters);
         } catch (Exception e) {
-            logger.error("Failed to parse command parameters: {}", apon, e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Failed to parse command parameters: \"{}\"", apon, e);
+            } else {
+                logger.warn("Failed to parse command parameters: \"{}\" ({})", apon, e.getMessage());
+            }
             String message = "[FAILED] Malformed command data";
             String error = ExceptionUtils.getStacktrace(e);
             return new CommandResult(false, message, error);
