@@ -157,16 +157,23 @@ class NettyWebSocketServerTest {
     void testContextScopedBroadcast() throws Exception {
         HttpClient client = HttpClient.newHttpClient();
 
-        CountDownLatch latch = new CountDownLatch(2);
+        CountDownLatch openLatch = new CountDownLatch(2);
+        CountDownLatch messageLatch = new CountDownLatch(2);
         AtomicReference<String> client1Received = new AtomicReference<>();
         AtomicReference<String> client2Received = new AtomicReference<>();
 
         WebSocket ws1 = client.newWebSocketBuilder()
                 .buildAsync(URI.create("ws://127.0.0.1:" + port + "/api/chat"), new WebSocket.Listener() {
                     @Override
+                    public void onOpen(WebSocket ws) {
+                        openLatch.countDown();
+                        WebSocket.Listener.super.onOpen(ws);
+                    }
+
+                    @Override
                     public CompletionStage<?> onText(WebSocket ws, CharSequence data, boolean last) {
                         client1Received.set(data.toString());
-                        latch.countDown();
+                        messageLatch.countDown();
                         return WebSocket.Listener.super.onText(ws, data, last);
                     }
                 })
@@ -175,18 +182,26 @@ class NettyWebSocketServerTest {
         WebSocket ws2 = client.newWebSocketBuilder()
                 .buildAsync(URI.create("ws://127.0.0.1:" + port + "/api/chat"), new WebSocket.Listener() {
                     @Override
+                    public void onOpen(WebSocket ws) {
+                        openLatch.countDown();
+                        WebSocket.Listener.super.onOpen(ws);
+                    }
+
+                    @Override
                     public CompletionStage<?> onText(WebSocket ws, CharSequence data, boolean last) {
                         client2Received.set(data.toString());
-                        latch.countDown();
+                        messageLatch.countDown();
                         return WebSocket.Listener.super.onText(ws, data, last);
                     }
                 })
                 .get(5, TimeUnit.SECONDS);
 
+        assertTrue(openLatch.await(5, TimeUnit.SECONDS), "Both clients should be opened");
+
         // Client 1 sends message
         ws1.sendText("Hello everyone!", true);
 
-        boolean reached = latch.await(5, TimeUnit.SECONDS);
+        boolean reached = messageLatch.await(5, TimeUnit.SECONDS);
         assertTrue(reached, "Both clients should receive the broadcast message");
         assertEquals("Broadcast: Hello everyone!", client1Received.get());
         assertEquals("Broadcast: Hello everyone!", client2Received.get());

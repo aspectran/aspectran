@@ -256,46 +256,44 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         handshaker.handshake(ctx.channel(), request).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                ctx.channel().eventLoop().execute(() -> {
-                    DefaultNettyWebSocketSession session = new DefaultNettyWebSocketSession(
-                            ctx.channel(), request.uri(), path, request.headers(), handshaker,
-                            match.getPathParameters(), webSocketConfig);
+                DefaultNettyWebSocketSession session = new DefaultNettyWebSocketSession(
+                        ctx.channel(), request.uri(), path, request.headers(), handshaker,
+                        match.getPathParameters(), webSocketConfig);
 
-                    if (finalHttpSession != null && finalHttpSession.isValid()) {
-                        session.setHttpSession(finalHttpSession);
-                        NettyWebSocketServerContainerInitializer.bindSession(finalHttpSession, session);
-                    }
+                if (finalHttpSession != null && finalHttpSession.isValid()) {
+                    session.setHttpSession(finalHttpSession);
+                    NettyWebSocketServerContainerInitializer.bindSession(finalHttpSession, session);
+                }
 
-                    String wsGroup = ChannelLoggingGroupHelper.get(ctx.channel());
+                String wsGroup = ChannelLoggingGroupHelper.get(ctx.channel());
+                if (wsGroup != null) {
+                    LoggingGroupHelper.set(wsGroup);
+                }
+                try {
+                    listener.onOpen(session);
+                } catch (Exception e) {
+                    logger.error("Error in WebSocket onOpen", e);
+                    session.close(1011, "Internal error");
+                    return;
+                } finally {
                     if (wsGroup != null) {
-                        LoggingGroupHelper.set(wsGroup);
+                        LoggingGroupHelper.clear();
                     }
-                    try {
-                        listener.onOpen(session);
-                    } catch (Exception e) {
-                        logger.error("Error in WebSocket onOpen", e);
-                        session.close(1011, "Internal error");
-                        return;
-                    } finally {
-                        if (wsGroup != null) {
-                            LoggingGroupHelper.clear();
-                        }
-                    }
+                }
 
-                    ChannelPipeline pipeline = ctx.pipeline();
-                    if (pipeline.get(WS_HANDLER_NAME) == null) {
-                        if (pipeline.get(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME) != null) {
-                            pipeline.remove(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME);
-                        }
-                        if (webSocketConfig != null && webSocketConfig.getMaxIdleTimeout() > 0) {
-                            int idleSeconds = (int)Math.max(1, webSocketConfig.getMaxIdleTimeout() / 1000);
-                            pipeline.addBefore(ctx.name(), WS_IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, 0, idleSeconds));
-                        }
-                        pipeline.addBefore(ctx.name(), WS_FRAME_AGGREGATOR_HANDLER_NAME, new WebSocketFrameAggregator(maxMessageSize));
-                        pipeline.addBefore(ctx.name(), WS_HANDLER_NAME,
-                                new NettyWebSocketHandler(session, listener, requestExecutor, handshaker));
+                ChannelPipeline pipeline = ctx.pipeline();
+                if (pipeline.get(WS_HANDLER_NAME) == null) {
+                    if (pipeline.get(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME) != null) {
+                        pipeline.remove(NettyChannelInitializer.IDLE_STATE_HANDLER_NAME);
                     }
-                });
+                    if (webSocketConfig != null && webSocketConfig.getMaxIdleTimeout() > 0) {
+                        int idleSeconds = (int)Math.max(1, webSocketConfig.getMaxIdleTimeout() / 1000);
+                        pipeline.addBefore(ctx.name(), WS_IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, 0, idleSeconds));
+                    }
+                    pipeline.addBefore(ctx.name(), WS_FRAME_AGGREGATOR_HANDLER_NAME, new WebSocketFrameAggregator(maxMessageSize));
+                    pipeline.addBefore(ctx.name(), WS_HANDLER_NAME,
+                            new NettyWebSocketHandler(session, listener, requestExecutor, handshaker));
+                }
             } else {
                 logger.error("WebSocket handshake failed", future.cause());
                 ctx.close();
