@@ -43,11 +43,23 @@ public class PBEncryptCommand extends AbstractCommand {
     public PBEncryptCommand(CommandRegistry registry) {
         super(registry);
 
+        addOption(Option.builder("a")
+                .longName("algorithm")
+                .valueName("algorithm")
+                .withEqualSign()
+                .desc("The algorithm for encryption")
+                .build());
         addOption(Option.builder("p")
                 .longName("password")
                 .valueName("password")
                 .withEqualSign()
                 .desc("The password for encryption")
+                .build());
+        addOption(Option.builder("s")
+                .longName("salt")
+                .valueName("salt")
+                .withEqualSign()
+                .desc("The salt for encryption")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -71,11 +83,21 @@ public class PBEncryptCommand extends AbstractCommand {
             return;
         }
 
+        String algorithm = options.getValue("algorithm");
+        if (!StringUtils.hasText(algorithm)) {
+            algorithm = PBEncryptionUtils.getAlgorithm();
+        }
+
         String password = options.getValue("password");
         boolean implicitPassword = false;
         if (!StringUtils.hasText(password)) {
             password = PBEncryptionUtils.getPassword();
             implicitPassword = true;
+        }
+
+        String salt = options.getValue("salt");
+        if (!StringUtils.hasText(salt)) {
+            salt = PBEncryptionUtils.getSalt();
         }
 
         if (!StringUtils.hasText(password)) {
@@ -93,8 +115,11 @@ public class PBEncryptCommand extends AbstractCommand {
 
         if (!implicitPassword) {
             console.writeLine("----------------------------------------------------------------------------");
-            console.writeLine(" %1$9s : %2$s", "Algorithm", PBEncryptionUtils.getAlgorithm());
+            console.writeLine(" %1$9s : %2$s", "Algorithm", algorithm);
             console.writeLine(" %1$9s : %2$s", "Password", password);
+            if (StringUtils.hasText(salt)) {
+                console.writeLine(" %1$9s : %2$s", "Salt", salt);
+            }
             console.writeLine("----------------------------------------------------------------------------");
         } else {
             console.writeLine("----------------------------------------------------------------------------");
@@ -102,9 +127,11 @@ public class PBEncryptCommand extends AbstractCommand {
         for (String input : inputValues) {
             String output;
             try {
-                output = PBEncryptionUtils.encrypt(input, password);
+                output = PBEncryptionUtils.getStringEncryptor(algorithm, password, salt).encrypt(input);
             } catch (Exception e) {
-                throw new IllegalArgumentException("Encryption failed for input: " + input);
+                console.writeError("Encryption failed for input: " + input);
+                console.writeLine("----------------------------------------------------------------------------");
+                return;
             }
             console.writeLine(" %1$9s : %2$s", "Input", input);
             console.writeLine(" %1$9s : %2$s", "Result", output);

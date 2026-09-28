@@ -118,6 +118,31 @@ class CommandTest {
     }
 
     @Test
+    void testPBEncryptCommandWithOptions() throws Exception {
+        PBEncryptCommand command = new PBEncryptCommand(runner.getCommandRegistry());
+        getConsole().writeLine(command.getDescriptor().getDescription());
+        command.printHelp(getConsole());
+        CommandLineParser lineParser = new CommandLineParser(
+                "encrypt -a=PBEWITHHMACSHA256ANDAES_128 -p=secret-password -s=custom-salt-1234 \"hello aspectran\"");
+        command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
+    }
+
+    @Test
+    void testPBDecryptCommandWithOptions() throws Exception {
+        String algorithm = "PBEWITHHMACSHA256ANDAES_128";
+        String password = "secret-password";
+        String salt = "custom-salt-1234";
+        String encrypted = PBEncryptionUtils.getStringEncryptor(algorithm, password, salt).encrypt("hello aspectran");
+
+        PBDecryptCommand command = new PBDecryptCommand(runner.getCommandRegistry());
+        getConsole().writeLine(command.getDescriptor().getDescription());
+        command.printHelp(getConsole());
+        CommandLineParser lineParser = new CommandLineParser(
+                "decrypt -a=" + algorithm + " -p=" + password + " -s=" + salt + " " + encrypted);
+        command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
+    }
+
+    @Test
     void testTestCommand() throws Exception {
         TestCommand command = new TestCommand(runner.getCommandRegistry());
         //getConsole().writeLine(command.getDescriptor().getDescription());
