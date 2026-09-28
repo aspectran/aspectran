@@ -54,6 +54,8 @@ class NettyWebSocketServerTest {
 
     private DefaultNettyServer nettyServer;
 
+    private AbstractNettyWebSocketEndpoint chatEndpoint;
+
     private int port;
 
     @BeforeAll
@@ -83,12 +85,13 @@ class NettyWebSocketServerTest {
         // Register broadcast WebSocket endpoint on /api context
         NettyContext apiContext = nettyServer.getContextRouter().match("/api");
         if (apiContext != null) {
-            apiContext.addWebSocketEndpoint("/chat", new AbstractNettyWebSocketEndpoint() {
+            chatEndpoint = new AbstractNettyWebSocketEndpoint() {
                 @Override
                 public void onMessage(NettyWebSocketSession session, String text) {
                     broadcast("Broadcast: " + text);
                 }
-            });
+            };
+            apiContext.addWebSocketEndpoint("/chat", chatEndpoint);
         }
 
         nettyServer.start();
@@ -197,6 +200,11 @@ class NettyWebSocketServerTest {
                 .get(5, TimeUnit.SECONDS);
 
         assertTrue(openLatch.await(5, TimeUnit.SECONDS), "Both clients should be opened");
+        long deadline = System.currentTimeMillis() + 5000;
+        while (chatEndpoint.getSessionCount() < 2 && System.currentTimeMillis() < deadline) {
+            Thread.sleep(10);
+        }
+        assertEquals(2, chatEndpoint.getSessionCount(), "Server should have 2 active sessions registered");
 
         // Client 1 sends message
         ws1.sendText("Hello everyone!", true);
