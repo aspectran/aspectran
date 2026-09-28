@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Set up JDK ${{ matrix.java }} ${{ matrix.distribution }}
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           cache: ${{ matrix.cache }}
           java-version: ${{ matrix.java }}
