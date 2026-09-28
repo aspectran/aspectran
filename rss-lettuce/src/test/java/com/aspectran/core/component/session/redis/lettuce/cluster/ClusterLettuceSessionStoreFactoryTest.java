@@ -18,6 +18,7 @@ package com.aspectran.core.component.session.redis.lettuce.cluster;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionAgent;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
@@ -37,6 +38,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.time.Duration;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -54,6 +57,8 @@ class ClusterLettuceSessionStoreFactoryTest {
 
     private static GenericContainer<?> redisCluster;
 
+    private static ClientResources clientResources;
+
     private static RedisClusterConnectionPoolConfig poolConfig;
 
     private DefaultSessionManager sessionManager;
@@ -67,13 +72,20 @@ class ClusterLettuceSessionStoreFactoryTest {
         redisCluster.start();
         waitForClusterReady(redisCluster);
 
-        ClientResources resources = ClientResources.builder()
+        String host = redisCluster.getHost();
+        Map<Integer, Integer> portMapping = new HashMap<>();
+        for (int port = 7000; port <= 7005; port++) {
+            portMapping.put(port, redisCluster.getMappedPort(port));
+        }
+
+        clientResources = ClientResources.builder()
                 .socketAddressResolver(new SocketAddressResolver() {
                     @Override
                     public SocketAddress resolve(RedisURI redisURI) {
                         int port = redisURI.getPort();
-                        if (port >= 7000 && port <= 7005) {
-                            return new InetSocketAddress(redisCluster.getHost(), redisCluster.getMappedPort(port));
+                        Integer mappedPort = portMapping.get(port);
+                        if (mappedPort != null) {
+                            return new InetSocketAddress(host, mappedPort);
                         }
                         return new InetSocketAddress(redisURI.getHost(), port);
                     }
@@ -86,16 +98,23 @@ class ClusterLettuceSessionStoreFactoryTest {
 
         ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
                 .topologyRefreshOptions(topologyRefreshOptions)
+                .validateClusterNodeMembership(false)
                 .build();
 
         poolConfig = new RedisClusterConnectionPoolConfig();
-        poolConfig.setClientResources(resources);
+        poolConfig.setClientResources(clientResources);
         poolConfig.setClusterClientOptions(clusterClientOptions);
-        poolConfig.setNodes("redis://" + redisCluster.getHost() + ":" + redisCluster.getMappedPort(7000));
+        poolConfig.setNodes("redis://" + host + ":" + portMapping.get(7000));
     }
 
     @AfterAll
     static void stopContainer() {
+        if (clientResources != null) {
+            try {
+                clientResources.shutdown().get(5, TimeUnit.SECONDS);
+            } catch (Exception ignored) {
+            }
+        }
         if (redisCluster != null) {
             redisCluster.stop();
         }
@@ -117,6 +136,10 @@ class ClusterLettuceSessionStoreFactoryTest {
     @BeforeEach
     void beforeEach() throws Exception {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
+        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
+        sessionManagerConfig.setClusterEnabled(true);
+        sessionManager.setSessionManagerConfig(sessionManagerConfig);
+
         ClusterLettuceSessionStoreFactory sessionStoreFactory = new ClusterLettuceSessionStoreFactory();
         sessionStoreFactory.setPoolConfig(poolConfig);
         sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
