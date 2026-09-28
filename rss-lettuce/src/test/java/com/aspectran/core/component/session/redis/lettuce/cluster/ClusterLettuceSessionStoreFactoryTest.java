@@ -74,8 +74,12 @@ class ClusterLettuceSessionStoreFactoryTest {
 
         String host = redisCluster.getHost();
         Map<Integer, Integer> portMapping = new HashMap<>();
-        for (int port = 7000; port <= 7005; port++) {
-            portMapping.put(port, redisCluster.getMappedPort(port));
+        String[] nodeUris = new String[6];
+        for (int i = 0; i < 6; i++) {
+            int port = 7000 + i;
+            int mappedPort = redisCluster.getMappedPort(port);
+            portMapping.put(port, mappedPort);
+            nodeUris[i] = "redis://" + host + ":" + mappedPort;
         }
 
         clientResources = ClientResources.builder()
@@ -93,7 +97,7 @@ class ClusterLettuceSessionStoreFactoryTest {
                 .build();
 
         ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
-                .enablePeriodicRefresh(Duration.ofSeconds(30))
+                .enablePeriodicRefresh(Duration.ofSeconds(10))
                 .build();
 
         ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
@@ -104,7 +108,7 @@ class ClusterLettuceSessionStoreFactoryTest {
         poolConfig = new RedisClusterConnectionPoolConfig();
         poolConfig.setClientResources(clientResources);
         poolConfig.setClusterClientOptions(clusterClientOptions);
-        poolConfig.setNodes("redis://" + host + ":" + portMapping.get(7000));
+        poolConfig.setNodes(nodeUris);
     }
 
     @AfterAll
@@ -125,11 +129,26 @@ class ClusterLettuceSessionStoreFactoryTest {
                 .pollInterval(Duration.ofMillis(500))
                 .ignoreExceptions()
                 .until(() -> {
+                    for (int port = 7000; port <= 7005; port++) {
+                        org.testcontainers.containers.Container.ExecResult infoResult = container.execInContainer(
+                                "redis-cli", "-p", String.valueOf(port), "cluster", "info"
+                        );
+                        if (infoResult.getExitCode() != 0 || !infoResult.getStdout().contains("cluster_state:ok")) {
+                            return false;
+                        }
+                    }
                     org.testcontainers.containers.Container.ExecResult result = container.execInContainer(
                             "redis-cli", "--cluster", "check", "127.0.0.1:7000"
                     );
-                    return result.getExitCode() == 0 &&
-                            result.getStdout().contains("[OK] All 16384 slots covered.");
+                    if (result.getExitCode() != 0 || !result.getStdout().contains("[OK] All 16384 slots covered.")) {
+                        return false;
+                    }
+                    for (int port = 7000; port <= 7005; port++) {
+                        container.execInContainer(
+                                "redis-cli", "-p", String.valueOf(port), "config", "set", "cluster-require-full-coverage", "no"
+                        );
+                    }
+                    return true;
                 });
     }
 
