@@ -22,7 +22,6 @@ import io.lettuce.core.Range;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.ScanIterator;
 import io.lettuce.core.SetArgs;
-import io.lettuce.core.ZRange;
 import io.lettuce.core.api.StatefulConnection;
 import io.lettuce.core.api.sync.RedisKeyCommands;
 import io.lettuce.core.api.sync.RedisSortedSetCommands;
@@ -176,9 +175,10 @@ public abstract class AbstractLettuceSessionStore<
                 // Another node is currently scavenging expired sessions from the store
                 return Collections.emptySet();
             }
-            List<SessionData> expiredSessions = c.zrange(
+            @SuppressWarnings("deprecation")  // Use zrangebyscore for backward compatibility with Redis < 6.2
+            List<SessionData> expiredSessions = c.zrangebyscore(
                     expiryIndexKey,
-                    ZRange.byScore(0.0, (double)time)
+                    Range.create(0.0, (double)time)
             );
             if (expiredSessions == null || expiredSessions.isEmpty()) {
                 return Collections.emptySet();
@@ -203,9 +203,10 @@ public abstract class AbstractLettuceSessionStore<
                 // Another node is currently cleaning orphans or cleaned recently
                 return null;
             }
-            List<SessionData> expiredSessions = c.zrange(
+            @SuppressWarnings("deprecation")  // Use zrangebyscore for backward compatibility with Redis < 6.2
+            List<SessionData> expiredSessions = c.zrangebyscore(
                     expiryIndexKey,
-                    ZRange.byScore(0.0, (double)time)
+                    Range.create(0.0, (double)time)
             );
             if (expiredSessions != null && !expiredSessions.isEmpty()) {
                 for (SessionData data : expiredSessions) {
