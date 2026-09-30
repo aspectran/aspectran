@@ -222,16 +222,22 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     @Nullable
     public V computeIfAbsent(String key, @NonNull Function<? super String, ? extends V> mappingFunction) {
-        String oldKey = this.caseInsensitiveKeys.putIfAbsent(convertKey(key), key);
+        String convertedKey = convertKey(key);
+        String oldKey = this.caseInsensitiveKeys.get(convertedKey);
         if (oldKey != null) {
             V oldKeyValue = this.targetMap.get(oldKey);
             if (oldKeyValue != null) {
                 return oldKeyValue;
-            } else {
-                key = oldKey;
             }
+            return this.targetMap.computeIfAbsent(oldKey, mappingFunction);
         }
-        return this.targetMap.computeIfAbsent(key, mappingFunction);
+        return this.targetMap.computeIfAbsent(key, k -> {
+            V value = mappingFunction.apply(k);
+            if (value != null) {
+                this.caseInsensitiveKeys.putIfAbsent(convertedKey, k);
+            }
+            return value;
+        });
     }
 
     @Override
@@ -334,7 +340,31 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * @see String#toLowerCase(Locale)
      */
     protected String convertKey(@NonNull String key) {
-        return key.toLowerCase(getLocale());
+        Locale locale = getLocale();
+        if (Locale.ENGLISH.equals(locale) || Locale.ROOT.equals(locale)) {
+            return toAsciiLowerCase(key);
+        }
+        return key.toLowerCase(locale);
+    }
+
+    @NonNull
+    private static String toAsciiLowerCase(@NonNull String s) {
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if (c >= 'A' && c <= 'Z') {
+                char[] chars = s.toCharArray();
+                chars[i] = (char)(c + 32);
+                for (int j = i + 1; j < len; j++) {
+                    char c2 = chars[j];
+                    if (c2 >= 'A' && c2 <= 'Z') {
+                        chars[j] = (char)(c2 + 32);
+                    }
+                }
+                return new String(chars);
+            }
+        }
+        return s;
     }
 
     /**

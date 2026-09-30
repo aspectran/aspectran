@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -66,6 +68,38 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
         return getAdaptee();
     }
 
+    @Override
+    public String getHeader(String name) {
+        if (!headersObtained) {
+            return getHttpServletRequest().getHeader(name);
+        }
+        return super.getHeader(name);
+    }
+
+    @Override
+    public List<String> getHeaderValues(String name) {
+        if (!headersObtained) {
+            Enumeration<String> values = getHttpServletRequest().getHeaders(name);
+            if (values != null && values.hasMoreElements()) {
+                List<String> list = new ArrayList<>(2);
+                while (values.hasMoreElements()) {
+                    list.add(values.nextElement());
+                }
+                return list;
+            }
+            return null;
+        }
+        return super.getHeaderValues(name);
+    }
+
+    @Override
+    public boolean containsHeader(String name) {
+        if (!headersObtained) {
+            return (getHttpServletRequest().getHeader(name) != null);
+        }
+        return super.containsHeader(name);
+    }
+
     /**
      * {@inheritDoc}
      * <p>This implementation lazily populates the header map from the underlying
@@ -77,7 +111,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
             headersObtained = true;
             HttpServletRequest request = getAdaptee();
             Enumeration<String> headerNames = request.getHeaderNames();
-            if (headerNames.hasMoreElements()) {
+            if (headerNames != null && headerNames.hasMoreElements()) {
                 MultiValueMap<String, String> multiValueMap = super.getHeaderMap();
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();

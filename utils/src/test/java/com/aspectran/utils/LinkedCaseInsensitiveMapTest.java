@@ -18,9 +18,13 @@ package com.aspectran.utils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -99,7 +103,10 @@ class LinkedCaseInsensitiveMapTest {
         assertEquals("value1", map.put("Key", "value3"));
         assertEquals("value3", map.computeIfAbsent("key", key2 -> "value1"));
         assertEquals("value3", map.computeIfAbsent("KEY", key1 -> "value2"));
-        assertEquals("value3", map.computeIfAbsent("Key", key -> "value3"));
+        assertNull(map.put("null", null));
+        assertEquals("value", map.computeIfAbsent("NULL", s -> "value"));
+        assertEquals("value", map.get("null"));
+        assertArrayEquals(new String[] {"Key", "null"}, map.keySet().toArray());
     }
 
     @Test
@@ -107,6 +114,50 @@ class LinkedCaseInsensitiveMapTest {
         assertEquals("value1", map.computeIfAbsent("key", key2 -> "value1"));
         assertEquals("value1", map.computeIfAbsent("KEY", key1 -> "value2"));
         assertEquals("value1", map.computeIfAbsent("Key", key -> "value3"));
+    }
+
+    @Test
+    void computeIfAbsentWithNullComputedValue() {
+        assertNull(map.computeIfAbsent("Key", key -> null));
+        assertTrue(map.isEmpty());
+        assertFalse(map.containsKey("key"));
+    }
+
+    @Test
+    void computeIfAbsentAfterNullComputedValueUsesGivenKey() {
+        assertNull(map.computeIfAbsent("Key", key -> null));
+        assertEquals("value", map.computeIfAbsent("KEY", key -> "value"));
+        assertArrayEquals(new String[] {"KEY"}, map.keySet().toArray());
+    }
+
+    @Test
+    void computeIfAbsentWithFailingMappingFunction() {
+        assertThrows(IllegalStateException.class, () ->
+                map.computeIfAbsent("Key", key -> { throw new IllegalStateException(); }));
+        assertTrue(map.isEmpty());
+        assertFalse(map.containsKey("key"));
+    }
+
+    @Test
+    void computeIfAbsentWithNullComputedValueForExistingNullValue() {
+        assertNull(map.put("Key", null));
+        assertNull(map.computeIfAbsent("KEY", key -> null));
+        assertEquals(1, map.size());
+        assertTrue(map.containsKey("key"));
+        assertArrayEquals(new String[] {"Key"}, map.keySet().toArray());
+    }
+
+    @Test
+    void computeIfAbsentWithImmediatelyEvictedEntry() {
+        LinkedCaseInsensitiveMap<String> evictingMap = new LinkedCaseInsensitiveMap<>() {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+                return true;
+            }
+        };
+        assertEquals("value", evictingMap.computeIfAbsent("Key", key -> "value"));
+        assertTrue(evictingMap.isEmpty());
+        assertFalse(evictingMap.containsKey("key"));
     }
 
     @Test

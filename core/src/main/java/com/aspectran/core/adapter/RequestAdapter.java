@@ -119,12 +119,6 @@ public interface RequestAdapter {
     MultiValueMap<String, String> getHeaderMap();
 
     /**
-     * Checks if this request has any headers.
-     * @return true if headers exist, false otherwise
-     */
-    boolean hasHeaders();
-
-    /**
      * Returns the value of the specified request-scoped attribute.
      * @param <T> the type of the attribute
      * @param name the name of the attribute

@@ -28,52 +28,56 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * <p>This class is a clone of org.springframework.util.LinkedMultiValueMapTests</p>
+ * Tests for {@link LinkedCaseInsensitiveMultiValueMap}.
  *
- * Tests for {@link LinkedMultiValueMapTest}.
- *
- * <p>Created: 2020/03/20</p>
+ * <p>Created: 2026/09/30</p>
  */
-class LinkedMultiValueMapTest {
+class LinkedCaseInsensitiveMultiValueMapTest {
 
-    private final LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    private final LinkedCaseInsensitiveMultiValueMap<String> map = new LinkedCaseInsensitiveMultiValueMap<>();
 
     @Test
     void add() {
         map.add("key", "value1");
-        map.add("key", "value2");
+        map.add("KEY", "value2");
         assertEquals(1, map.size());
         assertLinesMatch(map.get("key"), Arrays.asList("value1", "value2"));
+        assertLinesMatch(map.get("KEY"), Arrays.asList("value1", "value2"));
     }
 
     @Test
     void addIfAbsentWhenAbsent() {
         map.addIfAbsent("key", "value1");
         assertLinesMatch(map.get("key"), Collections.singletonList("value1"));
+        assertLinesMatch(map.get("KEY"), Collections.singletonList("value1"));
     }
 
     @Test
     void addIfAbsentWhenPresent() {
         map.add("key", "value1");
-        map.addIfAbsent("key", "value2");
+        map.addIfAbsent("KEY", "value2");
         assertLinesMatch(map.get("key"), Collections.singletonList("value1"));
+        assertLinesMatch(map.get("KEY"), Collections.singletonList("value1"));
     }
 
     @Test
     void set() {
         map.set("key", "value1");
-        map.set("key", "value2");
+        map.set("KEY", "value2");
         assertLinesMatch(map.get("key"), Collections.singletonList("value2"));
+        assertLinesMatch(map.get("Key"), Collections.singletonList("value2"));
     }
 
     @Test
     void setWithArray() {
         map.set("key", new String[] {"value1", "value2"});
         assertLinesMatch(map.get("key"), Arrays.asList("value1", "value2"));
+        assertLinesMatch(map.get("KEY"), Arrays.asList("value1", "value2"));
     }
 
     @Test
@@ -82,14 +86,16 @@ class LinkedMultiValueMapTest {
         assertNotNull(map.get("key"));
         assertEquals(1, map.size());
         assertNull(map.getFirst("key"));
+        assertNull(map.getFirst("KEY"));
     }
 
     @Test
     void addAll() {
         map.add("key", "value1");
-        map.addAll("key", Arrays.asList("value2", "value3"));
+        map.addAll("KEY", Arrays.asList("value2", "value3"));
         assertEquals(1, map.size());
         assertLinesMatch(map.get("key"), Arrays.asList("value1", "value2", "value3"));
+        assertLinesMatch(map.get("Key"), Arrays.asList("value1", "value2", "value3"));
     }
 
     @Test
@@ -98,6 +104,7 @@ class LinkedMultiValueMapTest {
         assertEquals(1, map.size());
         assertTrue(Objects.requireNonNull(map.get("key")).isEmpty());
         assertNull(map.getFirst("key"));
+        assertNull(map.getFirst("KEY"));
     }
 
     @Test
@@ -107,6 +114,7 @@ class LinkedMultiValueMapTest {
         values.add("value2");
         map.put("key", values);
         assertEquals("value1", map.getFirst("key"));
+        assertEquals("value1", map.getFirst("KEY"));
         assertNull(map.getFirst("other"));
     }
 
@@ -114,6 +122,7 @@ class LinkedMultiValueMapTest {
     void getFirstWithEmptyList() {
         map.put("key", Collections.emptyList());
         assertNull(map.getFirst("key"));
+        assertNull(map.getFirst("KEY"));
         assertNull(map.getFirst("other"));
     }
 
@@ -126,6 +135,7 @@ class LinkedMultiValueMapTest {
         Map<String, String> singleValueMap = map.toSingleValueMap();
         assertEquals(1, singleValueMap.size());
         assertEquals("value1", singleValueMap.get("key"));
+        assertEquals("value1", singleValueMap.get("KEY"));
     }
 
     @Test
@@ -134,6 +144,7 @@ class LinkedMultiValueMapTest {
         Map<String, String> singleValueMap = map.toSingleValueMap();
         assertTrue(singleValueMap.isEmpty());
         assertNull(singleValueMap.get("key"));
+        assertNull(singleValueMap.get("KEY"));
     }
 
     @Test
@@ -141,35 +152,42 @@ class LinkedMultiValueMapTest {
         map.add("key", "value1");
         map.add("key", "value2");
         map.put("nullKey", null);
-        LinkedMultiValueMap<String, String> copy = map.deepCopy();
+        LinkedCaseInsensitiveMultiValueMap<String> copy = map.deepCopy();
         assertEquals(map, copy);
+        assertNotSame(map.get("key"), copy.get("key"));
         assertNull(copy.get("nullKey"));
 
         copy.add("key", "value3");
-        assertEquals(2, Objects.requireNonNull(map.get("key")).size());
-        assertEquals(3, Objects.requireNonNull(copy.get("key")).size());
+        assertEquals(2, map.get("key").size());
+        assertEquals(3, copy.get("key").size());
     }
 
     @Test
     void mapClone() {
         map.add("key", "value1");
-        LinkedMultiValueMap<String, String> copy = map.clone();
+        LinkedCaseInsensitiveMultiValueMap<String> copy = map.clone();
         assertEquals(map, copy);
-        assertEquals("value1", copy.getFirst("key"));
+        assertEquals("value1", copy.getFirst("KEY"));
     }
 
     @Test
     void equals() {
         map.set("key1", "value1");
         assertEquals(map, map);
-        MultiValueMap<String, String> o1 = new LinkedMultiValueMap<>();
-        o1.set("key1", "value1");
+        MultiValueMap<String, String> o1 = new LinkedCaseInsensitiveMultiValueMap<>();
+        o1.set("KEY1", "value1");
         assertEquals(map, o1);
         assertEquals(o1, map);
-        Map<String, List<String>> o2 = new HashMap<>();
-        o2.put("key1", Collections.singletonList("value1"));
+
+        LinkedMultiValueMap<String, String> o2 = new LinkedMultiValueMap<>();
+        o2.set("key1", "value1");
         assertEquals(map, o2);
         assertEquals(o2, map);
+
+        Map<String, List<String>> o3 = new HashMap<>();
+        o3.put("key1", Collections.singletonList("value1"));
+        assertEquals(map, o3);
+        assertEquals(o3, map);
     }
 
 }

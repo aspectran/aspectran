@@ -20,10 +20,10 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,7 +43,7 @@ import java.util.function.BiConsumer;
  *
  * @param <V> the value type
  */
-public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<String, V>, Serializable {
+public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<String, V>, Serializable, Cloneable {
 
     @Serial
     private static final long serialVersionUID = 2505523262093891621L;
@@ -54,7 +54,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
      * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
      */
     public LinkedCaseInsensitiveMultiValueMap() {
-        this.targetMap = new LinkedCaseInsensitiveMap<>(Locale.ENGLISH);
+        this((Locale)null);
     }
 
     /**
@@ -62,24 +62,54 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
      * @param initialCapacity the initial capacity
      */
     public LinkedCaseInsensitiveMultiValueMap(int initialCapacity) {
-        this.targetMap = new LinkedCaseInsensitiveMap<>(initialCapacity, Locale.ENGLISH);
+        this(initialCapacity, null);
+    }
+
+    /**
+     * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
+     * @param locale the Locale to use for case-insensitive key conversion
+     */
+    public LinkedCaseInsensitiveMultiValueMap(@Nullable Locale locale) {
+        this.targetMap = new LinkedCaseInsensitiveMap<>(locale);
+    }
+
+    /**
+     * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
+     * @param initialCapacity the initial capacity
+     * @param locale the Locale to use for case-insensitive key conversion
+     */
+    public LinkedCaseInsensitiveMultiValueMap(int initialCapacity, @Nullable Locale locale) {
+        this.targetMap = new LinkedCaseInsensitiveMap<>(initialCapacity, locale);
+    }
+
+    /**
+     * Copy constructor: Create a new LinkedCaseInsensitiveMultiValueMap with the same mappings as
+     * the specified Map.
+     * @param otherMap the Map whose mappings are to be placed in this Map
+     * @see #clone()
+     * @see #deepCopy()
+     */
+    public LinkedCaseInsensitiveMultiValueMap(@NonNull Map<String, List<V>> otherMap) {
+        this.targetMap = new LinkedCaseInsensitiveMap<>(otherMap.size());
+        this.targetMap.putAll(otherMap);
     }
 
     @Override
+    @Nullable
     public V getFirst(String key) {
         List<V> values = this.targetMap.get(key);
-        return (values != null ? values.getFirst() : null);
+        return (values != null && !values.isEmpty() ? values.getFirst() : null);
     }
 
     @Override
-    public void add(String key, V value) {
-        List<V> values = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
+    public void add(String key, @Nullable V value) {
+        List<V> values = this.targetMap.computeIfAbsent(key, k -> new ArrayList<>(2));
         values.add(value);
     }
 
     @Override
     public void addAll(String key, List<? extends V> values) {
-        List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
+        List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new ArrayList<>(values.size()));
         currentValues.addAll(values);
     }
 
@@ -91,34 +121,31 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
-    public void set(String key, V value) {
-        List<V> values = new LinkedList<>();
+    public void set(String key, @Nullable V value) {
+        List<V> values = new ArrayList<>(1);
         values.add(value);
         this.targetMap.put(key, values);
     }
 
     @Override
-    public void set(String key, V[] values) {
-        List<V> list = new LinkedList<>();
-        if (values != null) {
-            Collections.addAll(list, values);
-        }
+    public void set(String key, @Nullable V[] values) {
+        List<V> list = (values != null ? new ArrayList<>(Arrays.asList(values)) : new ArrayList<>(0));
         put(key, list);
     }
 
     @Override
     public void setAll(@NonNull Map<String, V> values) {
-        for (Entry<String, V> entry : values.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
+        values.forEach(this::set);
     }
 
     @Override
     public Map<String, V> toSingleValueMap() {
-        LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
-        for (Entry<String, List<V>> entry : this.targetMap.entrySet()) {
-            singleValueMap.put(entry.getKey(), entry.getValue().getFirst());
-        }
+        LinkedCaseInsensitiveMap<V> singleValueMap = new LinkedCaseInsensitiveMap<>(this.targetMap.size());
+        this.targetMap.forEach((key, values) -> {
+            if (values != null && !values.isEmpty()) {
+                singleValueMap.put(key, values.getFirst());
+            }
+        });
         return singleValueMap;
     }
 
@@ -145,16 +172,19 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
+    @Nullable
     public List<V> get(Object key) {
         return this.targetMap.get(key);
     }
 
     @Override
+    @Nullable
     public List<V> put(String key, List<V> value) {
         return this.targetMap.put(key, value);
     }
 
     @Override
+    @Nullable
     public List<V> remove(Object key) {
         return this.targetMap.remove(key);
     }
@@ -192,15 +222,40 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
         this.targetMap.forEach(action);
     }
 
+    /**
+     * Create a deep copy of this Map.
+     * @return a copy of this Map, including a copy of each value-holding List entry
+     *      (consistently using an independent modifiable {@link ArrayList} for each entry)
+     *      along the lines of {@code MultiValueMap.addAll} semantics
+     * @see #addAll(MultiValueMap)
+     * @see #clone()
+     */
+    public LinkedCaseInsensitiveMultiValueMap<V> deepCopy() {
+        LinkedCaseInsensitiveMultiValueMap<V> copy = new LinkedCaseInsensitiveMultiValueMap<>(this.targetMap.size());
+        this.targetMap.forEach((key, values) -> copy.put(key, (values != null ? new ArrayList<>(values) : null)));
+        return copy;
+    }
+
+    /**
+     * Create a regular copy of this Map.
+     * @return a shallow copy of this Map, reusing this Map's value-holding List entries
+     *      (even if some entries are shared or unmodifiable) along the lines of standard
+     *      {@code Map.put} semantics
+     * @see #put(String, List)
+     * @see #putAll(Map)
+     * @see LinkedCaseInsensitiveMultiValueMap#LinkedCaseInsensitiveMultiValueMap(Map)
+     * @see #deepCopy()
+     */
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public LinkedCaseInsensitiveMultiValueMap<V> clone() {
+        return new LinkedCaseInsensitiveMultiValueMap<>(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(@Nullable Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof LinkedCaseInsensitiveMultiValueMap<?> otherValues)) {
-            return false;
-        }
-        return this.targetMap.equals(otherValues.targetMap);
+        return (this == other || this.targetMap.equals(other));
     }
 
     @Override

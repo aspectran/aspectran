@@ -107,6 +107,31 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
     }
 
     @Override
+    public String getHeader(String name) {
+        if (!headersObtained) {
+            return getHttpRequest().headers().get(name);
+        }
+        return super.getHeader(name);
+    }
+
+    @Override
+    public List<String> getHeaderValues(String name) {
+        if (!headersObtained) {
+            List<String> values = getHttpRequest().headers().getAll(name);
+            return (values != null && !values.isEmpty() ? values : null);
+        }
+        return super.getHeaderValues(name);
+    }
+
+    @Override
+    public boolean containsHeader(String name) {
+        if (!headersObtained) {
+            return getHttpRequest().headers().contains(name);
+        }
+        return super.containsHeader(name);
+    }
+
+    @Override
     public MultiValueMap<String, String> getHeaderMap() {
         if (!headersObtained) {
             headersObtained = true;

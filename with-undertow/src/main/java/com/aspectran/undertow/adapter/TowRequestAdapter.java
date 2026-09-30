@@ -31,6 +31,7 @@ import org.jspecify.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +62,31 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
      */
     private HttpServerExchange getHttpServerExchange() {
         return getAdaptee();
+    }
+
+    @Override
+    public String getHeader(String name) {
+        if (!headersObtained) {
+            return getHttpServerExchange().getRequestHeaders().getFirst(name);
+        }
+        return super.getHeader(name);
+    }
+
+    @Override
+    public List<String> getHeaderValues(String name) {
+        if (!headersObtained) {
+            HeaderValues headerValues = getHttpServerExchange().getRequestHeaders().get(name);
+            return (headerValues != null ? new ArrayList<>(headerValues) : null);
+        }
+        return super.getHeaderValues(name);
+    }
+
+    @Override
+    public boolean containsHeader(String name) {
+        if (!headersObtained) {
+            return getHttpServerExchange().getRequestHeaders().contains(name);
+        }
+        return super.containsHeader(name);
     }
 
     /**

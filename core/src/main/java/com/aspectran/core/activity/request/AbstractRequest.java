@@ -171,13 +171,6 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * @return whether this request has any headers.
-     */
-    public boolean hasHeaders() {
-        return (headers != null && !headers.isEmpty());
-    }
-
-    /**
      * Retrieves an attribute by name.
      */
     @SuppressWarnings("unchecked")

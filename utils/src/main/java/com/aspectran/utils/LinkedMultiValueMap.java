@@ -20,10 +20,10 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +32,7 @@ import java.util.Set;
  * <p>This class is a clone of org.springframework.util.LinkedMultiValueMap</p>
  *
  * Simple implementation of {@link MultiValueMap} that wraps a {@link LinkedHashMap},
- * storing multiple values in a {@link LinkedList}.
+ * storing multiple values in an {@link ArrayList}.
  *
  * <p>This Map implementation is generally not thread-safe. It is primarily designed
  * for data structures exposed from request objects, for use in a single thread only.</p>
@@ -86,13 +86,13 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 
     @Override
     public void add(K key, @Nullable V value) {
-        List<V> values = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
+        List<V> values = this.targetMap.computeIfAbsent(key, k -> new ArrayList<>(2));
         values.add(value);
     }
 
     @Override
     public void addAll(K key, List<? extends V> values) {
-        List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
+        List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new ArrayList<>(values.size()));
         currentValues.addAll(values);
     }
 
@@ -105,17 +105,14 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 
     @Override
     public void set(K key, @Nullable V value) {
-        List<V> values = new LinkedList<>();
+        List<V> values = new ArrayList<>(1);
         values.add(value);
         this.targetMap.put(key, values);
     }
 
     @Override
-    public void set(K key, V[] values) {
-        List<V> list = new LinkedList<>();
-        if (values != null) {
-            Collections.addAll(list, values);
-        }
+    public void set(K key, @Nullable V[] values) {
+        List<V> list = (values != null ? new ArrayList<>(Arrays.asList(values)) : new ArrayList<>(0));
         put(key, list);
     }
 
@@ -206,14 +203,14 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
     /**
      * Create a deep copy of this Map.
      * @return a copy of this Map, including a copy of each value-holding List entry
-     *      (consistently using an independent modifiable {@link LinkedList} for each entry)
+     *      (consistently using an independent modifiable {@link ArrayList} for each entry)
      *      along the lines of {@code MultiValueMap.addAll} semantics
      * @see #addAll(MultiValueMap)
      * @see #clone()
      */
     public LinkedMultiValueMap<K, V> deepCopy() {
         LinkedMultiValueMap<K, V> copy = new LinkedMultiValueMap<>(this.targetMap.size());
-        this.targetMap.forEach((key, value) -> copy.put(key, new LinkedList<>(value)));
+        this.targetMap.forEach((key, values) -> copy.put(key, (values != null ? new ArrayList<>(values) : null)));
         return copy;
     }
 
