@@ -21,13 +21,13 @@ import org.jspecify.annotations.NonNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +59,7 @@ public class BeanDescriptor {
         this.className = beanClass.getName();
         Method[] methods = getAllMethods(beanClass);
 
-        Set<String> nonSerializableReadPropertyNames = addGetterMethods(methods);
+        Set<String> nonSerializableReadPropertyNames = addGetterMethods(beanClass, methods);
         this.readablePropertyNames = getterMethods.keySet().toArray(new String[0]);
         if (!nonSerializableReadPropertyNames.isEmpty()) {
             String[] serializableReadablePropertyNames =
@@ -80,8 +80,19 @@ public class BeanDescriptor {
     }
 
     @NonNull
-    private Set<String> addGetterMethods(Method @NonNull [] methods) {
+    private Set<String> addGetterMethods(@NonNull Class<?> beanClass, Method @NonNull [] methods) {
         Set<String> nonSerializableReadPropertyNames = new HashSet<>();
+        if (beanClass.isRecord()) {
+            for (RecordComponent component : beanClass.getRecordComponents()) {
+                String name = component.getName();
+                Method method = component.getAccessor();
+                addGetterMethod(name, method);
+                if (method.isAnnotationPresent(NonSerializable.class) ||
+                        component.isAnnotationPresent(NonSerializable.class)) {
+                    nonSerializableReadPropertyNames.add(name);
+                }
+            }
+        }
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
                 String name = method.getName();
@@ -226,7 +237,7 @@ public class BeanDescriptor {
                     "'; Didn't start with 'is', 'get' or 'set'");
         }
         if (name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
-            name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
+            name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
         }
         return name;
     }
@@ -373,15 +384,7 @@ public class BeanDescriptor {
      * @return the method cache for the class
      */
     public static BeanDescriptor getInstance(Class<?> type) {
-        BeanDescriptor bd = cache.get(type);
-        if (bd == null) {
-            bd = new BeanDescriptor(type);
-            BeanDescriptor existing = cache.putIfAbsent(type, bd);
-            if (existing != null) {
-                bd = existing;
-            }
-        }
-        return bd;
+        return cache.computeIfAbsent(type, BeanDescriptor::new);
     }
 
     /**

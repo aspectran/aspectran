@@ -17,6 +17,7 @@ package com.aspectran.utils;
 
 import org.jspecify.annotations.NonNull;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -138,20 +139,20 @@ public class BeanUtils {
             String newName = parser.nextToken();
             Object child = bean;
             while (parser.hasMoreTokens()) {
-                Class<?> type = BeanTypeUtils.getPropertyTypeForSetter(child, newName);
                 Object parent = child;
                 child = getSimpleProperty(parent, newName);
                 if (child == null) {
                     if (value == null) {
                         return; // don't instantiate child path if value is null
                     } else {
+                        Class<?> type = BeanTypeUtils.getPropertyTypeForGetter(parent, newName);
                         try {
                             child = ClassUtils.createInstance(type);
                             setProperty(parent, newName, child);
                         } catch (Exception e) {
                             throw new InvocationTargetException(e, "Cannot set value of property '" + name
                                     + "' because '" + newName + "' is null and cannot be instantiated on instance of "
-                                    + type.getName() + ". Cause: " + e);
+                                    + (type != null ? type.getName() : "unknown") + ". Cause: " + e);
                         }
                     }
                 }
@@ -229,27 +230,11 @@ public class BeanUtils {
             Object value;
             if (obj instanceof List<?> list) {
                 value = list.get(index);
-            } else if (obj instanceof Object[] arr) {
-                value = arr[index];
-            } else if (obj instanceof char[] arr) {
-                value = arr[index];
-            } else if (obj instanceof boolean[] arr) {
-                value = arr[index];
-            } else if (obj instanceof byte[] arr) {
-                value = arr[index];
-            } else if (obj instanceof double[] arr) {
-                value = arr[index];
-            } else if (obj instanceof float[] arr) {
-                value = arr[index];
-            } else if (obj instanceof int[] arr) {
-                value = arr[index];
-            } else if (obj instanceof long[] arr) {
-                value = arr[index];
-            } else if (obj instanceof short[] arr) {
-                value = arr[index];
+            } else if (obj != null && obj.getClass().isArray()) {
+                value = Array.get(obj, index);
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        bean.getClass().getName() + " class is not a List or Array");
+                        (bean != null ? bean.getClass().getName() : "null") + " class is not a List or Array");
             }
             return value;
         } catch (InvocationTargetException e) {
@@ -272,32 +257,16 @@ public class BeanUtils {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-            Object obj = getSimpleProperty(bean, name);
+            Object obj = (!name.isEmpty() ? getSimpleProperty(bean, name) : bean);
             if (obj instanceof List<?>) {
                 @SuppressWarnings("unchecked")
                 List<Object> list = (List<Object>)obj;
                 list.set(index, value);
-            } else if (obj instanceof Object[] arr) {
-                arr[index] = value;
-            } else if (obj instanceof char[] arr) {
-                arr[index] = (Character)value;
-            } else if (obj instanceof boolean[] arr) {
-                arr[index] = (Boolean)value;
-            } else if (obj instanceof byte[] arr) {
-                arr[index] = (Byte)value;
-            } else if (obj instanceof double[] arr) {
-                arr[index] = (Double)value;
-            } else if (obj instanceof float[] arr) {
-                arr[index] = (Float)value;
-            } else if (obj instanceof int[] arr) {
-                arr[index] = (Integer)value;
-            } else if (obj instanceof long[] arr) {
-                arr[index] = (Long)value;
-            } else if (obj instanceof short[] arr) {
-                arr[index] = (Short)value;
+            } else if (obj != null && obj.getClass().isArray()) {
+                Array.set(obj, index, value);
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        bean.getClass().getName() + " class is not a List or Array");
+                        (bean != null ? bean.getClass().getName() : "null") + " class is not a List or Array");
             }
         } catch (InvocationTargetException e) {
             throw e;
@@ -314,23 +283,29 @@ public class BeanUtils {
      * @throws NoSuchMethodException if an accessor method for a nested property cannot be found
      */
     public static boolean hasReadableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
-        boolean exists = false;
-        if (bean instanceof Map<?, ?>) {
-            exists = true; // ((Map)bean).containsKey(propertyName);
-        } else {
-            if (name.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(name, ".");
-                Class<?> type = bean.getClass();
-                while (parser.hasMoreTokens()) {
-                    name = parser.nextToken();
-                    type = BeanDescriptor.getInstance(type).getGetterType(name);
-                    exists = BeanDescriptor.getInstance(type).hasReadableProperty(name);
-                }
-            } else {
-                exists = BeanDescriptor.getInstance(bean.getClass()).hasReadableProperty(name);
-            }
+        if (bean == null) {
+            return false;
         }
-        return exists;
+        if (bean instanceof Map<?, ?>) {
+            return true; // ((Map)bean).containsKey(propertyName);
+        }
+        Class<?> type = bean.getClass();
+        if (name.contains(".")) {
+            StringTokenizer parser = new StringTokenizer(name, ".");
+            while (parser.hasMoreTokens()) {
+                String propName = parser.nextToken();
+                BeanDescriptor bd = BeanDescriptor.getInstance(type);
+                if (!bd.hasReadableProperty(propName)) {
+                    return false;
+                }
+                if (parser.hasMoreTokens()) {
+                    type = bd.getGetterType(propName);
+                }
+            }
+            return true;
+        } else {
+            return BeanDescriptor.getInstance(type).hasReadableProperty(name);
+        }
     }
 
     /**
@@ -341,23 +316,31 @@ public class BeanUtils {
      * @throws NoSuchMethodException if an accessor method for a nested property cannot be found
      */
     public static boolean hasWritableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
-        boolean exists = false;
-        if (bean instanceof Map<?, ?>) {
-            exists = true; // ((Map)bean).containsKey(propertyName);
-        } else {
-            if (name.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(name, ".");
-                Class<?> type = bean.getClass();
-                while (parser.hasMoreTokens()) {
-                    name = parser.nextToken();
-                    type = BeanDescriptor.getInstance(type).getGetterType(name);
-                    exists = BeanDescriptor.getInstance(type).hasWritableProperty(name);
-                }
-            } else {
-                exists = BeanDescriptor.getInstance(bean.getClass()).hasWritableProperty(name);
-            }
+        if (bean == null) {
+            return false;
         }
-        return exists;
+        if (bean instanceof Map<?, ?>) {
+            return true; // ((Map)bean).containsKey(propertyName);
+        }
+        Class<?> type = bean.getClass();
+        if (name.contains(".")) {
+            StringTokenizer parser = new StringTokenizer(name, ".");
+            while (parser.hasMoreTokens()) {
+                String propName = parser.nextToken();
+                BeanDescriptor bd = BeanDescriptor.getInstance(type);
+                if (parser.hasMoreTokens()) {
+                    if (!bd.hasReadableProperty(propName)) {
+                        return false;
+                    }
+                    type = bd.getGetterType(propName);
+                } else {
+                    return bd.hasWritableProperty(propName);
+                }
+            }
+            return false;
+        } else {
+            return BeanDescriptor.getInstance(type).hasWritableProperty(name);
+        }
     }
 
     /**

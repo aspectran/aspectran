@@ -17,6 +17,7 @@ package com.aspectran.utils;
 
 import org.jspecify.annotations.NonNull;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -140,8 +141,8 @@ public class BeanTypeUtils {
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
             while (parser.hasMoreTokens()) {
-                name = parser.nextToken();
-                type = BeanDescriptor.getInstance(type).getGetterType(name);
+                String propName = parser.nextToken();
+                type = BeanDescriptor.getInstance(type).getGetterType(propName);
             }
         } else {
             type = BeanDescriptor.getInstance(type).getGetterType(name);
@@ -182,8 +183,12 @@ public class BeanTypeUtils {
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
             while (parser.hasMoreTokens()) {
-                name = parser.nextToken();
-                type = BeanDescriptor.getInstance(type).getSetterType(name);
+                String propName = parser.nextToken();
+                if (parser.hasMoreTokens()) {
+                    type = BeanDescriptor.getInstance(type).getGetterType(propName);
+                } else {
+                    type = BeanDescriptor.getInstance(type).getSetterType(propName);
+                }
             }
         } else {
             type = BeanDescriptor.getInstance(type).getSetterType(name);
@@ -213,28 +218,14 @@ public class BeanTypeUtils {
             Object obj = (!name.isEmpty() ? BeanUtils.getSimpleProperty(bean, name) : bean);
             Class<?> value;
             if (obj instanceof List<?> list) {
-                value = list.get(i).getClass();
-            } else if (obj instanceof Object[] arr) {
-                value = arr[i].getClass();
-            } else if (obj instanceof char[]) {
-                value = Character.class;
-            } else if (obj instanceof boolean[]) {
-                value = Boolean.class;
-            } else if (obj instanceof byte[]) {
-                value = Byte.class;
-            } else if (obj instanceof double[]) {
-                value = Double.class;
-            } else if (obj instanceof float[]) {
-                value = Float.class;
-            } else if (obj instanceof int[]) {
-                value = Integer.class;
-            } else if (obj instanceof long[]) {
-                value = Long.class;
-            } else if (obj instanceof short[]) {
-                value = Short.class;
+                Object elem = list.get(i);
+                value = (elem != null ? elem.getClass() : Object.class);
+            } else if (obj != null && obj.getClass().isArray()) {
+                Object elem = Array.get(obj, i);
+                value = (elem != null ? elem.getClass() : obj.getClass().getComponentType());
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        bean.getClass().getName() + " class is not a List or Array");
+                        (bean != null ? bean.getClass().getName() : "null") + " class is not a List or Array");
             }
             return value;
         } catch (InvocationTargetException e) {
