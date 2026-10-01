@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.io.CustomObjectInputStream;
 import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
@@ -22,11 +23,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Static utilities for serialization and deserialization.
- * <p>This class provides methods to serialize an object to a byte array
- * and deserialize a byte array back to an object.</p>
+ * <p>This class provides methods to serialize an object to a byte array,
+ * deserialize a byte array back to an object, and clone objects via serialization.</p>
  */
 public class SerializationUtils {
 
@@ -34,6 +36,22 @@ public class SerializationUtils {
      * This class cannot be instantiated.
      */
     private SerializationUtils() {
+    }
+
+    /**
+     * Deep clones the given {@link Serializable} object using serialization.
+     * @param <T> the type of the object
+     * @param object the object to clone (can be {@code null})
+     * @return the cloned object, or {@code null} if the input is {@code null}
+     * @throws IllegalArgumentException if serialization or deserialization fails
+     */
+    @Nullable
+    public static <T extends Serializable> T clone(@Nullable T object) {
+        if (object == null) {
+            return null;
+        }
+        byte[] bytes = serialize(object);
+        return deserialize(bytes);
     }
 
     /**
@@ -50,27 +68,44 @@ public class SerializationUtils {
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(object);
             oos.flush();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw new IllegalArgumentException("Failed to serialize object of type: " + object.getClass(), ex);
         }
         return baos.toByteArray();
     }
 
     /**
-     * Deserialize the given byte array into an object.
+     * Deserialize the given byte array into an object using the default class loader.
+     * @param <T> the target type
      * @param bytes a serialized object (can be {@code null})
      * @return the deserialized object, or {@code null} if the input byte array is {@code null}
      * @throws IllegalArgumentException if deserialization fails due to an I/O error
      * @throws IllegalStateException if the class of a serialized object cannot be found
      */
     @Nullable
-    public static Object deserialize(byte @Nullable [] bytes) {
+    public static <T> T deserialize(byte @Nullable [] bytes) {
+        return deserialize(bytes, null);
+    }
+
+    /**
+     * Deserialize the given byte array into an object using the specified class loader.
+     * @param <T> the target type
+     * @param bytes a serialized object (can be {@code null})
+     * @param classLoader the class loader to use for resolving classes (can be {@code null})
+     * @return the deserialized object, or {@code null} if the input byte array is {@code null}
+     * @throws IllegalArgumentException if deserialization fails due to an I/O error
+     * @throws IllegalStateException if the class of a serialized object cannot be found
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public static <T> T deserialize(byte @Nullable [] bytes, @Nullable ClassLoader classLoader) {
         if (bytes == null) {
             return null;
         }
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            return ois.readObject();
+        try (ObjectInputStream ois = (classLoader != null
+                ? new CustomObjectInputStream(new ByteArrayInputStream(bytes), classLoader)
+                : new CustomObjectInputStream(new ByteArrayInputStream(bytes)))) {
+            return (T)ois.readObject();
         } catch (IOException ex) {
             throw new IllegalArgumentException("Failed to deserialize object", ex);
         } catch (ClassNotFoundException ex) {
