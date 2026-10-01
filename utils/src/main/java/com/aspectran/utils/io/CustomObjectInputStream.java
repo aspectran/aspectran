@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 
 /**
@@ -51,7 +52,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
      */
     public CustomObjectInputStream(InputStream inputStream, ClassLoader classLoader) throws IOException {
         super(inputStream);
-        this.classLoader = classLoader;
+        this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
     }
 
     /**
@@ -83,13 +84,28 @@ public class CustomObjectInputStream extends ObjectInputStream {
     @Override
     protected Class<?> resolveProxyClass(@NonNull String @NonNull [] interfaces)
             throws IOException, ClassNotFoundException {
+        ClassLoader nonPublicLoader = null;
+        boolean hasNonPublicInterface = false;
+
         Class<?>[] resolvedInterfaces = new Class<?>[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
-            resolvedInterfaces[i] = Class.forName(interfaces[i], false, classLoader);
+            Class<?> cl = Class.forName(interfaces[i], false, classLoader);
+            if ((cl.getModifiers() & Modifier.PUBLIC) == 0) {
+                if (hasNonPublicInterface) {
+                    if (nonPublicLoader != cl.getClassLoader()) {
+                        throw new IllegalAccessError("Conflicting non-public interface class loaders");
+                    }
+                } else {
+                    nonPublicLoader = cl.getClassLoader();
+                    hasNonPublicInterface = true;
+                }
+            }
+            resolvedInterfaces[i] = cl;
         }
         try {
             @SuppressWarnings("deprecation")
-            Class<?> proxyClass = Proxy.getProxyClass(classLoader, resolvedInterfaces);
+            Class<?> proxyClass = Proxy.getProxyClass(
+                    hasNonPublicInterface ? nonPublicLoader : classLoader, resolvedInterfaces);
             return proxyClass;
         } catch (IllegalArgumentException e) {
             throw new ClassNotFoundException(null, e);
