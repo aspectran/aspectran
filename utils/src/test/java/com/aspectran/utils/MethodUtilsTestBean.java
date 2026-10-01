@@ -55,6 +55,64 @@ public class MethodUtilsTestBean {
         logger.debug("specified args: {}", list);
     }
 
+    private String sampleName;
+
+    public String getSampleName() {
+        return sampleName;
+    }
+
+    public void setSampleName(String sampleName) {
+        this.sampleName = sampleName;
+    }
+
+    public static String staticEcho(String message) {
+        return message;
+    }
+
+    private MethodUtilsTestBean nestedBean;
+
+    private boolean active;
+
+    public MethodUtilsTestBean getNestedBean() {
+        return nestedBean;
+    }
+
+    public void setNestedBean(MethodUtilsTestBean nestedBean) {
+        this.nestedBean = nestedBean;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String echo(Object obj) {
+        return "Object:" + obj;
+    }
+
+    public String echo(String str) {
+        return "String:" + str;
+    }
+
+    public String echo(Integer num) {
+        return "Integer:" + num;
+    }
+
+    public static String staticNoArg() {
+        return "staticNoArg";
+    }
+
+    public static String staticOverload(CharSequence cs) {
+        return "CharSequence:" + cs;
+    }
+
+    public static String staticOverload(String str) {
+        return "String:" + str;
+    }
+
     public static class ExtendedMethodUtilsTestBean extends MethodUtilsTestBean {
     }
 

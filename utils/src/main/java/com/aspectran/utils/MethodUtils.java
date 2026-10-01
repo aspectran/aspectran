@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -56,7 +55,7 @@ public class MethodUtils {
      * @throws IllegalAccessException the illegal access exception
      * @throws InvocationTargetException the invocation target exception
      */
-    public static void invokeSetter(Object object, String setterName, Object arg)
+    public static void invokeSetter(Object object, @NonNull String setterName, Object arg)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object[] args = { arg };
         invokeSetter(object, setterName, args);
@@ -73,6 +72,7 @@ public class MethodUtils {
      */
     public static void invokeSetter(Object object, @NonNull String setterName, Object[] args)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Assert.hasText(setterName, "setterName must not be empty");
         int index = setterName.indexOf('.');
         if (index > 0) {
             String getterName = setterName.substring(0, index);
@@ -80,7 +80,14 @@ public class MethodUtils {
             invokeSetter(o, setterName.substring(index + 1), args);
         } else {
             if (!setterName.startsWith("set")) {
-                setterName = "set" + setterName.substring(0, 1).toUpperCase(Locale.US) + setterName.substring(1);
+                String capitalized = Character.toUpperCase(setterName.charAt(0)) + setterName.substring(1);
+                String setMethodName = "set" + capitalized;
+                try {
+                    invokeMethod(object, setMethodName, args);
+                    return;
+                } catch (NoSuchMethodException e) {
+                    // try original name if set... not found
+                }
             }
             invokeMethod(object, setterName, args);
         }
@@ -95,9 +102,9 @@ public class MethodUtils {
      * @throws IllegalAccessException the illegal access exception
      * @throws InvocationTargetException the invocation target exception
      */
-    public static Object invokeGetter(Object object, String getterName)
+    public static Object invokeGetter(Object object, @NonNull String getterName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return invokeMethod(object, getterName);
+        return invokeGetter(object, getterName, EMPTY_OBJECT_ARRAY);
     }
 
     /**
@@ -110,7 +117,7 @@ public class MethodUtils {
      * @throws IllegalAccessException the illegal access exception
      * @throws InvocationTargetException the invocation target exception
      */
-    public static Object invokeGetter(Object object, String getterName, Object arg)
+    public static Object invokeGetter(Object object, @NonNull String getterName, Object arg)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object[] args = { arg };
         return invokeGetter(object, getterName, args);
@@ -128,6 +135,7 @@ public class MethodUtils {
      */
     public static Object invokeGetter(Object object, @NonNull String getterName, Object[] args)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Assert.hasText(getterName, "getterName must not be empty");
         int index = getterName.indexOf('.');
         if (index > 0) {
             String getterName2 = getterName.substring(0, index);
@@ -135,9 +143,21 @@ public class MethodUtils {
             return invokeGetter(o, getterName.substring(index + 1), args);
         } else {
             if (!getterName.startsWith("get") && !getterName.startsWith("is")) {
-                getterName = "get" + getterName.substring(0, 1).toUpperCase(Locale.US) + getterName.substring(1);
+                String capitalized = Character.toUpperCase(getterName.charAt(0)) + getterName.substring(1);
+                String getMethodName = "get" + capitalized;
+                try {
+                    return invokeMethod(object, getMethodName, args);
+                } catch (NoSuchMethodException e) {
+                    String isMethodName = "is" + capitalized;
+                    try {
+                        return invokeMethod(object, isMethodName, args);
+                    } catch (NoSuchMethodException e2) {
+                        return invokeMethod(object, getterName, args);
+                    }
+                }
+            } else {
+                return invokeMethod(object, getterName, args);
             }
-            return invokeMethod(object, getterName, args);
         }
     }
 
@@ -446,13 +466,22 @@ public class MethodUtils {
      */
     public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Class<?>[] paramTypes;
         if (args == null) {
             args = EMPTY_OBJECT_ARRAY;
-        }
-        int arguments = args.length;
-        Class<?>[] paramTypes = new Class<?>[arguments];
-        for (int i = 0; i < arguments; i++) {
-            paramTypes[i] = args[i].getClass();
+            paramTypes = EMPTY_CLASS_PARAMETERS;
+        } else {
+            int len = args.length;
+            if (len == 0) {
+                paramTypes = EMPTY_CLASS_PARAMETERS;
+            } else {
+                paramTypes = new Class<?>[len];
+                for (int i = 0; i < len; i++) {
+                    if (args[i] != null) {
+                        paramTypes[i] = args[i].getClass();
+                    }
+                }
+            }
         }
         return invokeStaticMethod(objectClass, methodName, args, paramTypes);
     }
@@ -538,13 +567,22 @@ public class MethodUtils {
      */
     public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object[] args)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Class<?>[] paramTypes;
         if (args == null) {
             args = EMPTY_OBJECT_ARRAY;
-        }
-        int arguments = args.length;
-        Class<?>[] paramTypes = new Class<?>[arguments];
-        for (int i = 0; i < arguments; i++) {
-            paramTypes[i] = args[i].getClass();
+            paramTypes = EMPTY_CLASS_PARAMETERS;
+        } else {
+            int len = args.length;
+            if (len == 0) {
+                paramTypes = EMPTY_CLASS_PARAMETERS;
+            } else {
+                paramTypes = new Class<?>[len];
+                for (int i = 0; i < len; i++) {
+                    if (args[i] != null) {
+                        paramTypes[i] = args[i].getClass();
+                    }
+                }
+            }
         }
         return invokeExactStaticMethod(objectClass, methodName, args, paramTypes);
     }
@@ -563,8 +601,9 @@ public class MethodUtils {
         if (methodsParams != null && methodsParams.length > 0) {
             Object[] args2 = new Object[methodsParams.length];
             for (int i = 0; i < methodsParams.length; i++) {
-                args2[i] = args[i];
-                if (paramTypes[i] != null && methodsParams[i].isArray()) {
+                args2[i] = (args != null && i < args.length ? args[i] : null);
+                if (paramTypes != null && i < paramTypes.length && paramTypes[i] != null
+                        && methodsParams[i].isArray() && paramTypes[i].isArray()) {
                     Class<?> methodParamType = methodsParams[i].getComponentType();
                     Class<?> argParamType = paramTypes[i].getComponentType();
                     if (!methodParamType.equals(argParamType)) {
@@ -624,11 +663,15 @@ public class MethodUtils {
         MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, true);
         Method[] result = cache.get(md);
         if (result == null) {
-            try {
-                Method method = getAccessibleMethod(clazz.getMethod(methodName, paramTypes));
-                result = new Method[] { method };
-            } catch (NoSuchMethodException e) {
+            if (hasNull(paramTypes)) {
                 result = NO_METHODS;
+            } else {
+                try {
+                    Method method = getAccessibleMethod(clazz.getMethod(methodName, paramTypes));
+                    result = new Method[] { method };
+                } catch (NoSuchMethodException e) {
+                    result = NO_METHODS;
+                }
             }
             cache.put(md, result);
         }
@@ -804,16 +847,18 @@ public class MethodUtils {
 
         // see if we can find the method directly
         // most of the time this works and it's much faster
-        try {
-            Method method = clazz.getMethod(methodName, paramTypes);
-            cache.put(md, new Method[] { method });
-            return method;
-        } catch (NoSuchMethodException e) {
-            // ignore
+        if (!hasNull(paramTypes)) {
+            try {
+                Method method = clazz.getMethod(methodName, paramTypes);
+                cache.put(md, new Method[] { method });
+                return method;
+            } catch (NoSuchMethodException e) {
+                // ignore
+            }
         }
 
         // search through all methods
-        int paramSize = paramTypes.length;
+        int paramSize = (paramTypes != null ? paramTypes.length : 0);
         Method bestMatch = null;
         Method[] methods = clazz.getMethods();
         float bestMatchWeight = Float.MAX_VALUE;
@@ -831,7 +876,7 @@ public class MethodUtils {
                                 paramMatch = false;
                                 break;
                             }
-                        } else {
+                        } else if (paramTypes != null) {
                             if (!TypeUtils.isAssignable(methodsParams[n], paramTypes[n])) {
                                 paramMatch = false;
                                 break;
@@ -841,8 +886,10 @@ public class MethodUtils {
                     if (paramMatch) {
                         if (args != null) {
                             myWeight = ReflectionUtils.getTypeDifferenceWeight(methodsParams, args);
-                        } else {
+                        } else if (paramTypes != null) {
                             myWeight = ReflectionUtils.getTypeDifferenceWeight(methodsParams, paramTypes);
+                        } else {
+                            myWeight = 0.0f;
                         }
                         if (myWeight < bestMatchWeight) {
                             bestMatch = method;
@@ -892,6 +939,16 @@ public class MethodUtils {
         return size;
     }
 
+    private static boolean hasNull(Class<?>[] types) {
+        if (types != null) {
+            for (Class<?> type : types) {
+                if (type == null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Represents the key to looking up a Method by reflection.
@@ -924,7 +981,7 @@ public class MethodUtils {
             }
             this.cls = cls;
             this.methodName = methodName;
-            this.paramTypes = (paramTypes != null ? paramTypes : EMPTY_CLASS_PARAMETERS);
+            this.paramTypes = (paramTypes != null && paramTypes.length > 0 ? paramTypes.clone() : EMPTY_CLASS_PARAMETERS);
             this.exact = exact;
         }
 
