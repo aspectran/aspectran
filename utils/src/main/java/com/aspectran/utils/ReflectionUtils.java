@@ -85,6 +85,10 @@ public class ReflectionUtils {
      * @return the accumulated weight for all type conversions
      */
     public static float getTypeDifferenceWeight(Class<?> @NonNull [] srcArgs, Class<?> @NonNull [] destArgs) {
+        if (srcArgs.length != destArgs.length) {
+            return Float.MAX_VALUE;
+        }
+
         float weight = 0.0f;
         for (int i = 0; i < srcArgs.length; i++) {
             Class<?> srcClass = srcArgs[i];
@@ -117,7 +121,7 @@ public class ReflectionUtils {
         }
 
         if (destClass != null) {
-            if (srcClass.isArray() && destClass.isArray()) {
+            while (srcClass.isArray() && destClass.isArray()) {
                 srcClass = srcClass.getComponentType();
                 destClass = destClass.getComponentType();
             }
@@ -161,61 +165,54 @@ public class ReflectionUtils {
      * @param val an array of wrapper objects to be converted (may be {@code null})
      * @return an array of primitive types, or {@code null} if the input is not a known wrapper array
      */
-    public static Object toPrimitiveArray(Object val) {
-        if (val instanceof Boolean[]) {
-            int len = Array.getLength(val);
-            boolean[] arr = new boolean[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Boolean)Array.get(val, i);
+    @Nullable
+    public static Object toPrimitiveArray(@Nullable Object val) {
+        if (val instanceof Boolean[] bools) {
+            boolean[] arr = new boolean[bools.length];
+            for (int i = 0; i < bools.length; i++) {
+                arr[i] = (bools[i] != null && bools[i]);
             }
             return arr;
-        } else if (val instanceof Byte[]) {
-            int len = Array.getLength(val);
-            byte[] arr = new byte[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Byte)Array.get(val, i);
+        } else if (val instanceof Byte[] bytes) {
+            byte[] arr = new byte[bytes.length];
+            for (int i = 0; i < bytes.length; i++) {
+                arr[i] = (bytes[i] != null ? bytes[i] : 0);
             }
             return arr;
-        } else if (val instanceof Character[]) {
-            int len = Array.getLength(val);
-            char[] arr = new char[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Character)Array.get(val, i);
+        } else if (val instanceof Character[] chars) {
+            char[] arr = new char[chars.length];
+            for (int i = 0; i < chars.length; i++) {
+                arr[i] = (chars[i] != null ? chars[i] : 0);
             }
             return arr;
-        } else if (val instanceof Short[]) {
-            int len = Array.getLength(val);
-            short[] arr = new short[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Short)Array.get(val, i);
+        } else if (val instanceof Short[] shorts) {
+            short[] arr = new short[shorts.length];
+            for (int i = 0; i < shorts.length; i++) {
+                arr[i] = (shorts[i] != null ? shorts[i] : 0);
             }
             return arr;
-        } else if (val instanceof Integer[]) {
-            int len = Array.getLength(val);
-            int[] arr = new int[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Integer)Array.get(val, i);
+        } else if (val instanceof Integer[] ints) {
+            int[] arr = new int[ints.length];
+            for (int i = 0; i < ints.length; i++) {
+                arr[i] = (ints[i] != null ? ints[i] : 0);
             }
             return arr;
-        } else if (val instanceof Long[]) {
-            int len = Array.getLength(val);
-            long[] arr = new long[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Long)Array.get(val, i);
+        } else if (val instanceof Long[] longs) {
+            long[] arr = new long[longs.length];
+            for (int i = 0; i < longs.length; i++) {
+                arr[i] = (longs[i] != null ? longs[i] : 0L);
             }
             return arr;
-        } else if (val instanceof Float[]) {
-            int len = Array.getLength(val);
-            float[] arr = new float[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Float)Array.get(val, i);
+        } else if (val instanceof Float[] floats) {
+            float[] arr = new float[floats.length];
+            for (int i = 0; i < floats.length; i++) {
+                arr[i] = (floats[i] != null ? floats[i] : 0.0f);
             }
             return arr;
-        } else if (val instanceof Double[]) {
-            int len = Array.getLength(val);
-            double[] arr = new double[len];
-            for (int i = 0; i < len; i++) {
-                arr[i] = (Double)Array.get(val, i);
+        } else if (val instanceof Double[] doubles) {
+            double[] arr = new double[doubles.length];
+            for (int i = 0; i < doubles.length; i++) {
+                arr[i] = (doubles[i] != null ? doubles[i] : 0.0d);
             }
             return arr;
         } else {
@@ -229,8 +226,10 @@ public class ReflectionUtils {
      * @param componentType the {@code Class} object representing the component type of the new array
      * @return a new array with the specified component type, or {@code null} if the input is {@code null}
      */
-    public static Object toComponentTypeArray(Object val, Class<?> componentType) {
-        if (val != null) {
+    @Nullable
+    public static Object toComponentTypeArray(@Nullable Object val, @NonNull Class<?> componentType) {
+        Assert.notNull(componentType, "componentType must not be null");
+        if (val != null && val.getClass().isArray()) {
             int len = Array.getLength(val);
             Object arr = Array.newInstance(componentType, len);
             for (int i = 0; i < len; i++) {
