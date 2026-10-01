@@ -75,8 +75,8 @@ public class CountingInputStream extends FilterInputStream {
     }
 
     @Override
-    public synchronized void mark(int readlimit) {
-        super.mark(readlimit);
+    public synchronized void mark(int readLimit) {
+        super.mark(readLimit);
         mark = count;
     }
 
