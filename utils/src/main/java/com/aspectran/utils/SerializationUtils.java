@@ -65,7 +65,7 @@ public class SerializationUtils {
      * @throws IllegalStateException if the class of a serialized object cannot be found
      */
     @Nullable
-    public static Object deserialize(@Nullable byte[] bytes) {
+    public static Object deserialize(byte @Nullable [] bytes) {
         if (bytes == null) {
             return null;
         }
