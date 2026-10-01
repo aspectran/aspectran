@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PathUtilsTest {
@@ -28,48 +29,54 @@ class PathUtilsTest {
         assertEquals("mypath/mypath/myfile", PathUtils.applyRelativePath("mypath/myfile", "mypath/myfile"));
         assertEquals("mypath/mypath/mypath/myfile", PathUtils.applyRelativePath("mypath/mypath/", "mypath/myfile"));
         assertEquals("mypath/mypath/", PathUtils.applyRelativePath("mypath/mypath/myfile", ""));
+        assertEquals("mypath/mypath/myfile", PathUtils.applyRelativePath("mypath\\myfile", "mypath\\myfile"));
+        assertEquals("mypath/sub/otherfile", PathUtils.applyRelativePath("mypath\\sub\\myfile", "otherfile"));
     }
 
     @Test
     void cleanPath() {
-        assertEquals(PathUtils.cleanPath("mypath/myfile"), "mypath/myfile");
-        assertEquals(PathUtils.cleanPath("mypath\\myfile"), "mypath/myfile");
-        assertEquals(PathUtils.cleanPath("mypath/../mypath/myfile"), "mypath/myfile");
-        assertEquals(PathUtils.cleanPath("mypath/myfile/../../mypath/myfile"), "mypath/myfile");
-        assertEquals(PathUtils.cleanPath("../mypath/myfile"), "../mypath/myfile");
-        assertEquals(PathUtils.cleanPath("../mypath/../mypath/myfile"), "../mypath/myfile");
-        assertEquals(PathUtils.cleanPath("mypath/../../mypath/myfile"), "../mypath/myfile");
-        assertEquals(PathUtils.cleanPath("/../mypath/myfile"), "/../mypath/myfile");
-        assertEquals(PathUtils.cleanPath("/a/:b/../../mypath/myfile"), "/mypath/myfile");
-        assertEquals(PathUtils.cleanPath("/"), "/");
-        assertEquals(PathUtils.cleanPath("/mypath/../"), "/");
+        assertNull(PathUtils.cleanPath(null));
+        assertEquals("mypath/myfile", PathUtils.cleanPath("mypath/myfile"));
+        assertEquals("mypath/myfile", PathUtils.cleanPath("mypath\\myfile"));
+        assertEquals("mypath/myfile", PathUtils.cleanPath("mypath/../mypath/myfile"));
+        assertEquals("mypath/myfile", PathUtils.cleanPath("mypath/myfile/../../mypath/myfile"));
+        assertEquals("../mypath/myfile", PathUtils.cleanPath("../mypath/myfile"));
+        assertEquals("../mypath/myfile", PathUtils.cleanPath("../mypath/../mypath/myfile"));
+        assertEquals("../mypath/myfile", PathUtils.cleanPath("mypath/../../mypath/myfile"));
+        assertEquals("/../mypath/myfile", PathUtils.cleanPath("/../mypath/myfile"));
+        assertEquals("/mypath/myfile", PathUtils.cleanPath("/a/:b/../../mypath/myfile"));
+        assertEquals("/", PathUtils.cleanPath("/"));
+        assertEquals("/", PathUtils.cleanPath("/mypath/../"));
         assertTrue(PathUtils.cleanPath("mypath/..").isEmpty());
         assertTrue(PathUtils.cleanPath("mypath/../.").isEmpty());
-        assertEquals(PathUtils.cleanPath("mypath/../"), "./");
-        assertEquals(PathUtils.cleanPath("././"), "./");
-        assertEquals(PathUtils.cleanPath("./"), "./");
-        assertEquals(PathUtils.cleanPath("../"), "../");
-        assertEquals(PathUtils.cleanPath("./../"), "../");
-        assertEquals(PathUtils.cleanPath(".././"), "../");
-        assertEquals(PathUtils.cleanPath("."), "");
-        assertEquals(PathUtils.cleanPath("file:/"), "file:/");
-        assertEquals(PathUtils.cleanPath("file:/mypath/../"), "file:/");
-        assertEquals(PathUtils.cleanPath("file:mypath/.."), "file:");
-        assertEquals(PathUtils.cleanPath("file:mypath/../."), "file:");
-        assertEquals(PathUtils.cleanPath("file:mypath/../"), "file:./");
-        assertEquals(PathUtils.cleanPath("file:././"), "file:./");
-        assertEquals(PathUtils.cleanPath("file:./"), "file:./");
-        assertEquals(PathUtils.cleanPath("file:../"), "file:../");
-        assertEquals(PathUtils.cleanPath("file:./../"), "file:../");
-        assertEquals(PathUtils.cleanPath("file:.././"), "file:../");
-        assertEquals(PathUtils.cleanPath("file:/mypath/spring.factories"), "file:/mypath/spring.factories");
-        assertEquals(PathUtils.cleanPath("file:///c:/some/../path/the%20file.txt"), "file:///c:/path/the%20file.txt");
-        assertEquals(PathUtils.cleanPath("jar:file:///c:\\some\\..\\path\\.\\the%20file.txt"), "jar:file:///c:/path/the%20file.txt");
-        assertEquals(PathUtils.cleanPath("jar:file:///c:/some/../path/./the%20file.txt"), "jar:file:///c:/path/the%20file.txt");
+        assertEquals("./", PathUtils.cleanPath("mypath/../"));
+        assertEquals("./", PathUtils.cleanPath("././"));
+        assertEquals("./", PathUtils.cleanPath("./"));
+        assertEquals("../", PathUtils.cleanPath("../"));
+        assertEquals("../", PathUtils.cleanPath("./../"));
+        assertEquals("../", PathUtils.cleanPath(".././"));
+        assertEquals("", PathUtils.cleanPath("."));
+        assertEquals("file:/", PathUtils.cleanPath("file:/"));
+        assertEquals("file:/", PathUtils.cleanPath("file:/mypath/../"));
+        assertEquals("file:", PathUtils.cleanPath("file:mypath/.."));
+        assertEquals("file:", PathUtils.cleanPath("file:mypath/../."));
+        assertEquals("file:./", PathUtils.cleanPath("file:mypath/../"));
+        assertEquals("file:./", PathUtils.cleanPath("file:././"));
+        assertEquals("file:./", PathUtils.cleanPath("file:./"));
+        assertEquals("file:../", PathUtils.cleanPath("file:../"));
+        assertEquals("file:../", PathUtils.cleanPath("file:./../"));
+        assertEquals("file:../", PathUtils.cleanPath("file:.././"));
+        assertEquals("file:/mypath/spring.factories", PathUtils.cleanPath("file:/mypath/spring.factories"));
+        assertEquals("file:///c:/path/the%20file.txt", PathUtils.cleanPath("file:///c:/some/../path/the%20file.txt"));
+        assertEquals("jar:file:///c:/path/the%20file.txt", PathUtils.cleanPath("jar:file:///c:\\some\\..\\path\\.\\the%20file.txt"));
+        assertEquals("jar:file:///c:/path/the%20file.txt", PathUtils.cleanPath("jar:file:///c:/some/../path/./the%20file.txt"));
     }
 
     @Test
     void pathEquals() {
+        assertTrue(PathUtils.pathEquals(null, null));
+        assertFalse(PathUtils.pathEquals(null, "/dummy"));
+        assertFalse(PathUtils.pathEquals("/dummy", null));
         assertTrue(PathUtils.pathEquals("/dummy1/dummy2/dummy3", "/dummy1/dummy2/dummy3"));
         assertTrue(PathUtils.pathEquals("C:\\dummy1\\dummy2\\dummy3", "C:\\dummy1\\dummy2\\dummy3"));
         assertTrue(PathUtils.pathEquals("/dummy1/bin/../dummy2/dummy3", "/dummy1/dummy2/dummy3"));

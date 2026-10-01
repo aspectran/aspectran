@@ -15,8 +15,12 @@
  */
 package com.aspectran.utils;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Objects;
 
 /**
  * A utility class for handling resource paths.
@@ -40,6 +44,11 @@ public class PathUtils {
      */
     public static final String WINDOWS_FILE_SEPARATOR = "\\";
 
+    /**
+     * The Windows path separator character: a backslash '\\'.
+     */
+    public static final char WINDOWS_FILE_SEPARATOR_CHAR = '\\';
+
     private static final String TOP_PATH = "..";
 
     private static final String CURRENT_PATH = ".";
@@ -56,19 +65,22 @@ public class PathUtils {
      * @param relativePath the relative path to apply (e.g., "../d/e.txt")
      * @return the combined path (e.g., "/a/d/e.txt")
      */
-    public static String applyRelativePath(String path, String relativePath) {
+    @NonNull
+    public static String applyRelativePath(@NonNull String path, @NonNull String relativePath) {
         Assert.notNull(path, "path must not be null");
         Assert.notNull(relativePath, "relativePath must not be null");
-        int separatorIndex = path.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR);
+        String pathToUse = StringUtils.replace(path, WINDOWS_FILE_SEPARATOR, REGULAR_FILE_SEPARATOR);
+        String relPathToUse = StringUtils.replace(relativePath, WINDOWS_FILE_SEPARATOR, REGULAR_FILE_SEPARATOR);
+        int separatorIndex = pathToUse.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR);
         if (separatorIndex != -1) {
-            String newPath = path.substring(0, separatorIndex);
-            if (relativePath.startsWith(REGULAR_FILE_SEPARATOR)) {
-                return newPath + relativePath;
+            String newPath = pathToUse.substring(0, separatorIndex);
+            if (relPathToUse.startsWith(REGULAR_FILE_SEPARATOR)) {
+                return newPath + relPathToUse;
             } else {
-                return (newPath + REGULAR_FILE_SEPARATOR_CHAR + relativePath);
+                return newPath + REGULAR_FILE_SEPARATOR_CHAR + relPathToUse;
             }
         } else {
-            return relativePath;
+            return relPathToUse;
         }
     }
 
@@ -82,7 +94,8 @@ public class PathUtils {
      * @param path the original path to normalize
      * @return the normalized path, or the original path if it is null or empty
      */
-    public static String cleanPath(String path) {
+    @Nullable
+    public static String cleanPath(@Nullable String path) {
         if (!StringUtils.hasLength(path)) {
             return path;
         }
@@ -161,8 +174,8 @@ public class PathUtils {
      * @param path2 the second path to compare
      * @return {@code true} if the two paths are equivalent after normalization, {@code false} otherwise
      */
-    public static boolean pathEquals(String path1, String path2) {
-        return cleanPath(path1).equals(cleanPath(path2));
+    public static boolean pathEquals(@Nullable String path1, @Nullable String path2) {
+        return Objects.equals(cleanPath(path1), cleanPath(path2));
     }
 
 }
