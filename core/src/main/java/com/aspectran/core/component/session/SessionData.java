@@ -18,6 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.io.CustomObjectInputStream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -109,14 +110,17 @@ public class SessionData implements Serializable {
      * @param accessed the last accessed timestamp
      * @param lastAccessed the previously accessed timestamp
      * @param inactiveInterval the maximum inactive interval in milliseconds
+     * @param extraInactiveInterval the extra inactive interval in milliseconds
      * @param expiry the time the session will expire
      */
-    private SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval, long expiry) {
+    private SessionData(String id, long created, long accessed, long lastAccessed,
+                        long inactiveInterval, long extraInactiveInterval, long expiry) {
         this.id = id;
         this.created = created;
         this.accessed = accessed;
         this.lastAccessed = lastAccessed;
         this.inactiveInterval = inactiveInterval;
+        this.extraInactiveInterval = extraInactiveInterval;
         this.expiry = expiry;
     }
 
@@ -206,14 +210,6 @@ public class SessionData implements Serializable {
      */
     protected long getExtraInactiveInterval() {
         return extraInactiveInterval;
-    }
-
-    /**
-     * Sets the additional interval of time that can be added to the session's inactive period.
-     * @param extraInactiveInterval the extra inactive interval in milliseconds
-     */
-    protected void setExtraInactiveInterval(long extraInactiveInterval) {
-        this.extraInactiveInterval = extraInactiveInterval;
     }
 
     /**
@@ -476,17 +472,31 @@ public class SessionData implements Serializable {
                 objectOutputStream.writeUTF(name);
                 objectOutputStream.writeObject(value);
             }
+            objectOutputStream.flush();
         }
+        dataOutputStream.flush();
     }
 
     /**
-     * Deserializes session data from an input stream.
+     * Deserializes session data from an input stream using the default class loader.
      * @param inputStream the stream to read from
      * @return a new SessionData instance
      * @throws Exception if an error occurs during deserialization
      */
     @NonNull
     public static SessionData deserialize(InputStream inputStream) throws Exception {
+        return deserialize(inputStream, null);
+    }
+
+    /**
+     * Deserializes session data from an input stream using the specified class loader.
+     * @param inputStream the stream to read from
+     * @param classLoader the class loader to use for resolving classes
+     * @return a new SessionData instance
+     * @throws Exception if an error occurs during deserialization
+     */
+    @NonNull
+    public static SessionData deserialize(InputStream inputStream, @Nullable ClassLoader classLoader) throws Exception {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         String id = dataInputStream.readUTF(); // the actual id from inside the file
         long created = dataInputStream.readLong();
@@ -497,14 +507,16 @@ public class SessionData implements Serializable {
         long expiry = dataInputStream.readLong();
         int entries = dataInputStream.readInt();
 
-        SessionData data = new SessionData(id, created, accessed, lastAccessed, inactiveInterval, expiry);
-        data.setExtraInactiveInterval(extraInactiveInterval);
+        SessionData data = new SessionData(id, created, accessed, lastAccessed,
+                inactiveInterval, extraInactiveInterval, expiry);
 
         // Load all attributes
         if (entries > 0) {
             Map<String, Object> attributes = new ConcurrentHashMap<>();
             // input stream should not be closed here
-            ObjectInputStream objectInputStream =  new CustomObjectInputStream(dataInputStream);
+            ObjectInputStream objectInputStream = (classLoader != null
+                    ? new CustomObjectInputStream(dataInputStream, classLoader)
+                    : new CustomObjectInputStream(dataInputStream));
             for (int i = 0; i < entries; i++) {
                 String key = objectInputStream.readUTF();
                 Object value = objectInputStream.readObject();
