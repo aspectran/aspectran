@@ -44,7 +44,11 @@ public class LocaleUtils {
      * @see #parseLocaleString
      * @see Locale#forLanguageTag
      */
-    public static Locale parseLocale(String localeValue) {
+    @Nullable
+    public static Locale parseLocale(@Nullable String localeValue) {
+        if (StringUtils.isEmpty(localeValue)) {
+            return null;
+        }
         String[] tokens = tokenizeLocaleSource(localeValue);
         if (tokens.length == 1) {
             validateLocalePart(localeValue);
@@ -70,7 +74,11 @@ public class LocaleUtils {
      * @return a corresponding {@code Locale} instance, or {@code null} if none
      * @throws IllegalArgumentException in case of an invalid locale specification
      */
-    public static Locale parseLocaleString(String localeString) {
+    @Nullable
+    public static Locale parseLocaleString(@Nullable String localeString) {
+        if (StringUtils.isEmpty(localeString)) {
+            return null;
+        }
         return parseLocaleTokens(localeString, tokenizeLocaleSource(localeString));
     }
 
@@ -79,7 +87,6 @@ public class LocaleUtils {
     }
 
     @Nullable
-    @SuppressWarnings("deprecation")  // on JDK 19 / JDK-8283478
     private static Locale parseLocaleTokens(String localeString, String @NonNull [] tokens) {
         String language = (tokens.length > 0 ? tokens[0] : StringUtils.EMPTY);
         String country = (tokens.length > 1 ? tokens[1] : StringUtils.EMPTY);
@@ -103,7 +110,7 @@ public class LocaleUtils {
             country = StringUtils.EMPTY;
         }
 
-        return (!language.isEmpty() ? new Locale(language, country, variant) : null);
+        return (!language.isEmpty() ? Locale.of(language, country, variant) : null);
     }
 
     private static void validateLocalePart(@NonNull String localePart) {
@@ -124,7 +131,8 @@ public class LocaleUtils {
      * @throws IllegalArgumentException in case of an invalid time zone specification
      */
     @NonNull
-    public static TimeZone parseTimeZoneString(String timeZoneString) {
+    public static TimeZone parseTimeZoneString(@NonNull String timeZoneString) {
+        Assert.hasText(timeZoneString, "timeZoneString must not be empty");
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
         if ("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
             // We don't want that GMT fallback...
