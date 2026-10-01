@@ -23,6 +23,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -122,6 +123,25 @@ class WildcardEngineTest {
 
         assertEquals(34.4f, specificPattern.getWeight());
         assertTrue(specificPattern.getWeight() > generalPattern.getWeight(), "More specific patterns should have a higher weight");
+    }
+
+    @Test
+    void testWildcardUtilityMethods() {
+        assertTrue(WildcardPattern.isWildcard('*'));
+        assertTrue(WildcardPattern.isWildcard('?'));
+        assertTrue(WildcardPattern.isWildcard('+'));
+        assertFalse(WildcardPattern.isWildcard('a'));
+        assertFalse(WildcardPattern.isWildcard('/'));
+
+        assertEquals(-1, WildcardPattern.indexOfWildcard(null));
+        assertEquals(-1, WildcardPattern.indexOfWildcard(""));
+        assertEquals(-1, WildcardPattern.indexOfWildcard("com.aspectran.utils"));
+        assertEquals(14, WildcardPattern.indexOfWildcard("com.aspectran.*.test"));
+        assertEquals(0, WildcardPattern.indexOfWildcard("?test"));
+        assertEquals(3, WildcardPattern.indexOfWildcard("abc+"));
+
+        assertTrue(WildcardPattern.hasWildcards("com.aspectran.*"));
+        assertFalse(WildcardPattern.hasWildcards("com.aspectran.Class"));
     }
 
     private static class WildcardTestCase {

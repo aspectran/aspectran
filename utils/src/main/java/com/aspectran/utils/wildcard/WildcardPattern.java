@@ -334,22 +334,37 @@ public class WildcardPattern {
     }
 
     /**
+     * Check whether the specified character is a wildcard character ('*', '?', '+').
+     * @param c the character to check
+     * @return {@code true} if the character is a wildcard; {@code false} otherwise
+     */
+    public static boolean isWildcard(char c) {
+        return (c == STAR_CHAR || c == QUESTION_CHAR || c == PLUS_CHAR);
+    }
+
+    /**
+     * Finds the index of the first wildcard character in the given text.
+     * @param patternString the text to inspect
+     * @return the index of the first wildcard character, or {@code -1} if none found
+     */
+    public static int indexOfWildcard(String patternString) {
+        if (StringUtils.hasLength(patternString)) {
+            for (int i = 0; i < patternString.length(); i++) {
+                if (isWildcard(patternString.charAt(i))) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Quick check whether the supplied text contains any wildcard characters ('*', '?', '+').
      * @param patternString the text to inspect
      * @return {@code true} if wildcards are present; {@code false} otherwise
      */
     public static boolean hasWildcards(String patternString) {
-        if (StringUtils.hasLength(patternString)) {
-            char[] ca = patternString.toCharArray();
-            for (char c : ca) {
-                switch (c) {
-                    case STAR_CHAR, QUESTION_CHAR, PLUS_CHAR -> {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return (indexOfWildcard(patternString) != -1);
     }
 
 }
