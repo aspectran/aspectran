@@ -16,14 +16,15 @@
 package com.aspectran.utils;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Random;
+import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
 import static com.aspectran.utils.PathUtils.WINDOWS_FILE_SEPARATOR;
@@ -173,7 +174,8 @@ public class FilenameUtils {
      * @param filename a full filename (may be {@code null})
      * @return the path, or an empty string if none exists
      */
-    public static String getFullPath(String filename) {
+    @Nullable
+    public static String getFullPath(@Nullable String filename) {
         if (filename == null) {
             return null;
         }
@@ -189,7 +191,8 @@ public class FilenameUtils {
      * @param filename a full filename (may be {@code null})
      * @return the path with a trailing separator, or an empty string if none exists
      */
-    public static String getFullPathWithEndSeparator(String filename) {
+    @Nullable
+    public static String getFullPathWithEndSeparator(@Nullable String filename) {
         if (filename == null) {
             return null;
         }
@@ -212,12 +215,12 @@ public class FilenameUtils {
         if (filename == null) {
             return false;
         }
-        String ext = getExtension(filename).toLowerCase();
+        String ext = getExtension(filename).toLowerCase(Locale.ROOT);
         if (allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
             if (ext.isEmpty()) {
                 return false;
             }
-            StringTokenizer st = new StringTokenizer(allowedFileExtensions.toLowerCase(), EXTENSIONS_SEPARATORS);
+            StringTokenizer st = new StringTokenizer(allowedFileExtensions.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
             while (st.hasMoreTokens()) {
                 String ext2 = st.nextToken();
                 if (ext.equals(ext2)) {
@@ -230,7 +233,7 @@ public class FilenameUtils {
             if (ext.isEmpty()) {
                 return true;
             }
-            StringTokenizer st = new StringTokenizer(deniedFileExtensions.toLowerCase(), EXTENSIONS_SEPARATORS);
+            StringTokenizer st = new StringTokenizer(deniedFileExtensions.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
             while (st.hasMoreTokens()) {
                 String ext2 = st.nextToken();
                 if (ext.equals(ext2)) {
@@ -285,8 +288,11 @@ public class FilenameUtils {
     public static Path generateUniqueFile(Path srcPath, String extSeparator) throws IOException {
         Assert.notNull(srcPath, "srcPath must not be null");
 
+        Path fileName = srcPath.getFileName();
+        Assert.notNull(fileName, "srcPath must have a file name");
+
         Path parent = srcPath.getParent();
-        String filename = srcPath.getFileName().toString();
+        String filename = fileName.toString();
         String name = removeExtension(filename);
         String ext = getExtension(filename);
 
@@ -303,7 +309,7 @@ public class FilenameUtils {
             if (parent != null) {
                 destPath = parent.resolve(newName);
             } else {
-                destPath = Paths.get(newName);
+                destPath = Path.of(newName);
             }
             if (count > 10000) {
                 throw new IOException("Failed to generate a unique filename after 10000 attempts for: " + filename);
@@ -358,12 +364,14 @@ public class FilenameUtils {
      */
     public static Path generateSafetyUniqueFile(@NonNull Path srcPath, String extSeparator)
             throws IOException {
-        String filename = srcPath.getFileName().toString();
+        Path fileName = srcPath.getFileName();
+        Assert.notNull(fileName, "srcPath must have a file name");
+
+        String filename = fileName.toString();
         String ext = getExtension(filename);
 
         String prefix = Long.toString(System.currentTimeMillis());
-        Random rnd = new Random();
-        String suffix = Integer.toString(rnd.nextInt(9999));
+        String suffix = Integer.toString(ThreadLocalRandom.current().nextInt(10000));
 
         String newName;
         if (ext != null && !ext.isEmpty()) {
@@ -377,9 +385,9 @@ public class FilenameUtils {
         if (parent != null) {
             destPath = parent.resolve(newName);
         } else {
-            destPath = Paths.get(newName);
+            destPath = Path.of(newName);
         }
-        return generateUniqueFile(destPath, NAME_SEPARATOR);
+        return generateUniqueFile(destPath, extSeparator);
     }
 
     /**
@@ -390,6 +398,7 @@ public class FilenameUtils {
      */
     @NonNull
     public static String recoverExtension(String uniqueFilename) {
+        Assert.notNull(uniqueFilename, "uniqueFilename must not be null");
         return StringUtils.replaceLast(uniqueFilename, NAME_SEPARATOR, EXTENSION_SEPARATOR);
     }
 

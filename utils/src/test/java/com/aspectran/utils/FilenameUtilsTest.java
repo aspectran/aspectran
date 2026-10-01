@@ -106,6 +106,14 @@ class FilenameUtilsTest {
     }
 
     @Test
+    void getFullPathWithEndSeparator() {
+        assertEquals("a/b/", FilenameUtils.getFullPathWithEndSeparator("a/b/c.txt"));
+        assertEquals("", FilenameUtils.getFullPathWithEndSeparator("a.txt"));
+        org.junit.jupiter.api.Assertions.assertNull(FilenameUtils.getFullPathWithEndSeparator(null));
+        org.junit.jupiter.api.Assertions.assertNull(FilenameUtils.getFullPath(null));
+    }
+
+    @Test
     void generateSafetyUniqueFile() throws IOException {
         Path file = tempDir.resolve("original.txt");
         Path unique = FilenameUtils.generateSafetyUniqueFile(file);
@@ -114,6 +122,11 @@ class FilenameUtilsTest {
         assertTrue(unique.getFileName().toString().endsWith(".txt"));
         assertTrue(unique.getFileName().toString().contains("_"));
         assertEquals(tempDir, unique.getParent());
+
+        // Test with custom extension separator
+        Path uniqueCustom = FilenameUtils.generateSafetyUniqueFile(file, ".");
+        assertNotNull(uniqueCustom);
+        assertTrue(uniqueCustom.getFileName().toString().endsWith(".txt"));
     }
 
     @Test
@@ -137,6 +150,15 @@ class FilenameUtilsTest {
     void recoverExtension() {
         assertEquals("test.txt", FilenameUtils.recoverExtension("test_txt"));
         assertEquals("my.file.name.txt", FilenameUtils.recoverExtension("my.file.name_txt"));
+    }
+
+    @Test
+    void rootPathExceptions() {
+        Path rootPath = Path.of("/");
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () ->
+                FilenameUtils.generateUniqueFile(rootPath));
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () ->
+                FilenameUtils.generateSafetyUniqueFile(rootPath));
     }
 
 }
