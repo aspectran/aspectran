@@ -25,11 +25,17 @@ import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * <p>Created: 2019-03-20</p>
@@ -100,11 +106,11 @@ class TransletScannerTest {
     }
 
     @Test
-    void testFilterPatternsIncludeAndExclude(@org.junit.jupiter.api.io.TempDir java.nio.file.Path tempDir) throws IOException {
-        java.nio.file.Path subDir = java.nio.file.Files.createDirectories(tempDir.resolve("views"));
-        java.nio.file.Files.createFile(subDir.resolve("home.jsp"));
-        java.nio.file.Files.createFile(subDir.resolve("home.dtd"));
-        java.nio.file.Files.createFile(subDir.resolve("admin.jsp"));
+    void testFilterPatternsIncludeAndExclude(@TempDir Path tempDir) throws IOException {
+        Path subDir = Files.createDirectories(tempDir.resolve("views"));
+        Files.createFile(subDir.resolve("home.jsp"));
+        Files.createFile(subDir.resolve("home.dtd"));
+        Files.createFile(subDir.resolve("admin.jsp"));
 
         String basePath = tempDir.toString().replace(File.separatorChar, '/');
         TransletScanner scanner = new TransletScanner(basePath);
@@ -113,11 +119,11 @@ class TransletScannerTest {
                 new String[] { "**/*.jsp" }, new String[] { "**/admin.jsp" }, ActivityContext.NAME_SEPARATOR_CHAR);
         scanner.setFilterPatterns(filterPatterns);
 
-        java.util.Map<String, File> scanned = scanner.scan("views/**");
+        Map<String, File> scanned = scanner.scan("views/**");
         assertEquals(1, scanned.size());
-        org.junit.jupiter.api.Assertions.assertTrue(scanned.containsKey("views/home.jsp"));
-        org.junit.jupiter.api.Assertions.assertFalse(scanned.containsKey("views/home.dtd"));
-        org.junit.jupiter.api.Assertions.assertFalse(scanned.containsKey("views/admin.jsp"));
+        assertTrue(scanned.containsKey("views/home.jsp"));
+        assertFalse(scanned.containsKey("views/home.dtd"));
+        assertFalse(scanned.containsKey("views/admin.jsp"));
     }
 
 }

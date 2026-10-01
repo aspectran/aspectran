@@ -167,7 +167,11 @@ public class FileScanner {
         if (!target.exists() || !target.isDirectory()) {
             return;
         }
-        target.listFiles(file -> {
+        File[] files = target.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
             String filePath;
             if (StringUtils.hasText(targetPath)) {
                 if (targetPath.endsWith(String.valueOf(REGULAR_FILE_SEPARATOR_CHAR))) {
@@ -185,8 +189,7 @@ public class FileScanner {
                     saveHandler.save(filePath, file);
                 }
             }
-            return false;
-        });
+        }
     }
 
     /**

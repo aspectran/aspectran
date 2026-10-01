@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
@@ -117,7 +118,7 @@ public class ClassScanner {
 
         Enumeration<URL> resources = classLoader.getResources(basePackageName);
 
-        if (!StringUtils.endsWith(basePackageName, REGULAR_FILE_SEPARATOR_CHAR)) {
+        if (!basePackageName.isEmpty() && !StringUtils.endsWith(basePackageName, REGULAR_FILE_SEPARATOR_CHAR)) {
             basePackageName += REGULAR_FILE_SEPARATOR_CHAR;
         }
 
@@ -125,62 +126,70 @@ public class ClassScanner {
             URL resource = resources.nextElement();
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Scanning components from {}", resource.getFile());
+                logger.debug("Scanning components from {}", resource);
             }
 
-            if (isJarResource(resource)) {
+            if (ResourceUtils.isJarURL(resource)) {
                 scanFromJarResource(resource, matcher, saveHandler);
             } else {
-                scan(resource.getFile(), basePackageName, null, matcher, saveHandler);
+                File rootDir;
+                try {
+                    rootDir = ResourceUtils.getFile(resource);
+                } catch (FileNotFoundException ex) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Cannot resolve resource URL to file: {}", resource, ex);
+                    }
+                    continue;
+                }
+                if (rootDir.isDirectory()) {
+                    scan(rootDir, basePackageName, null, matcher, saveHandler);
+                }
             }
         }
     }
 
     /**
      * Recursively scans a directory to find all class files, matching them against the given pattern.
-     * @param targetPath the path of the directory to scan
+     * @param dir the directory to scan
      * @param basePackageName the base package name corresponding to the root of the scan
      * @param relativePackageName the current package name relative to the base package
      * @param matcher the wildcard matcher to test against class names
      * @param saveHandler the handler to process found classes
      */
-    private void scan(String targetPath, String basePackageName, String relativePackageName,
+    private void scan(@NonNull File dir, String basePackageName, String relativePackageName,
                       WildcardMatcher matcher, SaveHandler saveHandler) {
-        File target = new File(targetPath);
-        if (!target.exists()) {
+        if (!dir.exists() || !dir.isDirectory()) {
             return;
         }
 
-        target.listFiles(file -> {
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
             String fileName = file.getName();
             if (file.isDirectory()) {
-                String subPackageName;
-                if (relativePackageName != null) {
-                    subPackageName = relativePackageName + fileName + REGULAR_FILE_SEPARATOR;
-                } else {
-                    subPackageName = fileName + REGULAR_FILE_SEPARATOR;
-                }
-
-                String basePath2 = targetPath + fileName + REGULAR_FILE_SEPARATOR;
-                scan(basePath2, basePackageName, subPackageName, matcher, saveHandler);
+                String subPackageName = (relativePackageName != null ?
+                        relativePackageName + fileName + REGULAR_FILE_SEPARATOR :
+                        fileName + REGULAR_FILE_SEPARATOR);
+                scan(file, basePackageName, subPackageName, matcher, saveHandler);
             } else if (fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
                 String fn = fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-                String className;
-                if (relativePackageName != null) {
-                    className = basePackageName + relativePackageName + fn;
-                } else {
-                    className = basePackageName + fn;
-                }
+                String className = (relativePackageName != null ?
+                        basePackageName + relativePackageName + fn :
+                        basePackageName + fn);
 
                 String relativePath = className.substring(basePackageName.length());
                 if (matcher.matches(relativePath)) {
-                    String resourceName = targetPath + fileName;
+                    String resourceName = file.getAbsolutePath();
                     Class<?> targetClass = loadClass(className);
-                    saveHandler.save(resourceName, targetClass);
+                    if (targetClass != null) {
+                        saveHandler.save(resourceName, targetClass);
+                    }
                 }
             }
-            return false;
-        });
+        }
     }
 
     /**
@@ -243,7 +252,9 @@ public class ClassScanner {
                         String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;
                         String className = entryNamePrefix + entryNameSuffix;
                         Class<?> targetClass = loadClass(className);
-                        saveHandler.save(resourceName, targetClass);
+                        if (targetClass != null) {
+                            saveHandler.save(resourceName, targetClass);
+                        }
                     }
                 }
             }
@@ -270,11 +281,6 @@ public class ClassScanner {
         }
     }
 
-    private boolean isJarResource(@NonNull URL url) {
-        String protocol = url.getProtocol();
-        return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
-    }
-
     /**
      * Determines the base package name from a class name pattern that may contain wildcards.
      * The base package is the part of the pattern before the first wildcard character.
@@ -283,31 +289,34 @@ public class ClassScanner {
      */
     @Nullable
     private String determineBasePackageName(String classNamePattern) {
-        WildcardPattern pattern = new WildcardPattern(classNamePattern, REGULAR_FILE_SEPARATOR_CHAR);
-        WildcardMatcher matcher = new WildcardMatcher(pattern);
-
-        boolean matched = matcher.matches(classNamePattern);
-        if (!matched) {
+        if (classNamePattern == null) {
             return null;
         }
-
-        StringBuilder sb = new StringBuilder();
-        while (matcher.hasNext()) {
-            String str = matcher.next();
-            if (WildcardPattern.hasWildcards(str)) {
-                break;
+        int firstWildcardIndex = WildcardPattern.indexOfWildcard(classNamePattern);
+        if (firstWildcardIndex == -1) {
+            int lastSeparatorIndex = classNamePattern.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR);
+            if (lastSeparatorIndex != -1) {
+                return classNamePattern.substring(0, lastSeparatorIndex + 1);
             }
-            sb.append(str).append(REGULAR_FILE_SEPARATOR_CHAR);
+            return StringUtils.EMPTY;
         }
-        return sb.toString();
+        int lastSeparatorIndex = classNamePattern.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR, firstWildcardIndex);
+        if (lastSeparatorIndex != -1) {
+            return classNamePattern.substring(0, lastSeparatorIndex + 1);
+        }
+        return StringUtils.EMPTY;
     }
 
+    @Nullable
     private Class<?> loadClass(String className) {
         className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
         try {
             return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Unable to load class: " + className, e);
+        } catch (ClassNotFoundException | LinkageError e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Skipping class [{}] due to load failure: {}", className, e.toString());
+            }
+            return null;
         }
     }
 

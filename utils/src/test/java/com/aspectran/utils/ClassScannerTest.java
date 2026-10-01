@@ -37,4 +37,11 @@ class ClassScannerTest {
         }
     }
 
+    @Test
+    void testScanExactClass() throws IOException {
+        ClassScanner scanner = new ClassScanner(ClassUtils.getDefaultClassLoader());
+        Map<String, Class<?>> map = scanner.scan("com.aspectran.utils.ClassScannerTest");
+        assertTrue(map.containsValue(ClassScannerTest.class));
+    }
+
 }

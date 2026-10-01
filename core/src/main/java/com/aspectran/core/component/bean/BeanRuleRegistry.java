@@ -400,7 +400,7 @@ public class BeanRuleRegistry {
             }
             IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
                     filterParameters, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-            if (filterPatterns.hasIncludePatterns()) {
+            if (filterPatterns.hasIncludePatterns() || filterPatterns.hasExcludePatterns()) {
                 scanner.setFilterPatterns(filterPatterns);
             }
         }

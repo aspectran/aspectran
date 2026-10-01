@@ -20,6 +20,8 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardMatcher;
 import com.aspectran.utils.wildcard.WildcardPattern;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +91,7 @@ public class TransletScanner extends FileScanner {
      * @param saveHandler the handler for saving discovered files
      */
     @Override
-    protected void scan(String targetPath, WildcardMatcher matcher, SaveHandler saveHandler) {
+    protected void scan(String targetPath, @Nullable WildcardMatcher matcher, @NonNull SaveHandler saveHandler) {
         try {
             super.scan(targetPath, matcher, new TransletSaveHandler(saveHandler));
         } catch (Exception e) {
@@ -118,27 +120,23 @@ public class TransletScanner extends FileScanner {
          */
         @Override
         public void save(String filePath, File scannedFile) {
-            String transletName = filePath;
+            if (filterPatterns != null && !filterPatterns.matches(filePath)) {
+                return;
+            }
 
+            String transletName = filePath;
             if (transletNameMaskPattern != null) {
                 String maskedTransletName = transletNameMaskPattern.mask(transletName);
                 if (maskedTransletName != null) {
                     transletName = maskedTransletName;
-                }  else {
+                } else {
                     logger.warn("Translet name [{}] can not be masked by mask pattern [{}]",
                             transletName, transletNameMaskPattern);
                 }
             }
 
-            if (filterPatterns != null && !filterPatterns.matches(filePath)) {
+            if (transletScanFilter != null && !transletScanFilter.filter(transletName, scannedFile)) {
                 return;
-            }
-
-            if (transletScanFilter != null) {
-                boolean passing = transletScanFilter.filter(transletName, scannedFile);
-                if (!passing) {
-                    return;
-                }
             }
 
             saveHandler.save(transletName, scannedFile);
@@ -147,6 +145,7 @@ public class TransletScanner extends FileScanner {
                 logger.trace("Scanned file: {}", filePath);
             }
         }
+
     }
 
 }

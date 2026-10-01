@@ -61,7 +61,8 @@ public class BeanClassScanner extends ClassScanner {
     }
 
     /**
-     * Sets patterns for classes to exclude.
+     * Sets patterns for classes to include or exclude.
+     * @param filterPatterns the include/exclude wildcard patterns
      */
     public void setFilterPatterns(IncludeExcludeWildcardPatterns filterPatterns) {
         this.filterPatterns = filterPatterns;
@@ -88,6 +89,31 @@ public class BeanClassScanner extends ClassScanner {
         }
     }
 
+    /**
+     * Determine whether the given class is a candidate for bean registration.
+     * @param targetClass the class to check
+     * @return {@code true} if the class is a candidate; {@code false} otherwise
+     */
+    protected boolean isCandidateClass(@NonNull Class<?> targetClass) {
+        int modifiers = targetClass.getModifiers();
+        if (!Modifier.isPublic(modifiers)) {
+            return false;
+        }
+        if (targetClass.isInterface() || targetClass.isAnnotation() || targetClass.isEnum() || targetClass.isRecord()) {
+            return false;
+        }
+        if (Modifier.isAbstract(modifiers)) {
+            return false;
+        }
+        if (targetClass.isAnonymousClass() || targetClass.isLocalClass()) {
+            return false;
+        }
+        if (targetClass.isMemberClass() && !Modifier.isStatic(modifiers)) {
+            return false;
+        }
+        return true;
+    }
+
     private class BeanSaveHandler implements SaveHandler {
 
         private final SaveHandler saveHandler;
@@ -102,13 +128,16 @@ public class BeanClassScanner extends ClassScanner {
 
         @Override
         public void save(@NonNull String resourceName, @NonNull Class<?> targetClass) {
-            if (!Modifier.isPublic(targetClass.getModifiers()) ||
-                    (!Modifier.isInterface(targetClass.getModifiers()) &&
-                            Modifier.isAbstract(targetClass.getModifiers()))) {
+            if (!isCandidateClass(targetClass)) {
                 return;
             }
 
             String className = targetClass.getName();
+
+            if (filterPatterns != null && !filterPatterns.matches(className)) {
+                return;
+            }
+
             String beanId = className;
 
             if (beanIdMaskPattern != null) {
@@ -125,10 +154,6 @@ public class BeanClassScanner extends ClassScanner {
                 if (beanId == null) {
                     return;
                 }
-            }
-
-            if (filterPatterns != null && filterPatterns.matches(className)) {
-                return;
             }
 
             saveHandler.save(beanId, targetClass);

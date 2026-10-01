@@ -24,10 +24,14 @@ import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * <p>Created: 2019-03-21</p>
@@ -74,6 +78,53 @@ class BeanClassScannerTest {
         }
     }
 
+    @Test
+    void testFilterPatternsIncludeAndExclude() throws IOException {
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+        BeanClassScanner scanner = new BeanClassScanner(classLoader);
+
+        IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
+                new String[] { "**.*Scanner" },
+                new String[] { "**.*Test" },
+                ClassUtils.PACKAGE_SEPARATOR_CHAR
+        );
+        scanner.setFilterPatterns(filterPatterns);
+
+        Map<String, Class<?>> scanned = scanner.scan("com.aspectran.core.component.bean.**");
+        assertTrue(scanned.containsKey(BeanClassScanner.class.getName()));
+        assertFalse(scanned.containsKey(BeanClassScannerTest.class.getName()));
+        assertFalse(scanned.containsKey("com.aspectran.core.component.bean.BeanRuleRegistry"));
+    }
+
+    @Test
+    void testBeanIdMaskPattern() throws IOException {
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+        BeanClassScanner scanner = new BeanClassScanner(classLoader);
+        scanner.setBeanIdMaskPattern("com.aspectran.core.component.bean.scan.*");
+
+        Map<String, Class<?>> scanned = scanner.scan("com.aspectran.core.component.bean.scan.BeanClassScanner");
+        assertEquals(1, scanned.size());
+        assertTrue(scanned.containsKey("BeanClassScanner"));
+        assertEquals(BeanClassScanner.class, scanned.get("BeanClassScanner"));
+    }
+
+    @Test
+    void testCustomBeanClassFilter() throws IOException {
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+        BeanClassScanner scanner = new BeanClassScanner(classLoader);
+        scanner.setBeanClassFilter((beanId, resourceName, targetClass) -> {
+            if (targetClass == BeanClassScanner.class) {
+                return "custom." + beanId;
+            }
+            return null;
+        });
+
+        Map<String, Class<?>> scanned = scanner.scan("com.aspectran.core.component.bean.**");
+        assertEquals(1, scanned.size());
+        assertTrue(scanned.containsKey("custom." + BeanClassScanner.class.getName()));
+        assertEquals(BeanClassScanner.class, scanned.get("custom." + BeanClassScanner.class.getName()));
+    }
+
     @NonNull
     private BeanClassScanner createBeanClassScanner(@NonNull BeanRule beanRule) throws IllegalRuleException {
         ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
@@ -94,7 +145,7 @@ class BeanClassScannerTest {
             }
             IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
                     filterParameters, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-            if (filterPatterns.hasIncludePatterns()) {
+            if (filterPatterns.hasIncludePatterns() || filterPatterns.hasExcludePatterns()) {
                 scanner.setFilterPatterns(filterPatterns);
             }
         }
