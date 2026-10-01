@@ -78,9 +78,8 @@ public class FileScanner {
      * @param saveHandler the handler to process each found file
      */
     public void scan(String filePathPattern, SaveHandler saveHandler) {
-        if (filePathPattern == null) {
-            throw new IllegalArgumentException("filePathPattern must not be null");
-        }
+        Assert.hasText(filePathPattern, "filePathPattern must not be null or empty");
+        Assert.notNull(saveHandler, "saveHandler must not be null");
 
         WildcardPattern pattern = WildcardPattern.compile(filePathPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
@@ -91,7 +90,7 @@ public class FileScanner {
             String term = matcher.next();
             if (!term.isEmpty()) {
                 if (!WildcardPattern.hasWildcards(term)) {
-                    if (!sb.isEmpty()) {
+                    if (!sb.isEmpty() && sb.charAt(sb.length() - 1) != REGULAR_FILE_SEPARATOR_CHAR) {
                         sb.append(REGULAR_FILE_SEPARATOR_CHAR);
                     }
                     sb.append(term);
@@ -99,7 +98,9 @@ public class FileScanner {
                     break;
                 }
             } else {
-                sb.append(REGULAR_FILE_SEPARATOR_CHAR);
+                if (sb.isEmpty()) {
+                    sb.append(REGULAR_FILE_SEPARATOR_CHAR);
+                }
             }
         }
 
@@ -138,9 +139,13 @@ public class FileScanner {
      * @param saveHandler the handler to process each found file
      */
     public void scan(@NonNull String basePath, String filePathPattern, SaveHandler saveHandler) {
+        Assert.notNull(basePath, "basePath must not be null");
+        Assert.hasText(filePathPattern, "filePathPattern must not be null or empty");
+        Assert.notNull(saveHandler, "saveHandler must not be null");
+
         WildcardPattern pattern = WildcardPattern.compile(filePathPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
-        if (basePath.charAt(basePath.length() - 1) == REGULAR_FILE_SEPARATOR_CHAR) {
+        if (basePath.length() > 1 && basePath.charAt(basePath.length() - 1) == REGULAR_FILE_SEPARATOR_CHAR) {
             basePath = basePath.substring(0, basePath.length() - 1);
         }
         scan(basePath, matcher, saveHandler);
@@ -155,15 +160,24 @@ public class FileScanner {
     protected void scan(String targetPath, WildcardMatcher matcher, SaveHandler saveHandler) {
         File target;
         if (StringUtils.hasText(basePath)) {
-            target = new File(basePath, targetPath);
+            target = (StringUtils.hasText(targetPath) ? new File(basePath, targetPath) : new File(basePath));
         } else {
-            target = new File(targetPath);
+            target = (StringUtils.hasText(targetPath) ? new File(targetPath) : new File("."));
         }
-        if (!target.exists()) {
+        if (!target.exists() || !target.isDirectory()) {
             return;
         }
         target.listFiles(file -> {
-            String filePath = targetPath + REGULAR_FILE_SEPARATOR_CHAR + file.getName();
+            String filePath;
+            if (StringUtils.hasText(targetPath)) {
+                if (targetPath.endsWith(String.valueOf(REGULAR_FILE_SEPARATOR_CHAR))) {
+                    filePath = targetPath + file.getName();
+                } else {
+                    filePath = targetPath + REGULAR_FILE_SEPARATOR_CHAR + file.getName();
+                }
+            } else {
+                filePath = file.getName();
+            }
             if (file.isDirectory()) {
                 scan(filePath, matcher, saveHandler);
             } else {
@@ -178,6 +192,7 @@ public class FileScanner {
     /**
      * A handler for processing files found during a scan.
      */
+    @FunctionalInterface
     public interface SaveHandler {
 
         /**

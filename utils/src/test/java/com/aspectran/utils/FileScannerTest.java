@@ -16,10 +16,17 @@
 package com.aspectran.utils;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -27,14 +34,53 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FileScannerTest {
 
+    @TempDir
+    Path tempDir;
+
     @Test
     void testFileScan() {
         FileScanner scanner = new FileScanner("./target/test-classes");
-        Map<String, File> map = scanner.scan("**/util/*Test.class");
+        Map<String, File> map = scanner.scan("**/utils/*Test.class");
         for (Map.Entry<String, File> entry : map.entrySet()) {
-            //System.out.println(entry.getKey() + " - " + entry.getValue());
             assertTrue(entry.getValue().toString().replace(File.separatorChar, '/').endsWith(entry.getKey()));
         }
+    }
+
+    @Test
+    void testScanWithTempDir() throws IOException {
+        Path subDir = Files.createDirectories(tempDir.resolve("sub/dir"));
+        Files.createFile(subDir.resolve("test1.txt"));
+        Files.createFile(subDir.resolve("test2.log"));
+        Files.createFile(tempDir.resolve("root.txt"));
+
+        String basePath = tempDir.toString().replace(File.separatorChar, '/');
+        FileScanner scanner = new FileScanner(basePath);
+
+        Map<String, File> txtFiles = scanner.scan("**/*.txt");
+        assertEquals(2, txtFiles.size());
+        assertTrue(txtFiles.containsKey("root.txt"));
+        assertTrue(txtFiles.containsKey("sub/dir/test1.txt"));
+        assertFalse(txtFiles.containsKey("sub/dir/test2.log"));
+    }
+
+    @Test
+    void testScanWithLeadingSlash() throws IOException {
+        Path subDir = Files.createDirectories(tempDir.resolve("logs"));
+        Files.createFile(subDir.resolve("app.log"));
+
+        String basePath = tempDir.toString().replace(File.separatorChar, '/');
+        FileScanner scanner = new FileScanner();
+
+        Map<String, File> logFiles = scanner.scan(basePath + "/logs/*.log");
+        assertEquals(1, logFiles.size());
+        assertTrue(logFiles.containsKey(basePath + "/logs/app.log"));
+    }
+
+    @Test
+    void testValidation() {
+        FileScanner scanner = new FileScanner();
+        assertThrows(IllegalArgumentException.class, () -> scanner.scan(null));
+        assertThrows(IllegalArgumentException.class, () -> scanner.scan(""));
     }
 
 }

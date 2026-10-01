@@ -16,6 +16,7 @@
 package com.aspectran.core.component.translet.scan;
 
 import com.aspectran.utils.FileScanner;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardMatcher;
 import com.aspectran.utils.wildcard.WildcardPattern;
@@ -73,10 +74,11 @@ public class TransletScanner extends FileScanner {
      * @param transletNameMaskPattern a wildcard pattern for masking
      */
     public void setTransletNameMaskPattern(String transletNameMaskPattern) {
-        if (transletNameMaskPattern == null) {
-            throw new IllegalArgumentException("transletNameMaskPattern must not be null");
+        if (StringUtils.hasText(transletNameMaskPattern)) {
+            this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, NAME_SEPARATOR_CHAR);
+        } else {
+            this.transletNameMaskPattern = null;
         }
-        this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, NAME_SEPARATOR_CHAR);
     }
 
     /**
@@ -128,15 +130,15 @@ public class TransletScanner extends FileScanner {
                 }
             }
 
+            if (filterPatterns != null && !filterPatterns.matches(filePath)) {
+                return;
+            }
+
             if (transletScanFilter != null) {
                 boolean passing = transletScanFilter.filter(transletName, scannedFile);
                 if (!passing) {
                     return;
                 }
-            }
-
-            if (filterPatterns != null && filterPatterns.matches(filePath)) {
-                return;
             }
 
             saveHandler.save(transletName, scannedFile);

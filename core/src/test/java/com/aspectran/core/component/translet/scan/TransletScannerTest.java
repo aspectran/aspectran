@@ -87,7 +87,7 @@ class TransletScannerTest {
             }
             IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
                     filterParameters, ActivityContext.NAME_SEPARATOR_CHAR);
-            if (filterPatterns.hasIncludePatterns()) {
+            if (filterPatterns.hasIncludePatterns() || filterPatterns.hasExcludePatterns()) {
                 scanner.setFilterPatterns(filterPatterns);
             }
         }
@@ -97,6 +97,27 @@ class TransletScannerTest {
             scanner.setTransletNameMaskPattern(transletRule.getScanPath());
         }
         return scanner;
+    }
+
+    @Test
+    void testFilterPatternsIncludeAndExclude(@org.junit.jupiter.api.io.TempDir java.nio.file.Path tempDir) throws IOException {
+        java.nio.file.Path subDir = java.nio.file.Files.createDirectories(tempDir.resolve("views"));
+        java.nio.file.Files.createFile(subDir.resolve("home.jsp"));
+        java.nio.file.Files.createFile(subDir.resolve("home.dtd"));
+        java.nio.file.Files.createFile(subDir.resolve("admin.jsp"));
+
+        String basePath = tempDir.toString().replace(File.separatorChar, '/');
+        TransletScanner scanner = new TransletScanner(basePath);
+
+        IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
+                new String[] { "**/*.jsp" }, new String[] { "**/admin.jsp" }, ActivityContext.NAME_SEPARATOR_CHAR);
+        scanner.setFilterPatterns(filterPatterns);
+
+        java.util.Map<String, File> scanned = scanner.scan("views/**");
+        assertEquals(1, scanned.size());
+        org.junit.jupiter.api.Assertions.assertTrue(scanned.containsKey("views/home.jsp"));
+        org.junit.jupiter.api.Assertions.assertFalse(scanned.containsKey("views/home.dtd"));
+        org.junit.jupiter.api.Assertions.assertFalse(scanned.containsKey("views/admin.jsp"));
     }
 
 }

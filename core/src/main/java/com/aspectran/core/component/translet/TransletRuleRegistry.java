@@ -311,7 +311,9 @@ public class TransletRuleRegistry extends AbstractComponent {
             if (transletScanFilterClassName != null) {
                 TransletScanFilter transletScanFilter;
                 try {
-                    Class<?> filterClass = classLoader.loadClass(transletScanFilterClassName);
+                    Class<?> filterClass = (classLoader != null ?
+                            classLoader.loadClass(transletScanFilterClassName) :
+                            ClassUtils.loadClass(transletScanFilterClassName));
                     transletScanFilter = (TransletScanFilter)ClassUtils.createInstance(filterClass);
                 } catch (Exception e) {
                     throw new IllegalRuleException("Failed to instantiate TransletScanFilter [" +
@@ -321,7 +323,7 @@ public class TransletRuleRegistry extends AbstractComponent {
             }
             IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
                     filterParameters, ActivityContext.NAME_SEPARATOR_CHAR);
-            if (filterPatterns.hasIncludePatterns()) {
+            if (filterPatterns.hasIncludePatterns() || filterPatterns.hasExcludePatterns()) {
                 scanner.setFilterPatterns(filterPatterns);
             }
         }
