@@ -17,6 +17,7 @@ package com.aspectran.utils;
 
 import org.jspecify.annotations.NonNull;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,13 +28,32 @@ import java.util.regex.Pattern;
  */
 public class DataSizeUtils {
 
+    /** Number of bytes in a Kilobyte (1024 bytes). */
+    public static final long BYTES_PER_KB = 1024L;
+
+    /** Number of bytes in a Megabyte (1024 KB). */
+    public static final long BYTES_PER_MB = BYTES_PER_KB * 1024L;
+
+    /** Number of bytes in a Gigabyte (1024 MB). */
+    public static final long BYTES_PER_GB = BYTES_PER_MB * 1024L;
+
+    /** Number of bytes in a Terabyte (1024 GB). */
+    public static final long BYTES_PER_TB = BYTES_PER_GB * 1024L;
+
+    /** Number of bytes in a Petabyte (1024 TB). */
+    public static final long BYTES_PER_PB = BYTES_PER_TB * 1024L;
+
+    /** Number of bytes in an Exabyte (1024 PB). */
+    public static final long BYTES_PER_EB = BYTES_PER_PB * 1024L;
+
     /**
      * Regular expression pattern for parsing human-friendly byte size strings.
-     * It captures the numeric value and the optional unit (e.g., "100", "1KB", "1.5 MB").
-     * Supports K, M, G, T, P, E prefixes, case-insensitively, with or without 'B' suffix,
+     * It captures the numeric value and the optional unit (e.g., "100", "1KB", "1.5 MB", "512 MiB").
+     * Supports K, M, G, T, P, E prefixes with optional 'i' and 'B' suffixes, case-insensitively,
      * and optional leading/trailing spaces.
      */
-    private static final Pattern PATTERN = Pattern.compile("^\\s*(-?[0-9.]+)\\s*([KMGTPE]?)B?\\s*$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN = Pattern.compile(
+            "^\\s*([+-]?[0-9.]+)\\s*([KMGTPE]?)[iI]?B?\\s*$", Pattern.CASE_INSENSITIVE);
 
     /**
      * Array of character prefixes for byte units (Kilobyte, Megabyte, Gigabyte, Terabyte, Petabyte, Exabyte).
@@ -54,16 +74,16 @@ public class DataSizeUtils {
     }
 
     /**
-     * Converts a byte size into a human-friendly format (e.g., 1024 -&gt; "1.0 KB").
-     * <p>This method uses binary prefixes (powers of 1024) but uses common SI symbols (KB, MB, GB).
-     * For example, 1024 bytes is formatted as "1.0 KB".</p>
+     * Converts a byte size into a human-friendly format (e.g., 1024 -&gt; "1 KB", 1536 -&gt; "1.5 KB").
+     * <p>This method uses binary prefixes (powers of 1024) with common SI symbols (KB, MB, GB).
+     * For example, 1024 bytes is formatted as "1 KB".</p>
      * <pre>
-     * DataSizeUtils.toHumanFriendlyByteSize(0L)     = "0 B"
-     * DataSizeUtils.toHumanFriendlyByteSize(500L)    = "500 B"
-     * DataSizeUtils.toHumanFriendlyByteSize(1024L)   = "1.0 KB"
-     * DataSizeUtils.toHumanFriendlyByteSize(1536L)   = "1.5 KB"
-     * DataSizeUtils.toHumanFriendlyByteSize(1048576L) = "1.0 MB"
-     * DataSizeUtils.toHumanFriendlyByteSize(-1024L)  = "-1.0 KB"
+     * DataSizeUtils.toHumanFriendlyByteSize(0L)             = "0 B"
+     * DataSizeUtils.toHumanFriendlyByteSize(500L)           = "500 B"
+     * DataSizeUtils.toHumanFriendlyByteSize(1024L)          = "1 KB"
+     * DataSizeUtils.toHumanFriendlyByteSize(1536L)          = "1.5 KB"
+     * DataSizeUtils.toHumanFriendlyByteSize(1048576L)       = "1 MB"
+     * DataSizeUtils.toHumanFriendlyByteSize(-1024L)         = "-1 KB"
      * DataSizeUtils.toHumanFriendlyByteSize(Long.MAX_VALUE) = "8.0 EB" // Approx.
      * </pre>
      * @param bytes the number of bytes
@@ -77,7 +97,7 @@ public class DataSizeUtils {
         if (bytes < 0) {
             return "-" + toHumanFriendlyByteSize(-bytes);
         }
-        if (bytes < 1024) {
+        if (bytes < BYTES_PER_KB) {
             return bytes + " B";
         }
         // This clever logic finds the right unit index (K=1, M=2, etc.)
@@ -85,33 +105,36 @@ public class DataSizeUtils {
         int z = (63 - Long.numberOfLeadingZeros(bytes)) / 10;
         double value = (double)bytes / (1L << (z * 10));
         String format = (value % 1.0 == 0 ? "%.0f %cB" : "%.1f %cB");
-        return String.format(format, value, UNITS.charAt(z - 1));
+        return String.format(Locale.ROOT, format, value, UNITS.charAt(z - 1));
     }
 
     /**
-     * Converts a human-friendly byte size string (e.g., "1KB", "10MB") into the number of bytes.
-     * <p>The method supports various units (B, K, KB, M, MB, G, GB, T, TB, P, PB, E, EB)
-     * and is case-insensitive. It also tolerates optional spaces between the number and the unit.
-     * Decimal values are supported (e.g., "1.5MB").</p>
+     * Converts a human-friendly byte size string (e.g., "1KB", "10MB", "512MiB") into the number of bytes.
+     * <p>The method supports various units (B, K, KB, KiB, M, MB, MiB, G, GB, GiB, T, TB, TiB,
+     * P, PB, PiB, E, EB, EiB) and is case-insensitive. It also tolerates optional spaces between
+     * the number and the unit. Decimal values are supported (e.g., "1.5MB").</p>
      * <pre>
-     * DataSizeUtils.toMachineFriendlyByteSize("0")      = 0L
-     * DataSizeUtils.toMachineFriendlyByteSize("500B")   = 500L
-     * DataSizeUtils.toMachineFriendlyByteSize("1KB")    = 1024L
-     * DataSizeUtils.toMachineFriendlyByteSize("1.5M")   = 1572864L
-     * DataSizeUtils.toMachineFriendlyByteSize("10 gB")  = 10737418240L
-     * DataSizeUtils.toMachineFriendlyByteSize("-1KB")   = -1024L
+     * DataSizeUtils.toMachineFriendlyByteSize("0")          = 0L
+     * DataSizeUtils.toMachineFriendlyByteSize("500B")       = 500L
+     * DataSizeUtils.toMachineFriendlyByteSize("1KB")        = 1024L
+     * DataSizeUtils.toMachineFriendlyByteSize("1KiB")       = 1024L
+     * DataSizeUtils.toMachineFriendlyByteSize("1.5M")       = 1572864L
+     * DataSizeUtils.toMachineFriendlyByteSize("10 gB")      = 10737418240L
+     * DataSizeUtils.toMachineFriendlyByteSize("-1KB")       = -1024L
      * </pre>
      * @param bytes the human-friendly byte size string to parse
      * @return the number of bytes
      * @throws NumberFormatException if the string format is invalid or value exceeds long max
      */
     public static long toMachineFriendlyByteSize(@NonNull String bytes) {
+        Assert.notNull(bytes, "bytes must not be null");
         Matcher matcher = PATTERN.matcher(bytes.trim());
         if (!matcher.matches()) {
             String msg = "Size must be specified as bytes (B), " +
-                    "kilobytes (K or KB), megabytes (M or MB), gigabytes (G or GB), " +
-                    "terabytes (T or TB), petabytes (P or PB), or exabytes (E or EB). " +
-                    "Examples: \"1024\", \"1KB\", \"10M\", \"10MB\", \"100G\", \"100GB\". " +
+                    "kilobytes (K, KB, or KiB), megabytes (M, MB, or MiB), " +
+                    "gigabytes (G, GB, or GiB), terabytes (T, TB, or TiB), " +
+                    "petabytes (P, PB, or PiB), or exabytes (E, EB, or EiB). " +
+                    "Examples: \"1024\", \"1KB\", \"10M\", \"10MB\", \"100G\", \"100GB\", \"512MiB\". " +
                     "Invalid format: \"" + bytes + "\"";
             throw new NumberFormatException(msg);
         }
@@ -121,18 +144,22 @@ public class DataSizeUtils {
         long multiplier = 1L;
 
         if (!unit.isEmpty()) {
-            // The fall-through is intentional to calculate the multiplier
             switch (unit.charAt(0)) {
-                case 'E': multiplier *= 1024L;
-                case 'P': multiplier *= 1024L;
-                case 'T': multiplier *= 1024L;
-                case 'G': multiplier *= 1024L;
-                case 'M': multiplier *= 1024L;
-                case 'K': multiplier *= 1024L;
+                case 'E' -> multiplier = BYTES_PER_EB;
+                case 'P' -> multiplier = BYTES_PER_PB;
+                case 'T' -> multiplier = BYTES_PER_TB;
+                case 'G' -> multiplier = BYTES_PER_GB;
+                case 'M' -> multiplier = BYTES_PER_MB;
+                case 'K' -> multiplier = BYTES_PER_KB;
             }
         }
 
-        return Math.round(value * multiplier);
+        double total = value * multiplier;
+        if (total > Long.MAX_VALUE || total < Long.MIN_VALUE) {
+            throw new NumberFormatException("Byte size value exceeds 64-bit signed integer range: \"" + bytes + "\"");
+        }
+
+        return Math.round(total);
     }
 
 }

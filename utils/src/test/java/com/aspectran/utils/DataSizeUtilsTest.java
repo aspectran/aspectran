@@ -44,19 +44,37 @@ class DataSizeUtilsTest {
     @CsvSource({
             "1k, 1024",
             "1KB, 1024",
+            "1KiB, 1024",
+            "1Ki, 1024",
             "10m, 10485760",
             "10MB, 10485760",
+            "10MiB, 10485760",
+            "10Mi, 10485760",
             "1.2 GB, 1288490189",
+            "1.2 GiB, 1288490189",
             "2.4GB, 2576980378",
             "3.75MB, 3932160",
             "1.28KB, 1311",
             "1024, 1024",
             "1024B, 1024",
             "  1 G  , 1073741824",
-            "-2kb, -2048"
+            "  1 GiB  , 1073741824",
+            "+10MB, 10485760",
+            "-2kb, -2048",
+            "-2kib, -2048"
     })
     void toMachineFriendlyByteSize(String input, long expected) {
         assertEquals(expected, DataSizeUtils.toMachineFriendlyByteSize(input));
+    }
+
+    @Test
+    void testConstants() {
+        assertEquals(1024L, DataSizeUtils.BYTES_PER_KB);
+        assertEquals(1024L * 1024L, DataSizeUtils.BYTES_PER_MB);
+        assertEquals(1024L * 1024L * 1024L, DataSizeUtils.BYTES_PER_GB);
+        assertEquals(1024L * 1024L * 1024L * 1024L, DataSizeUtils.BYTES_PER_TB);
+        assertEquals(1024L * 1024L * 1024L * 1024L * 1024L, DataSizeUtils.BYTES_PER_PB);
+        assertEquals(1024L * 1024L * 1024L * 1024L * 1024L * 1024L, DataSizeUtils.BYTES_PER_EB);
     }
 
     @Test
@@ -66,6 +84,7 @@ class DataSizeUtilsTest {
         assertThrows(NumberFormatException.class, () -> DataSizeUtils.toMachineFriendlyByteSize("KB"));
         assertThrows(NumberFormatException.class, () -> DataSizeUtils.toMachineFriendlyByteSize(""));
         assertThrows(NumberFormatException.class, () -> DataSizeUtils.toMachineFriendlyByteSize("  "));
+        assertThrows(IllegalArgumentException.class, () -> DataSizeUtils.toMachineFriendlyByteSize(null));
     }
 
 }
