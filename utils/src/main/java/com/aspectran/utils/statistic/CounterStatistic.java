@@ -23,10 +23,10 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * Provides statistics on a counter value, tracking total, current, and maximum values.
+ * Provides statistics on a counter value, tracking total, current, minimum, and maximum values.
  * <p>This class is a clone of {@code org.eclipse.jetty.util.statistic.CounterStatistic}.</p>
  * <p>It supports incrementing and decrementing the current value, while maintaining
- * a running total (sum of all increments) and the highest value reached.</p>
+ * a running total (sum of all increments) and the highest/lowest values reached.</p>
  * <p>This class is thread-safe due to its use of {@link AtomicLong}, {@link LongAccumulator},
  * and {@link LongAdder}.</p>
  */
@@ -34,41 +34,55 @@ public class CounterStatistic {
 
     private final AtomicLong current = new AtomicLong();
 
-    private final LongAccumulator max = new LongAccumulator(Math::max,0L);
+    private final LongAccumulator max = new LongAccumulator(Math::max, Long.MIN_VALUE);
+
+    private final LongAccumulator min = new LongAccumulator(Math::min, Long.MAX_VALUE);
 
     private final LongAdder total = new LongAdder();
 
     /**
-     * Resets all statistics (current, total, max) to their initial zero values.
-     * The current value is set to 0, and total and max are reset accordingly.
+     * Creates an instance of {@code CounterStatistic} with zero values.
+     */
+    public CounterStatistic() {
+        max.accumulate(0L);
+        min.accumulate(0L);
+    }
+
+    /**
+     * Resets all statistics (total, min, max) to the current value.
+     * The current value is preserved, and total, min, and max are reset to current.
      */
     public void reset() {
         total.reset();
         max.reset();
+        min.reset();
         long current = this.current.get();
         total.add(current);
         max.accumulate(current);
+        min.accumulate(current);
     }
 
     /**
      * Resets the counter to a specific value.
-     * The total and maximum values are reset, and the current value is set.
-     * If the value is positive, it's added to total and accumulated in max.
+     * The total, min, and max values are reset, and the current value is set.
      * @param value the value to reset the counter to
      */
     public void reset(long value) {
         current.set(value);
         total.reset();
         max.reset();
+        min.reset();
         if (value > 0) {
             total.add(value);
-            max.accumulate(value);
         }
+        max.accumulate(value);
+        min.accumulate(value);
     }
 
     /**
      * Adds a delta to the current value.
      * If the delta is positive, it's also added to the total and accumulated in the maximum.
+     * If the delta is negative, the new current value is accumulated in the minimum.
      * @param delta the value to add (can be positive or negative)
      * @return the new current value
      */
@@ -77,6 +91,8 @@ public class CounterStatistic {
         if (delta > 0) {
             total.add(delta);
             max.accumulate(value);
+        } else if (delta < 0) {
+            min.accumulate(value);
         }
         return value;
     }
@@ -95,10 +111,13 @@ public class CounterStatistic {
 
     /**
      * Decrements the current value by one.
+     * The new current value is accumulated in the minimum.
      * @return the new current value
      */
     public long decrement() {
-        return current.decrementAndGet();
+        long value = current.decrementAndGet();
+        min.accumulate(value);
+        return value;
     }
 
     /**
@@ -118,6 +137,14 @@ public class CounterStatistic {
     }
 
     /**
+     * Returns the minimum value recorded by the counter.
+     * @return the minimum value
+     */
+    public long getMin() {
+        return min.get();
+    }
+
+    /**
      * Returns the total sum of all increments to the counter.
      * @return the total sum
      */
@@ -129,6 +156,7 @@ public class CounterStatistic {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
         tsb.append("current", getCurrent());
+        tsb.append("min", getMin());
         tsb.append("max", getMax());
         tsb.append("total", getTotal());
         return tsb.toString();

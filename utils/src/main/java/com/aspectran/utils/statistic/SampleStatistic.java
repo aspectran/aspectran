@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * Provides statistics on a sampled value, including max, total, mean, count, variance, and standard deviation.
+ * Provides statistics on a sampled value, including min, max, total, mean, count, variance, and standard deviation.
  * <p>This class is a clone of {@code org.eclipse.jetty.util.statistic.SampleStatistic}.</p>
  * <p>It calculates estimates of mean, variance, and standard deviation characteristics of a sample
  * using a non-synchronized approximation of the on-line algorithm presented in
@@ -34,7 +34,9 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class SampleStatistic {
 
-    private final LongAccumulator max = new LongAccumulator(Math::max,0L);
+    private final LongAccumulator max = new LongAccumulator(Math::max, Long.MIN_VALUE);
+
+    private final LongAccumulator min = new LongAccumulator(Math::min, Long.MAX_VALUE);
 
     private final AtomicLong total = new AtomicLong();
 
@@ -43,10 +45,11 @@ public class SampleStatistic {
     private final LongAdder totalVariance100 = new LongAdder();
 
     /**
-     * Resets all statistics (max, total, count, variance) to their initial zero values.
+     * Resets all statistics (min, max, total, count, variance) to their initial zero values.
      */
     public void reset() {
         max.reset();
+        min.reset();
         total.set(0);
         count.set(0);
         totalVariance100.reset();
@@ -66,14 +69,23 @@ public class SampleStatistic {
             totalVariance100.add(delta10 * delta10);
         }
         max.accumulate(sample);
+        min.accumulate(sample);
     }
 
     /**
      * Returns the maximum value recorded among all samples.
-     * @return the maximum sample value
+     * @return the maximum sample value, or 0 if no samples have been recorded
      */
     public long getMax() {
-        return max.get();
+        return (count.get() > 0 ? max.get() : 0L);
+    }
+
+    /**
+     * Returns the minimum value recorded among all samples.
+     * @return the minimum sample value, or 0 if no samples have been recorded
+     */
+    public long getMin() {
+        return (count.get() > 0 ? min.get() : 0L);
     }
 
     /**
@@ -93,12 +105,20 @@ public class SampleStatistic {
     }
 
     /**
+     * Returns whether any samples have been recorded.
+     * @return {@code true} if no samples have been recorded, {@code false} otherwise
+     */
+    public boolean isEmpty() {
+        return (count.get() == 0);
+    }
+
+    /**
      * Returns the average (mean) value of the recorded samples.
      * @return the mean value, or 0.0 if no samples have been recorded
      */
     public double getMean() {
         long count = getCount();
-        return (count > 0 ? (double)this.total.get() / this.count.get() : 0.0D);
+        return (count > 0 ? (double)total.get() / count : 0.0D);
     }
 
     /**
@@ -122,6 +142,7 @@ public class SampleStatistic {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
+        tsb.append("min", getMin());
         tsb.append("max", getMax());
         tsb.append("total", getTotal());
         tsb.append("count", getCount());
