@@ -94,6 +94,10 @@ class ScheduledExecutorSchedulerTest {
             assertFalse(task.isCancelled());
             assertTrue(latch.await(2, TimeUnit.SECONDS));
             assertEquals(1, count.get());
+
+            for (int i = 0; i < 50 && !task.isDone(); i++) {
+                Thread.sleep(10);
+            }
             assertTrue(task.isDone());
         }
     }
@@ -114,6 +118,10 @@ class ScheduledExecutorSchedulerTest {
             assertNotNull(task);
             assertTrue(latch.await(2, TimeUnit.SECONDS));
             assertEquals(1, count.get());
+
+            for (int i = 0; i < 50 && !task.isDone(); i++) {
+                Thread.sleep(10);
+            }
             assertTrue(task.isDone());
         }
     }
