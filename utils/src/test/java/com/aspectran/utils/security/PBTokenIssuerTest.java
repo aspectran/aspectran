@@ -27,6 +27,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -144,9 +145,14 @@ class PBTokenIssuerTest {
         params.putValue("data", "some-secret-data");
 
         String token = PBTokenIssuer.createToken(params, "password-one");
-        assertThrows(InvalidPBTokenException.class, () -> {
-            PBTokenIssuer.parseToken(token, "password-two"); // This should fail
-        });
+        try {
+            Parameters parsed = PBTokenIssuer.parseToken(token, "password-two");
+            // In the rare event that decrypted random bytes pass padding and form valid APON,
+            // ensure the decrypted content does not match the original secret data.
+            assertNotEquals("some-secret-data", parsed.getString("data"));
+        } catch (InvalidPBTokenException e) {
+            // Expected in most cases
+        }
     }
 
     @Test
@@ -155,9 +161,14 @@ class PBTokenIssuerTest {
         params.putValue("data", "some-secret-data");
 
         String token = PBTokenIssuer.createToken(params, CUSTOM_PASSWORD, "salt-number-one-long-string");
-        assertThrows(InvalidPBTokenException.class, () -> {
-            PBTokenIssuer.parseToken(token, CUSTOM_PASSWORD, "salt-number-two-long-string"); // This should fail
-        });
+        try {
+            Parameters parsed = PBTokenIssuer.parseToken(token, CUSTOM_PASSWORD, "salt-number-two-long-string");
+            // In the rare event that decrypted random bytes pass padding and form valid APON,
+            // ensure the decrypted content does not match the original secret data.
+            assertNotEquals("some-secret-data", parsed.getString("data"));
+        } catch (InvalidPBTokenException e) {
+            // Expected in most cases
+        }
     }
 
     @Test
