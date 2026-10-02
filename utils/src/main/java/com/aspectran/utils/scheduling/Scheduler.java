@@ -15,6 +15,10 @@
  */
 package com.aspectran.utils.scheduling;
 
+import com.aspectran.utils.Assert;
+import org.jspecify.annotations.NonNull;
+
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,7 +27,31 @@ import java.util.concurrent.TimeUnit;
  * <p>Implementations of this interface are responsible for managing the execution
  * of {@link Runnable} tasks at a future point in time.</p>
  */
-public interface Scheduler {
+public interface Scheduler extends AutoCloseable {
+
+    /**
+     * Schedules a task to be executed after the given delay.
+     * @param task the task to schedule
+     * @param delay the delay before the task is executed
+     * @return a {@link Task} object that can be used to cancel the scheduled task
+     */
+    default Task schedule(@NonNull Runnable task, @NonNull Duration delay) {
+        Assert.notNull(delay, "delay must not be null");
+        return schedule(task, delay.toNanos(), TimeUnit.NANOSECONDS);
+    }
+
+    /**
+     * Schedules a task to be executed after the given delay, with an option to interrupt if running.
+     * @param task the task to schedule
+     * @param delay the delay before the task is executed
+     * @param mayInterruptIfRunning {@code true} if the thread executing this task should be
+     *                              interrupted when the task is cancelled, {@code false} otherwise
+     * @return a {@link Task} object that can be used to cancel the scheduled task
+     */
+    default Task schedule(@NonNull Runnable task, @NonNull Duration delay, boolean mayInterruptIfRunning) {
+        Assert.notNull(delay, "delay must not be null");
+        return schedule(task, delay.toNanos(), TimeUnit.NANOSECONDS, mayInterruptIfRunning);
+    }
 
     /**
      * Schedules a task to be executed after the given delay.
@@ -40,7 +68,7 @@ public interface Scheduler {
      * @param delay the delay before the task is executed
      * @param units the time unit of the delay
      * @param mayInterruptIfRunning {@code true} if the thread executing this task should be
-     *                                          interrupted when the task is cancelled, {@code false} otherwise
+     *                              interrupted when the task is cancelled, {@code false} otherwise
      * @return a {@link Task} object that can be used to cancel the scheduled task
      */
     Task schedule(Runnable task, long delay, TimeUnit units, boolean mayInterruptIfRunning);
@@ -61,6 +89,11 @@ public interface Scheduler {
      */
     boolean isRunning();
 
+    @Override
+    default void close() {
+        stop();
+    }
+
     /**
      * Represents a scheduled task that can be cancelled.
      */
@@ -71,6 +104,22 @@ public interface Scheduler {
          * @return {@code true} if the task was successfully cancelled, {@code false} otherwise
          */
         boolean cancel();
+
+        /**
+         * Returns {@code true} if this task was cancelled before it completed normally.
+         * @return {@code true} if this task was cancelled
+         */
+        default boolean isCancelled() {
+            return false;
+        }
+
+        /**
+         * Returns {@code true} if this task completed.
+         * @return {@code true} if this task completed
+         */
+        default boolean isDone() {
+            return false;
+        }
 
     }
 
