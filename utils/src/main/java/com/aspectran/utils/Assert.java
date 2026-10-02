@@ -44,7 +44,7 @@ public class Assert {
      * Assert a boolean expression, throwing an {@code IllegalStateException}
      * if the expression evaluates to {@code false}.
      * <p>Use this to check for states that are programmer errors, not for
-     * validating user input. For argument validation, use {@link #isTrue}.
+     * validating user input. For argument validation, use {@link #isTrue}.</p>
      * <pre class="code">Assert.state(id == null, "The id property must not already be initialized");</pre>
      * @param expression a boolean expression
      * @param message    the exception message to use if the assertion fails
@@ -60,7 +60,7 @@ public class Assert {
      * Assert a boolean expression, throwing an {@code IllegalStateException}
      * if the expression evaluates to {@code false}.
      * <p>Use this for lazy message generation. The message supplier will only be
-     * invoked if the assertion fails.
+     * invoked if the assertion fails.</p>
      * <pre class="code">
      * Assert.state(id == null,
      *     () -&gt; "ID for " + entity.getName() + " must not already be initialized");
@@ -74,6 +74,17 @@ public class Assert {
         if (!expression) {
             throw new IllegalStateException(nullSafeGet(messageSupplier));
         }
+    }
+
+    /**
+     * Assert a boolean expression, throwing an {@code IllegalStateException}
+     * if the expression evaluates to {@code false}.
+     * <pre class="code">Assert.state(id == null);</pre>
+     * @param expression a boolean expression
+     * @throws IllegalStateException if {@code expression} is {@code false}
+     */
+    public static void state(boolean expression) {
+        state(expression, "[Assertion failed] - this state invariant must be true");
     }
 
     /**
@@ -108,6 +119,17 @@ public class Assert {
     }
 
     /**
+     * Assert a boolean expression, throwing an {@code IllegalArgumentException}
+     * if the expression evaluates to {@code false}.
+     * <pre class="code">Assert.isTrue(i &gt; 0);</pre>
+     * @param expression a boolean expression
+     * @throws IllegalArgumentException if {@code expression} is {@code false}
+     */
+    public static void isTrue(boolean expression) {
+        isTrue(expression, "[Assertion failed] - this expression must be true");
+    }
+
+    /**
      * Assert that an object is {@code null}.
      * <pre class="code">Assert.isNull(value, "The value must be null");</pre>
      * @param object  the object to check
@@ -134,6 +156,16 @@ public class Assert {
         if (object != null) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
+    }
+
+    /**
+     * Assert that an object is {@code null}.
+     * <pre class="code">Assert.isNull(value);</pre>
+     * @param object the object to check
+     * @throws IllegalArgumentException if the object is not {@code null}
+     */
+    public static void isNull(@Nullable Object object) {
+        isNull(object, "[Assertion failed] - the object argument must be null");
     }
 
     /**
@@ -166,67 +198,100 @@ public class Assert {
     }
 
     /**
-     * Assert that the given String has length; that is, it must not be
-     * {@code null} and not the empty String.
+     * Assert that an object is not {@code null}.
+     * <pre class="code">Assert.notNull(clazz);</pre>
+     * @param object the object to check
+     * @throws IllegalArgumentException if the object is {@code null}
+     */
+    public static void notNull(@Nullable Object object) {
+        notNull(object, "[Assertion failed] - this argument is required; it must not be null");
+    }
+
+    /**
+     * Assert that the given CharSequence has length; that is, it must not be
+     * {@code null} and not the empty CharSequence.
      * <pre class="code">Assert.hasLength(name, "Name must not be empty");</pre>
-     * @param text    the String to check
+     * @param text    the CharSequence to check
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text is {@code null} or empty
-     * @see StringUtils#hasLength
+     * @see StringUtils#hasLength(CharSequence)
      */
-    public static void hasLength(@Nullable String text, String message) {
-        if (StringUtils.isEmpty(text)) {
+    public static void hasLength(@Nullable CharSequence text, String message) {
+        if (!StringUtils.hasLength(text)) {
             throw new IllegalArgumentException(message);
         }
     }
 
     /**
-     * Assert that the given String has length; that is, it must not be
-     * {@code null} and not the empty String.
+     * Assert that the given CharSequence has length; that is, it must not be
+     * {@code null} and not the empty CharSequence.
      * <pre class="code">
      * Assert.hasLength(name, () -&gt; "Name for account '" + account.getId() + "' must not be empty");
      * </pre>
-     * @param text            the String to check
+     * @param text            the CharSequence to check
      * @param messageSupplier a supplier for the exception message to use if the
      *                        assertion fails
      * @throws IllegalArgumentException if the text is {@code null} or empty
-     * @see StringUtils#hasLength
+     * @see StringUtils#hasLength(CharSequence)
      */
-    public static void hasLength(@Nullable String text, Supplier<String> messageSupplier) {
-        if (StringUtils.isEmpty(text)) {
+    public static void hasLength(@Nullable CharSequence text, Supplier<String> messageSupplier) {
+        if (!StringUtils.hasLength(text)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
     /**
-     * Assert that the given String contains at least one non-whitespace character.
+     * Assert that the given CharSequence has length; that is, it must not be
+     * {@code null} and not the empty CharSequence.
+     * <pre class="code">Assert.hasLength(name);</pre>
+     * @param text the CharSequence to check
+     * @throws IllegalArgumentException if the text is {@code null} or empty
+     * @see StringUtils#hasLength(CharSequence)
+     */
+    public static void hasLength(@Nullable CharSequence text) {
+        hasLength(text, "[Assertion failed] - this CharSequence argument must have length; it must not be null or empty");
+    }
+
+    /**
+     * Assert that the given CharSequence contains at least one non-whitespace character.
      * <pre class="code">Assert.hasText(name, "'name' must not be empty");</pre>
-     * @param text    the String to check
+     * @param text    the CharSequence to check
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text does not contain text
-     * @see StringUtils#hasText
+     * @see StringUtils#hasText(CharSequence)
      */
-    public static void hasText(@Nullable String text, String message) {
+    public static void hasText(@Nullable CharSequence text, String message) {
         if (!StringUtils.hasText(text)) {
             throw new IllegalArgumentException(message);
         }
     }
 
     /**
-     * Assert that the given String contains at least one non-whitespace character.
+     * Assert that the given CharSequence contains at least one non-whitespace character.
      * <pre class="code">
      * Assert.hasText(name, () -&gt; "Name for account '" + account.getId() + "' must not be empty");
      * </pre>
-     * @param text            the String to check
+     * @param text            the CharSequence to check
      * @param messageSupplier a supplier for the exception message to use if the
      *                        assertion fails
      * @throws IllegalArgumentException if the text does not contain text
-     * @see StringUtils#hasText
+     * @see StringUtils#hasText(CharSequence)
      */
-    public static void hasText(@Nullable String text, Supplier<String> messageSupplier) {
+    public static void hasText(@Nullable CharSequence text, Supplier<String> messageSupplier) {
         if (!StringUtils.hasText(text)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
+    }
+
+    /**
+     * Assert that the given CharSequence contains at least one non-whitespace character.
+     * <pre class="code">Assert.hasText(name);</pre>
+     * @param text the CharSequence to check
+     * @throws IllegalArgumentException if the text does not contain text
+     * @see StringUtils#hasText(CharSequence)
+     */
+    public static void hasText(@Nullable CharSequence text) {
+        hasText(text, "[Assertion failed] - this CharSequence argument must have text; it must not be null, empty, or blank");
     }
 
     /**
@@ -239,7 +304,7 @@ public class Assert {
      */
     public static void doesNotContain(@Nullable String textToSearch, String substring, String message) {
         if (StringUtils.hasLength(textToSearch) && StringUtils.hasLength(substring) &&
-            textToSearch.contains(substring)) {
+                textToSearch.contains(substring)) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -257,9 +322,21 @@ public class Assert {
      */
     public static void doesNotContain(@Nullable String textToSearch, String substring, Supplier<String> messageSupplier) {
         if (StringUtils.hasLength(textToSearch) && StringUtils.hasLength(substring) &&
-            textToSearch.contains(substring)) {
+                textToSearch.contains(substring)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
+    }
+
+    /**
+     * Assert that the given text does not contain the given substring.
+     * <pre class="code">Assert.doesNotContain(name, "rod");</pre>
+     * @param textToSearch the text to search
+     * @param substring    the substring to find within the text
+     * @throws IllegalArgumentException if the text contains the substring
+     */
+    public static void doesNotContain(@Nullable String textToSearch, String substring) {
+        doesNotContain(textToSearch, substring, () ->
+                "[Assertion failed] - this String argument must not contain the substring [" + substring + "]");
     }
 
     /**
@@ -291,6 +368,17 @@ public class Assert {
         if (array == null || array.length == 0) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
+    }
+
+    /**
+     * Assert that an array has elements; that is, it must not be
+     * {@code null} and must contain at least one element.
+     * <pre class="code">Assert.notEmpty(array);</pre>
+     * @param array the array to check
+     * @throws IllegalArgumentException if the object array is {@code null} or has no elements
+     */
+    public static void notEmpty(@Nullable Object[] array) {
+        notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
     }
 
     /**
@@ -333,6 +421,17 @@ public class Assert {
     }
 
     /**
+     * Assert that an array contains no {@code null} elements.
+     * <p>Note: Does not complain if the array is empty.</p>
+     * <pre class="code">Assert.noNullElements(array);</pre>
+     * @param array the array to check
+     * @throws IllegalArgumentException if the object array contains a {@code null} element
+     */
+    public static void noNullElements(@Nullable Object[] array) {
+        noNullElements(array, "[Assertion failed] - this array must not contain any null elements");
+    }
+
+    /**
      * Assert that a collection has elements; that is, it must not be
      * {@code null} and must contain at least one element.
      * <pre class="code">Assert.notEmpty(collection, "Collection must contain elements");</pre>
@@ -366,6 +465,68 @@ public class Assert {
     }
 
     /**
+     * Assert that a collection has elements; that is, it must not be
+     * {@code null} and must contain at least one element.
+     * <pre class="code">Assert.notEmpty(collection);</pre>
+     * @param collection the collection to check
+     * @throws IllegalArgumentException if the collection is {@code null} or
+     *                                  has no elements
+     */
+    public static void notEmpty(@Nullable Collection<?> collection) {
+        notEmpty(collection, "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
+    }
+
+    /**
+     * Assert that a collection contains no {@code null} elements.
+     * <p>Note: Does not complain if the collection is empty.</p>
+     * <pre class="code">Assert.noNullElements(collection, "Collection must contain non-null elements");</pre>
+     * @param collection the collection to check
+     * @param message    the exception message to use if the assertion fails
+     * @throws IllegalArgumentException if the collection contains a {@code null} element
+     */
+    public static void noNullElements(@Nullable Collection<?> collection, String message) {
+        if (collection != null) {
+            for (Object element : collection) {
+                if (element == null) {
+                    throw new IllegalArgumentException(message);
+                }
+            }
+        }
+    }
+
+    /**
+     * Assert that a collection contains no {@code null} elements.
+     * <p>Note: Does not complain if the collection is empty.</p>
+     * <pre class="code">
+     * Assert.noNullElements(collection, () -&gt; "The " + collectionType + " collection must contain non-null elements");
+     * </pre>
+     * @param collection      the collection to check
+     * @param messageSupplier a supplier for the exception message to use if the
+     *                        assertion fails
+     * @throws IllegalArgumentException if the collection contains a {@code null} element
+     */
+    public static void noNullElements(@Nullable Collection<?> collection, Supplier<String> messageSupplier) {
+        if (collection != null) {
+            for (Object element : collection) {
+                if (element == null) {
+                    throw new IllegalArgumentException(nullSafeGet(messageSupplier));
+                }
+            }
+        }
+    }
+
+    /**
+     * Assert that a collection contains no {@code null} elements.
+     * <p>Note: Does not complain if the collection is empty.</p>
+     * <pre class="code">Assert.noNullElements(collection);</pre>
+     * @param collection the collection to check
+     * @throws IllegalArgumentException if the collection contains a {@code null} element
+     */
+    public static void noNullElements(@Nullable Collection<?> collection) {
+        noNullElements(collection, "[Assertion failed] - this collection must not contain any null elements");
+    }
+
+    /**
      * Assert that a Map has entries; that is, it must not be {@code null}
      * and must contain at least one entry.
      * <pre class="code">Assert.notEmpty(map, "Map must contain entries");</pre>
@@ -394,6 +555,17 @@ public class Assert {
         if (map == null || map.isEmpty()) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
+    }
+
+    /**
+     * Assert that a Map has entries; that is, it must not be {@code null}
+     * and must contain at least one entry.
+     * <pre class="code">Assert.notEmpty(map);</pre>
+     * @param map the map to check
+     * @throws IllegalArgumentException if the map is {@code null} or has no entries
+     */
+    public static void notEmpty(@Nullable Map<?, ?> map) {
+        notEmpty(map, "[Assertion failed] - this map must not be empty: it must contain at least 1 entry");
     }
 
     /**
@@ -488,7 +660,7 @@ public class Assert {
      * @param subType   the sub type to check
      * @throws IllegalArgumentException if the classes are not assignable
      */
-    public static void isAssignable(Class<?> superType, Class<?> subType) {
+    public static void isAssignable(@NonNull Class<?> superType, @Nullable Class<?> subType) {
         isAssignable(superType, subType, "");
     }
 
