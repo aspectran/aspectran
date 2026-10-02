@@ -15,12 +15,14 @@
  */
 package com.aspectran.utils.timer;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.scheduling.Scheduler;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.Destroyable;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -51,11 +53,14 @@ public abstract class CyclicTimeout implements Destroyable {
     /** Reference to the current Timeout and chain of Wakeup. */
     private final AtomicReference<Timeout> timeout = new AtomicReference<>(NOT_SET);
 
+    private volatile boolean destroyed;
+
     /**
      * Creates a new CyclicTimeout instance.
      * @param scheduler the {@link Scheduler} used to schedule wakeups
      */
-    public CyclicTimeout(Scheduler scheduler) {
+    public CyclicTimeout(@NonNull Scheduler scheduler) {
+        Assert.notNull(scheduler, "scheduler must not be null");
         this.scheduler = scheduler;
     }
 
@@ -63,8 +68,19 @@ public abstract class CyclicTimeout implements Destroyable {
      * Returns the scheduler used by this CyclicTimeout.
      * @return the scheduler
      */
-    public Scheduler getScheduler() {
+    public @NonNull Scheduler getScheduler() {
         return scheduler;
+    }
+
+    /**
+     * Schedules a timeout. If a timeout is already set, it will be canceled and replaced
+     * by the new one.
+     * @param delay the duration before the timeout expires
+     * @return {@code true} if the timeout was already set (and thus replaced), {@code false} otherwise
+     */
+    public boolean schedule(@NonNull Duration delay) {
+        Assert.notNull(delay, "delay must not be null");
+        return schedule(delay.toNanos(), TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -76,8 +92,13 @@ public abstract class CyclicTimeout implements Destroyable {
      * @return {@code true} if the timeout was already set (and thus replaced), {@code false} otherwise
      */
     public boolean schedule(long delay, @NonNull TimeUnit units) {
+        Assert.notNull(units, "units must not be null");
+        if (destroyed) {
+            return false;
+        }
+
         long now = System.nanoTime();
-        long newTimeoutAt = now + units.toNanos(delay);
+        long newTimeoutAt = (delay > 0 ? now + units.toNanos(delay) : now);
 
         Wakeup newWakeup = null;
         boolean result;
@@ -114,6 +135,37 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
+     * Returns {@code true} if a timeout is currently scheduled.
+     * @return {@code true} if a timeout is scheduled, {@code false} otherwise
+     */
+    public boolean isScheduled() {
+        return (timeout.get().at != MAX_VALUE);
+    }
+
+    /**
+     * Returns the remaining time until the scheduled timeout expires.
+     * @param unit the time unit of the return value
+     * @return the remaining time, or {@code -1} if no timeout is scheduled
+     */
+    public long getRemainingTimeout(@NonNull TimeUnit unit) {
+        Assert.notNull(unit, "unit must not be null");
+        long at = timeout.get().at;
+        if (at == MAX_VALUE) {
+            return -1;
+        }
+        long remainingNanos = at - System.nanoTime();
+        return (remainingNanos > 0 ? unit.convert(remainingNanos, TimeUnit.NANOSECONDS) : 0);
+    }
+
+    /**
+     * Returns whether this CyclicTimeout has been destroyed.
+     * @return {@code true} if destroyed, {@code false} otherwise
+     */
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    /**
      * Cancels this CyclicTimeout so that it won't expire.
      * After being canceled, this CyclicTimeout can be scheduled again.
      * @return {@code true} if this CyclicTimeout was scheduled to expire and was successfully canceled,
@@ -146,6 +198,7 @@ public abstract class CyclicTimeout implements Destroyable {
      */
     @Override
     public void destroy() {
+        destroyed = true;
         Timeout timeout = this.timeout.getAndSet(NOT_SET);
         Wakeup wakeup = (timeout != null ? timeout.wakeup : null);
         while (wakeup != null) {
@@ -167,8 +220,7 @@ public abstract class CyclicTimeout implements Destroyable {
         }
 
         @Override
-        @NonNull
-        public String toString() {
+        public @NonNull String toString() {
             return String.format("%s@%x:%dms,%s",
                 getClass().getSimpleName(),
                 hashCode(),
@@ -265,13 +317,16 @@ public abstract class CyclicTimeout implements Destroyable {
 
             // If we expired, then do the callback.
             if (hasExpired) {
-                onTimeoutExpired();
+                try {
+                    onTimeoutExpired();
+                } catch (Throwable t) {
+                    logger.warn("Exception thrown while invoking onTimeoutExpired()", t);
+                }
             }
         }
 
         @Override
-        @NonNull
-        public String toString() {
+        public @NonNull String toString() {
             return String.format("%s@%x:%dms->%s",
                 getClass().getSimpleName(),
                 hashCode(),
