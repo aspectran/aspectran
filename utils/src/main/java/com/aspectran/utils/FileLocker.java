@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * A utility to obtain a file-based lock, which can be used to prevent multiple
@@ -48,6 +49,8 @@ public class FileLocker implements AutoCloseable {
     private FileChannel fileChannel;
 
     private FileLock fileLock;
+
+    private long lockedPid = -1L;
 
     /**
      * Creates a new FileLocker for the specified lock file.
@@ -162,6 +165,7 @@ public class FileLocker implements AutoCloseable {
             ByteBuffer buffer = ByteBuffer.wrap(String.valueOf(pid).getBytes(StandardCharsets.UTF_8));
             fileChannel.write(buffer);
             fileChannel.force(true);
+            this.lockedPid = pid;
             if (logger.isDebugEnabled()) {
                 logger.debug("Successfully wrote PID {} to {}", pid, lockFile.getAbsolutePath());
             }
@@ -172,12 +176,41 @@ public class FileLocker implements AutoCloseable {
     }
 
     /**
+     * Returns the process ID (PID) recorded in this lock, or {@code -1} if no lock is held.
+     * @return the locked PID, or {@code -1}
+     */
+    public synchronized long getLockedPid() {
+        return (isLocked() ? lockedPid : -1L);
+    }
+
+    /**
+     * Reads the process ID (PID) from the specified lock file.
+     * @param lockFile the lock file
+     * @return the process ID stored in the lock file, or {@code -1} if unreadable
+     */
+    public static long readPid(@NonNull File lockFile) {
+        Assert.notNull(lockFile, "lockFile must not be null");
+        if (!lockFile.exists() || !lockFile.isFile()) {
+            return -1L;
+        }
+        try {
+            String content = Files.readString(lockFile.toPath());
+            if (!content.trim().isEmpty()) {
+                return Long.parseLong(content.trim());
+            }
+        } catch (Exception ignored) {
+        }
+        return -1L;
+    }
+
+    /**
      * Releases the file lock.
      * <p>This method releases the lock, closes the file channel, and deletes the lock file.
      * The {@code FileLocker} instance can be used again to acquire a new lock.</p>
      * @throws IOException if an I/O error occurs while releasing the lock
      */
     public synchronized void release() throws IOException {
+        lockedPid = -1L;
         if (fileLock != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Releasing lock on {}", lockFile.getAbsolutePath());

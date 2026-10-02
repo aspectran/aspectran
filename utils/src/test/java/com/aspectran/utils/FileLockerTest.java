@@ -20,7 +20,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,18 +35,17 @@ class FileLockerTest {
         FileLocker locker = new FileLocker(lockFile);
 
         assertFalse(locker.isLocked());
+        assertEquals(-1L, locker.getLockedPid());
         assertEquals(lockFile, locker.getLockFile());
 
         assertTrue(locker.lock());
         assertTrue(locker.isLocked());
         assertTrue(lockFile.exists());
-
-        String content = Files.readString(lockFile.toPath()).trim();
-        long pid = Long.parseLong(content);
-        assertEquals(ProcessHandle.current().pid(), pid);
+        assertEquals(ProcessHandle.current().pid(), locker.getLockedPid());
 
         locker.release();
         assertFalse(locker.isLocked());
+        assertEquals(-1L, locker.getLockedPid());
         assertFalse(lockFile.exists());
     }
 
