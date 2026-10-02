@@ -55,7 +55,7 @@ public class ShutdownHook {
      * @param task the task to add
      * @return the added task
      */
-    public static synchronized <T extends Task> T addTask(T task) {
+    public static synchronized <T extends Task> T addTask(@NonNull T task) {
         Assert.notNull(task, "task must not be null");
 
         if (hook == null) {
@@ -86,10 +86,7 @@ public class ShutdownHook {
      * @param task the task to remove
      */
     public static synchronized void removeTask(Task task) {
-        Assert.notNull(task, "task must not be null");
-
-        // ignore if hook never installed
-        if (hook == null) {
+        if (task == null || hook == null) {
             return;
         }
 
@@ -102,6 +99,42 @@ public class ShutdownHook {
 
         // If there are no more tasks, then remove the hook thread
         if (tasks.isEmpty()) {
+            releaseHook(hook);
+            hook = null;
+        }
+    }
+
+    /**
+     * Returns whether the given task is currently registered.
+     * @param task the task to check
+     * @return {@code true} if registered, {@code false} otherwise
+     */
+    public static synchronized boolean containsTask(Task task) {
+        return (task != null && tasks.contains(task));
+    }
+
+    /**
+     * Returns the number of registered shutdown tasks.
+     * @return the number of tasks
+     */
+    public static synchronized int taskCount() {
+        return tasks.size();
+    }
+
+    /**
+     * Returns whether any shutdown tasks are registered.
+     * @return {@code true} if tasks exist, {@code false} otherwise
+     */
+    public static synchronized boolean hasTasks() {
+        return !tasks.isEmpty();
+    }
+
+    /**
+     * Clears all registered shutdown tasks and removes the JVM shutdown hook.
+     */
+    public static synchronized void clearTasks() {
+        tasks.clear();
+        if (hook != null) {
             releaseHook(hook);
             hook = null;
         }
@@ -134,7 +167,7 @@ public class ShutdownHook {
         }
 
         if (win32ConsoleCtrlCloseHook != null) {
-            win32ConsoleCtrlCloseHook.release();
+            win32ConsoleCtrlCloseHook.close();
             win32ConsoleCtrlCloseHook = null;
         }
     }
@@ -167,13 +200,13 @@ public class ShutdownHook {
             }
         }
         tasks.clear();
-
     }
 
     /**
      * A task to be executed on shutdown. Essentially a {@link Runnable}
      * that allows its execution to throw an exception.
      */
+    @FunctionalInterface
     public interface Task {
 
         /**
@@ -188,7 +221,7 @@ public class ShutdownHook {
      * A simple manager to handle the registration and removal of a single shutdown task.
      * This simplifies the lifecycle management for components that need a shutdown hook.
      */
-    public static class Manager {
+    public static class Manager implements AutoCloseable {
 
         private Task task;
 
@@ -197,7 +230,7 @@ public class ShutdownHook {
          * If a task is already registered with this manager, this method does nothing.
          * @param task the task to register
          */
-        public void register(Task task) {
+        public void register(@NonNull Task task) {
             if (this.task == null) {
                 this.task = addTask(task);
             }
@@ -215,12 +248,25 @@ public class ShutdownHook {
         }
 
         /**
+         * Returns whether a task is currently registered with this manager.
+         * @return {@code true} if a task is registered, {@code false} otherwise
+         */
+        public boolean isRegistered() {
+            return (this.task != null);
+        }
+
+        @Override
+        public void close() {
+            remove();
+        }
+
+        /**
          * Creates a new {@code Manager} and immediately registers the given task.
          * @param task the task to register
          * @return a new, configured {@code Manager} instance
          */
         @NonNull
-        public static Manager create(Task task) {
+        public static Manager create(@NonNull Task task) {
             Manager manager = new Manager();
             manager.register(task);
             return manager;
