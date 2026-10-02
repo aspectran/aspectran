@@ -16,12 +16,19 @@
 package com.aspectran.utils;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Provides utilities for manipulating and examining {@link Throwable} objects.
@@ -30,7 +37,7 @@ import java.lang.reflect.UndeclaredThrowableException;
  *
  * @since 5.0.0
  */
-public class ExceptionUtils {
+public abstract class ExceptionUtils {
 
     /**
      * Returns the cause of the specified throwable. If the cause does not exist,
@@ -39,7 +46,8 @@ public class ExceptionUtils {
      * @param t the throwable to get the cause of, may not be null
      * @return the cause of the throwable, or the throwable itself if null
      */
-    public static Throwable getCause(@NonNull Throwable t) {
+    public static @NonNull Throwable getCause(@NonNull Throwable t) {
+        Assert.notNull(t, "t must not be null");
         return (t.getCause() != null ? t.getCause() : t);
     }
 
@@ -52,17 +60,22 @@ public class ExceptionUtils {
      *      not an Exception or is null
      */
     public static @NonNull Exception getCause(@NonNull Exception e) {
+        Assert.notNull(e, "e must not be null");
         Throwable cause = e.getCause();
-        return (cause instanceof Exception ? (Exception)cause : e);
+        return (cause instanceof Exception ex ? ex : e);
     }
 
     /**
      * Finds the "root cause" of a throwable, the innermost of a chain of wrapped exceptions.
+     * Handles cyclic cause chains safely.
      * @param t the throwable to inspect, may not be null
      * @return the root cause of the throwable
      */
-    public static Throwable getRootCause(@NonNull Throwable t) {
-        while (t.getCause() != null) {
+    public static @NonNull Throwable getRootCause(@NonNull Throwable t) {
+        Assert.notNull(t, "t must not be null");
+        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        visited.add(t);
+        while (t.getCause() != null && visited.add(t.getCause())) {
             t = t.getCause();
         }
         return t;
@@ -75,68 +88,119 @@ public class ExceptionUtils {
      * @param e the exception to inspect, may not be null
      * @return the root cause if it is an exception; otherwise, the original exception
      */
-    public static Exception getRootCauseException(@NonNull Exception e) {
+    public static @NonNull Exception getRootCauseException(@NonNull Exception e) {
+        Assert.notNull(e, "e must not be null");
         Throwable cause = getRootCause(e);
-        if (cause instanceof Exception ex) {
-            return ex;
-        } else {
-            return e;
-        }
+        return (cause instanceof Exception ex ? ex : e);
     }
 
     /**
      * Tests if the throwable's causal chain contains a wrapped exception of the given type.
+     * Handles cyclic cause chains safely.
      * @param chain the root of a throwable causal chain
      * @param type the exception type to test for
      * @return true if the causal chain contains a cause of the given type, false otherwise
      */
-    public static boolean hasCause(Throwable chain, Class<? extends Throwable> type) {
-        if (chain == null) {
-            return false;
-        }
-        if (type.isInstance(chain)) {
-            return true;
-        }
-        return hasCause(chain.getCause(), type);
+    public static boolean hasCause(@Nullable Throwable chain, @NonNull Class<? extends Throwable> type) {
+        return findCause(chain, type) != null;
     }
 
     /**
      * Tests if the throwable's causal chain contains a wrapped exception of any of the given types.
+     * Handles cyclic cause chains safely.
      * @param chain the root of a throwable causal chain
      * @param type the first exception type to test for
      * @param more additional exception types to test for
      * @return true if the causal chain contains a cause of any of the given types, false otherwise
      */
     @SafeVarargs
-    public static boolean hasCause(Throwable chain, Class<? extends Throwable> type, Class<? extends Throwable>... more) {
+    public static boolean hasCause(
+            @Nullable Throwable chain,
+            @NonNull Class<? extends Throwable> type,
+            Class<? extends Throwable>... more
+    ) {
         if (hasCause(chain, type)) {
             return true;
-        } else if (more.length == 0) {
-            return false;
         }
-        for (Class<? extends Throwable> one : more) {
-            if (hasCause(chain, one)) {
-                return true;
+        if (more != null && more.length > 0) {
+            for (Class<? extends Throwable> one : more) {
+                if (hasCause(chain, one)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     /**
+     * Finds the first throwable of the specified type in the causal chain.
+     * Handles cyclic cause chains safely.
+     * @param <T> the type of throwable to search for
+     * @param chain the root of a throwable causal chain
+     * @param type the exception class to search for
+     * @return the first matching throwable, or {@code null} if not found
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Throwable> @Nullable T findCause(@Nullable Throwable chain, @NonNull Class<T> type) {
+        Assert.notNull(type, "type must not be null");
+        if (chain == null) {
+            return null;
+        }
+        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        Throwable current = chain;
+        while (current != null && visited.add(current)) {
+            if (type.isInstance(current)) {
+                return (T) current;
+            }
+            current = current.getCause();
+        }
+        return null;
+    }
+
+    /**
+     * Returns the list of throwables in the causal chain from the specified throwable.
+     * Handles cyclic cause chains safely.
+     * @param t the throwable to inspect
+     * @return the list of throwables in the causal chain
+     */
+    public static @NonNull List<Throwable> getThrowableList(@Nullable Throwable t) {
+        if (t == null) {
+            return Collections.emptyList();
+        }
+        List<Throwable> list = new ArrayList<>();
+        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        Throwable current = t;
+        while (current != null && visited.add(current)) {
+            list.add(current);
+            current = current.getCause();
+        }
+        return list;
+    }
+
+    /**
      * Gets the stack trace from a {@link Throwable} as a String.
-     * <p>The result of this method may vary by JDK version as this method
-     * uses {@link Throwable#printStackTrace(java.io.PrintWriter)}.
-     * On JDK 1.3 and earlier, the cause exception will not be shown
-     * unless the specified throwable alters its printStackTrace behavior.</p>
      * @param t the {@code Throwable} to be examined
      * @return the stack trace as generated by the exception's
      *      {@code printStackTrace(PrintWriter)} method
      */
-    public static @NonNull String getStacktrace(@NonNull Throwable t) {
+    public static @NonNull String getStackTrace(@NonNull Throwable t) {
+        Assert.notNull(t, "t must not be null");
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
         t.printStackTrace(pw);
         return sw.getBuffer().toString().trim();
+    }
+
+    /**
+     * Gets the stack trace from a {@link Throwable} as a String.
+     * @param t the {@code Throwable} to be examined
+     * @return the stack trace as generated by the exception's
+     *      {@code printStackTrace(PrintWriter)} method
+     * @deprecated since 8.0.0, use {@link #getStackTrace(Throwable)} instead
+     */
+    @Deprecated
+    public static @NonNull String getStacktrace(@NonNull Throwable t) {
+        return getStackTrace(t);
     }
 
     /**
@@ -145,7 +209,8 @@ public class ExceptionUtils {
      * @param t the {@code Throwable} to get the message for
      * @return the message, or the throwable's class name if the message is null
      */
-    public static String getSimpleMessage(@NonNull Throwable t) {
+    public static @NonNull String getSimpleMessage(@NonNull Throwable t) {
+        Assert.notNull(t, "t must not be null");
         return (t.getMessage() != null ? t.getMessage() : t.toString());
     }
 
@@ -154,7 +219,8 @@ public class ExceptionUtils {
      * @param t the {@code Throwable} to get the root cause message for
      * @return the message of the root cause, or its class name if the message is null
      */
-    public static String getRootCauseSimpleMessage(@NonNull Throwable t) {
+    public static @NonNull String getRootCauseSimpleMessage(@NonNull Throwable t) {
+        Assert.notNull(t, "t must not be null");
         return getSimpleMessage(getRootCause(t));
     }
 
@@ -170,7 +236,7 @@ public class ExceptionUtils {
      * @return the throwable if it is not an Error
      * @throws Error if the throwable is an Error
      */
-    public static Throwable throwIfError(Throwable t) {
+    public static @Nullable Throwable throwIfError(@Nullable Throwable t) {
         if (t instanceof Error e) {
             throw e;
         }
@@ -183,7 +249,7 @@ public class ExceptionUtils {
      * @return the throwable if it is not a RuntimeException
      * @throws RuntimeException if the throwable is a RuntimeException
      */
-    public static Throwable throwIfRTE(Throwable t) {
+    public static @Nullable Throwable throwIfRTE(@Nullable Throwable t) {
         if (t instanceof RuntimeException re) {
             throw re;
         }
@@ -196,7 +262,7 @@ public class ExceptionUtils {
      * @return the throwable if it is not an IOException
      * @throws IOException if the throwable is an IOException
      */
-    public static Throwable throwIfIOE(Throwable t) throws IOException {
+    public static @Nullable Throwable throwIfIOE(@Nullable Throwable t) throws IOException {
         if (t instanceof IOException ioe) {
             throw ioe;
         }
@@ -209,7 +275,10 @@ public class ExceptionUtils {
      * @return the throwable if its root cause is not an IOException
      * @throws IOException if the root cause of the throwable is an IOException
      */
-    public static Throwable throwRootCauseIfIOE(Throwable t) throws IOException {
+    public static @Nullable Throwable throwRootCauseIfIOE(@Nullable Throwable t) throws IOException {
+        if (t == null) {
+            return null;
+        }
         return throwIfIOE(getRootCause(t));
     }
 
@@ -220,7 +289,7 @@ public class ExceptionUtils {
      * @return never returns normally
      * @throws IllegalArgumentException for checked exceptions
      */
-    public static IllegalArgumentException throwAsIAE(Throwable t) {
+    public static @NonNull IllegalArgumentException throwAsIAE(@NonNull Throwable t) {
         return throwAsIAE(t, t.getMessage());
     }
 
@@ -232,7 +301,8 @@ public class ExceptionUtils {
      * @return never returns normally
      * @throws IllegalArgumentException for checked exceptions
      */
-    public static IllegalArgumentException throwAsIAE(Throwable t, String msg) {
+    public static @NonNull IllegalArgumentException throwAsIAE(@NonNull Throwable t, @Nullable String msg) {
+        Assert.notNull(t, "t must not be null");
         throwIfRTE(t);
         throwIfError(t);
         throw new IllegalArgumentException(msg, t);
@@ -245,7 +315,7 @@ public class ExceptionUtils {
      * @return never returns normally
      * @throws IllegalArgumentException for checked exceptions
      */
-    public static IllegalArgumentException unwrapAndThrowAsIAE(Throwable t) {
+    public static @NonNull IllegalArgumentException unwrapAndThrowAsIAE(@NonNull Throwable t) {
         return throwAsIAE(getRootCause(t));
     }
 
@@ -258,28 +328,37 @@ public class ExceptionUtils {
      * @return never returns normally
      * @throws IllegalArgumentException for checked exceptions
      */
-    public static IllegalArgumentException unwrapAndThrowAsIAE(Throwable t, String msg) {
-        throw throwAsIAE(getRootCause(t), msg);
+    public static @NonNull IllegalArgumentException unwrapAndThrowAsIAE(@NonNull Throwable t, @Nullable String msg) {
+        return throwAsIAE(getRootCause(t), msg);
     }
 
     /**
      * Unwraps a throwable, specifically handling common wrapper exceptions like
-     * {@link InvocationTargetException} and {@link UndeclaredThrowableException}.
+     * {@link InvocationTargetException}, {@link UndeclaredThrowableException}, and
+     * {@link ExecutionException}.
      * This method repeatedly unwraps the throwable until it is no longer a known wrapper.
+     * Handles cyclic wrapper chains safely.
      * @param t the exception to unwrap
      * @return the unwrapped, underlying throwable
      */
-    public static Throwable unwrapThrowable(Throwable t) {
-        Throwable t2 = t;
-        while (true) {
-            if (t2 instanceof InvocationTargetException e) {
-                t2 = e.getTargetException();
-            } else if (t2 instanceof UndeclaredThrowableException e) {
-                t2 = e.getUndeclaredThrowable();
+    public static @Nullable Throwable unwrapThrowable(@Nullable Throwable t) {
+        if (t == null) {
+            return null;
+        }
+        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        Throwable current = t;
+        while (current != null && visited.add(current)) {
+            if (current instanceof InvocationTargetException e) {
+                current = e.getTargetException();
+            } else if (current instanceof UndeclaredThrowableException e) {
+                current = e.getUndeclaredThrowable();
+            } else if (current instanceof ExecutionException e && e.getCause() != null) {
+                current = e.getCause();
             } else {
-                return t2;
+                return current;
             }
         }
+        return current;
     }
 
 }
