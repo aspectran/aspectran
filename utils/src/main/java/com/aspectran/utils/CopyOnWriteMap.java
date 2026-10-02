@@ -21,8 +21,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A thread-safe map implementation that uses a copy-on-write strategy.
@@ -44,7 +48,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <V> the type of mapped values
  * @author Stuart Douglas
  */
-public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
+public class CopyOnWriteMap<K, V> implements ConcurrentMap<K, V> {
 
     private volatile Map<K, V> delegate = Collections.emptyMap();
 
@@ -58,7 +62,8 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
      * Creates a new map with the same mappings as the given map.
      * @param existing the initial map
      */
-    public CopyOnWriteMap(Map<K, V> existing) {
+    public CopyOnWriteMap(@NonNull Map<K, V> existing) {
+        Assert.notNull(existing, "existing must not be null");
         this.delegate = new HashMap<>(existing);
     }
 
@@ -77,7 +82,7 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
     public synchronized boolean remove(@NonNull Object key, Object value) {
         Map<K, V> delegate = this.delegate;
         V existing = delegate.get(key);
-        if (existing.equals(value)) {
+        if (existing != null && Objects.equals(existing, value)) {
             removeInternal(key);
             return true;
         }
@@ -88,7 +93,7 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
     public synchronized boolean replace(@NonNull K key, @NonNull V oldValue, @NonNull V newValue) {
         Map<K, V> delegate = this.delegate;
         V existing = delegate.get(key);
-        if (existing.equals(oldValue)) {
+        if (existing != null && Objects.equals(existing, oldValue)) {
             putInternal(key, newValue);
             return true;
         }
@@ -132,6 +137,11 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
     }
 
     @Override
+    public V getOrDefault(Object key, V defaultValue) {
+        return delegate.getOrDefault(key, defaultValue);
+    }
+
+    @Override
     public synchronized V put(K key, V value) {
         return putInternal(key, value);
     }
@@ -143,6 +153,7 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
 
     @Override
     public synchronized void putAll(@NonNull Map<? extends K, ? extends V> map) {
+        Assert.notNull(map, "map must not be null");
         Map<K, V> delegate = new HashMap<>(this.delegate);
         delegate.putAll(map);
         this.delegate = delegate;
@@ -150,25 +161,110 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
 
     @Override
     public synchronized void clear() {
-        delegate = Collections.emptyMap();
+        this.delegate = Collections.emptyMap();
+    }
+
+    @Override
+    public synchronized V computeIfAbsent(K key, @NonNull Function<? super K, ? extends V> mappingFunction) {
+        Assert.notNull(mappingFunction, "mappingFunction must not be null");
+        Map<K, V> delegate = this.delegate;
+        V existing = delegate.get(key);
+        if (existing != null) {
+            return existing;
+        }
+        V newValue = mappingFunction.apply(key);
+        if (newValue != null) {
+            putInternal(key, newValue);
+        }
+        return newValue;
+    }
+
+    @Override
+    public synchronized V computeIfPresent(K key, @NonNull BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        Assert.notNull(remappingFunction, "remappingFunction must not be null");
+        Map<K, V> delegate = this.delegate;
+        V oldValue = delegate.get(key);
+        if (oldValue == null) {
+            return null;
+        }
+        V newValue = remappingFunction.apply(key, oldValue);
+        if (newValue != null) {
+            putInternal(key, newValue);
+        } else {
+            removeInternal(key);
+        }
+        return newValue;
+    }
+
+    @Override
+    public synchronized V compute(K key, @NonNull BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        Assert.notNull(remappingFunction, "remappingFunction must not be null");
+        Map<K, V> delegate = new HashMap<>(this.delegate);
+        V newValue = delegate.compute(key, remappingFunction);
+        this.delegate = delegate;
+        return newValue;
+    }
+
+    @Override
+    public synchronized V merge(K key, @NonNull V value, @NonNull BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+        Assert.notNull(value, "value must not be null");
+        Assert.notNull(remappingFunction, "remappingFunction must not be null");
+        Map<K, V> delegate = new HashMap<>(this.delegate);
+        V newValue = delegate.merge(key, value, remappingFunction);
+        this.delegate = delegate;
+        return newValue;
+    }
+
+    @Override
+    public synchronized void replaceAll(@NonNull BiFunction<? super K, ? super V, ? extends V> function) {
+        Assert.notNull(function, "function must not be null");
+        Map<K, V> delegate = new HashMap<>(this.delegate);
+        delegate.replaceAll(function);
+        this.delegate = delegate;
+    }
+
+    @Override
+    public void forEach(BiConsumer<? super K, ? super V> action) {
+        delegate.forEach(action);
     }
 
     @Override
     @NonNull
     public Set<K> keySet() {
-        return delegate.keySet();
+        return Collections.unmodifiableSet(delegate.keySet());
     }
 
     @Override
     @NonNull
     public Collection<V> values() {
-        return delegate.values();
+        return Collections.unmodifiableCollection(delegate.values());
     }
 
     @Override
     @NonNull
     public Set<Entry<K, V>> entrySet() {
-        return delegate.entrySet();
+        return Collections.unmodifiableSet(delegate.entrySet());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Map)) {
+            return false;
+        }
+        return delegate.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate.toString();
     }
 
     // must be called under lock
