@@ -15,12 +15,14 @@
  */
 package com.aspectran.core.component.session.redis.lettuce;
 
+import com.aspectran.utils.DurationUtils;
 import com.aspectran.utils.StringUtils;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.resource.ClientResources;
 import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Abstract base class for Lettuce-backed Redis connection pool configurations.
@@ -135,25 +137,9 @@ public abstract class AbstractConnectionPoolConfig {
      * @param text the duration string to parse
      * @return the parsed {@link Duration}
      */
+    @NonNull
     protected static Duration parseDuration(@NonNull String text) {
-        String trimmed = text.trim().toLowerCase();
-        try {
-            if (trimmed.endsWith("ms")) {
-                long ms = Long.parseLong(trimmed.substring(0, trimmed.length() - 2).trim());
-                return Duration.ofMillis(ms);
-            } else if (trimmed.endsWith("s")) {
-                long s = Long.parseLong(trimmed.substring(0, trimmed.length() - 1).trim());
-                return Duration.ofSeconds(s);
-            } else if (trimmed.endsWith("m")) {
-                long m = Long.parseLong(trimmed.substring(0, trimmed.length() - 1).trim());
-                return Duration.ofMinutes(m);
-            } else {
-                long s = Long.parseLong(trimmed);
-                return Duration.ofSeconds(s);
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid duration string: " + text, e);
-        }
+        return DurationUtils.parseDuration(text, ChronoUnit.SECONDS);
     }
 
 }
