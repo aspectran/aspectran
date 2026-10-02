@@ -19,12 +19,13 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.ResponseTemplate;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.DigestUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -37,8 +38,7 @@ import java.util.regex.Pattern;
  * <p>This class can be used from an aspect to intercept a request. It checks for
  * the {@code If-None-Match} header and, if it matches the ETag generated for the
  * current resource state, it sends a {@code 304 Not Modified} response.
- * Otherwise, it computes and sets the {@code ETag} header on the response.
- * </p>
+ * Otherwise, it computes and sets the {@code ETag} header on the response.</p>
  *
  * @since 6.9.4
  */
@@ -62,6 +62,7 @@ public class ETagInterceptor {
      * @param tokenFactory the factory to generate the token for the ETag
      */
     public ETagInterceptor(ETagTokenFactory tokenFactory) {
+        Assert.notNull(tokenFactory, "tokenFactory must not be null");
         this.tokenFactory = tokenFactory;
     }
 
@@ -86,12 +87,16 @@ public class ETagInterceptor {
      * Intercepts the request to perform ETag validation and generation.
      * @param translet the current translet
      */
-    @NullUnmarked
     public void intercept(Translet translet) {
-        if (translet == null) {
-            throw new IllegalArgumentException("Translet cannot be null");
-        }
+        Assert.notNull(translet, "translet must not be null");
+
+        RequestAdapter request = translet.getRequestAdapter();
         ResponseAdapter response = translet.getResponseAdapter();
+
+        if (!isEligibleMethod(request.getRequestMethod()) || !isEligibleResponse(response)) {
+            return;
+        }
+
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
             String token = response.getHeader(HttpHeaders.ETAG);
@@ -102,13 +107,33 @@ public class ETagInterceptor {
                 }
                 response.setHeader(HttpHeaders.ETAG, token);
             }
-            boolean notModified = validateIfNoneMatch(translet.getRequestAdapter(), token);
+            boolean notModified = validateIfNoneMatch(request, token);
             if (notModified) {
-                ResponseTemplate responseTemplate = new ResponseTemplate(translet.getResponseAdapter());
+                ResponseTemplate responseTemplate = new ResponseTemplate(response);
                 responseTemplate.setStatus(HttpStatus.NOT_MODIFIED.value());
                 translet.response(responseTemplate);
             }
         }
+    }
+
+    /**
+     * Checks if the request method is eligible for ETag processing.
+     * Only GET and HEAD methods are typically applicable for 304 Not Modified conditional responses.
+     * @param method the HTTP request method
+     * @return {@code true} if the method is GET or HEAD, {@code false} otherwise
+     */
+    protected boolean isEligibleMethod(@Nullable MethodType method) {
+        return (method == MethodType.GET || method == MethodType.HEAD);
+    }
+
+    /**
+     * Checks if the response is eligible for ETag header generation.
+     * @param response the response adapter
+     * @return {@code true} if eligible, {@code false} otherwise
+     */
+    protected boolean isEligibleResponse(ResponseAdapter response) {
+        int status = response.getStatus();
+        return (status == 0 || HttpStatus.valueOf(status).is2xxSuccessful());
     }
 
     /**
@@ -123,24 +148,29 @@ public class ETagInterceptor {
         if (token == null || token.length == 0) {
             return null;
         }
-        // length of W/ + " + 0 + 32bits md5 hash + "
+        // length of W/ + " + 0 + 32-char md5 hash + "
         StringBuilder builder = new StringBuilder(37);
         if (isWeak) {
             builder.append("W/");
         }
         builder.append("\"0");
-        builder.append(DigestUtils.md5DigestAsHex(token));
+        DigestUtils.appendMd5DigestAsHex(token, builder);
         builder.append('"');
         return builder.toString();
     }
 
+    /**
+     * Validates whether the given ETag token matches the client's {@code If-None-Match} header.
+     * @param requestAdapter the request adapter
+     * @param token the generated or existing ETag token
+     * @return {@code true} if matched (indicating 304 Not Modified), {@code false} otherwise
+     */
     private boolean validateIfNoneMatch(RequestAdapter requestAdapter, String token) {
         List<String> ifNoneMatch = requestAdapter.getHeaderValues(HttpHeaders.IF_NONE_MATCH);
         if (ifNoneMatch == null || ifNoneMatch.isEmpty()) {
             return false;
         }
 
-        // We will perform this validation...
         token = ensureQuoted(token);
         if (token.startsWith("W/")) {
             token = token.substring(2);
@@ -149,8 +179,11 @@ public class ETagInterceptor {
             Matcher tokenMatcher = ETAG_HEADER_VALUE_PATTERN.matcher(tags);
             // Compare weak/strong ETags as per https://tools.ietf.org/html/rfc7232#section-2.3
             while (tokenMatcher.find()) {
-                if (StringUtils.hasLength(tokenMatcher.group()) && token.equals(tokenMatcher.group(3))) {
-                    return true;
+                String match = tokenMatcher.group();
+                if (StringUtils.hasLength(match)) {
+                    if ("*".equals(match.trim()) || token.equals(tokenMatcher.group(3))) {
+                        return true;
+                    }
                 }
             }
         }
