@@ -15,9 +15,14 @@
  */
 package com.aspectran.utils;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EmptyStackException;
+import java.util.Objects;
 
 /**
  * An implementation of the {@link java.util.Stack} API that is based on an
@@ -60,6 +65,26 @@ public class ArrayStack<E> extends ArrayList<E> {
     }
 
     /**
+     * Constructs a new <code>ArrayStack</code> containing the elements of the specified
+     * collection, in the order they are returned by the collection's iterator.
+     * @param c the collection whose elements are to be placed into this stack
+     * @throws NullPointerException if the specified collection is null
+     */
+    public ArrayStack(@NonNull Collection<? extends E> c) {
+        super(c);
+    }
+
+    /**
+     * Tests if this stack is empty.
+     * @return {@code true} if and only if this stack contains no items;
+     *         {@code false} otherwise
+     * @see #isEmpty()
+     */
+    public boolean empty() {
+        return isEmpty();
+    }
+
+    /**
      * Returns the top item off of this stack without removing it.
      * @return the top item on the stack
      * @throws EmptyStackException if the stack is empty
@@ -82,7 +107,7 @@ public class ArrayStack<E> extends ArrayList<E> {
      */
     public E peek(int n) throws EmptyStackException {
         int m = (size() - n) - 1;
-        if (m < 0) {
+        if (n < 0 || m < 0) {
             throw new EmptyStackException();
         }
         return get(m);
@@ -91,18 +116,66 @@ public class ArrayStack<E> extends ArrayList<E> {
     /**
      * Returns the first item of the specified type from the top of this stack
      * without removing it.
+     * @param <T> the desired element type
      * @param target the type of item to look for
      * @return the first item of the specified type on the stack
      * @throws EmptyStackException if no items of the specified type are on the stack
      */
-    public E peek(Class<?> target) throws EmptyStackException {
-        for (int i = size() - 1; i >= 0; i--) {
-            E item = get(i);
-            if (item.getClass().equals(target)) {
-                return item;
+    @SuppressWarnings("unchecked")
+    public <T> T peek(Class<T> target) throws EmptyStackException {
+        if (target != null) {
+            for (int i = size() - 1; i >= 0; i--) {
+                E item = get(i);
+                if (target.isInstance(item)) {
+                    return (T)item;
+                }
             }
         }
         throw new EmptyStackException();
+    }
+
+    /**
+     * Returns the top item off of this stack without removing it,
+     * or {@code null} if the stack is empty.
+     * @return the top item on the stack, or {@code null} if empty
+     */
+    @Nullable
+    public E peekOrNull() {
+        int n = size();
+        return (n > 0 ? get(n - 1) : null);
+    }
+
+    /**
+     * Returns the n'th item down (zero-relative) from the top of this
+     * stack without removing it, or {@code null} if not available.
+     * @param n the number of items down to go
+     * @return the n'th item on the stack, or {@code null} if not available
+     */
+    @Nullable
+    public E peekOrNull(int n) {
+        int m = (size() - n) - 1;
+        return (n >= 0 && m >= 0 ? get(m) : null);
+    }
+
+    /**
+     * Returns the first item of the specified type from the top of this stack
+     * without removing it, or {@code null} if none is found.
+     * @param <T> the desired element type
+     * @param target the type of item to look for
+     * @return the first item of the specified type on the stack, or {@code null} if not found
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T> T peekOrNull(Class<T> target) {
+        if (target != null) {
+            for (int i = size() - 1; i >= 0; i--) {
+                E item = get(i);
+                if (target.isInstance(item)) {
+                    return (T)item;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -116,6 +189,87 @@ public class ArrayStack<E> extends ArrayList<E> {
             throw new EmptyStackException();
         }
         return remove(n - 1);
+    }
+
+    /**
+     * Pops the n'th item down (zero-relative) from the top of this
+     * stack and returns it.
+     * @param n the number of items down to go
+     * @return the n'th item on the stack, zero relative
+     * @throws EmptyStackException if there are not enough items on the
+     *  stack to satisfy this request
+     */
+    public E pop(int n) throws EmptyStackException {
+        int m = (size() - n) - 1;
+        if (n < 0 || m < 0) {
+            throw new EmptyStackException();
+        }
+        return remove(m);
+    }
+
+    /**
+     * Pops the first item of the specified type from the top of this stack
+     * and returns it.
+     * @param <T> the desired element type
+     * @param target the type of item to look for
+     * @return the first item of the specified type on the stack
+     * @throws EmptyStackException if no items of the specified type are on the stack
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T pop(Class<T> target) throws EmptyStackException {
+        if (target != null) {
+            for (int i = size() - 1; i >= 0; i--) {
+                E item = get(i);
+                if (target.isInstance(item)) {
+                    return (T)remove(i);
+                }
+            }
+        }
+        throw new EmptyStackException();
+    }
+
+    /**
+     * Pops the top item off of this stack and returns it,
+     * or {@code null} if the stack is empty.
+     * @return the top item on the stack, or {@code null} if empty
+     */
+    @Nullable
+    public E popOrNull() {
+        int n = size();
+        return (n > 0 ? remove(n - 1) : null);
+    }
+
+    /**
+     * Pops the n'th item down (zero-relative) from the top of this
+     * stack and returns it, or {@code null} if not available.
+     * @param n the number of items down to go
+     * @return the n'th item on the stack, or {@code null} if not available
+     */
+    @Nullable
+    public E popOrNull(int n) {
+        int m = (size() - n) - 1;
+        return (n >= 0 && m >= 0 ? remove(m) : null);
+    }
+
+    /**
+     * Pops the first item of the specified type from the top of this stack
+     * and returns it, or {@code null} if none is found.
+     * @param <T> the desired element type
+     * @param target the type of item to look for
+     * @return the first item of the specified type on the stack, or {@code null} if not found
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T> T popOrNull(Class<T> target) {
+        if (target != null) {
+            for (int i = size() - 1; i >= 0; i--) {
+                E item = get(i);
+                if (target.isInstance(item)) {
+                    return (T)remove(i);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -154,7 +308,7 @@ public class ArrayStack<E> extends ArrayList<E> {
      */
     public E update(int n, E item) throws EmptyStackException {
         int m = (size() - n) - 1;
-        if (m < 0) {
+        if (n < 0 || m < 0) {
             throw new EmptyStackException();
         }
         return set(m, item);
@@ -169,19 +323,24 @@ public class ArrayStack<E> extends ArrayList<E> {
      * @param object the object to be searched for
      * @return the 1-based distance from the top of the stack, or -1 if not found
      */
-    public int search(E object) {
+    public int search(Object object) {
         int i = size() - 1; // Current index
         int n = 1; // Current distance
         while (i >= 0) {
             Object current = get(i);
-            if ((object == null && current == null) ||
-                    (object != null && object.equals(current))) {
+            if (Objects.equals(object, current)) {
                 return n;
             }
             i--;
             n++;
         }
         return -1;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ArrayStack<E> clone() {
+        return (ArrayStack<E>)super.clone();
     }
 
 }
