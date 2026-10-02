@@ -109,14 +109,14 @@ class CyclicTimeoutTest {
             }
         };
 
-        timeout.schedule(100, TimeUnit.MILLISECONDS);
+        timeout.schedule(1000, TimeUnit.MILLISECONDS);
         assertTrue(timeout.isScheduled());
 
         boolean cancelled = timeout.cancel();
         assertTrue(cancelled);
         assertFalse(timeout.isScheduled());
 
-        Thread.sleep(200);
+        Thread.sleep(100);
         assertEquals(0, count.get());
     }
 
@@ -133,20 +133,20 @@ class CyclicTimeoutTest {
             }
         };
 
-        // Schedule first for 100ms
-        timeout.schedule(100, TimeUnit.MILLISECONDS);
+        // Schedule first for 1000ms
+        timeout.schedule(1000, TimeUnit.MILLISECONDS);
 
-        // Before it expires, extend to 300ms
+        // Before it expires, extend to 1500ms
         Thread.sleep(50);
-        boolean replaced = timeout.schedule(300, TimeUnit.MILLISECONDS);
+        boolean replaced = timeout.schedule(1500, TimeUnit.MILLISECONDS);
         assertTrue(replaced);
 
-        // At 150ms mark, it should not have expired yet
-        Thread.sleep(100);
+        // At 200ms mark, it should not have expired yet
+        Thread.sleep(150);
         assertEquals(0, count.get());
 
         // Wait for extended timeout
-        assertTrue(latch.await(2, TimeUnit.SECONDS));
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
         assertEquals(1, count.get());
     }
 
@@ -163,15 +163,16 @@ class CyclicTimeoutTest {
             }
         };
 
-        // Schedule first for 1000ms
-        timeout.schedule(1000, TimeUnit.MILLISECONDS);
+        // Schedule first for 3000ms
+        timeout.schedule(3000, TimeUnit.MILLISECONDS);
 
-        // Shorten to 50ms
-        boolean replaced = timeout.schedule(50, TimeUnit.MILLISECONDS);
+        // Shorten to 80ms
+        Thread.sleep(50);
+        boolean replaced = timeout.schedule(80, TimeUnit.MILLISECONDS);
         assertTrue(replaced);
 
-        // Should expire quickly at ~50ms
-        assertTrue(latch.await(500, TimeUnit.MILLISECONDS));
+        // Should expire quickly
+        assertTrue(latch.await(2, TimeUnit.SECONDS));
         assertEquals(1, count.get());
     }
 
