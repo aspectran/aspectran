@@ -36,8 +36,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
-import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
-import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.ClassUtils.PATH_SEPARATOR;
+import static com.aspectran.utils.ClassUtils.PATH_SEPARATOR_CHAR;
 
 /**
  * A utility class for scanning the classpath for classes that match certain criteria.
@@ -100,7 +100,7 @@ public class ClassScanner {
             throw new IllegalArgumentException("classNamePattern must not be null");
         }
 
-        classNamePattern = classNamePattern.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
+        classNamePattern = classNamePattern.replace(PACKAGE_SEPARATOR_CHAR, PATH_SEPARATOR_CHAR);
         String basePackageName = determineBasePackageName(classNamePattern);
         if (basePackageName == null) {
             return;
@@ -113,13 +113,13 @@ public class ClassScanner {
             subPattern = StringUtils.EMPTY;
         }
 
-        WildcardPattern pattern = WildcardPattern.compile(subPattern, REGULAR_FILE_SEPARATOR_CHAR);
+        WildcardPattern pattern = WildcardPattern.compile(subPattern, PATH_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
 
         Enumeration<URL> resources = classLoader.getResources(basePackageName);
 
-        if (!basePackageName.isEmpty() && !StringUtils.endsWith(basePackageName, REGULAR_FILE_SEPARATOR_CHAR)) {
-            basePackageName += REGULAR_FILE_SEPARATOR_CHAR;
+        if (!basePackageName.isEmpty() && !StringUtils.endsWith(basePackageName, PATH_SEPARATOR_CHAR)) {
+            basePackageName += PATH_SEPARATOR_CHAR;
         }
 
         while (resources.hasMoreElements()) {
@@ -171,8 +171,8 @@ public class ClassScanner {
             String fileName = file.getName();
             if (file.isDirectory()) {
                 String subPackageName = (relativePackageName != null ?
-                        relativePackageName + fileName + REGULAR_FILE_SEPARATOR :
-                        fileName + REGULAR_FILE_SEPARATOR);
+                        relativePackageName + fileName + PATH_SEPARATOR :
+                        fileName + PATH_SEPARATOR);
                 scan(file, basePackageName, subPackageName, matcher, saveHandler);
             } else if (fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
                 String fn = fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
@@ -235,10 +235,10 @@ public class ClassScanner {
 
         try {
             //Looking for matching resources in jar file [" + jarFileUrl + "]"
-            if (!entryNamePrefix.endsWith(REGULAR_FILE_SEPARATOR)) {
+            if (!entryNamePrefix.endsWith(PATH_SEPARATOR)) {
                 // Root entry path must end with slash to allow for proper matching.
                 // The Sun JRE does not return a slash here, but BEA JRockit does.
-                entryNamePrefix = entryNamePrefix + REGULAR_FILE_SEPARATOR;
+                entryNamePrefix = entryNamePrefix + PATH_SEPARATOR;
             }
 
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -294,13 +294,13 @@ public class ClassScanner {
         }
         int firstWildcardIndex = WildcardPattern.indexOfWildcard(classNamePattern);
         if (firstWildcardIndex == -1) {
-            int lastSeparatorIndex = classNamePattern.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR);
+            int lastSeparatorIndex = classNamePattern.lastIndexOf(PATH_SEPARATOR_CHAR);
             if (lastSeparatorIndex != -1) {
                 return classNamePattern.substring(0, lastSeparatorIndex + 1);
             }
             return StringUtils.EMPTY;
         }
-        int lastSeparatorIndex = classNamePattern.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR, firstWildcardIndex);
+        int lastSeparatorIndex = classNamePattern.lastIndexOf(PATH_SEPARATOR_CHAR, firstWildcardIndex);
         if (lastSeparatorIndex != -1) {
             return classNamePattern.substring(0, lastSeparatorIndex + 1);
         }
@@ -309,7 +309,7 @@ public class ClassScanner {
 
     @Nullable
     private Class<?> loadClass(String className) {
-        className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
+        className = className.replace(PATH_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException | LinkageError e) {

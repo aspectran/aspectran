@@ -33,7 +33,8 @@ class ClassScannerTest {
         Map<String, Class<?>> map = scanner.scan("com.aspectran.**.util.*Test");
         for (Map.Entry<String, Class<?>> entry : map.entrySet()) {
             //System.out.println(entry.getKey() + " - " + entry.getValue().getName());
-            assertTrue(entry.getKey().endsWith(entry.getValue().getName().replace('.', '/') + ".class"));
+            assertTrue(entry.getKey().endsWith(entry.getValue().getName().replace(
+                    ClassUtils.PACKAGE_SEPARATOR_CHAR, ClassUtils.PATH_SEPARATOR_CHAR) + ClassUtils.CLASS_FILE_SUFFIX));
         }
     }
 

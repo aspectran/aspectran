@@ -39,6 +39,12 @@ public class TypeUtils {
      */
     private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new HashMap<>(32);
 
+    /**
+     * A map with primitive and primitive array type names as keys and corresponding primitive types as values.
+     * For example: {@code "int" -> int.class}, {@code "int[]" -> int[].class}.
+     */
+    private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<>(32);
+
     static {
         primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
         primitiveWrapperTypeMap.put(Byte.class, byte.class);
@@ -60,6 +66,10 @@ public class TypeUtils {
 
         for (Map.Entry<Class<?>, Class<?>> e : primitiveWrapperTypeMap.entrySet()) {
             primitiveTypeToWrapperMap.put(e.getValue(), e.getKey());
+            primitiveTypeNameMap.put(e.getValue().getName(), e.getValue());
+            if (e.getValue().isArray()) {
+                primitiveTypeNameMap.put(e.getValue().getComponentType().getName() + "[]", e.getValue());
+            }
         }
     }
 
@@ -67,6 +77,19 @@ public class TypeUtils {
      * This class cannot be instantiated.
      */
     private TypeUtils() {
+    }
+
+    /**
+     * Resolves the given name as a primitive class or primitive array class.
+     * @param name the name of the potential primitive class (e.g., {@code "int"}, {@code "boolean[]"}, {@code "[I"})
+     * @return the primitive class, or {@code null} if not a primitive
+     */
+    @Nullable
+    public static Class<?> resolvePrimitiveType(@Nullable String name) {
+        if (name != null && name.length() <= 10) {
+            return primitiveTypeNameMap.get(name);
+        }
+        return null;
     }
 
     /**

@@ -146,4 +146,25 @@ class TypeUtilsTest {
         assertNull(TypeUtils.getPrimitiveDefaultValue(String.class));
     }
 
+    @Test
+    void testResolvePrimitiveType() {
+        assertEquals(boolean.class, TypeUtils.resolvePrimitiveType("boolean"));
+        assertEquals(byte.class, TypeUtils.resolvePrimitiveType("byte"));
+        assertEquals(char.class, TypeUtils.resolvePrimitiveType("char"));
+        assertEquals(short.class, TypeUtils.resolvePrimitiveType("short"));
+        assertEquals(int.class, TypeUtils.resolvePrimitiveType("int"));
+        assertEquals(long.class, TypeUtils.resolvePrimitiveType("long"));
+        assertEquals(float.class, TypeUtils.resolvePrimitiveType("float"));
+        assertEquals(double.class, TypeUtils.resolvePrimitiveType("double"));
+        assertEquals(void.class, TypeUtils.resolvePrimitiveType("void"));
+
+        assertEquals(int[].class, TypeUtils.resolvePrimitiveType("int[]"));
+        assertEquals(boolean[].class, TypeUtils.resolvePrimitiveType("boolean[]"));
+        assertEquals(int[].class, TypeUtils.resolvePrimitiveType("[I"));
+
+        assertNull(TypeUtils.resolvePrimitiveType("java.lang.String"));
+        assertNull(TypeUtils.resolvePrimitiveType("unknown"));
+        assertNull(TypeUtils.resolvePrimitiveType(null));
+    }
+
 }
