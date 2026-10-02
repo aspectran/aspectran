@@ -198,7 +198,7 @@ public class CommandExecutor {
             }
             String message = "[FAILED] An unexpected error occurred while executing the command '" +
                     command.getDescriptor().getName() + "'.";
-            String error = ExceptionUtils.getStacktrace(e);
+            String error = ExceptionUtils.getStackTrace(e);
             parameters.setResult(message);
             parameters.setError(error);
             return new CommandResult(false, message, error);

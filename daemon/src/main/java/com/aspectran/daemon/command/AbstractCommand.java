@@ -158,7 +158,7 @@ public abstract class AbstractCommand implements Command {
     protected CommandResult failed(String message, Throwable throwable) {
         logger.error(message, throwable);
         return new CommandResult(false, "[FAILED] " + message,
-                ExceptionUtils.getStacktrace(throwable));
+                ExceptionUtils.getStackTrace(throwable));
     }
 
     /**
@@ -174,7 +174,7 @@ public abstract class AbstractCommand implements Command {
         }
         logger.error(throwable.toString(), throwable);
         return new CommandResult(false, "[FAILED] " + message,
-                ExceptionUtils.getStacktrace(throwable));
+                ExceptionUtils.getStackTrace(throwable));
     }
 
 }

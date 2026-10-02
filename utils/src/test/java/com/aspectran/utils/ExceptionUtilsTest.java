@@ -160,7 +160,7 @@ class ExceptionUtilsTest {
         assertTrue(stackTrace.contains("ExceptionUtilsTest.testGetStackTrace"));
 
         // Deprecated method compatibility
-        assertEquals(stackTrace, ExceptionUtils.getStacktrace(ex));
+        assertEquals(stackTrace, ExceptionUtils.getStackTrace(ex));
     }
 
     @Test

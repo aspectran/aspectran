@@ -339,7 +339,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
             CommandParameters parameters = new CommandParameters();
             parameters.setResult("[FAILED] Malformed command file: " + file.getFileName());
-            parameters.setError(ExceptionUtils.getStacktrace(e));
+            parameters.setError(ExceptionUtils.getStackTrace(e));
             parameters.setSource(source);
 
             writeCommandFile(failedDir, file.getFileName().toString(), parameters);

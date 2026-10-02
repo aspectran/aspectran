@@ -179,7 +179,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
                 logger.warn("Failed to parse command parameters: \"{}\" ({})", apon, e.getMessage());
             }
             String message = "[FAILED] Malformed command data";
-            String error = ExceptionUtils.getStacktrace(e);
+            String error = ExceptionUtils.getStackTrace(e);
             return new CommandResult(false, message, error);
         }
     }
