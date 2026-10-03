@@ -29,6 +29,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +50,7 @@ public class ETagInterceptor {
 
     /**
      * Pattern matching ETag multiple field values in headers such as "If-Match", "If-None-Match".
-     * @see <a href="https://tools.ietf.org/html/rfc7232#section-2.3">Section 2.3 of RFC 7232</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-8.8.3">Section 8.8.3 of RFC 9110</a>
      */
     private static final Pattern ETAG_HEADER_VALUE_PATTERN = Pattern.compile("\\*|\\s*((W/)?(\"[^\"]*\"))\\s*,?");
 
@@ -67,16 +68,16 @@ public class ETagInterceptor {
     }
 
     /**
-     * Sets whether the ETag value written to the response should be weak, as per RFC 7232.
+     * Sets whether the ETag value written to the response should be weak, as per RFC 9110.
      * @param writeWeakETag {@code true} to write a weak ETag, {@code false} for a strong one
-     * @see <a href="https://tools.ietf.org/html/rfc7232#section-2.3">RFC 7232 section 2.3</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-8.8.3">RFC 9110 section 8.8.3</a>
      */
     public void setWriteWeakETag(boolean writeWeakETag) {
         this.writeWeakETag = writeWeakETag;
     }
 
     /**
-     * Returns whether the ETag value written to the response should be weak, as per RFC 7232.
+     * Returns whether the ETag value written to the response should be weak, as per RFC 9110.
      * @return {@code true} if the ETag should be weak, {@code false} otherwise
      */
     public boolean isWriteWeakETag() {
@@ -98,7 +99,7 @@ public class ETagInterceptor {
         }
 
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
-        if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
+        if (cacheControl == null || !cacheControl.toLowerCase(Locale.ROOT).contains(DIRECTIVE_NO_STORE)) {
             String token = response.getHeader(HttpHeaders.ETAG);
             if (!StringUtils.hasText(token)) {
                 token = generateETagToken(translet, writeWeakETag);
@@ -133,7 +134,7 @@ public class ETagInterceptor {
      */
     protected boolean isEligibleResponse(ResponseAdapter response) {
         int status = response.getStatus();
-        return (status == 0 || HttpStatus.valueOf(status).is2xxSuccessful());
+        return (status == 0 || (status >= 200 && status < 300));
     }
 
     /**
@@ -176,8 +177,27 @@ public class ETagInterceptor {
             token = token.substring(2);
         }
         for (String tags : ifNoneMatch) {
+            if (!StringUtils.hasText(tags)) {
+                continue;
+            }
+            String trimmed = tags.trim();
+            if ("*".equals(trimmed)) {
+                return true;
+            }
+            // Fast-path: single tag without comma
+            if (trimmed.indexOf(',') == -1) {
+                String clientToken = ensureQuoted(trimmed);
+                if (clientToken.startsWith("W/")) {
+                    clientToken = clientToken.substring(2);
+                }
+                if (token.equals(clientToken)) {
+                    return true;
+                }
+                continue;
+            }
+            // Multiple tags separated by commas
             Matcher tokenMatcher = ETAG_HEADER_VALUE_PATTERN.matcher(tags);
-            // Compare weak/strong ETags as per https://tools.ietf.org/html/rfc7232#section-2.3
+            // Compare weak/strong ETags as per https://www.rfc-editor.org/rfc/rfc9110#section-8.8.3
             while (tokenMatcher.find()) {
                 String match = tokenMatcher.group();
                 if (StringUtils.hasLength(match)) {
@@ -191,11 +211,16 @@ public class ETagInterceptor {
     }
 
     private String ensureQuoted(String token) {
-        if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
+        if (token.startsWith("W/\"") && token.endsWith("\"")) {
             return token;
-        } else {
-            return "\"" + token + "\"";
         }
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            return token;
+        }
+        if (token.startsWith("W/")) {
+            return "W/\"" + token.substring(2) + "\"";
+        }
+        return "\"" + token + "\"";
     }
 
 }

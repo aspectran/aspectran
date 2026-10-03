@@ -263,4 +263,77 @@ class ETagInterceptorTest {
         });
     }
 
+    @Test
+    void testInterceptCacheControlCaseInsensitiveNoStore() throws Exception {
+        tester.perform(activity -> {
+            InstantActivity instantActivity = (InstantActivity) activity;
+            Translet translet = createTranslet(activity);
+
+            DefaultRequestAdapter request = new DefaultRequestAdapter(MethodType.GET);
+            DefaultResponseAdapter response = new DefaultResponseAdapter(null);
+            response.setHeader(HttpHeaders.CACHE_CONTROL, "No-Store, private");
+            response.setStatus(200);
+
+            instantActivity.setRequestAdapter(request);
+            instantActivity.setResponseAdapter(response);
+
+            interceptor.intercept(translet);
+
+            assertNull(response.getHeader(HttpHeaders.ETAG));
+            assertEquals(200, response.getStatus());
+
+            return null;
+        });
+    }
+
+    @Test
+    void testInterceptIfNoneMatchMultipleTags() throws Exception {
+        tester.perform(activity -> {
+            InstantActivity instantActivity = (InstantActivity) activity;
+            Translet translet = createTranslet(activity);
+            String expectedETag = "\"0" + DigestUtils.md5DigestAsHex(TOKEN_DATA) + "\"";
+
+            DefaultRequestAdapter request = new DefaultRequestAdapter(MethodType.GET);
+            request.setHeader(HttpHeaders.IF_NONE_MATCH, "\"other-etag\", " + expectedETag + ", \"third-etag\"");
+            DefaultResponseAdapter response = new DefaultResponseAdapter(null);
+            response.setStatus(200);
+
+            instantActivity.setRequestAdapter(request);
+            instantActivity.setResponseAdapter(response);
+
+            interceptor.intercept(translet);
+
+            assertEquals(HttpStatus.NOT_MODIFIED.value(), response.getStatus());
+            assertEquals(expectedETag, response.getHeader(HttpHeaders.ETAG));
+            assertTrue(translet.isResponseReserved());
+
+            return null;
+        });
+    }
+
+    @Test
+    void testInterceptIfNoneMatchWeakComparison() throws Exception {
+        tester.perform(activity -> {
+            InstantActivity instantActivity = (InstantActivity) activity;
+            Translet translet = createTranslet(activity);
+            String rawETag = "\"0" + DigestUtils.md5DigestAsHex(TOKEN_DATA) + "\"";
+
+            // Client sends weak ETag, server generates strong ETag
+            DefaultRequestAdapter request = new DefaultRequestAdapter(MethodType.GET);
+            request.setHeader(HttpHeaders.IF_NONE_MATCH, "W/" + rawETag);
+            DefaultResponseAdapter response = new DefaultResponseAdapter(null);
+            response.setStatus(200);
+
+            instantActivity.setRequestAdapter(request);
+            instantActivity.setResponseAdapter(response);
+
+            interceptor.intercept(translet);
+
+            assertEquals(HttpStatus.NOT_MODIFIED.value(), response.getStatus());
+            assertTrue(translet.isResponseReserved());
+
+            return null;
+        });
+    }
+
 }
