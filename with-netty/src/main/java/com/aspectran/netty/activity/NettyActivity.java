@@ -277,7 +277,7 @@ public class NettyActivity extends CoreActivity {
         if (mediaType != null) {
             if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
                 WebRequestBodyParser.parseMultipartFormData(this);
-            } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
+            } else if (mediaType.isURLEncodedForm()) {
                 WebRequestBodyParser.parseURLEncodedFormData(getRequestAdapter());
             }
         }

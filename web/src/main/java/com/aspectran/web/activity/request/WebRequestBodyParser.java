@@ -195,16 +195,16 @@ public final class WebRequestBodyParser {
         if (mediaType == null) {
             return null;
         }
-        if (isURLEncodedForm(mediaType)) {
+        if (mediaType.isURLEncodedForm()) {
             return parseURLEncodedBodyAsParameters(requestAdapter, requiredType);
-        } else if (isJson(mediaType)) {
+        } else if (mediaType.isJson()) {
             try {
                 return JsonToParameters.from(requestAdapter.getBody(), requiredType);
             } catch (IOException e) {
                 throw new RequestParseException("Failed to parse request body of JSON format to required type [" +
                         requiredType.getName() + "]", e);
             }
-        } else if (isXml(mediaType)) {
+        } else if (mediaType.isXml()) {
             try {
                 return XmlToParameters.from(requestAdapter.getBody(), requiredType);
             } catch (IOException e) {
@@ -251,38 +251,6 @@ public final class WebRequestBodyParser {
                 MethodType.PUT.equals(requestMethod) ||
                 MethodType.PATCH.equals(requestMethod)) &&
                 MediaType.MULTIPART_FORM_DATA.equalsTypeAndSubtype(mediaType);
-    }
-
-    /**
-     * Returns whether the request's content type is {@code application/x-www-form-urlencoded}.
-     * @param mediaType the media type of the request
-     * @return true if the request is a URL-encoded form, false otherwise
-     */
-    public static boolean isURLEncodedForm(MediaType mediaType) {
-        return MediaType.APPLICATION_FORM_URLENCODED.equalsTypeAndSubtype(mediaType);
-    }
-
-    /**
-     * Returns whether the request's content type is JSON-compatible
-     * (e.g. {@code application/json} or ending with {@code +json}).
-     * @param mediaType the media type of the request
-     * @return true if the request is JSON, false otherwise
-     */
-    public static boolean isJson(@Nullable MediaType mediaType) {
-        return mediaType != null && (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType) ||
-                mediaType.getSubtype().endsWith("+json"));
-    }
-
-    /**
-     * Returns whether the request's content type is XML-compatible
-     * (e.g. {@code application/xml}, {@code text/xml}, or ending with {@code +xml}).
-     * @param mediaType the media type of the request
-     * @return true if the request is XML, false otherwise
-     */
-    public static boolean isXml(@Nullable MediaType mediaType) {
-        return mediaType != null && (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType) ||
-                MediaType.TEXT_XML.equalsTypeAndSubtype(mediaType) ||
-                mediaType.getSubtype().endsWith("+xml"));
     }
 
     @Nullable

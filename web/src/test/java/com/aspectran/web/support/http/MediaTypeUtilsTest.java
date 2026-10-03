@@ -183,4 +183,41 @@ class MediaTypeUtilsTest {
         assertEquals(wildcard, list.get(2));
     }
 
+    @Test
+    void testIsJson() {
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isJson(MediaType.APPLICATION_JSON));
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isJson(MediaType.APPLICATION_PROBLEM_JSON));
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isJson(MediaType.parseMediaType("application/vnd.api+json")));
+        org.junit.jupiter.api.Assertions.assertFalse(MediaTypeUtils.isJson(MediaType.APPLICATION_XML));
+        org.junit.jupiter.api.Assertions.assertFalse(MediaTypeUtils.isJson(null));
+
+        org.junit.jupiter.api.Assertions.assertTrue(MediaType.APPLICATION_JSON.isJson());
+        org.junit.jupiter.api.Assertions.assertTrue(MediaType.APPLICATION_PROBLEM_JSON.isJson());
+        org.junit.jupiter.api.Assertions.assertFalse(MediaType.APPLICATION_XML.isJson());
+    }
+
+    @Test
+    void testIsXml() {
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isXml(MediaType.APPLICATION_XML));
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isXml(MediaType.TEXT_XML));
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isXml(MediaType.APPLICATION_PROBLEM_XML));
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isXml(MediaType.parseMediaType("application/soap+xml")));
+        org.junit.jupiter.api.Assertions.assertFalse(MediaTypeUtils.isXml(MediaType.APPLICATION_JSON));
+        org.junit.jupiter.api.Assertions.assertFalse(MediaTypeUtils.isXml(null));
+
+        org.junit.jupiter.api.Assertions.assertTrue(MediaType.APPLICATION_XML.isXml());
+        org.junit.jupiter.api.Assertions.assertTrue(MediaType.TEXT_XML.isXml());
+        org.junit.jupiter.api.Assertions.assertFalse(MediaType.APPLICATION_JSON.isXml());
+    }
+
+    @Test
+    void testIsURLEncodedForm() {
+        org.junit.jupiter.api.Assertions.assertTrue(MediaTypeUtils.isURLEncodedForm(MediaType.APPLICATION_FORM_URLENCODED));
+        org.junit.jupiter.api.Assertions.assertFalse(MediaTypeUtils.isURLEncodedForm(MediaType.APPLICATION_JSON));
+        org.junit.jupiter.api.Assertions.assertFalse(MediaTypeUtils.isURLEncodedForm(null));
+
+        org.junit.jupiter.api.Assertions.assertTrue(MediaType.APPLICATION_FORM_URLENCODED.isURLEncodedForm());
+        org.junit.jupiter.api.Assertions.assertFalse(MediaType.APPLICATION_JSON.isURLEncodedForm());
+    }
+
 }

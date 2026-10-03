@@ -631,6 +631,32 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     }
 
     /**
+     * Return whether this media type is URL-encoded form data.
+     * @return true if this media type is {@code application/x-www-form-urlencoded}, false otherwise
+     */
+    public boolean isURLEncodedForm() {
+        return MediaTypeUtils.isURLEncodedForm(this);
+    }
+
+    /**
+     * Return whether this media type is JSON-compatible
+     * (e.g. {@code application/json} or ending with {@code +json}).
+     * @return true if this media type is JSON-compatible, false otherwise
+     */
+    public boolean isJson() {
+        return MediaTypeUtils.isJson(this);
+    }
+
+    /**
+     * Return whether this media type is XML-compatible
+     * (e.g. {@code application/xml}, {@code text/xml}, or ending with {@code +xml}).
+     * @return true if this media type is XML-compatible, false otherwise
+     */
+    public boolean isXml() {
+        return MediaTypeUtils.isXml(this);
+    }
+
+    /**
      * Return the primary type.
      * @return the primary type
      */

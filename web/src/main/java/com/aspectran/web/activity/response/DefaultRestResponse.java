@@ -37,7 +37,7 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -149,15 +149,15 @@ public class DefaultRestResponse extends AbstractRestResponse {
      * @param contentType the negotiated content type
      * @throws Exception if an error occurs during transformation
      */
-    protected void transformByContentType(Activity activity, MediaType contentType) throws Exception {
-        if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)) {
+    protected void transformByContentType(Activity activity, @NonNull MediaType contentType) throws Exception {
+        if (contentType.isJson()) {
             toJSON(activity, parseIndent(contentType));
-        } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(contentType)) {
-            toAPON(activity, parseIndent(contentType));
-        } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(contentType)) {
+        } else if (contentType.isXml()) {
             Charset charset = contentType.getCharset();
             String encoding = (charset != null ? charset.name() : null);
             toXML(activity, encoding, parseIndent(contentType));
+        } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(contentType)) {
+            toAPON(activity, parseIndent(contentType));
         } else {
             toText(activity);
         }
@@ -200,6 +200,33 @@ public class DefaultRestResponse extends AbstractRestResponse {
     }
 
     /**
+     * Serializes the response data to XML format.
+     * @param activity the current activity
+     * @param encoding the character encoding
+     * @param indent the indentation level for pretty-printing
+     * @throws IOException if an I/O error occurs
+     * @throws TransformerException if an error occurs during XML transformation
+     */
+    private void toXML(Activity activity, String encoding, int indent) throws IOException, TransformerException {
+        Object data = resolveData();
+        if (getName() != null || data != null) {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
+            Writer writer = responseAdapter.getWriter();
+            StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
+
+            Object dataToTransform;
+            if (getName() != null) {
+                Map<String, Object> map = new LinkedHashMap<>(1);
+                map.put(getName(), data); // data might be null
+                dataToTransform = map;
+            } else {
+                dataToTransform = data;
+            }
+            XmlTransformResponse.transform(dataToTransform, writer, encoding, stringifyContext);
+        }
+    }
+
+    /**
      * Serializes the response data to APON format.
      * @param activity the current activity
      * @param indent the indentation level for pretty-printing
@@ -220,31 +247,6 @@ public class DefaultRestResponse extends AbstractRestResponse {
             }
 
             AponTransformResponse.transform(parameters, writer, stringifyContext);
-        }
-    }
-
-    /**
-     * Serializes the response data to XML format.
-     * @param activity the current activity
-     * @param encoding the character encoding
-     * @param indent the indentation level for pretty-printing
-     * @throws IOException if an I/O error occurs
-     * @throws TransformerException if an error occurs during XML transformation
-     */
-    private void toXML(Activity activity, String encoding, int indent) throws IOException, TransformerException {
-        Object data = resolveData();
-        if (getName() != null || data != null) {
-            ResponseAdapter responseAdapter = activity.getResponseAdapter();
-            Writer writer = responseAdapter.getWriter();
-            StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
-
-            Object dataToTransform;
-            if (getName() != null) {
-                dataToTransform = Collections.singletonMap(getName(), data);
-            } else {
-                dataToTransform = data;
-            }
-            XmlTransformResponse.transform(dataToTransform, writer, encoding, stringifyContext);
         }
     }
 

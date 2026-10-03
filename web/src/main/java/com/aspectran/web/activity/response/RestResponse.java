@@ -306,10 +306,28 @@ public interface RestResponse extends CustomTransformer {
     RestResponse unsupportedMediaType();
 
     /**
+     * Sets the HTTP status to 422 (Unprocessable Entity).
+     * @return this {@code RestResponse} object for fluent chaining
+     */
+    RestResponse unprocessableEntity();
+
+    /**
+     * Sets the HTTP status to 429 (Too Many Requests).
+     * @return this {@code RestResponse} object for fluent chaining
+     */
+    RestResponse tooManyRequests();
+
+    /**
      * Sets the HTTP status to 500 (Internal Server Error).
      * @return this {@code RestResponse} object for fluent chaining
      */
     RestResponse internalServerError();
+
+    /**
+     * Sets the HTTP status to 503 (Service Unavailable).
+     * @return this {@code RestResponse} object for fluent chaining
+     */
+    RestResponse serviceUnavailable();
 
     /**
      * Returns the HTTP status code.

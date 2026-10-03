@@ -228,31 +228,6 @@ class WebRequestBodyParserTest {
     }
 
     @Test
-    void testIsJson() {
-        assertTrue(WebRequestBodyParser.isJson(MediaType.APPLICATION_JSON));
-        assertTrue(WebRequestBodyParser.isJson(MediaType.APPLICATION_PROBLEM_JSON));
-        assertTrue(WebRequestBodyParser.isJson(MediaType.parseMediaType("application/vnd.api+json")));
-        assertFalse(WebRequestBodyParser.isJson(MediaType.APPLICATION_XML));
-        assertFalse(WebRequestBodyParser.isJson(null));
-    }
-
-    @Test
-    void testIsXml() {
-        assertTrue(WebRequestBodyParser.isXml(MediaType.APPLICATION_XML));
-        assertTrue(WebRequestBodyParser.isXml(MediaType.TEXT_XML));
-        assertTrue(WebRequestBodyParser.isXml(MediaType.APPLICATION_PROBLEM_XML));
-        assertTrue(WebRequestBodyParser.isXml(MediaType.parseMediaType("application/soap+xml")));
-        assertFalse(WebRequestBodyParser.isXml(MediaType.APPLICATION_JSON));
-        assertFalse(WebRequestBodyParser.isXml(null));
-    }
-
-    @Test
-    void testIsURLEncodedForm() {
-        assertTrue(WebRequestBodyParser.isURLEncodedForm(MediaType.APPLICATION_FORM_URLENCODED));
-        assertFalse(WebRequestBodyParser.isURLEncodedForm(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     void testIsMultipartForm() {
         assertTrue(WebRequestBodyParser.isMultipartForm(MethodType.POST, MediaType.MULTIPART_FORM_DATA));
         assertTrue(WebRequestBodyParser.isMultipartForm(MethodType.PUT, MediaType.MULTIPART_FORM_DATA));

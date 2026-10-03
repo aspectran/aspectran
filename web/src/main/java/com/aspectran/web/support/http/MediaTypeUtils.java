@@ -19,6 +19,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.cache.Cache;
 import com.aspectran.utils.cache.ConcurrentLruCache;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
@@ -183,6 +184,38 @@ public final class MediaTypeUtils {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Return whether the given media type is URL-encoded form data.
+     * @param mediaType the media type to check
+     * @return true if the media type is {@code application/x-www-form-urlencoded}, false otherwise
+     */
+    public static boolean isURLEncodedForm(@Nullable MediaType mediaType) {
+        return (mediaType != null && MediaType.APPLICATION_FORM_URLENCODED.equalsTypeAndSubtype(mediaType));
+    }
+
+    /**
+     * Return whether the given media type is JSON-compatible
+     * (e.g. {@code application/json} or ending with {@code +json}).
+     * @param mediaType the media type to check
+     * @return true if the media type is JSON-compatible, false otherwise
+     */
+    public static boolean isJson(@Nullable MediaType mediaType) {
+        return (mediaType != null && (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType) ||
+                mediaType.getSubtype().endsWith("+json")));
+    }
+
+    /**
+     * Return whether the given media type is XML-compatible
+     * (e.g. {@code application/xml}, {@code text/xml}, or ending with {@code +xml}).
+     * @param mediaType the media type to check
+     * @return true if the media type is XML-compatible, false otherwise
+     */
+    public static boolean isXml(@Nullable MediaType mediaType) {
+        return (mediaType != null && (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType) ||
+                MediaType.TEXT_XML.equalsTypeAndSubtype(mediaType) ||
+                mediaType.getSubtype().endsWith("+xml")));
     }
 
 }

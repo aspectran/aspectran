@@ -336,8 +336,26 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     @Override
+    public RestResponse unprocessableEntity() {
+        this.status = HttpStatus.UNPROCESSABLE_ENTITY.value();
+        return this;
+    }
+
+    @Override
+    public RestResponse tooManyRequests() {
+        this.status = HttpStatus.TOO_MANY_REQUESTS.value();
+        return this;
+    }
+
+    @Override
     public RestResponse internalServerError() {
         this.status = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        return this;
+    }
+
+    @Override
+    public RestResponse serviceUnavailable() {
+        this.status = HttpStatus.SERVICE_UNAVAILABLE.value();
         return this;
     }
 
@@ -415,14 +433,14 @@ public abstract class AbstractRestResponse implements RestResponse {
             String path = activity.getTranslet().getRequestName();
             String ext = FilenameUtils.getExtension(path);
             if (StringUtils.hasLength(ext)) {
-                ext = ext.toLowerCase(Locale.ENGLISH);
+                ext = ext.toLowerCase(Locale.ROOT);
                 MediaType contentType = getContentTypeByPathExtension(ext);
                 if (contentType != null) {
                     return contentType;
                 }
-            }
-            if (!isIgnoreUnknownPathExtensions()) {
-                throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
+                if (!isIgnoreUnknownPathExtensions()) {
+                    throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
+                }
             }
         }
 
@@ -461,18 +479,17 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     protected MediaType determineResponseContentType(@NonNull Activity activity, @NonNull MediaType acceptContentType) {
-        Charset charset = acceptContentType.getCharset();
-        if (charset == null) {
+        if (acceptContentType.getCharset() == null) {
             String encoding = determineIntendedEncoding(activity);
             if (encoding != null) {
-                charset = Charset.forName(encoding);
+                try {
+                    Charset charset = Charset.forName(encoding);
+                    return new MediaType(acceptContentType, charset);
+                } catch (Exception ignored) {
+                }
             }
         }
-        if (charset != null) {
-            return new MediaType(acceptContentType.getType(), acceptContentType.getSubtype(), charset);
-        } else {
-            return new MediaType(acceptContentType.getType(), acceptContentType.getSubtype());
-        }
+        return acceptContentType;
     }
 
     protected String determineIntendedEncoding(@NonNull Activity activity) {
