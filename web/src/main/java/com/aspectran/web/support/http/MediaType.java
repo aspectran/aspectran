@@ -137,7 +137,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final MediaType APPLICATION_APON;
 
     /**
-     * A String equivalent of {@link MediaType#APPLICATION_JSON}.
+     * A String equivalent of {@link MediaType#APPLICATION_APON}.
      */
     public static final String APPLICATION_APON_VALUE = "application/apon";
 
@@ -160,6 +160,19 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * A String equivalent of {@link MediaType#APPLICATION_PDF}.
      */
     public static final String APPLICATION_PDF_VALUE = "application/pdf";
+
+    /**
+     * Public constant media type for {@code application/problem+json}.
+     *
+     * @see <a href="https://tools.ietf.org/html/rfc7807#section-6.1">
+     * Problem Details for HTTP APIs, 6.1. application/problem+json</a>
+     */
+    public static final MediaType APPLICATION_PROBLEM_JSON;
+
+    /**
+     * A String equivalent of {@link MediaType#APPLICATION_PROBLEM_JSON}.
+     */
+    public static final String APPLICATION_PROBLEM_JSON_VALUE = "application/problem+json";
 
     /**
      * Public constant media type for {@code application/problem+xml}.
@@ -205,6 +218,19 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final String APPLICATION_XML_VALUE = "application/xml";
 
     /**
+     * Public constant media type for {@code application/yaml}.
+     *
+     * @see <a href="https://tools.ietf.org/html/rfc9512">
+     * YAML Media Type</a>
+     */
+    public static final MediaType APPLICATION_YAML;
+
+    /**
+     * A String equivalent of {@link MediaType#APPLICATION_YAML}.
+     */
+    public static final String APPLICATION_YAML_VALUE = "application/yaml";
+
+    /**
      * Public constant media type for {@code image/gif}.
      */
     public static final MediaType IMAGE_GIF;
@@ -235,6 +261,26 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final String IMAGE_PNG_VALUE = "image/png";
 
     /**
+     * Public constant media type for {@code image/svg+xml}.
+     */
+    public static final MediaType IMAGE_SVG_XML;
+
+    /**
+     * A String equivalent of {@link MediaType#IMAGE_SVG_XML}.
+     */
+    public static final String IMAGE_SVG_XML_VALUE = "image/svg+xml";
+
+    /**
+     * Public constant media type for {@code image/webp}.
+     */
+    public static final MediaType IMAGE_WEBP;
+
+    /**
+     * A String equivalent of {@link MediaType#IMAGE_WEBP}.
+     */
+    public static final String IMAGE_WEBP_VALUE = "image/webp";
+
+    /**
      * Public constant media type for {@code multipart/form-data}.
      */
     public static final MediaType MULTIPART_FORM_DATA;
@@ -263,6 +309,19 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * A String equivalent of {@link MediaType#MULTIPART_RELATED}.
      */
     public static final String MULTIPART_RELATED_VALUE = "multipart/related";
+
+    /**
+     * Public constant media type for {@code text/csv}.
+     *
+     * @see <a href="https://tools.ietf.org/html/rfc4180">
+     * Common Format and MIME Type for Comma-Separated Values (CSV) Files</a>
+     */
+    public static final MediaType TEXT_CSV;
+
+    /**
+     * A String equivalent of {@link MediaType#TEXT_CSV}.
+     */
+    public static final String TEXT_CSV_VALUE = "text/csv";
 
     /**
      * Public constant media type for {@code text/event-stream}.
@@ -370,16 +429,21 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         APPLICATION_APON = new MediaType("application", "apon");
         APPLICATION_OCTET_STREAM = new MediaType("application", "octet-stream");
         APPLICATION_PDF = new MediaType("application", "pdf");
+        APPLICATION_PROBLEM_JSON = new MediaType("application", "problem+json");
         APPLICATION_PROBLEM_XML = new MediaType("application", "problem+xml");
         APPLICATION_RSS_XML = new MediaType("application", "rss+xml");
         APPLICATION_XHTML_XML = new MediaType("application", "xhtml+xml");
         APPLICATION_XML = new MediaType("application", "xml");
+        APPLICATION_YAML = new MediaType("application", "yaml");
         IMAGE_GIF = new MediaType("image", "gif");
         IMAGE_JPEG = new MediaType("image", "jpeg");
         IMAGE_PNG = new MediaType("image", "png");
+        IMAGE_SVG_XML = new MediaType("image", "svg+xml");
+        IMAGE_WEBP = new MediaType("image", "webp");
         MULTIPART_FORM_DATA = new MediaType("multipart", "form-data");
         MULTIPART_MIXED = new MediaType("multipart", "mixed");
         MULTIPART_RELATED = new MediaType("multipart", "related");
+        TEXT_CSV = new MediaType("text", "csv");
         TEXT_EVENT_STREAM = new MediaType("text", "event-stream");
         TEXT_HTML = new MediaType("text", "html");
         TEXT_MARKDOWN = new MediaType("text", "markdown");
@@ -394,6 +458,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     private final Map<String, String> parameters;
 
     private transient Charset resolvedCharset;
+
+    private transient Double resolvedQualityValue;
 
     private volatile String toStringValue;
 
@@ -518,6 +584,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
             double d = Double.parseDouble(value);
             Assert.isTrue(d >= 0D && d <= 1D,
                     "Invalid quality value \"" + value + "\": should be between 0.0 and 1.0");
+            this.resolvedQualityValue = d;
         } else if (!isQuotedString(value)) {
             checkToken(value);
         }
@@ -816,6 +883,9 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         if (comp != 0) {
             return comp;
         }
+        if (getParameters().isEmpty() && other.getParameters().isEmpty()) {
+            return 0;
+        }
 
         TreeSet<String> thisAttributes = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         thisAttributes.addAll(getParameters().keySet());
@@ -867,8 +937,13 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return the quality factor as double value
      */
     public double getQualityValue() {
+        if (this.resolvedQualityValue != null) {
+            return this.resolvedQualityValue;
+        }
         String qualityFactor = getParameter(PARAM_QUALITY_FACTOR);
-        return (qualityFactor != null ? Double.parseDouble(unquote(qualityFactor)) : 1D);
+        double q = (qualityFactor != null ? Double.parseDouble(unquote(qualityFactor)) : 1D);
+        this.resolvedQualityValue = q;
+        return q;
     }
 
     /**
@@ -908,12 +983,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      */
     @NonNull
     public static MediaType parseMediaType(String mediaType) {
-        MediaType type = MediaTypeUtils.parseMediaType(mediaType);
-        try {
-            return new MediaType(type.getType(), type.getSubtype(), type.getParameters());
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidMediaTypeException(mediaType, ex.getMessage());
-        }
+        return MediaTypeUtils.parseMediaType(mediaType);
     }
 
     /**
@@ -1119,22 +1189,22 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      */
     public static class SpecificityComparator<T extends MediaType> implements Comparator<T> {
         @Override
-        public int compare(@NonNull T MediaType1, T MediaType2) {
-            if (MediaType1.isWildcardType() && !MediaType2.isWildcardType()) {  // */* < audio/*
+        public int compare(@NonNull T mediaType1, @NonNull T mediaType2) {
+            if (mediaType1.isWildcardType() && !mediaType2.isWildcardType()) {  // */* < audio/*
                 return 1;
-            } else if (MediaType2.isWildcardType() && !MediaType1.isWildcardType()) {  // audio/* > */*
+            } else if (mediaType2.isWildcardType() && !mediaType1.isWildcardType()) {  // audio/* > */*
                 return -1;
-            } else if (!MediaType1.getType().equals(MediaType2.getType())) {  // audio/basic == text/html
+            } else if (!mediaType1.getType().equals(mediaType2.getType())) {  // audio/basic == text/html
                 return 0;
             } else {  // mediaType1.getType().equals(mediaType2.getType())
-                if (MediaType1.isWildcardSubtype() && !MediaType2.isWildcardSubtype()) {  // audio/* < audio/basic
+                if (mediaType1.isWildcardSubtype() && !mediaType2.isWildcardSubtype()) {  // audio/* < audio/basic
                     return 1;
-                } else if (MediaType2.isWildcardSubtype() && !MediaType1.isWildcardSubtype()) {  // audio/basic > audio/*
+                } else if (mediaType2.isWildcardSubtype() && !mediaType1.isWildcardSubtype()) {  // audio/basic > audio/*
                     return -1;
-                } else if (!MediaType1.getSubtype().equals(MediaType2.getSubtype())) {  // audio/basic == audio/wave
+                } else if (!mediaType1.getSubtype().equals(mediaType2.getSubtype())) {  // audio/basic == audio/wave
                     return 0;
-                } else {  // mediaType2.getSubtype().equals(mediaType2.getSubtype())
-                    return compareParameters(MediaType1, MediaType2);
+                } else {  // mediaType1.getSubtype().equals(mediaType2.getSubtype())
+                    return compareParameters(mediaType1, mediaType2);
                 }
             }
         }

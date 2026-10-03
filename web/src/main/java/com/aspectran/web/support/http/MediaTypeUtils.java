@@ -32,9 +32,9 @@ import java.util.Map;
 /**
  * Miscellaneous {@link MediaType} utility methods.
  */
-public class MediaTypeUtils {
+public final class MediaTypeUtils {
 
-    private static final Cache<String, MediaType> cachedMimeTypes =
+    private static final Cache<String, MediaType> cachedMediaTypes =
             new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
 
     /**
@@ -45,20 +45,21 @@ public class MediaTypeUtils {
 
     /**
      * Parse the given String into a single {@code MediaType}.
-     * Recently parsed {@code MediaType} are cached for further retrieval.
+     * Recently parsed {@code MediaType} objects are cached for further retrieval.
      * @param mediaType the string to parse
      * @return the media type
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
-    protected static MediaType parseMediaType(String mediaType) {
+    @NonNull
+    public static MediaType parseMediaType(String mediaType) {
         if (!StringUtils.hasLength(mediaType)) {
             throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
         }
-        // do not cache multipart mime types with random boundaries
-        if (mediaType.startsWith("multipart")) {
+        // do not cache multipart media types with random boundaries
+        if (mediaType.regionMatches(true, 0, "multipart", 0, 9)) {
             return parseMediaTypeInternal(mediaType);
         }
-        return cachedMimeTypes.get(mediaType);
+        return cachedMediaTypes.get(mediaType);
     }
 
     @NonNull
@@ -92,7 +93,9 @@ public class MediaTypeUtils {
             boolean quoted = false;
             while (nextIndex < mediaType.length()) {
                 char ch = mediaType.charAt(nextIndex);
-                if (ch == ';') {
+                if (ch == '\\') {
+                    nextIndex++;
+                } else if (ch == ';') {
                     if (!quoted) {
                         break;
                     }
@@ -159,14 +162,19 @@ public class MediaTypeUtils {
     }
 
     /**
-     * Return a string representation of the given list of {@code MediaType} objects.
-     * @param mediaTypes the string to parse
-     * @return the list of media types
-     * @throws IllegalArgumentException if the String cannot be parsed
+     * Return a string representation of the given collection of {@code MediaType} objects.
+     * @param mediaTypes the media types to create a string representation for
+     * @return the string representation
      */
     @NonNull
     public static String toString(@NonNull Collection<MediaType> mediaTypes) {
-        StringBuilder builder = new StringBuilder();
+        if (mediaTypes.isEmpty()) {
+            return "";
+        }
+        if (mediaTypes.size() == 1) {
+            return mediaTypes.iterator().next().toString();
+        }
+        StringBuilder builder = new StringBuilder(mediaTypes.size() * 32);
         for (Iterator<? extends MediaType> iterator = mediaTypes.iterator(); iterator.hasNext(); ) {
             MediaType mediaType = iterator.next();
             mediaType.appendTo(builder);
