@@ -18,6 +18,7 @@ package com.aspectran.web.support.cors;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import org.jspecify.annotations.NullMarked;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * The default implementation of the {@link CorsProcessor} interface.
@@ -42,7 +44,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     private static final Logger logger = LoggerFactory.getLogger(DefaultCorsProcessor.class);
 
     /**
-     * ""CORS.HTTP_STATUS_CODE"" attribute name.
+     * "CORS.HTTP_STATUS_CODE" attribute name.
      */
     private static final String CORS_HTTP_STATUS_CODE = "CORS.HTTP_STATUS_CODE";
 
@@ -73,12 +75,12 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
         if (isAllowCredentials()) {
             // Must be exact origin (not '*') in case of credentials
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-            res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            res.setHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
         } else {
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
-            res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
+            res.setHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
         }
 
         if (getExposedHeadersString() != null) {
@@ -91,7 +93,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         RequestAdapter req = translet.getRequestAdapter();
         ResponseAdapter res = translet.getResponseAdapter();
 
-        if (!isPreFlightRequest(req)) {
+        if (!isCorsRequest(req) || !MethodType.OPTIONS.equals(req.getRequestMethod())) {
             rejectRequest(translet, CorsException.INVALID_PREFLIGHT_REQUEST);
         }
         if (!checkProcessable(res)) {
@@ -99,6 +101,9 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         }
 
         String requestedMethod = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD);
+        if (requestedMethod == null) {
+            rejectRequest(translet, CorsException.MISSING_ACCESS_CONTROL_REQUEST_METHOD_HEADER);
+        }
         if (!isAllowedMethod(requestedMethod)) {
             rejectRequest(translet, CorsException.UNSUPPORTED_METHOD);
         }
@@ -114,28 +119,34 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         }
 
         String origin = req.getHeader(HttpHeaders.ORIGIN);
+        if (!isAllowedOrigin(origin)) {
+            rejectRequest(translet, CorsException.ORIGIN_DENIED);
+        }
+
         if (origin != null) {
             if (isAllowCredentials()) {
                 // Must be exact origin (not '*') in case of credentials
-                res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+                res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                res.setHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
             } else {
-                res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
-                res.addHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+                res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, hasAllowedOrigins() ? origin : ALL);
+                res.setHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
             }
         }
 
         if (getAllowedMethodsString() != null) {
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, getAllowedMethodsString());
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, getAllowedMethodsString());
+        } else if (requestedMethod != null) {
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, requestedMethod.toUpperCase(Locale.ROOT));
         }
         if (getAllowedHeadersString() != null) {
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, getAllowedHeadersString());
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, getAllowedHeadersString());
         } else if (rawRequestHeadersString != null) {
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
         }
-        if (getMaxAgeSeconds() > 0) {
-            res.addHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
+        if (getMaxAgeSeconds() >= 0) {
+            res.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
         }
     }
 

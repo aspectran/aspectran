@@ -16,6 +16,8 @@
 package com.aspectran.web.support.cors;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.adapter.RequestAdapter;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
@@ -30,6 +32,7 @@ import java.io.IOException;
  * @since 2.3.0
  * @see <a href="http://www.w3.org/TR/cors/">CORS W3C recommendation</a>
  */
+@NullMarked
 public interface CorsProcessor {
 
     /**
@@ -50,6 +53,20 @@ public interface CorsProcessor {
      * @throws IOException in case of I/O errors
      */
     void processPreflightRequest(Translet translet) throws CorsException, IOException;
+
+    /**
+     * Returns whether the specified request is a CORS request.
+     * @param request the request adapter
+     * @return {@code true} if the request is a CORS request, else {@code false}
+     */
+    boolean isCorsRequest(RequestAdapter request);
+
+    /**
+     * Returns whether the specified request is a CORS preflight request.
+     * @param request the request adapter
+     * @return {@code true} if the request is a CORS preflight request, else {@code false}
+     */
+    boolean isPreflightRequest(RequestAdapter request);
 
     /**
      * Sends an error response to the client using the specified status.
