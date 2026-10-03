@@ -39,6 +39,7 @@ import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 
@@ -79,7 +80,8 @@ public class ServletWebActivity extends CoreActivity {
      * @param response the HTTP response
      */
     public ServletWebActivity(@NonNull WebService webService,
-                              HttpServletRequest request, HttpServletResponse response) {
+                              @NonNull HttpServletRequest request,
+                              @NonNull HttpServletResponse response) {
         this(webService, StringUtils.EMPTY, null, request, response);
     }
 
@@ -91,8 +93,11 @@ public class ServletWebActivity extends CoreActivity {
      * @param request the HTTP request
      * @param response the HTTP response
      */
-    public ServletWebActivity(@NonNull WebService webService, @NonNull String contextPath, String reverseContextPath,
-                              HttpServletRequest request, HttpServletResponse response) {
+    public ServletWebActivity(@NonNull WebService webService,
+                              @NonNull String contextPath,
+                              @Nullable String reverseContextPath,
+                              @NonNull HttpServletRequest request,
+                              @NonNull HttpServletResponse response) {
         super(webService.getActivityContext(), contextPath);
         this.webService = webService;
         this.reverseContextPath = reverseContextPath;
@@ -101,11 +106,13 @@ public class ServletWebActivity extends CoreActivity {
     }
 
     @Override
+    @NonNull
     public Mode getMode() {
         return Mode.WEB;
     }
 
     @Override
+    @Nullable
     public String getReverseContextPath() {
         return reverseContextPath;
     }
@@ -114,6 +121,7 @@ public class ServletWebActivity extends CoreActivity {
      * Returns the underlying {@link HttpServletRequest} object.
      * @return the HTTP servlet request
      */
+    @NonNull
     public HttpServletRequest getRequest() {
         return request;
     }
@@ -122,6 +130,7 @@ public class ServletWebActivity extends CoreActivity {
      * Returns the underlying {@link HttpServletResponse} object.
      * @return the HTTP servlet response
      */
+    @NonNull
     public HttpServletResponse getResponse() {
         return response;
     }
@@ -130,6 +139,7 @@ public class ServletWebActivity extends CoreActivity {
      * Returns the name of the request being processed by this activity.
      * @return the request name
      */
+    @Nullable
     public String getRequestName() {
         return requestName;
     }
@@ -138,7 +148,7 @@ public class ServletWebActivity extends CoreActivity {
      * Sets the name of the request to be processed by this activity.
      * @param requestName the request name
      */
-    public void setRequestName(String requestName) {
+    public void setRequestName(@Nullable String requestName) {
         this.requestName = requestName;
     }
 
@@ -146,6 +156,7 @@ public class ServletWebActivity extends CoreActivity {
      * Returns the method type of the request being processed by this activity.
      * @return the request method type
      */
+    @Nullable
     public MethodType getRequestMethod() {
         return requestMethod;
     }
@@ -154,7 +165,7 @@ public class ServletWebActivity extends CoreActivity {
      * Sets the method type of the request to be processed by this activity.
      * @param requestMethod the request method type
      */
-    public void setRequestMethod(MethodType requestMethod) {
+    public void setRequestMethod(@Nullable MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
@@ -163,10 +174,11 @@ public class ServletWebActivity extends CoreActivity {
      * method, reverse context path, and name (e.g., "GET /context/path/to/translet").
      * @return the combined request information
      */
+    @NonNull
     public String getFullRequestName() {
         StringBuilder sb = new StringBuilder();
         if (requestMethod != null) {
-            sb.append(requestMethod).append(" ");
+            sb.append(requestMethod).append(' ');
         }
         if (StringUtils.hasLength(reverseContextPath)) {
             sb.append(reverseContextPath);
@@ -189,6 +201,7 @@ public class ServletWebActivity extends CoreActivity {
      * Returns the timeout for asynchronous execution in milliseconds.
      * @return the timeout in milliseconds, or {@code null} if no timeout is set
      */
+    @Nullable
     public Long getTimeout() {
         return timeout;
     }
@@ -206,14 +219,14 @@ public class ServletWebActivity extends CoreActivity {
     }
 
     @Override
-    protected void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
-            throws ActivityPrepareException {
-        this.async = transletRule.isAsync();
-        this.timeout = transletRule.getTimeout();
-
-        // Check for HTTP POST with the X-HTTP-Method-Override header
+    public void prepare(String requestName, MethodType requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException {
+        // Check for HTTP POST with the X-HTTP-Method-Override or X-Method-Override header
         if (requestMethod == MethodType.POST) {
-            String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
+            String method = request.getHeader(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+            if (method == null) {
+                method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
+            }
             if (method != null) {
                 // Check if the header value is in our methods list
                 MethodType hiddenRequestMethod = MethodType.resolve(method);
@@ -224,6 +237,14 @@ public class ServletWebActivity extends CoreActivity {
             }
         }
 
+        super.prepare(requestName, requestMethod);
+    }
+
+    @Override
+    protected void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
+            throws ActivityPrepareException {
+        this.async = transletRule.isAsync();
+        this.timeout = transletRule.getTimeout();
         super.prepare(requestName, requestMethod, transletRule);
     }
 
@@ -280,6 +301,7 @@ public class ServletWebActivity extends CoreActivity {
     }
 
     @Override
+    @NonNull
     public WebRequestAdapter getRequestAdapter() {
         return (WebRequestAdapter)super.getRequestAdapter();
     }

@@ -59,6 +59,7 @@ public final class RequestAttributeMap implements Map<String, Object> {
      * Returns the underlying {@link ServletRequest} that this map wraps.
      * @return the servlet request
      */
+    @Nullable
     public ServletRequest getRequest() {
         return request;
     }
@@ -86,7 +87,13 @@ public final class RequestAttributeMap implements Map<String, Object> {
         if (request == null) {
             return 0;
         }
-        return Collections.list(request.getAttributeNames()).size();
+        int count = 0;
+        Enumeration<String> names = request.getAttributeNames();
+        while (names.hasMoreElements()) {
+            names.nextElement();
+            count++;
+        }
+        return count;
     }
 
     @Override
@@ -98,17 +105,21 @@ public final class RequestAttributeMap implements Map<String, Object> {
     }
 
     @Override
-    public boolean containsKey(Object key) {
-        if (request == null) {
+    public boolean containsKey(@Nullable Object key) {
+        if (request == null || !(key instanceof String stringKey)) {
             return false;
         }
-        // This is the correct implementation, the previous one was buggy
-        // because it could not distinguish between a non-existent key and a key with a null value.
-        return Collections.list(request.getAttributeNames()).contains(key);
+        Enumeration<String> names = request.getAttributeNames();
+        while (names.hasMoreElements()) {
+            if (stringKey.equals(names.nextElement())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(@Nullable Object value) {
         if (request == null) {
             return false;
         }
@@ -129,11 +140,11 @@ public final class RequestAttributeMap implements Map<String, Object> {
      */
     @Override
     @Nullable
-    public Object get(Object key) {
-        if (request == null || !(key instanceof String)) {
+    public Object get(@Nullable Object key) {
+        if (request == null || !(key instanceof String stringKey)) {
             return null;
         }
-        return request.getAttribute((String)key);
+        return request.getAttribute(stringKey);
     }
 
     /**
@@ -142,7 +153,8 @@ public final class RequestAttributeMap implements Map<String, Object> {
      * @throws IllegalStateException if the underlying request has not been specified
      */
     @Override
-    public Object put(String name, Object value) {
+    @Nullable
+    public Object put(@NonNull String name, @Nullable Object value) {
         checkState();
         Object old = request.getAttribute(name);
         request.setAttribute(name, value);
@@ -156,7 +168,7 @@ public final class RequestAttributeMap implements Map<String, Object> {
      */
     @Override
     @Nullable
-    public Object remove(@NonNull Object key) {
+    public Object remove(@Nullable Object key) {
         checkState();
         if (key instanceof String stringKey) {
             Object old = request.getAttribute(stringKey);
@@ -204,7 +216,12 @@ public final class RequestAttributeMap implements Map<String, Object> {
         if (request == null) {
             return Collections.emptySet();
         }
-        return Set.copyOf(Collections.list(request.getAttributeNames()));
+        Set<String> keys = new HashSet<>();
+        Enumeration<String> names = request.getAttributeNames();
+        while (names.hasMoreElements()) {
+            keys.add(names.nextElement());
+        }
+        return Collections.unmodifiableSet(keys);
     }
 
     /**

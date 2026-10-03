@@ -528,6 +528,12 @@ public interface HttpHeaders {
      *   X-Method-Override (Aspectran)
      * </pre>
      */
+    String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+
+    /**
+     * The HTTP {@code X-Method-Override} request header.
+     * @see #X_HTTP_METHOD_OVERRIDE
+     */
     String X_METHOD_OVERRIDE = "X-Method-Override";
 
     /**

@@ -119,6 +119,29 @@ public class ServletWebActivityTester {
     }
 
     /**
+     * Performs a virtual HTTP request using the given mock request.
+     * @param request the mock request
+     * @return the resulting Translet
+     */
+    public Translet perform(MockHttpServletRequest request) {
+        request.setServletContext(webService.getServletContext());
+        this.lastRequest = request;
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        this.lastResponse = response;
+
+        ServletWebActivity activity = new ServletWebActivity(webService, request, response);
+        try {
+            MethodType requestMethod = MethodType.resolve(request.getMethod());
+            activity.prepare(request.getRequestURI(), requestMethod);
+            activity.perform();
+            return activity.getTranslet();
+        } catch (ActivityException e) {
+            throw new RuntimeException("Failed to perform web activity", e);
+        }
+    }
+
+    /**
      * Returns the response content from the last virtual request.
      * @return the response content
      */

@@ -19,6 +19,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -62,6 +63,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the header from the underlying {@link RequestAdapter}.
      */
     @Override
+    @Nullable
     public String getHeader(String name) {
         return requestAdapter.getHeader(name);
     }
@@ -71,6 +73,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the headers from the underlying {@link RequestAdapter}.
      */
     @Override
+    @NonNull
     public Enumeration<String> getHeaders(String name) {
         Collection<String> values = requestAdapter.getHeaderValues(name);
         if (values != null) {
@@ -85,6 +88,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the header names from the underlying {@link RequestAdapter}.
      */
     @Override
+    @NonNull
     public Enumeration<String> getHeaderNames() {
         Collection<String> names = requestAdapter.getHeaderNames();
         if (names != null) {
@@ -99,6 +103,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the attribute from the underlying {@link RequestAdapter}.
      */
     @Override
+    @Nullable
     public Object getAttribute(String name) {
         return requestAdapter.getAttribute(name);
     }
@@ -108,6 +113,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the attribute names from the underlying {@link RequestAdapter}.
      */
     @Override
+    @NonNull
     public Enumeration<String> getAttributeNames() {
         Collection<String> names = requestAdapter.getAttributeNames();
         if (names != null) {
@@ -122,7 +128,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation sets the attribute on the underlying {@link RequestAdapter}.
      */
     @Override
-    public void setAttribute(String name, Object o) {
+    public void setAttribute(String name, @Nullable Object o) {
         requestAdapter.setAttribute(name, o);
     }
 
@@ -140,6 +146,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the parameter from the underlying {@link RequestAdapter}.
      */
     @Override
+    @Nullable
     public String getParameter(String name) {
         return requestAdapter.getParameter(name);
     }
@@ -149,6 +156,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the parameter map from the underlying {@link RequestAdapter}.
      */
     @Override
+    @NonNull
     public Map<String, String[]> getParameterMap() {
         return requestAdapter.getParameterMap();
     }
@@ -158,6 +166,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the parameter names from the underlying {@link RequestAdapter}.
      */
     @Override
+    @NonNull
     public Enumeration<String> getParameterNames() {
         Collection<String> names = requestAdapter.getParameterNames();
         if (names != null) {
@@ -172,7 +181,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * <p>This implementation retrieves the parameter values from the underlying {@link RequestAdapter}.
      */
     @Override
-    public String[] getParameterValues(String name) {
+    public String @Nullable [] getParameterValues(String name) {
         return requestAdapter.getParameterValues(name);
     }
 
@@ -182,6 +191,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * falling back to the default request locale if not present.
      */
     @Override
+    @NonNull
     public Locale getLocale() {
         Locale locale = requestAdapter.getLocale();
         if (locale != null) {
@@ -198,6 +208,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
      * falls back to the default request locales.
      */
     @Override
+    @NonNull
     public Enumeration<Locale> getLocales() {
         Locale locale = requestAdapter.getLocale();
         if (locale != null) {

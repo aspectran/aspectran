@@ -96,4 +96,13 @@
         <transform format="json"/>
     </translet>
 
+    <translet name="/test/override" method="PATCH">
+        <echo id="echo">
+            <item name="action">patched</item>
+        </echo>
+        <transform format="text/plain">
+            <template>@{echo^action}</template>
+        </transform>
+    </translet>
+
 </aspectran>

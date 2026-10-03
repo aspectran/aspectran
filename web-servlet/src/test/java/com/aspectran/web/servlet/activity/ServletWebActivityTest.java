@@ -126,4 +126,23 @@ class ServletWebActivityTest {
         assertEquals(expected, response);
     }
 
+    @Test
+    void testMethodOverride(@NonNull ServletWebActivityTester tester) {
+        com.aspectran.test.web.servlet.mock.MockHttpServletRequest request1 = new com.aspectran.test.web.servlet.mock.MockHttpServletRequest();
+        request1.setMethod(MethodType.POST.name());
+        request1.setRequestURI("/test/override");
+        request1.setHeader(com.aspectran.web.support.http.HttpHeaders.X_HTTP_METHOD_OVERRIDE, "PATCH");
+
+        tester.perform(request1);
+        Assertions.assertEquals("patched", tester.getWrittenResponse());
+
+        com.aspectran.test.web.servlet.mock.MockHttpServletRequest request2 = new com.aspectran.test.web.servlet.mock.MockHttpServletRequest();
+        request2.setMethod(MethodType.POST.name());
+        request2.setRequestURI("/test/override");
+        request2.setHeader(com.aspectran.web.support.http.HttpHeaders.X_METHOD_OVERRIDE, "PATCH");
+
+        tester.perform(request2);
+        Assertions.assertEquals("patched", tester.getWrittenResponse());
+    }
+
 }
