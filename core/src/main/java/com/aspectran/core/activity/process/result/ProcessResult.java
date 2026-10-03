@@ -16,8 +16,11 @@
 package com.aspectran.core.activity.process.result;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -65,6 +68,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * Returns the name of this process result.
      * @return the name of the process result
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -73,7 +77,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * Sets the name of this process result.
      * @param name the name of the process result
      */
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 
@@ -98,7 +102,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * for internal use by the framework.
      * @param contentResult the content result to add
      */
-    protected void addContentResult(ContentResult contentResult) {
+    protected void addContentResult(@NonNull ContentResult contentResult) {
+        Assert.notNull(contentResult, "contentResult must not be null");
         add(contentResult);
     }
 
@@ -107,7 +112,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @param name the name of the content group to find
      * @return the corresponding {@link ContentResult}, or {@code null} if not found
      */
-    public ContentResult getContentResult(String name) {
+    @Nullable
+    public ContentResult getContentResult(@Nullable String name) {
         for (ContentResult contentResult : this) {
             if (Objects.equals(name, contentResult.getName())) {
                 return contentResult;
@@ -122,7 +128,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @param explicit the explicit flag of the content group
      * @return the corresponding {@link ContentResult}, or {@code null} if not found
      */
-    public ContentResult getContentResult(String name, boolean explicit) {
+    @Nullable
+    public ContentResult getContentResult(@Nullable String name, boolean explicit) {
         for (ContentResult contentResult : this) {
             if (Objects.equals(name, contentResult.getName()) && contentResult.isExplicit() == explicit) {
                 return contentResult;
@@ -135,6 +142,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * Returns the last {@link ContentResult} in this process result.
      * @return the last added {@link ContentResult}, or {@code null} if this result is empty
      */
+    @Nullable
     public ContentResult lastContentResult() {
         return (isEmpty() ? null : get(size() - 1));
     }
@@ -145,7 +153,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @param actionId the ID of the action to find
      * @return the corresponding {@link ActionResult}, or {@code null} if not found
      */
-    public ActionResult getActionResult(String actionId) {
+    @Nullable
+    public ActionResult getActionResult(@Nullable String actionId) {
         if (actionId == null) {
             return null;
         }
@@ -165,7 +174,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * @param actionId the ID of the action whose result value is to be returned
      * @return the result value, or {@code null} if not found
      */
-    public Object getResultValue(String actionId) {
+    @Nullable
+    public Object getResultValue(@Nullable String actionId) {
         if (actionId == null) {
             return null;
         }
@@ -174,8 +184,11 @@ public class ProcessResult extends ArrayList<ContentResult> {
             return (actionResult != null ? actionResult.getResultValue() : null);
         } else {
             String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
+            if (ids.length == 0) {
+                return null;
+            }
             if (ids.length == 1) {
-                ActionResult actionResult = getActionResult(actionId);
+                ActionResult actionResult = getActionResult(ids[0]);
                 return (actionResult != null ? actionResult.getResultValue() : null);
             } else {
                 ActionResult actionResult = getActionResult(ids[0]);
@@ -184,9 +197,10 @@ public class ProcessResult extends ArrayList<ContentResult> {
                 }
                 for (int i = 1; i < ids.length - 1; i++) {
                     Object value = valueMap.get(ids[i]);
-                    if (!(value instanceof Map)) {
+                    if (!(value instanceof Map<?, ?> nextMap)) {
                         return null;
                     }
+                    valueMap = nextMap;
                 }
                 return valueMap.get(ids[ids.length - 1]);
             }
@@ -197,6 +211,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
      * Returns a descriptive string representation of this process result, intended for debugging.
      * @return a string describing the contents of this result
      */
+    @NonNull
     public String describe() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);

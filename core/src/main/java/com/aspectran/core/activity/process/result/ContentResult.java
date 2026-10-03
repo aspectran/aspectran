@@ -17,8 +17,11 @@ package com.aspectran.core.activity.process.result;
 
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -51,6 +54,21 @@ public class ContentResult extends ArrayList<ActionResult> {
 
     /**
      * Instantiates a new ContentResult with a default initial capacity.
+     */
+    public ContentResult() {
+        this(null, 5);
+    }
+
+    /**
+     * Instantiates a new ContentResult with the specified initial capacity.
+     * @param initialCapacity the initial capacity of the list
+     */
+    public ContentResult(int initialCapacity) {
+        this(null, initialCapacity);
+    }
+
+    /**
+     * Instantiates a new ContentResult with a default initial capacity.
      * @param parent the parent {@link ProcessResult} that will contain this result
      */
     public ContentResult(ProcessResult parent) {
@@ -76,6 +94,7 @@ public class ContentResult extends ArrayList<ActionResult> {
      * Returns the parent {@link ProcessResult} that contains this result.
      * @return the parent process result
      */
+    @Nullable
     public ProcessResult getParent() {
         return parent;
     }
@@ -84,6 +103,7 @@ public class ContentResult extends ArrayList<ActionResult> {
      * Returns the name of this content group.
      * @return the name of the content group
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -92,7 +112,7 @@ public class ContentResult extends ArrayList<ActionResult> {
      * Sets the name of this content group.
      * @param name the name of the content group
      */
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 
@@ -118,7 +138,8 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param actionId the ID of the action to find
      * @return the corresponding {@link ActionResult}, or {@code null} if not found
      */
-    public ActionResult getActionResult(String actionId) {
+    @Nullable
+    public ActionResult getActionResult(@Nullable String actionId) {
         if (actionId == null) {
             return null;
         }
@@ -137,11 +158,12 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param actionResult the action result to add
      */
     public void addActionResult(@NonNull ActionResult actionResult) {
+        Assert.notNull(actionResult, "actionResult must not be null");
         ActionResult existing = getActionResult(actionResult.getActionId());
         if (existing != null &&
-                existing.getResultValue() instanceof ResultValueMap resultValueMap &&
-                actionResult.getResultValue() instanceof ResultValueMap) {
-            resultValueMap.putAll((ResultValueMap)actionResult.getResultValue());
+                existing.getResultValue() instanceof ResultValueMap existingMap &&
+                actionResult.getResultValue() instanceof ResultValueMap newMap) {
+            existingMap.putAll(newMap);
         } else {
             add(actionResult);
         }
@@ -152,13 +174,9 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param action the executed action
      * @param resultValue the value returned by the action
      */
-    public void addActionResult(Executable action, Object resultValue) {
-        if (action == null) {
-            throw new IllegalArgumentException("action must not be null");
-        }
-        ActionResult actionResult = new ActionResult();
-        actionResult.setResultValue(action.getActionId(), resultValue);
-        addActionResult(actionResult);
+    public void addActionResult(@NonNull Executable action, @Nullable Object resultValue) {
+        Assert.notNull(action, "action must not be null");
+        addActionResult(new ActionResult(action.getActionId(), resultValue));
     }
 
     /**
@@ -167,13 +185,9 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param parentAction the action that produced the nested process result
      * @param processResult the nested process result to import
      */
-    public void addActionResult(Executable parentAction, ProcessResult processResult) {
-        if (parentAction == null) {
-            throw new IllegalArgumentException("action must not be null");
-        }
-        if (processResult == null) {
-            throw new IllegalArgumentException("processResult must not be null");
-        }
+    public void addActionResult(@NonNull Executable parentAction, @NonNull ProcessResult processResult) {
+        Assert.notNull(parentAction, "parentAction must not be null");
+        Assert.notNull(processResult, "processResult must not be null");
         for (ContentResult contentResult : processResult) {
             for (ActionResult actionResult : contentResult) {
                 if (actionResult.getActionId() != null) {
@@ -184,9 +198,7 @@ public class ContentResult extends ArrayList<ActionResult> {
                     } else {
                         actionId = actionResult.getActionId();
                     }
-                    ActionResult newActionResult = new ActionResult();
-                    newActionResult.setResultValue(actionId, actionResult.getResultValue());
-                    addActionResult(newActionResult);
+                    addActionResult(new ActionResult(actionId, actionResult.getResultValue()));
                 }
             }
         }
@@ -196,6 +208,7 @@ public class ContentResult extends ArrayList<ActionResult> {
      * Returns an array of all unique action IDs contained within this result.
      * @return an array of action IDs
      */
+    @NonNull
     public String[] getActionIds() {
         Set<String> set = new LinkedHashSet<>();
         for (ActionResult actionResult : this) {
@@ -203,10 +216,11 @@ public class ContentResult extends ArrayList<ActionResult> {
                 set.add(actionResult.getActionId());
             }
         }
-        return set.toArray(new String[0]);
+        return StringUtils.toStringArray(set);
     }
 
     @Override
+    @NonNull
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);

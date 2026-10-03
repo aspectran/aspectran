@@ -18,6 +18,8 @@ package com.aspectran.core.activity.process.result;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Encapsulates the result of executing a single {@link com.aspectran.core.activity.process.action.Executable}
@@ -38,9 +40,25 @@ public class ActionResult {
     private Object resultValue;
 
     /**
+     * Instantiates a new ActionResult.
+     */
+    public ActionResult() {
+    }
+
+    /**
+     * Instantiates a new ActionResult with the given action ID and result value.
+     * @param actionId the unique identifier for the action
+     * @param resultValue the value returned by the action
+     */
+    public ActionResult(String actionId, Object resultValue) {
+        setResultValue(actionId, resultValue);
+    }
+
+    /**
      * Returns the unique identifier of the action.
      * @return the action ID
      */
+    @Nullable
     public String getActionId() {
         return actionId;
     }
@@ -49,6 +67,7 @@ public class ActionResult {
      * Returns the value produced by the action's execution.
      * @return the result value of the action
      */
+    @Nullable
     public Object getResultValue() {
         return resultValue;
     }
@@ -59,35 +78,35 @@ public class ActionResult {
      * @param actionId the unique identifier for the action
      * @param resultValue the value returned by the action
      */
-    public void setResultValue(String actionId, Object resultValue) {
+    public void setResultValue(@Nullable String actionId, @Nullable Object resultValue) {
         if (actionId == null || !actionId.contains(ActivityContext.ID_SEPARATOR)) {
             this.actionId = actionId;
             this.resultValue = resultValue;
         } else {
             String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
-            if (ids.length == 1) {
+            if (ids.length == 0) {
                 this.actionId = null;
                 this.resultValue = resultValue;
-            } else if (ids.length == 2) {
-                ResultValueMap resultValueMap = new ResultValueMap();
-                resultValueMap.put(ids[1], resultValue);
+            } else if (ids.length == 1) {
                 this.actionId = ids[0];
-                this.resultValue = resultValueMap;
+                this.resultValue = resultValue;
             } else {
-                ResultValueMap resultValueMap = new ResultValueMap();
+                ResultValueMap rootMap = new ResultValueMap();
+                ResultValueMap currentMap = rootMap;
                 for (int i = 1; i < ids.length - 1; i++) {
-                    ResultValueMap resultValueMap2 = new ResultValueMap();
-                    resultValueMap.put(ids[i], resultValueMap2);
-                    resultValueMap = resultValueMap2;
+                    ResultValueMap nextMap = new ResultValueMap();
+                    currentMap.put(ids[i], nextMap);
+                    currentMap = nextMap;
                 }
-                resultValueMap.put(ids[ids.length - 1], resultValue);
-                this.actionId = actionId;
-                this.resultValue = resultValueMap;
+                currentMap.put(ids[ids.length - 1], resultValue);
+                this.actionId = ids[0];
+                this.resultValue = rootMap;
             }
         }
     }
 
     @Override
+    @NonNull
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionId", actionId);
