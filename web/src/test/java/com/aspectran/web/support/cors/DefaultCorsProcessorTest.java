@@ -31,8 +31,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for {@link DefaultCorsProcessor}.
@@ -57,32 +59,31 @@ class DefaultCorsProcessorTest {
     @Test
     void testIsCorsRequest() {
         DefaultRequestAdapter nonCorsRequest = new DefaultRequestAdapter(MethodType.GET);
-        org.junit.jupiter.api.Assertions.assertFalse(corsProcessor.isCorsRequest(nonCorsRequest));
+        assertFalse(corsProcessor.isCorsRequest(nonCorsRequest));
 
         DefaultRequestAdapter corsRequest = new DefaultRequestAdapter(MethodType.GET);
         corsRequest.setHeader(HttpHeaders.ORIGIN, "https://example.com");
-        org.junit.jupiter.api.Assertions.assertTrue(corsProcessor.isCorsRequest(corsRequest));
+        assertTrue(corsProcessor.isCorsRequest(corsRequest));
     }
 
     @Test
     void testIsPreflightRequest() {
         DefaultRequestAdapter nonCorsRequest = new DefaultRequestAdapter(MethodType.OPTIONS);
-        org.junit.jupiter.api.Assertions.assertFalse(corsProcessor.isPreflightRequest(nonCorsRequest));
+        assertFalse(corsProcessor.isPreflightRequest(nonCorsRequest));
 
         DefaultRequestAdapter notOptionsRequest = new DefaultRequestAdapter(MethodType.POST);
         notOptionsRequest.setHeader(HttpHeaders.ORIGIN, "https://example.com");
         notOptionsRequest.setHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST");
-        org.junit.jupiter.api.Assertions.assertFalse(corsProcessor.isPreflightRequest(notOptionsRequest));
+        assertFalse(corsProcessor.isPreflightRequest(notOptionsRequest));
 
         DefaultRequestAdapter missingMethodHeader = new DefaultRequestAdapter(MethodType.OPTIONS);
         missingMethodHeader.setHeader(HttpHeaders.ORIGIN, "https://example.com");
-        org.junit.jupiter.api.Assertions.assertFalse(corsProcessor.isPreflightRequest(missingMethodHeader));
+        assertFalse(corsProcessor.isPreflightRequest(missingMethodHeader));
 
         DefaultRequestAdapter preflightRequest = new DefaultRequestAdapter(MethodType.OPTIONS);
         preflightRequest.setHeader(HttpHeaders.ORIGIN, "https://example.com");
         preflightRequest.setHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST");
-        org.junit.jupiter.api.Assertions.assertTrue(corsProcessor.isPreflightRequest(preflightRequest));
-        org.junit.jupiter.api.Assertions.assertTrue(corsProcessor.isPreFlightRequest(preflightRequest));
+        assertTrue(corsProcessor.isPreflightRequest(preflightRequest));
     }
 
     @Test

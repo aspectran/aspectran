@@ -481,15 +481,4 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
                 && request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD) != null);
     }
 
-    /**
-     * Alias for {@link #isPreflightRequest(RequestAdapter)}.
-     * @param request the request adapter
-     * @return {@code true} if the request is a valid CORS pre-flight one, else {@code false}
-     * @deprecated in favor of {@link #isPreflightRequest(RequestAdapter)}
-     */
-    @Deprecated
-    public boolean isPreFlightRequest(RequestAdapter request) {
-        return isPreflightRequest(request);
-    }
-
 }
