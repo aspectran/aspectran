@@ -273,6 +273,11 @@ public class InstantTranslet implements Translet {
     }
 
     @Override
+    public boolean hasPathVariables() {
+        return false;
+    }
+
+    @Override
     public boolean hasInputFlashMap() {
         return false;
     }
@@ -410,11 +415,6 @@ public class InstantTranslet implements Translet {
     @Override
     public <V> V getFinallyAdviceResult(String aspectId) {
         return activity.getFinallyAdviceResult(aspectId);
-    }
-
-    @Override
-    public boolean hasPathVariables() {
-        return false;
     }
 
     @Override
