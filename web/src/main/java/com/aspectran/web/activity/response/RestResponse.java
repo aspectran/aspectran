@@ -16,9 +16,13 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.response.transform.CustomTransformer;
+import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Represents a response for a RESTful web service.
@@ -366,5 +370,28 @@ public interface RestResponse extends CustomTransformer {
      * @return this {@code RestResponse} object for fluent chaining
      */
     RestResponse addHeader(String name, String value);
+
+    /**
+     * Returns the first header value associated with the given name.
+     * @param name the header name
+     * @return the first header value, or null if not found
+     */
+    @Nullable
+    String getHeader(String name);
+
+    /**
+     * Returns the list of header values associated with the given name.
+     * @param name the header name
+     * @return the list of header values, or null if not found
+     */
+    @Nullable
+    List<String> getHeaders(String name);
+
+    /**
+     * Returns all headers.
+     * @return a multi-value map containing all headers, or null if no headers are set
+     */
+    @Nullable
+    MultiValueMap<String, String> getHeaders();
 
 }

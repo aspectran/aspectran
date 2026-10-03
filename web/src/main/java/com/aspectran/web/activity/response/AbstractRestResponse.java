@@ -395,7 +395,27 @@ public abstract class AbstractRestResponse implements RestResponse {
         return this;
     }
 
-    protected MultiValueMap<String, String> getHeaders() {
+    @Override
+    @Nullable
+    public String getHeader(String name) {
+        if (headers != null) {
+            return headers.getFirst(name);
+        }
+        return null;
+    }
+
+    @Override
+    @Nullable
+    public List<String> getHeaders(String name) {
+        if (headers != null) {
+            return headers.get(name);
+        }
+        return null;
+    }
+
+    @Override
+    @Nullable
+    public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 
