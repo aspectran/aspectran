@@ -123,4 +123,61 @@ class UriUtilsTest {
                 UriUtils.makeAbsoluteUrl("http", "localhost", 8080, "/console", "/console/auth/check", "?page=1"));
     }
 
+    @Test
+    void testMakeAbsoluteUrlUppercaseScheme() {
+        assertEquals("HTTP://localhost/test",
+                UriUtils.makeAbsoluteUrl("HTTP", "localhost", 80, "/test"));
+        assertEquals("HTTPS://localhost/test",
+                UriUtils.makeAbsoluteUrl("HTTPS", "localhost", 443, "/test"));
+    }
+
+    @Test
+    void testIsAbsoluteUrl() {
+        assertTrue(UriUtils.isAbsoluteUrl("http://example.com"));
+        assertTrue(UriUtils.isAbsoluteUrl("https://example.com/path"));
+        assertTrue(UriUtils.isAbsoluteUrl("custom-scheme+v1.0://resource"));
+        org.junit.jupiter.api.Assertions.assertFalse(UriUtils.isAbsoluteUrl("http,s://invalid"));
+        org.junit.jupiter.api.Assertions.assertFalse(UriUtils.isAbsoluteUrl(":invalid"));
+        org.junit.jupiter.api.Assertions.assertFalse(UriUtils.isAbsoluteUrl("/relative/path"));
+        org.junit.jupiter.api.Assertions.assertFalse(UriUtils.isAbsoluteUrl(null));
+    }
+
+    @Test
+    void testParseQueryParamsLeadingQuestionMark() {
+        MultiValueMap<String, String> params = UriUtils.parseQueryParams("?key=value&foo=bar");
+        assertEquals(2, params.size());
+        assertEquals("value", params.getFirst("key"));
+        assertEquals("bar", params.getFirst("foo"));
+    }
+
+    @Test
+    void testEncodeAndDecodeUtf8() {
+        String original = "hello world & 한글";
+        String encoded = UriUtils.encode(original);
+        assertEquals("hello%20world%20%26%20%ED%95%9C%EA%B8%80", encoded);
+        assertEquals(original, UriUtils.decode(encoded));
+
+        // Fast-path decode (no % present)
+        String plain = "plain_text_without_percent";
+        assertEquals(plain, UriUtils.decode(plain));
+    }
+
+    @Test
+    void testEncodePathAndQueryParam() {
+        assertEquals("/path/with%20space/segment", UriUtils.encodePath("/path/with space/segment"));
+        assertEquals("segment%201", UriUtils.encodePathSegment("segment 1"));
+        assertEquals("q=hello%20world&page=1", UriUtils.encodeQuery("q=hello world&page=1"));
+        assertEquals("hello%20world", UriUtils.encodeQueryParam("hello world"));
+        assertEquals("section%201", UriUtils.encodeFragment("section 1"));
+    }
+
+    @Test
+    void testExtractFileExtension() {
+        assertEquals("html", UriUtils.extractFileExtension("/products/index.html"));
+        assertEquals("png", UriUtils.extractFileExtension("/images/logo.png?v=1#top"));
+        assertEquals("html", UriUtils.extractFileExtension("/products/index.html;jsessionid=123"));
+        org.junit.jupiter.api.Assertions.assertNull(UriUtils.extractFileExtension("/products/index"));
+        org.junit.jupiter.api.Assertions.assertNull(UriUtils.extractFileExtension("/products/index."));
+    }
+
 }

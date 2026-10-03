@@ -38,8 +38,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * <p>This class is a clone of org.springframework.web.util.UriUtils</p>
-
  * Utility methods for URI encoding and decoding based on RFC 3986.
  *
  * <p>There are two types of encode methods:
@@ -59,16 +57,18 @@ import java.util.regex.Pattern;
  */
 public class UriUtils {
 
+    private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
+
+    // RFC-3986 (URI Generic Syntax) states:
+    // URI    = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+    // scheme = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+    private static final Pattern SCHEME_PATTERN = Pattern.compile("^[a-zA-Z][a-zA-Z0-9+.-]*:.*");
+
     /**
      * This class cannot be instantiated.
      */
     private UriUtils() {
     }
-
-    // RFC-3986 (URI Generic Syntax) states:
-    // URI    = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
-    // scheme = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
-    private static final Pattern SCHEME_PATTERN = Pattern.compile("^[a-zA-Z][a-zA-Z0-9+-.]*:.*");
 
     /**
      * Determines whether the given location is an absolute URL, i.e. it starts with
@@ -77,7 +77,7 @@ public class UriUtils {
      * @return {@code true} if the location is an absolute URL; {@code false} otherwise
      */
     public static boolean isAbsoluteUrl(@Nullable String location) {
-        if (location != null && location.contains(":")) {
+        if (location != null && location.indexOf(':') > 0) {
             return SCHEME_PATTERN.matcher(location).matches();
         }
         return false;
@@ -231,8 +231,8 @@ public class UriUtils {
         if (location == null || isAbsoluteUrl(location)) {
             return location;
         }
-        boolean defaultPort = ("http".equals(scheme) && serverPort == 80) ||
-                ("https".equals(scheme) && serverPort == 443) || serverPort <= 0;
+        boolean defaultPort = ("http".equalsIgnoreCase(scheme) && serverPort == 80) ||
+                ("https".equalsIgnoreCase(scheme) && serverPort == 443) || serverPort <= 0;
         String host = (defaultPort ? serverName : serverName + ":" + serverPort);
         return makeAbsoluteUrl(scheme, host, contextPath, requestUri, location);
     }
@@ -263,6 +263,15 @@ public class UriUtils {
     }
 
     /**
+     * Encode the given URI scheme with UTF-8.
+     * @param scheme the scheme to be encoded
+     * @return the encoded scheme
+     */
+    public static String encodeScheme(String scheme) {
+        return encode(scheme, StandardCharsets.UTF_8, UriComponentsType.SCHEME);
+    }
+
+    /**
      * Encode the given URI scheme with the given encoding.
      * @param scheme the scheme to be encoded
      * @param encoding the character encoding to encode to
@@ -280,6 +289,15 @@ public class UriUtils {
      */
     public static String encodeScheme(String scheme, Charset charset) {
         return encode(scheme, charset, UriComponentsType.SCHEME);
+    }
+
+    /**
+     * Encode the given URI authority with UTF-8.
+     * @param authority the authority to be encoded
+     * @return the encoded authority
+     */
+    public static String encodeAuthority(String authority) {
+        return encode(authority, StandardCharsets.UTF_8, UriComponentsType.AUTHORITY);
     }
 
     /**
@@ -303,6 +321,15 @@ public class UriUtils {
     }
 
     /**
+     * Encode the given URI user info with UTF-8.
+     * @param userInfo the user info to be encoded
+     * @return the encoded user info
+     */
+    public static String encodeUserInfo(String userInfo) {
+        return encode(userInfo, StandardCharsets.UTF_8, UriComponentsType.USER_INFO);
+    }
+
+    /**
      * Encode the given URI user info with the given encoding.
      * @param userInfo the user info to be encoded
      * @param encoding the character encoding to encode to
@@ -320,6 +347,15 @@ public class UriUtils {
      */
     public static String encodeUserInfo(String userInfo, Charset charset) {
         return encode(userInfo, charset, UriComponentsType.USER_INFO);
+    }
+
+    /**
+     * Encode the given URI host with UTF-8.
+     * @param host the host to be encoded
+     * @return the encoded host
+     */
+    public static String encodeHost(String host) {
+        return encode(host, StandardCharsets.UTF_8, UriComponentsType.HOST_IPV4);
     }
 
     /**
@@ -343,6 +379,15 @@ public class UriUtils {
     }
 
     /**
+     * Encode the given URI port with UTF-8.
+     * @param port the port to be encoded
+     * @return the encoded port
+     */
+    public static String encodePort(String port) {
+        return encode(port, StandardCharsets.UTF_8, UriComponentsType.PORT);
+    }
+
+    /**
      * Encode the given URI port with the given encoding.
      * @param port the port to be encoded
      * @param encoding the character encoding to encode to
@@ -360,6 +405,15 @@ public class UriUtils {
      */
     public static String encodePort(String port, Charset charset) {
         return encode(port, charset, UriComponentsType.PORT);
+    }
+
+    /**
+     * Encode the given URI path with UTF-8.
+     * @param path the path to be encoded
+     * @return the encoded path
+     */
+    public static String encodePath(String path) {
+        return encode(path, StandardCharsets.UTF_8, UriComponentsType.PATH);
     }
 
     /**
@@ -383,6 +437,15 @@ public class UriUtils {
     }
 
     /**
+     * Encode the given URI path segment with UTF-8.
+     * @param segment the segment to be encoded
+     * @return the encoded segment
+     */
+    public static String encodePathSegment(String segment) {
+        return encode(segment, StandardCharsets.UTF_8, UriComponentsType.PATH_SEGMENT);
+    }
+
+    /**
      * Encode the given URI path segment with the given encoding.
      * @param segment the segment to be encoded
      * @param encoding the character encoding to encode to
@@ -403,6 +466,15 @@ public class UriUtils {
     }
 
     /**
+     * Encode the given URI query with UTF-8.
+     * @param query the query to be encoded
+     * @return the encoded query
+     */
+    public static String encodeQuery(String query) {
+        return encode(query, StandardCharsets.UTF_8, UriComponentsType.QUERY);
+    }
+
+    /**
      * Encode the given URI query with the given encoding.
      * @param query the query to be encoded
      * @param encoding the character encoding to encode to
@@ -420,6 +492,15 @@ public class UriUtils {
      */
     public static String encodeQuery(String query, Charset charset) {
         return encode(query, charset, UriComponentsType.QUERY);
+    }
+
+    /**
+     * Encode the given URI query parameter with UTF-8.
+     * @param queryParam the query parameter to be encoded
+     * @return the encoded query parameter
+     */
+    public static String encodeQueryParam(String queryParam) {
+        return encode(queryParam, StandardCharsets.UTF_8, UriComponentsType.QUERY_PARAM);
     }
 
     /**
@@ -482,6 +563,9 @@ public class UriUtils {
         if (!StringUtils.hasText(queryString)) {
             return new LinkedMultiValueMap<>(0);
         }
+        if (queryString.startsWith("?")) {
+            queryString = queryString.substring(1);
+        }
         if (charset == null) {
             charset = StandardCharsets.UTF_8;
         }
@@ -515,6 +599,15 @@ public class UriUtils {
     }
 
     /**
+     * Encode the given URI fragment with UTF-8.
+     * @param fragment the fragment to be encoded
+     * @return the encoded fragment
+     */
+    public static String encodeFragment(String fragment) {
+        return encode(fragment, StandardCharsets.UTF_8, UriComponentsType.FRAGMENT);
+    }
+
+    /**
      * Encode the given URI fragment with the given encoding.
      * @param fragment the fragment to be encoded
      * @param encoding the character encoding to encode to
@@ -532,6 +625,16 @@ public class UriUtils {
      */
     public static String encodeFragment(String fragment, Charset charset) {
         return encode(fragment, charset, UriComponentsType.FRAGMENT);
+    }
+
+    /**
+     * Encode all characters that are either illegal, or have any reserved
+     * meaning, anywhere within a URI, with UTF-8.
+     * @param source the String to be encoded
+     * @return the encoded String
+     */
+    public static String encode(String source) {
+        return encode(source, StandardCharsets.UTF_8, UriComponentsType.URI);
     }
 
     /**
@@ -566,7 +669,7 @@ public class UriUtils {
      */
     @NonNull
     public static Map<String, String> encodeUriVariables(@NonNull Map<String, ?> uriVariables) {
-        Map<String, String> result = new LinkedHashMap<>((int)Math.ceil(uriVariables.size() / (double)0.75f));
+        Map<String, String> result = new LinkedHashMap<>((int) Math.ceil(uriVariables.size() / 0.75f));
         uriVariables.forEach((key, value) -> {
             String stringValue = (value != null ? value.toString() : "");
             result.put(key, encode(stringValue, StandardCharsets.UTF_8));
@@ -638,19 +741,27 @@ public class UriUtils {
             return source;
         }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length + 16);
         for (byte b : bytes) {
             if (type.isAllowed(b)) {
                 baos.write(b);
             } else {
                 baos.write('%');
-                char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, 16));
-                char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, 16));
-                baos.write(hex1);
-                baos.write(hex2);
+                baos.write(HEX_DIGITS[(b >> 4) & 0xF]);
+                baos.write(HEX_DIGITS[b & 0xF]);
             }
         }
         return baos.toString(charset);
+    }
+
+    /**
+     * Decode the given encoded URI component using UTF-8 encoding.
+     * @param source the encoded String
+     * @return the decoded value
+     * @throws IllegalArgumentException when the given source contains invalid encoded sequences
+     */
+    public static String decode(String source) {
+        return decode(source, StandardCharsets.UTF_8);
     }
 
     /**
@@ -681,13 +792,12 @@ public class UriUtils {
      */
     public static String decode(@NonNull String source, Charset charset) {
         int length = source.length();
-        if (length == 0) {
+        if (length == 0 || source.indexOf('%') == -1) {
             return source;
         }
         Assert.notNull(charset, "Charset must not be null");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
-        boolean changed = false;
         for (int i = 0; i < length; i++) {
             int ch = source.charAt(i);
             if (ch == '%') {
@@ -699,9 +809,8 @@ public class UriUtils {
                     if (u == -1 || l == -1) {
                         throw new IllegalArgumentException("Invalid encoded sequence \"" + source.substring(i) + "\"");
                     }
-                    baos.write((char) ((u << 4) + l));
+                    baos.write((u << 4) | l);
                     i += 2;
-                    changed = true;
                 } else {
                     throw new IllegalArgumentException("Invalid encoded sequence \"" + source.substring(i) + "\"");
                 }
@@ -709,7 +818,7 @@ public class UriUtils {
                 baos.write(ch);
             }
         }
-        return (changed ? baos.toString(charset) : source);
+        return baos.toString(charset);
     }
 
     /**
@@ -731,7 +840,7 @@ public class UriUtils {
         int paramIndex = path.indexOf(';', begin);
         end = (paramIndex != -1 && paramIndex < end ? paramIndex : end);
         int extIndex = path.lastIndexOf('.', end);
-        if (extIndex != -1 && extIndex >= begin) {
+        if (extIndex != -1 && extIndex >= begin && extIndex + 1 < end) {
             return path.substring(extIndex + 1, end);
         }
         return null;
