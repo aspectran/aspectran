@@ -20,6 +20,8 @@ import com.aspectran.utils.Assert;
 import java.net.URI;
 import java.nio.file.Path;
 
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
+import static com.aspectran.utils.PathUtils.WINDOWS_FILE_SEPARATOR;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
 
 /**
@@ -86,7 +88,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
             }
 
             String subPath = path;
-            if (subPath.startsWith("/") || subPath.startsWith("\\")) {
+            if (subPath.startsWith(REGULAR_FILE_SEPARATOR) || subPath.startsWith(WINDOWS_FILE_SEPARATOR)) {
                 subPath = subPath.substring(1);
             }
             return basePath.resolve(subPath).normalize();
