@@ -17,11 +17,15 @@ package com.aspectran.web.support.http;
 
 import com.aspectran.core.activity.Translet;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
- * A utility class for setting HTTP status codes on a {@link Translet}.
+ * A utility class for setting HTTP status codes and headers on a {@link Translet}.
  */
-public class HttpStatusSetter {
+public abstract class HttpStatusSetter {
+
+    private HttpStatusSetter() {
+    }
 
     /**
      * Sets the HTTP status code on the response.
@@ -64,7 +68,7 @@ public class HttpStatusSetter {
      * This is typically the response sent after a PUT request.
      * @param translet the current translet
      */
-    public static void created(Translet translet) {
+    public static void created(@NonNull Translet translet) {
         created(translet, null);
     }
 
@@ -78,7 +82,7 @@ public class HttpStatusSetter {
      * @param translet the current translet
      * @param location a location header set to the given URI
      */
-    public static void created(@NonNull Translet translet, String location) {
+    public static void created(@NonNull Translet translet, @Nullable String location) {
         translet.getResponseAdapter().setStatus(HttpStatus.CREATED.value());
         if (location != null) {
             translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
@@ -115,7 +119,47 @@ public class HttpStatusSetter {
      * @param translet the current translet
      */
     public static void movedPermanently(@NonNull Translet translet) {
+        movedPermanently(translet, null);
+    }
+
+    /**
+     * Sets the HTTP status to {@code 301 Moved Permanently}.
+     * <p>This response code means that URI of requested resource has been changed.
+     * Any future references to this resource SHOULD use one of the returned URIs.
+     * @param translet the current translet
+     * @param location a location header set to the given URI
+     */
+    public static void movedPermanently(@NonNull Translet translet, @Nullable String location) {
         translet.getResponseAdapter().setStatus(HttpStatus.MOVED_PERMANENTLY.value());
+        if (location != null) {
+            translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
+        }
+    }
+
+    /**
+     * Sets the HTTP status to {@code 302 Found}.
+     * <p>The target resource resides temporarily under a different URI.
+     * Since the redirection might be altered on occasion, the client ought to
+     * continue to use the effective request URI for future requests.
+     * @param translet the current translet
+     */
+    public static void found(@NonNull Translet translet) {
+        found(translet, null);
+    }
+
+    /**
+     * Sets the HTTP status to {@code 302 Found}.
+     * <p>The target resource resides temporarily under a different URI.
+     * Since the redirection might be altered on occasion, the client ought to
+     * continue to use the effective request URI for future requests.
+     * @param translet the current translet
+     * @param location a location header set to the given URI
+     */
+    public static void found(@NonNull Translet translet, @Nullable String location) {
+        translet.getResponseAdapter().setStatus(HttpStatus.FOUND.value());
+        if (location != null) {
+            translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
+        }
     }
 
     /**
@@ -129,7 +173,21 @@ public class HttpStatusSetter {
      * @param translet the current translet
      */
     public static void seeOther(@NonNull Translet translet) {
+        seeOther(translet, null);
+    }
+
+    /**
+     * Sets the HTTP status to {@code 303 See Other}.
+     * <p>The response to the request can be found under a different URI and SHOULD be retrieved
+     * using a GET method on that resource.
+     * @param translet the current translet
+     * @param location a location header set to the given URI
+     */
+    public static void seeOther(@NonNull Translet translet, @Nullable String location) {
         translet.getResponseAdapter().setStatus(HttpStatus.SEE_OTHER.value());
+        if (location != null) {
+            translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
+        }
     }
 
     /**
@@ -149,7 +207,45 @@ public class HttpStatusSetter {
      * @param translet the current translet
      */
     public static void temporaryRedirect(@NonNull Translet translet) {
+        temporaryRedirect(translet, null);
+    }
+
+    /**
+     * Sets the HTTP status to {@code 307 Temporary Redirect}.
+     * <p>The target resource resides temporarily under a different URI and the user agent
+     * MUST NOT change the request method if it performs an automatic redirection to that URI.
+     * @param translet the current translet
+     * @param location a location header set to the given URI
+     */
+    public static void temporaryRedirect(@NonNull Translet translet, @Nullable String location) {
         translet.getResponseAdapter().setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
+        if (location != null) {
+            translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
+        }
+    }
+
+    /**
+     * Sets the HTTP status to {@code 308 Permanent Redirect}.
+     * <p>The target resource has been assigned a new permanent URI and any future references
+     * to this resource should use one of the returned URIs.
+     * @param translet the current translet
+     */
+    public static void permanentRedirect(@NonNull Translet translet) {
+        permanentRedirect(translet, null);
+    }
+
+    /**
+     * Sets the HTTP status to {@code 308 Permanent Redirect}.
+     * <p>The target resource has been assigned a new permanent URI and any future references
+     * to this resource should use one of the returned URIs.
+     * @param translet the current translet
+     * @param location a location header set to the given URI
+     */
+    public static void permanentRedirect(@NonNull Translet translet, @Nullable String location) {
+        translet.getResponseAdapter().setStatus(HttpStatus.PERMANENT_REDIRECT.value());
+        if (location != null) {
+            translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
+        }
     }
 
     /**
@@ -245,6 +341,26 @@ public class HttpStatusSetter {
     }
 
     /**
+     * Sets the HTTP status to {@code 422 Unprocessable Entity}.
+     * <p>The server understands the content type of the request entity,
+     * and the syntax of the request entity is correct, but it was unable
+     * to process the contained instructions.
+     * @param translet the current translet
+     */
+    public static void unprocessableEntity(@NonNull Translet translet) {
+        translet.getResponseAdapter().setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    }
+
+    /**
+     * Sets the HTTP status to {@code 429 Too Many Requests}.
+     * <p>The user has sent too many requests in a given amount of time ("rate limiting").
+     * @param translet the current translet
+     */
+    public static void tooManyRequests(@NonNull Translet translet) {
+        translet.getResponseAdapter().setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+    }
+
+    /**
      * Sets the HTTP status to {@code 500 Internal Server Error}.
      * <p>The server encountered an unexpected condition which
      * prevented it from fulfilling the request.
@@ -252,6 +368,37 @@ public class HttpStatusSetter {
      */
     public static void internalServerError(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    /**
+     * Sets the HTTP status to {@code 502 Bad Gateway}.
+     * <p>The server, while acting as a gateway or proxy, received an invalid
+     * response from the inbound server it accessed while attempting to fulfill
+     * the request.
+     * @param translet the current translet
+     */
+    public static void badGateway(@NonNull Translet translet) {
+        translet.getResponseAdapter().setStatus(HttpStatus.BAD_GATEWAY.value());
+    }
+
+    /**
+     * Sets the HTTP status to {@code 503 Service Unavailable}.
+     * <p>The server is currently unable to handle the request due to a temporary
+     * overloading or maintenance of the server.
+     * @param translet the current translet
+     */
+    public static void serviceUnavailable(@NonNull Translet translet) {
+        translet.getResponseAdapter().setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+    }
+
+    /**
+     * Sets the HTTP status to {@code 504 Gateway Timeout}.
+     * <p>The server, while acting as a gateway or proxy, did not receive a timely
+     * response from the upstream server specified by the URI.
+     * @param translet the current translet
+     */
+    public static void gatewayTimeout(@NonNull Translet translet) {
+        translet.getResponseAdapter().setStatus(HttpStatus.GATEWAY_TIMEOUT.value());
     }
 
 }

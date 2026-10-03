@@ -21,9 +21,6 @@ import org.jspecify.annotations.Nullable;
 /**
  * An enumeration of HTTP status codes.
  *
- * @author Arjen Poutsma
- * @author Sebastien Deleuze
- * @author Brian Clozel
  * @see <a href="https://www.iana.org/assignments/http-status-codes">HTTP Status Code Registry</a>
  * @see <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP status codes - Wikipedia</a>
  */
@@ -33,12 +30,12 @@ public enum HttpStatus {
 
     /**
      * {@code 100 Continue}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.2.1">HTTP/1.1: Semantics and Content, section 6.2.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.2.1">Section 15.2.1 of RFC 9110</a>
      */
     CONTINUE(100, "Continue"),
     /**
      * {@code 101 Switching Protocols}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.2.2">HTTP/1.1: Semantics and Content, section 6.2.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.2.2">Section 15.2.2 of RFC 9110</a>
      */
     SWITCHING_PROTOCOLS(101, "Switching Protocols"),
     /**
@@ -47,47 +44,54 @@ public enum HttpStatus {
      */
     PROCESSING(102, "Processing"),
     /**
+     * {@code 103 Early Hints}.
+     * @see <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>
+     */
+    EARLY_HINTS(103, "Early Hints"),
+    /**
      * {@code 103 Checkpoint}.
      * @see <a href="https://code.google.com/p/gears/wiki/ResumableHttpRequestsProposal">A proposal for supporting
      * resumable POST/PUT HTTP requests in HTTP/1.0</a>
+     * @deprecated in favor of {@link #EARLY_HINTS}
      */
+    @Deprecated
     CHECKPOINT(103, "Checkpoint"),
 
     // 2xx Success
 
     /**
      * {@code 200 OK}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">HTTP/1.1: Semantics and Content, section 6.3.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.1">Section 15.3.1 of RFC 9110</a>
      */
     OK(200, "OK"),
     /**
      * {@code 201 Created}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.3.2">HTTP/1.1: Semantics and Content, section 6.3.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.2">Section 15.3.2 of RFC 9110</a>
      */
     CREATED(201, "Created"),
     /**
      * {@code 202 Accepted}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.3.3">HTTP/1.1: Semantics and Content, section 6.3.3</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.3">Section 15.3.3 of RFC 9110</a>
      */
     ACCEPTED(202, "Accepted"),
     /**
      * {@code 203 Non-Authoritative Information}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.3.4">HTTP/1.1: Semantics and Content, section 6.3.4</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.4">Section 15.3.4 of RFC 9110</a>
      */
     NON_AUTHORITATIVE_INFORMATION(203, "Non-Authoritative Information"),
     /**
      * {@code 204 No Content}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.3.5">HTTP/1.1: Semantics and Content, section 6.3.5</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.5">Section 15.3.5 of RFC 9110</a>
      */
     NO_CONTENT(204, "No Content"),
     /**
      * {@code 205 Reset Content}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.3.6">HTTP/1.1: Semantics and Content, section 6.3.6</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.6">Section 15.3.6 of RFC 9110</a>
      */
     RESET_CONTENT(205, "Reset Content"),
     /**
      * {@code 206 Partial Content}.
-     * @see <a href="https://tools.ietf.org/html/rfc7233#section-4.1">HTTP/1.1: Range Requests, section 4.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.3.7">Section 15.3.7 of RFC 9110</a>
      */
     PARTIAL_CONTENT(206, "Partial Content"),
     /**
@@ -110,44 +114,44 @@ public enum HttpStatus {
 
     /**
      * {@code 300 Multiple Choices}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.4.1">HTTP/1.1: Semantics and Content, section 6.4.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.1">Section 15.4.1 of RFC 9110</a>
      */
     MULTIPLE_CHOICES(300, "Multiple Choices"),
     /**
      * {@code 301 Moved Permanently}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.4.2">HTTP/1.1: Semantics and Content, section 6.4.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.2">Section 15.4.2 of RFC 9110</a>
      */
     MOVED_PERMANENTLY(301, "Moved Permanently"),
     /**
      * {@code 302 Found}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.4.3">HTTP/1.1: Semantics and Content, section 6.4.3</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.3">Section 15.4.3 of RFC 9110</a>
      */
     FOUND(302, "Found"),
     /**
      * {@code 303 See Other}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.4.4">HTTP/1.1: Semantics and Content, section 6.4.4</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.4">Section 15.4.4 of RFC 9110</a>
      */
     SEE_OTHER(303, "See Other"),
     /**
      * {@code 304 Not Modified}.
-     * @see <a href="https://tools.ietf.org/html/rfc7232#section-4.1">HTTP/1.1: Conditional Requests, section 4.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.5">Section 15.4.5 of RFC 9110</a>
      */
     NOT_MODIFIED(304, "Not Modified"),
     /**
      * {@code 305 Use Proxy}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.4.5">HTTP/1.1: Semantics and Content, section 6.4.5</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.6">Section 15.4.6 of RFC 9110</a>
      * @deprecated due to security concerns regarding in-band configuration of a proxy
      */
     @Deprecated
     USE_PROXY(305, "Use Proxy"),
     /**
      * {@code 307 Temporary Redirect}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.4.7">HTTP/1.1: Semantics and Content, section 6.4.7</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.8">Section 15.4.8 of RFC 9110</a>
      */
     TEMPORARY_REDIRECT(307, "Temporary Redirect"),
     /**
      * {@code 308 Permanent Redirect}.
-     * @see <a href="https://tools.ietf.org/html/rfc7238">RFC 7238</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.9">Section 15.4.9 of RFC 9110</a>
      */
     PERMANENT_REDIRECT(308, "Permanent Redirect"),
 
@@ -155,92 +159,92 @@ public enum HttpStatus {
 
     /**
      * {@code 400 Bad Request}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">HTTP/1.1: Semantics and Content, section 6.5.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.1">Section 15.5.1 of RFC 9110</a>
      */
     BAD_REQUEST(400, "Bad Request"),
     /**
      * {@code 401 Unauthorized}.
-     * @see <a href="https://tools.ietf.org/html/rfc7235#section-3.1">HTTP/1.1: Authentication, section 3.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.2">Section 15.5.2 of RFC 9110</a>
      */
     UNAUTHORIZED(401, "Unauthorized"),
     /**
      * {@code 402 Payment Required}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.2">HTTP/1.1: Semantics and Content, section 6.5.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.3">Section 15.5.3 of RFC 9110</a>
      */
     PAYMENT_REQUIRED(402, "Payment Required"),
     /**
      * {@code 403 Forbidden}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.3">HTTP/1.1: Semantics and Content, section 6.5.3</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.4">Section 15.5.4 of RFC 9110</a>
      */
     FORBIDDEN(403, "Forbidden"),
     /**
      * {@code 404 Not Found}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.4">HTTP/1.1: Semantics and Content, section 6.5.4</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.5">Section 15.5.5 of RFC 9110</a>
      */
     NOT_FOUND(404, "Not Found"),
     /**
      * {@code 405 Method Not Allowed}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.5">HTTP/1.1: Semantics and Content, section 6.5.5</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.6">Section 15.5.6 of RFC 9110</a>
      */
     METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
     /**
      * {@code 406 Not Acceptable}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.6">HTTP/1.1: Semantics and Content, section 6.5.6</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.7">Section 15.5.7 of RFC 9110</a>
      */
     NOT_ACCEPTABLE(406, "Not Acceptable"),
     /**
      * {@code 407 Proxy Authentication Required}.
-     * @see <a href="https://tools.ietf.org/html/rfc7235#section-3.2">HTTP/1.1: Authentication, section 3.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.8">Section 15.5.8 of RFC 9110</a>
      */
     PROXY_AUTHENTICATION_REQUIRED(407, "Proxy Authentication Required"),
     /**
      * {@code 408 Request Timeout}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.7">HTTP/1.1: Semantics and Content, section 6.5.7</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.9">Section 15.5.9 of RFC 9110</a>
      */
     REQUEST_TIMEOUT(408, "Request Timeout"),
     /**
      * {@code 409 Conflict}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.8">HTTP/1.1: Semantics and Content, section 6.5.8</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.10">Section 15.5.10 of RFC 9110</a>
      */
     CONFLICT(409, "Conflict"),
     /**
      * {@code 410 Gone}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.9">HTTP/1.1: Semantics and Content, section 6.5.9</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.11">Section 15.5.11 of RFC 9110</a>
      */
     GONE(410, "Gone"),
     /**
      * {@code 411 Length Required}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.10">HTTP/1.1: Semantics and Content, section 6.5.10</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.12">Section 15.5.12 of RFC 9110</a>
      */
     LENGTH_REQUIRED(411, "Length Required"),
     /**
      * {@code 412 Precondition failed}.
-     * @see <a href="https://tools.ietf.org/html/rfc7232#section-4.2">HTTP/1.1: Conditional Requests, section 4.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.13">Section 15.5.13 of RFC 9110</a>
      */
     PRECONDITION_FAILED(412, "Precondition Failed"),
     /**
      * {@code 413 Payload Too Large}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.11">HTTP/1.1: Semantics and Content, section 6.5.11</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.14">Section 15.5.14 of RFC 9110</a>
      */
     PAYLOAD_TOO_LARGE(413, "Payload Too Large"),
     /**
      * {@code 414 URI Too Long}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.12">HTTP/1.1: Semantics and Content, section 6.5.12</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.15">Section 15.5.15 of RFC 9110</a>
      */
     URI_TOO_LONG(414, "URI Too Long"),
     /**
      * {@code 415 Unsupported Media Type}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.13">HTTP/1.1: Semantics and Content, section 6.5.13</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.16">Section 15.5.16 of RFC 9110</a>
      */
     UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
     /**
      * {@code 416 Requested Range Not Satisfiable}.
-     * @see <a href="https://tools.ietf.org/html/rfc7233#section-4.4">HTTP/1.1: Range Requests, section 4.4</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.17">Section 15.5.17 of RFC 9110</a>
      */
     REQUESTED_RANGE_NOT_SATISFIABLE(416, "Requested range not satisfiable"),
     /**
      * {@code 417 Expectation Failed}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.14">HTTP/1.1: Semantics and Content, section 6.5.14</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.18">Section 15.5.18 of RFC 9110</a>
      */
     EXPECTATION_FAILED(417, "Expectation Failed"),
     /**
@@ -250,7 +254,7 @@ public enum HttpStatus {
     I_AM_A_TEAPOT(418, "I'm a teapot"),
     /**
      * {@code 422 Unprocessable Entity}.
-     * @see <a href="https://tools.ietf.org/html/rfc4918#section-11.2">WebDAV</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.21">Section 15.5.21 of RFC 9110</a>
      */
     UNPROCESSABLE_ENTITY(422, "Unprocessable Entity"),
     /**
@@ -264,8 +268,13 @@ public enum HttpStatus {
      */
     FAILED_DEPENDENCY(424, "Failed Dependency"),
     /**
+     * {@code 425 Too Early}.
+     * @see <a href="https://tools.ietf.org/html/rfc8470">RFC 8470</a>
+     */
+    TOO_EARLY(425, "Too Early"),
+    /**
      * {@code 426 Upgrade Required}.
-     * @see <a href="https://tools.ietf.org/html/rfc2817#section-6">Upgrading to TLS Within HTTP/1.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.5.22">Section 15.5.22 of RFC 9110</a>
      */
     UPGRADE_REQUIRED(426, "Upgrade Required"),
     /**
@@ -285,8 +294,7 @@ public enum HttpStatus {
     REQUEST_HEADER_FIELDS_TOO_LARGE(431, "Request Header Fields Too Large"),
     /**
      * {@code 451 Unavailable For Legal Reasons}.
-     * @see <a href="https://tools.ietf.org/html/draft-ietf-httpbis-legally-restricted-status-04">
-     *     An HTTP Status Code to Report Legal Obstacles</a>
+     * @see <a href="https://tools.ietf.org/html/rfc7725">RFC 7725</a>
      */
     UNAVAILABLE_FOR_LEGAL_REASONS(451, "Unavailable For Legal Reasons"),
 
@@ -294,32 +302,32 @@ public enum HttpStatus {
 
     /**
      * {@code 500 Internal Server Error}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">HTTP/1.1: Semantics and Content, section 6.6.1</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.6.1">Section 15.6.1 of RFC 9110</a>
      */
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
     /**
      * {@code 501 Not Implemented}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.6.2">HTTP/1.1: Semantics and Content, section 6.6.2</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.6.2">Section 15.6.2 of RFC 9110</a>
      */
     NOT_IMPLEMENTED(501, "Not Implemented"),
     /**
      * {@code 502 Bad Gateway}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.6.3">HTTP/1.1: Semantics and Content, section 6.6.3</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.6.3">Section 15.6.3 of RFC 9110</a>
      */
     BAD_GATEWAY(502, "Bad Gateway"),
     /**
      * {@code 503 Service Unavailable}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.6.4">HTTP/1.1: Semantics and Content, section 6.6.4</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.6.4">Section 15.6.4 of RFC 9110</a>
      */
     SERVICE_UNAVAILABLE(503, "Service Unavailable"),
     /**
      * {@code 504 Gateway Timeout}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.6.5">HTTP/1.1: Semantics and Content, section 6.6.5</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.6.5">Section 15.6.5 of RFC 9110</a>
      */
     GATEWAY_TIMEOUT(504, "Gateway Timeout"),
     /**
      * {@code 505 HTTP Version Not Supported}.
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-6.6.6">HTTP/1.1: Semantics and Content, section 6.6.6</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.6.6">Section 15.6.6 of RFC 9110</a>
      */
     HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version not supported"),
     /**
@@ -351,6 +359,8 @@ public enum HttpStatus {
      * @see <a href="https://tools.ietf.org/html/rfc6585#section-6">Additional HTTP Status Codes</a>
      */
     NETWORK_AUTHENTICATION_REQUIRED(511, "Network Authentication Required");
+
+    private static final HttpStatus[] VALUES = values();
 
     private final int value;
 
@@ -433,6 +443,17 @@ public enum HttpStatus {
     }
 
     /**
+     * Whether this status code is in the HTTP series
+     * {@link Series#CLIENT_ERROR} or {@link Series#SERVER_ERROR}.
+     * @return whether this status code is in the CLIENT_ERROR or SERVER_ERROR series
+     * @see #is4xxClientError()
+     * @see #is5xxServerError()
+     */
+    public boolean isError() {
+        return (is4xxClientError() || is5xxServerError());
+    }
+
+    /**
      * Returns the HTTP status series of this status code.
      * @return the HTTP status series
      * @see Series
@@ -474,7 +495,7 @@ public enum HttpStatus {
      */
     @Nullable
     public static HttpStatus resolve(int statusCode) {
-        for (HttpStatus status : values()) {
+        for (HttpStatus status : VALUES) {
             if (status.value == statusCode) {
                 return status;
             }
@@ -516,13 +537,29 @@ public enum HttpStatus {
          */
         @NonNull
         public static Series forStatus(int statusCode) {
-            int seriesCode = statusCode / 100;
-            for (Series series : values()) {
-                if (series.value == seriesCode) {
-                    return series;
-                }
+            Series series = resolve(statusCode);
+            if (series == null) {
+                throw new IllegalArgumentException("No matching constant for [" + statusCode + "]");
             }
-            throw new IllegalArgumentException("No matching constant for [" + statusCode + "]");
+            return series;
+        }
+
+        /**
+         * Resolve the given status code to an {@code HttpStatus.Series}, if possible.
+         * @param statusCode the HTTP status code
+         * @return the corresponding {@code Series}, or {@code null} if not found
+         */
+        @Nullable
+        public static Series resolve(int statusCode) {
+            int seriesCode = statusCode / 100;
+            return switch (seriesCode) {
+                case 1 -> INFORMATIONAL;
+                case 2 -> SUCCESSFUL;
+                case 3 -> REDIRECTION;
+                case 4 -> CLIENT_ERROR;
+                case 5 -> SERVER_ERROR;
+                default -> null;
+            };
         }
     }
 
