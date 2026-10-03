@@ -19,18 +19,20 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.utils.Assert;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Provides a unified, map-like facade for accessing all data related to an {@link Activity}.
@@ -47,14 +49,13 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>This class is primarily designed for use in a single thread only and is not thread-safe.</p>
  */
-public class ActivityData extends ConcurrentHashMap<String, Object> {
+public class ActivityData extends LinkedHashMap<String, Object> {
 
     @Serial
     private static final long serialVersionUID = -4557424414862800204L;
 
     /**
-     * Placeholder marker indicating that a value was preemptively cached as absent.
-     * Used internally to avoid repeated lookups for missing entries.
+     * Placeholder marker indicating that a value was preemptively marked for lazy resolution.
      */
     private static final Object PREEMPTED = new Object();
 
@@ -68,8 +69,9 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      * Creates a new ActivityData instance.
      * @param activity the activity associated with this data
      */
-    ActivityData(Activity activity) {
+    ActivityData(@NonNull Activity activity) {
         super();
+        Assert.notNull(activity, "activity must not be null");
         this.activity = activity;
         refresh();
     }
@@ -78,46 +80,51 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      * Returns the value to which the specified key is mapped, performing a lazy lookup
      * from action results, request attributes/parameters, and session attributes if not
      * already cached in this map. Successfully resolved values are cached for subsequent
-     * access; missing values are marked to avoid repeated lookups.
+     * access; missing values are removed to avoid repeated lookups.
      * <p>The lookup order is: action results, request attributes, request parameters, session attributes.</p>
      * @param key the key whose associated value is to be returned
      * @return the mapped value, or {@code null} if none
      */
     @Override
     public Object get(Object key) {
-        Object value = super.get(key);
-        if (value != null && !value.equals(PREEMPTED)) {
-            return value;
-        }
         if (key == null) {
             return null;
         }
 
         String name = key.toString();
+        Object value = super.get(name);
+        if (value != null && value != PREEMPTED) {
+            return value;
+        }
+        if (value == null && super.containsKey(name)) {
+            return null;
+        }
+
         value = getActionResultWithoutCache(name);
         if (value != null) {
-            preempt(name, value);
+            super.put(name, value);
             return value;
         }
 
         value = getAttributeWithoutCache(name);
         if (value != null) {
-            preempt(name, value);
+            super.put(name, value);
             return value;
         }
 
         value = getParameterWithoutCache(name);
         if (value != null) {
-            preempt(name, value);
+            super.put(name, value);
             return value;
         }
 
         value = getSessionAttributeWithoutCache(name);
         if (value != null) {
-            preempt(name, value);
+            super.put(name, value);
             return value;
         }
 
+        super.remove(name);
         return null;
     }
 
@@ -139,13 +146,15 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
 
     /**
      * Returns {@code true} if this map contains a mapping for the specified key.
-     * This method triggers lazy resolution for preempted keys if necessary.
      * @param key key whose presence in this map is to be tested
      * @return {@code true} if this map contains a mapping for the specified key
      */
     @Override
     public boolean containsKey(Object key) {
-        return (super.get(key) != null);
+        if (key == null) {
+            return false;
+        }
+        return super.containsKey(key.toString());
     }
 
     /**
@@ -172,7 +181,7 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
     @Override
     @NonNull
     public Set<Map.Entry<String, Object>> entrySet() {
-        Set<Map.Entry<String, Object>> set = new HashSet<>();
+        Set<Map.Entry<String, Object>> set = new LinkedHashSet<>();
         for (Map.Entry<String, Object> entry : super.entrySet()) {
             if (entry.getValue() == PREEMPTED) {
                 String key = entry.getKey();
@@ -194,6 +203,7 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      *         or {@code null} if the parameter does not exist
      * @see RequestAdapter#setParameter
      */
+    @Nullable
     public Object getParameterWithoutCache(String name) {
         if (activity.getRequestAdapter() != null) {
             String[] values = activity.getRequestAdapter().getParameterValues(name);
@@ -217,6 +227,7 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      *         or {@code null} if the attribute does not exist
      * @see RequestAdapter#getAttribute
      */
+    @Nullable
     public Object getAttributeWithoutCache(String name) {
         if (activity.getRequestAdapter() != null) {
             return activity.getRequestAdapter().getAttribute(name);
@@ -233,6 +244,7 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      * @return an {@code Object} containing the value of the action result,
      *         or {@code null} if the action result does not exist
      */
+    @Nullable
     public Object getActionResultWithoutCache(String name) {
         if (activity.getProcessResult() != null) {
             return activity.getProcessResult().getResultValue(name);
@@ -250,6 +262,7 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      *         or {@code null} if the attribute does not exist
      * @see SessionAdapter#getAttribute
      */
+    @Nullable
     public Object getSessionAttributeWithoutCache(String name) {
         if (activity.hasSessionAdapter()) {
             return activity.getSessionAdapter().getAttribute(name);
@@ -305,17 +318,8 @@ public class ActivityData extends ConcurrentHashMap<String, Object> {
      * @param name the entry name to preempt
      */
     private void preempt(String name) {
-        preempt(name, super.get(name));
-    }
-
-    /**
-     * Internal helper to mark a name as preempted only when a current mapping has no value.
-     * @param name the entry name
-     * @param value the current mapped value (may be {@code null})
-     */
-    private void preempt(String name, Object value) {
-        if (value == null) {
-            put(name, PREEMPTED);
+        if (name != null && !super.containsKey(name)) {
+            super.put(name, PREEMPTED);
         }
     }
 
