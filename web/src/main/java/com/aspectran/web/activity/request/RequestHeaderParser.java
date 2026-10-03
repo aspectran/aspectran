@@ -16,14 +16,15 @@
 package com.aspectran.web.activity.request;
 
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
+import com.aspectran.web.support.http.HttpMediaTypeNotSupportedException;
 import com.aspectran.web.support.http.InvalidMediaTypeException;
 import com.aspectran.web.support.http.MediaType;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,6 +48,26 @@ public final class RequestHeaderParser {
     }
 
     /**
+     * Parses the 'Content-Type' header from the request and returns the {@link MediaType}.
+     * @param requestAdapter the request adapter providing access to request headers
+     * @return the parsed {@link MediaType}, or {@code null} if the 'Content-Type' header is not present
+     * @throws HttpMediaTypeNotSupportedException if the 'Content-Type' header cannot be parsed
+     */
+    @Nullable
+    public static MediaType resolveContentType(@NonNull RequestAdapter requestAdapter)
+            throws HttpMediaTypeNotSupportedException {
+        String contentType = requestAdapter.getHeader(HttpHeaders.CONTENT_TYPE);
+        if (StringUtils.hasLength(contentType)) {
+            try {
+                return MediaType.parseMediaType(contentType);
+            } catch (InvalidMediaTypeException e) {
+                throw new HttpMediaTypeNotSupportedException("Could not parse 'Content-Type' header: " + e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
      * Parses the 'Accept' header from the request and returns a list of {@link MediaType}s
      * sorted by specificity and quality.
      * @param requestAdapter the request adapter providing access to request headers
@@ -57,15 +78,14 @@ public final class RequestHeaderParser {
     @NonNull
     public static List<MediaType> resolveAcceptContentTypes(@NonNull RequestAdapter requestAdapter)
             throws HttpMediaTypeNotAcceptableException {
-        Collection<String> acceptHeaderValues = requestAdapter.getHeaderValues(HttpHeaders.ACCEPT);
+        List<String> acceptHeaderValues = requestAdapter.getHeaderValues(HttpHeaders.ACCEPT);
         if (acceptHeaderValues == null || acceptHeaderValues.isEmpty()) {
             return MEDIA_TYPE_ALL_LIST;
         }
 
-        List<String> headerValues = new ArrayList<>(acceptHeaderValues);
         try {
-            List<MediaType> mediaTypes = MediaType.parseMediaTypes(headerValues);
-            if (mediaTypes != null && !mediaTypes.isEmpty()) {
+            List<MediaType> mediaTypes = MediaType.parseMediaTypes(acceptHeaderValues);
+            if (!mediaTypes.isEmpty()) {
                 MediaType.sortBySpecificityAndQuality(mediaTypes);
                 return mediaTypes;
             } else {
@@ -73,7 +93,7 @@ public final class RequestHeaderParser {
             }
         } catch (InvalidMediaTypeException e) {
             throw new HttpMediaTypeNotAcceptableException(
-                    "Could not parse 'Accept' header " + headerValues + ": " + e.getMessage());
+                    "Could not parse 'Accept' header " + acceptHeaderValues + ": " + e.getMessage());
         }
     }
 
