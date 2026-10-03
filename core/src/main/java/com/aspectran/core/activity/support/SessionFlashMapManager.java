@@ -50,18 +50,24 @@ public class SessionFlashMapManager extends AbstractFlashMapManager {
      */
     @Override
     protected void updateFlashMaps(List<FlashMap> flashMaps, @NonNull Translet translet) {
-        SessionAdapter sessionAdapter = translet.getSessionAdapter();
-        sessionAdapter.setAttribute(FLASH_MAPS_SESSION_ATTRIBUTE,
-                (flashMaps != null && !flashMaps.isEmpty() ? flashMaps : null));
+        if (translet.hasSessionAdapter()) {
+            SessionAdapter sessionAdapter = translet.getSessionAdapter();
+            sessionAdapter.setAttribute(FLASH_MAPS_SESSION_ATTRIBUTE,
+                    (flashMaps != null && !flashMaps.isEmpty() ? flashMaps : null));
+        }
     }
 
     /**
      * Exposes the best available session mutex.
      */
     @Override
+    @Nullable
     protected Object getFlashMapsMutex(@NonNull Translet translet) {
-        SessionAdapter sessionAdapter = translet.getSessionAdapter();
-        return sessionAdapter.getAdaptee();
+        if (translet.hasSessionAdapter()) {
+            SessionAdapter sessionAdapter = translet.getSessionAdapter();
+            return sessionAdapter.getAdaptee();
+        }
+        return null;
     }
 
 }

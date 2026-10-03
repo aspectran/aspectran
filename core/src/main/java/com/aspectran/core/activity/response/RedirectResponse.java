@@ -78,7 +78,7 @@ public class RedirectResponse implements Response {
 
             if (activity.getTranslet().hasOutputFlashMap()) {
                 FlashMap flashMap = activity.getTranslet().getOutputFlashMap();
-                if (StringUtils.isEmpty(flashMap.getTargetRequestName())) {
+                if (redirectTarget != null && StringUtils.isEmpty(flashMap.getTargetRequestName())) {
                     flashMap.setTargetRequestName(redirectTarget.getRequestName());
                 }
             }

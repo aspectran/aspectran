@@ -18,7 +18,6 @@ package com.aspectran.core.activity.support;
 import com.aspectran.core.activity.FlashMap;
 import com.aspectran.core.activity.FlashMapManager;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -77,13 +76,15 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
                 synchronized (mutex) {
                     allFlashMaps = retrieveFlashMaps(translet);
                     if (allFlashMaps != null) {
-                        allFlashMaps.removeAll(mapsToRemove);
-                        updateFlashMaps(allFlashMaps, translet);
+                        List<FlashMap> updatedFlashMaps = new CopyOnWriteArrayList<>(allFlashMaps);
+                        updatedFlashMaps.removeAll(mapsToRemove);
+                        updateFlashMaps(updatedFlashMaps, translet);
                     }
                 }
             } else {
-                allFlashMaps.removeAll(mapsToRemove);
-                updateFlashMaps(allFlashMaps, translet);
+                List<FlashMap> updatedFlashMaps = new CopyOnWriteArrayList<>(allFlashMaps);
+                updatedFlashMaps.removeAll(mapsToRemove);
+                updateFlashMaps(updatedFlashMaps, translet);
             }
         }
 
@@ -146,28 +147,23 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
         }
 
         FlashMap flashMap = translet.getOutputFlashMap();
-        if (StringUtils.isEmpty(flashMap.getTargetRequestName())) {
-            flashMap.setTargetRequestName(translet.getRequestName());
-        }
         flashMap.startExpirationPeriod(getFlashMapTimeout());
 
         Object mutex = getFlashMapsMutex(translet);
         if (mutex != null) {
             synchronized (mutex) {
                 List<FlashMap> allFlashMaps = retrieveFlashMaps(translet);
-                if (allFlashMaps == null) {
-                    allFlashMaps = new CopyOnWriteArrayList<>();
-                }
-                allFlashMaps.add(flashMap);
-                updateFlashMaps(allFlashMaps, translet);
+                List<FlashMap> updatedFlashMaps = (allFlashMaps != null ?
+                        new CopyOnWriteArrayList<>(allFlashMaps) : new CopyOnWriteArrayList<>());
+                updatedFlashMaps.add(flashMap);
+                updateFlashMaps(updatedFlashMaps, translet);
             }
         } else {
             List<FlashMap> allFlashMaps = retrieveFlashMaps(translet);
-            if (allFlashMaps == null) {
-                allFlashMaps = new ArrayList<>(1);
-            }
-            allFlashMaps.add(flashMap);
-            updateFlashMaps(allFlashMaps, translet);
+            List<FlashMap> updatedFlashMaps = (allFlashMaps != null ?
+                    new CopyOnWriteArrayList<>(allFlashMaps) : new CopyOnWriteArrayList<>());
+            updatedFlashMaps.add(flashMap);
+            updateFlashMaps(updatedFlashMaps, translet);
         }
     }
 

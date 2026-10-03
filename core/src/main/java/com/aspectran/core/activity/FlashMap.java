@@ -30,16 +30,12 @@ import java.util.HashMap;
  * the redirect (typically in the session) and is made available after the
  * redirect and removed immediately.
  *
- * <p>A FlashMap can be set up with a request path and request parameters to
- * help identify the target request. Without this information, a FlashMap is
- * made available to the next request, which may or may not be the intended
- * recipient. On a redirect, the target URL is known and a FlashMap can be
- * updated with that information. This is done automatically when the
- * {@code org.springframework.web.servlet.view.RedirectView} is used.
+ * <p>A FlashMap can be set up with a target request name to help identify the
+ * target request. Without this information, a FlashMap is made available to the
+ * next request, which may or may not be the intended recipient. On a redirect,
+ * the target URL is known and a FlashMap is automatically updated with that information
+ * when {@link com.aspectran.core.activity.response.RedirectResponse} is used.</p>
  *
- * <p>Note: annotated controllers will usually not use FlashMap directly.
- * See {@code org.springframework.web.servlet.mvc.support.RedirectAttributes}
- * for an overview of using flash attributes in annotated controllers.
  * @see FlashMapManager
  * @since 8.4.0
  */
@@ -109,7 +105,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
     public int compareTo(@NonNull FlashMap other) {
         int thisUrlPath = (targetRequestName != null ? 1 : 0);
         int otherUrlPath = (other.targetRequestName != null ? 1 : 0);
-        return otherUrlPath - thisUrlPath;
+        return Integer.compare(otherUrlPath, thisUrlPath);
     }
 
     @Override
