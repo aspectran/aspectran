@@ -258,4 +258,59 @@ class ContentsToAponTest {
         assertEquals(s1, s2);
     }
 
+    @Test
+    void testProcessResultWithName() {
+        ProcessResult processResult = new ProcessResult();
+        processResult.setName("rootProcess");
+
+        ContentResult contentResult = new ContentResult(processResult, 2);
+        contentResult.addActionResult(new ActionResult("action1", "val1"));
+
+        Parameters ps = ContentsToParameters.from(processResult);
+
+        String apon = """
+            rootProcess: {
+              action1: val1
+            }""";
+
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
+    }
+
+    @Test
+    void testContentResultDirect() {
+        ContentResult contentResult = new ContentResult();
+        contentResult.setName("content1");
+        contentResult.addActionResult(new ActionResult("item1", "val1"));
+        contentResult.addActionResult(new ActionResult("item2", "val2"));
+
+        Parameters ps = ContentsToParameters.from(contentResult);
+
+        String apon = """
+            content1: {
+              item1: val1
+              item2: val2
+            }""";
+
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
+    }
+
+    @Test
+    void testActionResultDirect() {
+        ActionResult actionResult = new ActionResult("user", "john");
+        Parameters ps = ContentsToParameters.from(actionResult);
+
+        String apon = "user: john";
+
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
+    }
+
 }

@@ -24,6 +24,7 @@ import com.aspectran.utils.apon.ObjectToParameters;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Specializes {@link ObjectToParameters} to convert a {@link ProcessResult} object
@@ -61,15 +62,17 @@ public class ContentsToParameters extends ObjectToParameters {
      * whose value is already a {@link Parameters} object, that object is returned
      * directly. Otherwise, a new {@link VariableParameters} instance is created
      * and populated.</p>
-     * @param object the object to be converted, expected to be a {@link ProcessResult}
+     * @param object the object to be converted (expected to be {@link ProcessResult},
+     *               {@link ContentResult}, or {@link ActionResult})
      * @return a {@link Parameters} object representing the converted data
      */
+    @Override
     @NonNull
     @SuppressWarnings("unchecked")
-    protected <T extends Parameters> T createContainer(Object object) {
+    protected <T extends Parameters> T createContainer(@NonNull Object object) {
         Assert.notNull(object, "object must not be null");
         if (object instanceof ProcessResult processResult) {
-            if (processResult.size() == 1) {
+            if (processResult.getName() == null && processResult.size() == 1) {
                 ContentResult contentResult = processResult.getFirst();
                 if (contentResult.getName() == null && contentResult.size() == 1) {
                     ActionResult actionResult = contentResult.getFirst();
@@ -83,14 +86,28 @@ public class ContentsToParameters extends ObjectToParameters {
             }
 
             Parameters container = new VariableParameters();
+            Parameters targetContainer = container;
+            if (processResult.getName() != null) {
+                Parameters ps = new VariableParameters();
+                container.putValue(processResult.getName(), ps);
+                targetContainer = ps;
+            }
             for (ContentResult contentResult : processResult) {
                 if (contentResult != null) {
-                    putValue(container, contentResult);
+                    putValue(targetContainer, contentResult);
                 }
             }
             return (T)container;
+        } else if (object instanceof ContentResult contentResult) {
+            Parameters container = new VariableParameters();
+            putValue(container, contentResult);
+            return (T)container;
+        } else if (object instanceof ActionResult actionResult) {
+            Parameters container = new VariableParameters();
+            putValue(container, actionResult);
+            return (T)container;
         } else {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Unsupported result type: " + object.getClass().getName());
         }
     }
 
@@ -101,23 +118,36 @@ public class ContentsToParameters extends ObjectToParameters {
      * @param container the parent {@link Parameters} container
      * @param contentResult the {@link ContentResult} to process
      */
-    private void putValue(Parameters container, @NonNull ContentResult contentResult) {
+    public void putValue(@NonNull Parameters container, @NonNull ContentResult contentResult) {
+        Assert.notNull(container, "container must not be null");
+        Assert.notNull(contentResult, "contentResult must not be null");
+        Parameters targetContainer = container;
         if (contentResult.getName() != null) {
-            Parameters ps = new VariableParameters();
-            container.putValue(contentResult.getName(), ps);
-            container = ps;
+            targetContainer = new VariableParameters();
+            container.putValue(contentResult.getName(), targetContainer);
         }
         for (ActionResult actionResult : contentResult) {
-            String name = actionResult.getActionId();
-            Object value = actionResult.getResultValue();
-            if (name != null) {
-                if (container.hasParameter(name)) {
-                    container.removeParameter(name);
-                }
-                super.putValue(container, name, value);
-            } else {
-                super.putValue(container, value);
+            putValue(targetContainer, actionResult);
+        }
+    }
+
+    /**
+     * Populates the given container with the result from an {@link ActionResult}.
+     * @param container the parent {@link Parameters} container
+     * @param actionResult the {@link ActionResult} to process
+     */
+    public void putValue(@NonNull Parameters container, @NonNull ActionResult actionResult) {
+        Assert.notNull(container, "container must not be null");
+        Assert.notNull(actionResult, "actionResult must not be null");
+        String name = actionResult.getActionId();
+        Object value = actionResult.getResultValue();
+        if (name != null) {
+            if (container.hasParameter(name)) {
+                container.removeParameter(name);
             }
+            super.putValue(container, name, value);
+        } else {
+            super.putValue(container, value);
         }
     }
 
@@ -127,7 +157,8 @@ public class ContentsToParameters extends ObjectToParameters {
      * @return the converted {@link Parameters} object
      */
     @NonNull
-    public static Parameters from(ProcessResult processResult) {
+    public static Parameters from(@NonNull ProcessResult processResult) {
+        Assert.notNull(processResult, "processResult must not be null");
         return new ContentsToParameters().read(processResult);
     }
 
@@ -139,8 +170,57 @@ public class ContentsToParameters extends ObjectToParameters {
      * @return the converted {@link Parameters} object
      */
     @NonNull
-    public static Parameters from(ProcessResult processResult, StringifyContext stringifyContext) {
+    public static Parameters from(@NonNull ProcessResult processResult, @Nullable StringifyContext stringifyContext) {
+        Assert.notNull(processResult, "processResult must not be null");
         return new ContentsToParameters().apply(stringifyContext).read(processResult);
+    }
+
+    /**
+     * Converts the given {@link ContentResult} into an APON {@link Parameters} object.
+     * @param contentResult the content result to convert
+     * @return the converted {@link Parameters} object
+     */
+    @NonNull
+    public static Parameters from(@NonNull ContentResult contentResult) {
+        Assert.notNull(contentResult, "contentResult must not be null");
+        return new ContentsToParameters().read(contentResult);
+    }
+
+    /**
+     * Converts the given {@link ContentResult} into an APON {@link Parameters} object
+     * using the specified stringify context.
+     * @param contentResult the content result to convert
+     * @param stringifyContext the context for custom string conversion
+     * @return the converted {@link Parameters} object
+     */
+    @NonNull
+    public static Parameters from(@NonNull ContentResult contentResult, @Nullable StringifyContext stringifyContext) {
+        Assert.notNull(contentResult, "contentResult must not be null");
+        return new ContentsToParameters().apply(stringifyContext).read(contentResult);
+    }
+
+    /**
+     * Converts the given {@link ActionResult} into an APON {@link Parameters} object.
+     * @param actionResult the action result to convert
+     * @return the converted {@link Parameters} object
+     */
+    @NonNull
+    public static Parameters from(@NonNull ActionResult actionResult) {
+        Assert.notNull(actionResult, "actionResult must not be null");
+        return new ContentsToParameters().read(actionResult);
+    }
+
+    /**
+     * Converts the given {@link ActionResult} into an APON {@link Parameters} object
+     * using the specified stringify context.
+     * @param actionResult the action result to convert
+     * @param stringifyContext the context for custom string conversion
+     * @return the converted {@link Parameters} object
+     */
+    @NonNull
+    public static Parameters from(@NonNull ActionResult actionResult, @Nullable StringifyContext stringifyContext) {
+        Assert.notNull(actionResult, "actionResult must not be null");
+        return new ContentsToParameters().apply(stringifyContext).read(actionResult);
     }
 
 }
