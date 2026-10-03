@@ -154,9 +154,12 @@ public final class WebRequestBodyParser {
      * @throws SizeLimitExceededException if the request size exceeds the configured maximum
      */
     @NonNull
-    public static String parseBody(WebRequestAdapter requestAdapter) throws IOException, SizeLimitExceededException {
-        Charset encoding = determineEncoding(requestAdapter);
+    public static String parseBody(@NonNull WebRequestAdapter requestAdapter) throws IOException, SizeLimitExceededException {
         InputStream inputStream = requestAdapter.getInputStream();
+        if (inputStream == null) {
+            return "";
+        }
+        Charset encoding = determineEncoding(requestAdapter);
         long maxSize = requestAdapter.getMaxRequestSize();
 
         InputStream in = (maxSize > 0L ? new CountingInputStream(inputStream, maxSize) : inputStream);
@@ -177,8 +180,8 @@ public final class WebRequestBodyParser {
     /**
      * Parses the request body into a {@link Parameters} object of the specified type,
      * based on the request's Content-Type.
-     * <p>Supports {@code application/x-www-form-urlencoded}, {@code application/json},
-     * {@code application/apon}, and {@code application/xml}.</p>
+     * <p>Supports {@code application/x-www-form-urlencoded}, JSON ({@code application/json}, {@code +json}),
+     * {@code application/apon}, and XML ({@code application/xml}, {@code text/xml}, {@code +xml}).</p>
      * @param requestAdapter the web request adapter
      * @param requiredType the target {@code Parameters} type
      * @param <T> the type of the {@code Parameters} object
@@ -194,22 +197,22 @@ public final class WebRequestBodyParser {
         }
         if (isURLEncodedForm(mediaType)) {
             return parseURLEncodedBodyAsParameters(requestAdapter, requiredType);
-        } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {
+        } else if (isJson(mediaType)) {
             try {
                 return JsonToParameters.from(requestAdapter.getBody(), requiredType);
             } catch (IOException e) {
                 throw new RequestParseException("Failed to parse request body of JSON format to required type [" +
                         requiredType.getName() + "]", e);
             }
-        } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(mediaType)) {
-            return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
-        } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType)) {
+        } else if (isXml(mediaType)) {
             try {
                 return XmlToParameters.from(requestAdapter.getBody(), requiredType);
             } catch (IOException e) {
                 throw new RequestParseException("Failed to parse request body of XML format to required type [" +
                         requiredType.getName() + "]", e);
             }
+        } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(mediaType)) {
+            return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
         } else {
             return null;
         }
@@ -259,6 +262,29 @@ public final class WebRequestBodyParser {
         return MediaType.APPLICATION_FORM_URLENCODED.equalsTypeAndSubtype(mediaType);
     }
 
+    /**
+     * Returns whether the request's content type is JSON-compatible
+     * (e.g. {@code application/json} or ending with {@code +json}).
+     * @param mediaType the media type of the request
+     * @return true if the request is JSON, false otherwise
+     */
+    public static boolean isJson(@Nullable MediaType mediaType) {
+        return mediaType != null && (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType) ||
+                mediaType.getSubtype().endsWith("+json"));
+    }
+
+    /**
+     * Returns whether the request's content type is XML-compatible
+     * (e.g. {@code application/xml}, {@code text/xml}, or ending with {@code +xml}).
+     * @param mediaType the media type of the request
+     * @return true if the request is XML, false otherwise
+     */
+    public static boolean isXml(@Nullable MediaType mediaType) {
+        return mediaType != null && (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType) ||
+                MediaType.TEXT_XML.equalsTypeAndSubtype(mediaType) ||
+                mediaType.getSubtype().endsWith("+xml"));
+    }
+
     @Nullable
     private static <T extends Parameters> T parseURLEncodedBodyAsParameters(
             WebRequestAdapter requestAdapter, Class<T> requiredType) throws RequestParseException {
@@ -284,23 +310,32 @@ public final class WebRequestBodyParser {
 
     @Nullable
     private static MultiValueMap<String, String> parseURLEncodedBody(String body, Charset encoding) {
-        if (StringUtils.isEmpty(body)) {
+        if (!StringUtils.hasLength(body)) {
             return null;
         }
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-        String[] pairs = StringUtils.tokenize(body, "&");
-        for (String pair : pairs) {
-            int idx = pair.indexOf('=');
-            if (idx == -1) {
-                String name = URLDecoder.decode(pair, encoding);
-                multiValueMap.add(name, null);
-            } else {
-                String name = URLDecoder.decode(pair.substring(0, idx), encoding);
-                String value = URLDecoder.decode(pair.substring(idx + 1), encoding);
-                multiValueMap.add(name, value);
+        int len = body.length();
+        int start = 0;
+        while (start < len) {
+            int end = body.indexOf('&', start);
+            if (end == -1) {
+                end = len;
             }
+            if (end > start) {
+                String pair = body.substring(start, end);
+                int idx = pair.indexOf('=');
+                if (idx == -1) {
+                    String name = URLDecoder.decode(pair, encoding);
+                    multiValueMap.add(name, null);
+                } else {
+                    String name = URLDecoder.decode(pair.substring(0, idx), encoding);
+                    String value = URLDecoder.decode(pair.substring(idx + 1), encoding);
+                    multiValueMap.add(name, value);
+                }
+            }
+            start = end + 1;
         }
-        return multiValueMap;
+        return (multiValueMap.isEmpty() ? null : multiValueMap);
     }
 
     @NonNull
@@ -310,7 +345,11 @@ public final class WebRequestBodyParser {
             encoding = requestAdapter.getMediaType().getCharset();
         }
         if (encoding == null && requestAdapter.getEncoding() != null) {
-            encoding = Charset.forName(requestAdapter.getEncoding());
+            try {
+                encoding = Charset.forName(requestAdapter.getEncoding());
+            } catch (Exception ignored) {
+                // fallback to default
+            }
         }
         if (encoding == null) {
             encoding = DEFAULT_ENCODING;
