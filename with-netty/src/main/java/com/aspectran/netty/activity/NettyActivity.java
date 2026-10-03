@@ -21,7 +21,6 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.netty.adapter.NettyRequestAdapter;
 import com.aspectran.netty.adapter.NettyResponseAdapter;
@@ -36,6 +35,7 @@ import com.aspectran.web.support.http.MediaType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 
@@ -68,7 +68,10 @@ public class NettyActivity extends CoreActivity {
      * @param ctx the Netty channel handler context for the client connection
      * @param request the native Netty HTTP request
      */
-    public NettyActivity(@NonNull NettyService nettyService, ChannelHandlerContext ctx, FullHttpRequest request) {
+    public NettyActivity(
+            @NonNull NettyService nettyService,
+            @NonNull ChannelHandlerContext ctx,
+            @NonNull FullHttpRequest request) {
         this(nettyService, ctx, request, null);
     }
 
@@ -81,9 +84,9 @@ public class NettyActivity extends CoreActivity {
      */
     public NettyActivity(
             @NonNull NettyService nettyService,
-            ChannelHandlerContext ctx,
-            FullHttpRequest request,
-            String reverseContextPath) {
+            @NonNull ChannelHandlerContext ctx,
+            @NonNull FullHttpRequest request,
+            @Nullable String reverseContextPath) {
         super(nettyService.getActivityContext(), nettyService.getContextPath());
         this.nettyService = nettyService;
         this.ctx = ctx;
@@ -92,11 +95,13 @@ public class NettyActivity extends CoreActivity {
     }
 
     @Override
+    @NonNull
     public Mode getMode() {
         return Mode.WEB;
     }
 
     @Override
+    @Nullable
     public String getReverseContextPath() {
         return reverseContextPath;
     }
@@ -114,6 +119,7 @@ public class NettyActivity extends CoreActivity {
      * Returns the Netty channel handler context associated with the client connection.
      * @return the channel handler context
      */
+    @NonNull
     public ChannelHandlerContext getChannelHandlerContext() {
         return ctx;
     }
@@ -122,6 +128,7 @@ public class NettyActivity extends CoreActivity {
      * Returns the native Netty HTTP request being processed.
      * @return the full HTTP request
      */
+    @NonNull
     public FullHttpRequest getRequest() {
         return request;
     }
@@ -130,6 +137,7 @@ public class NettyActivity extends CoreActivity {
      * Returns the request name corresponding to the translet path.
      * @return the request name
      */
+    @Nullable
     public String getRequestName() {
         return requestName;
     }
@@ -138,7 +146,7 @@ public class NettyActivity extends CoreActivity {
      * Sets the request name corresponding to the translet path.
      * @param requestName the request name
      */
-    public void setRequestName(String requestName) {
+    public void setRequestName(@Nullable String requestName) {
         this.requestName = requestName;
     }
 
@@ -146,6 +154,7 @@ public class NettyActivity extends CoreActivity {
      * Returns the HTTP request method type.
      * @return the request method type
      */
+    @Nullable
     public MethodType getRequestMethod() {
         return requestMethod;
     }
@@ -154,7 +163,7 @@ public class NettyActivity extends CoreActivity {
      * Sets the HTTP request method type.
      * @param requestMethod the request method type
      */
-    public void setRequestMethod(MethodType requestMethod) {
+    public void setRequestMethod(@Nullable MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
@@ -162,10 +171,11 @@ public class NettyActivity extends CoreActivity {
      * Returns the full request name including the HTTP method, reverse context path, and request name.
      * @return the full request representation
      */
+    @NonNull
     public String getFullRequestName() {
         StringBuilder sb = new StringBuilder();
         if (requestMethod != null) {
-            sb.append(requestMethod).append(" ");
+            sb.append(requestMethod).append(' ');
         }
         if (StringUtils.hasLength(reverseContextPath)) {
             sb.append(reverseContextPath);
@@ -188,11 +198,14 @@ public class NettyActivity extends CoreActivity {
     }
 
     @Override
-    protected void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
-            throws ActivityPrepareException {
-        // Check for HTTP POST with X-HTTP-Method-Override header
+    public void prepare(String requestName, MethodType requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException {
+        // Check for HTTP POST with the X-HTTP-Method-Override or X-Method-Override header
         if (requestMethod == MethodType.POST) {
-            String method = request.headers().get(HttpHeaders.X_METHOD_OVERRIDE);
+            String method = request.headers().get(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+            if (method == null) {
+                method = request.headers().get(HttpHeaders.X_METHOD_OVERRIDE);
+            }
             if (method != null) {
                 MethodType hiddenRequestMethod = MethodType.resolve(method);
                 if (hiddenRequestMethod != null) {
@@ -200,7 +213,7 @@ public class NettyActivity extends CoreActivity {
                 }
             }
         }
-        super.prepare(requestName, requestMethod, transletRule);
+        super.prepare(requestName, requestMethod);
     }
 
     @Override
@@ -261,8 +274,9 @@ public class NettyActivity extends CoreActivity {
     }
 
     @Override
+    @NonNull
     public WebRequestAdapter getRequestAdapter() {
-        return (WebRequestAdapter) super.getRequestAdapter();
+        return (WebRequestAdapter)super.getRequestAdapter();
     }
 
     @Override
@@ -270,7 +284,7 @@ public class NettyActivity extends CoreActivity {
         if (getPendingActivity() == null) {
             getRequestAdapter().preparse();
         } else {
-            getRequestAdapter().preparse((WebRequestAdapter) getPendingActivity().getRequestAdapter());
+            getRequestAdapter().preparse((WebRequestAdapter)getPendingActivity().getRequestAdapter());
         }
 
         MediaType mediaType = getRequestAdapter().getMediaType();

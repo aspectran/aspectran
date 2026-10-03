@@ -22,7 +22,6 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.undertow.adapter.TowRequestAdapter;
 import com.aspectran.undertow.adapter.TowResponseAdapter;
@@ -39,6 +38,7 @@ import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 
@@ -68,7 +68,7 @@ public class TowActivity extends CoreActivity {
      * @param towService the main Aspectran Undertow service
      * @param exchange the Undertow {@link HttpServerExchange} for the current request
      */
-    public TowActivity(@NonNull TowService towService, HttpServerExchange exchange) {
+    public TowActivity(@NonNull TowService towService, @NonNull HttpServerExchange exchange) {
         this(towService, exchange, null);
     }
 
@@ -78,7 +78,10 @@ public class TowActivity extends CoreActivity {
      * @param exchange the Undertow {@link HttpServerExchange} for the current request
      * @param reverseContextPath the reverse context path for URL generation
      */
-    public TowActivity(@NonNull TowService towService, HttpServerExchange exchange, String reverseContextPath) {
+    public TowActivity(
+            @NonNull TowService towService,
+            @NonNull HttpServerExchange exchange,
+            @Nullable String reverseContextPath) {
         super(towService.getActivityContext());
         this.towService = towService;
         this.exchange = exchange;
@@ -86,11 +89,13 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
+    @NonNull
     public Mode getMode() {
         return Mode.WEB;
     }
 
     @Override
+    @Nullable
     public String getReverseContextPath() {
         return reverseContextPath;
     }
@@ -108,6 +113,7 @@ public class TowActivity extends CoreActivity {
      * Returns the resource manager for serving static files.
      * @return the static resource manager
      */
+    @Nullable
     public ResourceManager getResourceManager() {
         return towService.getResourceManager();
     }
@@ -116,6 +122,7 @@ public class TowActivity extends CoreActivity {
      * Returns the underlying Undertow {@link HttpServerExchange} object.
      * @return the HTTP server exchange
      */
+    @NonNull
     public HttpServerExchange getExchange() {
         return exchange;
     }
@@ -124,6 +131,7 @@ public class TowActivity extends CoreActivity {
      * Returns the name of the request being processed by this activity.
      * @return the request name
      */
+    @Nullable
     public String getRequestName() {
         return requestName;
     }
@@ -132,7 +140,7 @@ public class TowActivity extends CoreActivity {
      * Sets the name of the request to be processed by this activity.
      * @param requestName the request name
      */
-    public void setRequestName(String requestName) {
+    public void setRequestName(@Nullable String requestName) {
         this.requestName = requestName;
     }
 
@@ -140,6 +148,7 @@ public class TowActivity extends CoreActivity {
      * Returns the method type of the request being processed by this activity.
      * @return the request method type
      */
+    @Nullable
     public MethodType getRequestMethod() {
         return requestMethod;
     }
@@ -148,7 +157,7 @@ public class TowActivity extends CoreActivity {
      * Sets the method type of the request to be processed by this activity.
      * @param requestMethod the request method type
      */
-    public void setRequestMethod(MethodType requestMethod) {
+    public void setRequestMethod(@Nullable MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
@@ -157,10 +166,11 @@ public class TowActivity extends CoreActivity {
      * method, reverse context path, and name (e.g., "GET /context/path/to/translet").
      * @return the combined request information
      */
+    @NonNull
     public String getFullRequestName() {
         StringBuilder sb = new StringBuilder();
         if (requestMethod != null) {
-            sb.append(requestMethod).append(" ");
+            sb.append(requestMethod).append(' ');
         }
         if (StringUtils.hasLength(reverseContextPath)) {
             sb.append(reverseContextPath);
@@ -184,11 +194,14 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
-    protected void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
-            throws ActivityPrepareException{
-        // Check for HTTP POST with the X-HTTP-Method-Override header
+    public void prepare(String requestName, MethodType requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException {
+        // Check for HTTP POST with the X-HTTP-Method-Override or X-Method-Override header
         if (requestMethod == MethodType.POST) {
-            String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);
+            String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+            if (method == null) {
+                method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);
+            }
             if (method != null) {
                 // Check if the header value is in our methods list
                 MethodType hiddenRequestMethod = MethodType.resolve(method);
@@ -198,8 +211,7 @@ public class TowActivity extends CoreActivity {
                 }
             }
         }
-
-        super.prepare(requestName, requestMethod, transletRule);
+        super.prepare(requestName, requestMethod);
     }
 
     @Override
@@ -212,7 +224,7 @@ public class TowActivity extends CoreActivity {
                     if (sessionManager != null && sessionConfig != null) {
                         setSessionAdapter(new TowSessionAdapter(exchange));
                     }
-                } else if (getPendingActivity().hasSessionAdapter()){
+                } else if (getPendingActivity().hasSessionAdapter()) {
                     setSessionAdapter(getPendingActivity().getSessionAdapter());
                 }
             }
@@ -263,6 +275,7 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
+    @NonNull
     public WebRequestAdapter getRequestAdapter() {
         return (WebRequestAdapter)super.getRequestAdapter();
     }
@@ -272,7 +285,7 @@ public class TowActivity extends CoreActivity {
         if (getPendingActivity() == null) {
             getRequestAdapter().preparse();
         } else {
-            getRequestAdapter().preparse((WebRequestAdapter) getPendingActivity().getRequestAdapter());
+            getRequestAdapter().preparse((WebRequestAdapter)getPendingActivity().getRequestAdapter());
         }
 
         MediaType mediaType = getRequestAdapter().getMediaType();
