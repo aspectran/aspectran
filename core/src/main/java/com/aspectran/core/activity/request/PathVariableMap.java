@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.Assert;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
@@ -39,6 +40,14 @@ public class PathVariableMap extends HashMap<Token, String> {
     @Serial
     private static final long serialVersionUID = -3327966082696522044L;
 
+    public PathVariableMap() {
+        super();
+    }
+
+    public PathVariableMap(int initialCapacity) {
+        super(initialCapacity);
+    }
+
     /**
      * Applies the stored path variables to the given {@link Translet}.
      * <p>
@@ -47,7 +56,11 @@ public class PathVariableMap extends HashMap<Token, String> {
      * </p>
      * @param translet the translet to which variables should be applied
      */
-    public void applyTo(Translet translet) {
+    public void applyTo(@NonNull Translet translet) {
+        Assert.notNull(translet, "translet must not be null");
+        if (isEmpty()) {
+            return;
+        }
         for (Map.Entry<Token, String> entry : entrySet()) {
             Token token = entry.getKey();
             if (token.getType() == TokenType.PARAMETER) {
@@ -63,61 +76,42 @@ public class PathVariableMap extends HashMap<Token, String> {
      * a {@code PathVariableMap} containing matched variables.
      * @param nameTokens the template tokens representing variable names in the path
      * @param requestName the actual request path to match
-     * @return a {@code PathVariableMap} containing resolved variables, or an empty
-     *         map if none were matched
+     * @return a {@code PathVariableMap} containing resolved variables, or an empty map
+     *         if matched with no variables; or {@code null} if the request name does not match the template
      */
     @Nullable
-    public static PathVariableMap parse(Token[] nameTokens, String requestName) {
+    public static PathVariableMap parse(@NonNull Token[] nameTokens, @NonNull String requestName) {
         Assert.notNull(nameTokens, "nameTokens must not be null");
         Assert.notNull(requestName, "requestName must not be null");
 
         PathVariableMap pathVariables = new PathVariableMap();
 
-        /*
-            /example/customers/123-567/approval
-            /example/customers/
-            ${id1}
-            -
-            ${id2}
-            /approval
-        */
         int beginIndex = 0;
-        int endIndex;
         Token prevToken = null;
         Token lastToken = null;
 
         for (Token token : nameTokens) {
             TokenType type = token.getType();
             if (type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
-                // This is a variable token (e.g., ${id}), so save it for the next iteration
-                // which will look for the text token that follows it.
                 lastToken = token;
             } else {
-                // This is a text token (a literal part of the path).
                 String term = token.stringify();
-                endIndex = requestName.indexOf(term, beginIndex);
+                int endIndex = requestName.indexOf(term, beginIndex);
                 if (endIndex == -1) {
-                    // The literal part of the template was not found in the request path, so it's a mismatch.
                     return null;
                 }
 
-                // Check if there is a string between the previous literal and this one.
                 if (endIndex > beginIndex) {
-                    // This substring is the value for the previous variable token.
-                    String value = requestName.substring(beginIndex, endIndex);
-                    if (prevToken != null) {
-                        if (!value.isEmpty()) {
-                            pathVariables.put(prevToken, value);
-                        }
-                    } else if (!term.equals(value)) {
-                        // This case handles a mismatch at the beginning of the path.
-                        // If the template starts with a literal, the request path must also start with it.
+                    if (prevToken == null) {
+                        // A literal was found but not at the expected start position
                         return null;
+                    }
+                    String value = requestName.substring(beginIndex, endIndex);
+                    if (!value.isEmpty()) {
+                        pathVariables.put(prevToken, value);
                     }
                     beginIndex += value.length();
                 } else if (prevToken != null && prevToken.getDefaultValue() != null) {
-                    // The substring for the variable is empty (e.g., two consecutive slashes "//" for "/${var}/").
-                    // If the variable token has a default value, use it.
                     pathVariables.put(prevToken, prevToken.getDefaultValue());
                 }
                 beginIndex += term.length();
@@ -125,14 +119,11 @@ public class PathVariableMap extends HashMap<Token, String> {
             prevToken = (token.getType() != TokenType.TEXT ? token : null);
         }
 
-        // This handles the case where the path ends with a variable token.
         if (lastToken != null && prevToken == lastToken) {
-            // The rest of the request string from the last matched position is the variable's value.
             String value = requestName.substring(beginIndex);
             if (!value.isEmpty()) {
                 pathVariables.put(lastToken, value);
             } else if (lastToken.getDefaultValue() != null) {
-                // The variable part is empty, but if it has a default value, use it.
                 pathVariables.put(lastToken, lastToken.getDefaultValue());
             }
         }

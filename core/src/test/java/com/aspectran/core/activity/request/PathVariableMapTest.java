@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * <p>Created: 2016. 3. 1.</p>
@@ -39,13 +41,40 @@ class PathVariableMapTest {
 
         Map<Token, String> map = PathVariableMap.parse(nameTokens, requestName);
 
-        assert map != null;
+        assertNotNull(map);
         for (Map.Entry<Token, String> entry : map.entrySet()) {
             Token token = entry.getKey();
             String value = entry.getValue();
-            //System.out.println(token.getName() + " : " + value);
             assertEquals(token.getName(), value);
         }
+    }
+
+    @Test
+    void testMismatchCases() {
+        // Prefix mismatch
+        Token[] tokens = Tokenizer.tokenize("/users/${id}", false).toArray(new Token[0]);
+        assertNull(PathVariableMap.parse(tokens, "/api/users/123"));
+
+        // Literal mismatch in between
+        tokens = Tokenizer.tokenize("/users/${id}/edit", false).toArray(new Token[0]);
+        assertNull(PathVariableMap.parse(tokens, "/users/123/view"));
+    }
+
+    @Test
+    void testExtractWithTrailingPath() {
+        Token[] tokens = Tokenizer.tokenize("/users/${id}/profile", false).toArray(new Token[0]);
+        Map<Token, String> map = PathVariableMap.parse(tokens, "/users/123/profile/extra");
+        assertNotNull(map);
+        assertEquals("123", map.values().iterator().next());
+    }
+
+    @Test
+    void testDefaultValues() {
+        Token[] tokens = Tokenizer.tokenize("/items/${id:defaultId}", false).toArray(new Token[0]);
+        Map<Token, String> map = PathVariableMap.parse(tokens, "/items/");
+        assertNotNull(map);
+        assertEquals(1, map.size());
+        assertEquals("defaultId", map.values().iterator().next());
     }
 
 }
