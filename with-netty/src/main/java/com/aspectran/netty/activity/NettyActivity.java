@@ -198,7 +198,7 @@ public class NettyActivity extends CoreActivity {
     }
 
     @Override
-    public void prepare(String requestName, MethodType requestMethod)
+    public void prepare(@NonNull String requestName, MethodType requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
         // Check for HTTP POST with the X-HTTP-Method-Override or X-Method-Override header
         if (requestMethod == MethodType.POST) {
@@ -222,9 +222,7 @@ public class NettyActivity extends CoreActivity {
             NettyResponseAdapter responseAdapter = new NettyResponseAdapter(ctx, request, this);
             if (getPendingActivity() == null) {
                 String responseEncoding = getDefinitiveResponseEncoding();
-                if (responseEncoding != null) {
-                    responseAdapter.setEncoding(responseEncoding);
-                }
+                responseAdapter.setEncoding(responseEncoding);
             }
             setResponseAdapter(responseAdapter);
 
@@ -254,12 +252,10 @@ public class NettyActivity extends CoreActivity {
                     }
                 }
                 String requestEncoding = getDefinitiveRequestEncoding();
-                if (requestEncoding != null) {
-                    try {
-                        requestAdapter.setEncoding(requestEncoding);
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RequestParseException("Unable to set request encoding to " + requestEncoding, e);
-                    }
+                try {
+                    requestAdapter.setEncoding(requestEncoding);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RequestParseException("Unable to set request encoding to " + requestEncoding, e);
                 }
             }
             setRequestAdapter(requestAdapter);

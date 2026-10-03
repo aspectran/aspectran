@@ -112,12 +112,13 @@ public class CoreActivity extends AdviceActivity {
      * @param context the activity context
      * @param contextPath the context path
      */
-    protected CoreActivity(ActivityContext context, String contextPath) {
+    protected CoreActivity(ActivityContext context, @Nullable String contextPath) {
         super(context);
         this.contextPath = contextPath;
     }
 
     @Override
+    @Nullable
     public String getContextPath() {
         return contextPath;
     }
@@ -128,7 +129,7 @@ public class CoreActivity extends AdviceActivity {
      * @throws TransletNotFoundException if no translet matches the request name
      * @throws ActivityPrepareException if an error occurs during preparation
      */
-    public void prepare(String requestName) throws TransletNotFoundException, ActivityPrepareException {
+    public void prepare(@NonNull String requestName) throws TransletNotFoundException, ActivityPrepareException {
         TransletRule transletRule = findTransletRule(requestName, MethodType.GET);
         if (transletRule == null) {
             throw new TransletNotFoundException(requestName, MethodType.GET);
@@ -143,7 +144,7 @@ public class CoreActivity extends AdviceActivity {
      * @param transletRule the pre-resolved translet rule to execute
      * @throws ActivityPrepareException if an error occurs during preparation
      */
-    public void prepare(TransletRule transletRule) throws ActivityPrepareException {
+    public void prepare(@NonNull TransletRule transletRule) throws ActivityPrepareException {
         prepare(transletRule.getName(), transletRule);
     }
 
@@ -155,7 +156,7 @@ public class CoreActivity extends AdviceActivity {
      * @param transletRule the pre-resolved translet rule to execute
      * @throws ActivityPrepareException if an error occurs during preparation
      */
-    public void prepare(String requestName, TransletRule transletRule) throws ActivityPrepareException {
+    public void prepare(@NonNull String requestName, @NonNull TransletRule transletRule) throws ActivityPrepareException {
         prepare(requestName, MethodType.GET, transletRule);
     }
 
@@ -166,7 +167,7 @@ public class CoreActivity extends AdviceActivity {
      * @throws TransletNotFoundException if no translet matches the request name and method
      * @throws ActivityPrepareException if an error occurs during preparation
      */
-    public void prepare(String requestName, String requestMethod)
+    public void prepare(@NonNull String requestName, @Nullable String requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
         prepare(requestName, MethodType.resolve(requestMethod));
     }
@@ -179,7 +180,7 @@ public class CoreActivity extends AdviceActivity {
      * @throws TransletNotFoundException if no translet matches the request name and method
      * @throws ActivityPrepareException if an error occurs during preparation
      */
-    public void prepare(String requestName, MethodType requestMethod)
+    public void prepare(@NonNull String requestName, @Nullable MethodType requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
         if (requestMethod == null) {
             requestMethod = MethodType.GET;
@@ -203,8 +204,10 @@ public class CoreActivity extends AdviceActivity {
      * @param transletRule the resolved translet rule for the current request
      * @throws ActivityPrepareException if initialization fails
      */
-    protected void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
-            throws ActivityPrepareException {
+    protected void prepare(
+            @NonNull String requestName,
+            @NonNull MethodType requestMethod,
+            @NonNull TransletRule transletRule) throws ActivityPrepareException {
         Assert.notNull(requestName, "requestName must not be null");
         Assert.notNull(requestMethod, "requestMethod must not be null");
         Assert.notNull(transletRule, "transletRule must not be null");
@@ -311,7 +314,8 @@ public class CoreActivity extends AdviceActivity {
      * @throws ActivityPerformException if an unhandled exception occurs during the activity execution
      */
     @Override
-    public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
+    @Nullable
+    public <V> V perform(@Nullable InstantAction<V> instantAction) throws ActivityPerformException {
         if (translet == null && instantAction == null) {
             throw new IllegalArgumentException("Either translet or instantAction is required");
         }
@@ -576,7 +580,7 @@ public class CoreActivity extends AdviceActivity {
      * @return a new, informative {@code ActivityPerformException}
      */
     @NonNull
-    private ActivityPerformException createActivityPerformException(Throwable cause, InstantAction<?> instantAction) {
+    private ActivityPerformException createActivityPerformException(Throwable cause, @Nullable InstantAction<?> instantAction) {
         String contextDesc = null;
         if (translet != null) {
             contextDesc = " for Translet " + translet.getTransletRule();
@@ -608,7 +612,7 @@ public class CoreActivity extends AdviceActivity {
      * @param contentResult the container for storing action results
      * @throws ActionExecutionException if an action fails during execution
      */
-    private void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
+    private void execute(ActionList actionList, @Nullable ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
             ProcessResult processResult = getTranslet().getProcessResult();
             if (processResult == null) {
@@ -642,7 +646,7 @@ public class CoreActivity extends AdviceActivity {
      * @param contentResult the container for storing the action's result
      * @throws ActionExecutionException if the action fails during execution
      */
-    private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
+    private void execute(Executable action, @Nullable ContentResult contentResult) throws ActionExecutionException {
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Action {}", action);
@@ -684,6 +688,7 @@ public class CoreActivity extends AdviceActivity {
      * If an exception has been raised, only a reserved response will be returned.</p>
      * @return the response to execute, or {@code null} if none is available
      */
+    @Nullable
     private Response getResponse() {
         Response response = reservedResponse;
         if (response == null && !isExceptionRaised()) {
@@ -693,8 +698,9 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
+    @Nullable
     public Response getDeclaredResponse() {
-        return (getResponseRule() != null ? getResponseRule().getResponse() : null);
+        return getResponseRule().getResponse();
     }
 
     /**
@@ -730,6 +736,7 @@ public class CoreActivity extends AdviceActivity {
      * response would have been.</p>
      * @return the desired response
      */
+    @Nullable
     protected Response getDesiredResponse() {
         return (desiredResponse != null ? desiredResponse : getDeclaredResponse());
     }
@@ -744,6 +751,7 @@ public class CoreActivity extends AdviceActivity {
     //-------------------------------------------------------------------------------------
 
     @Override
+    @NonNull
     public CoreTranslet getTranslet() {
         Assert.state(translet != null, "No Translet has been prepared");
         return translet;
@@ -758,11 +766,13 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
+    @Nullable
     public ProcessResult getProcessResult() {
         return (translet != null ? translet.getProcessResult() : null);
     }
 
     @Override
+    @NonNull
     public ActivityData getActivityData() {
         if (activityData == null) {
             activityData = new ActivityData(this);
@@ -778,6 +788,7 @@ public class CoreActivity extends AdviceActivity {
      * @param requestMethod the HTTP method
      * @return the matching {@link TransletRule}, or {@code null} if not found
      */
+    @Nullable
     private TransletRule findTransletRule(String requestName, MethodType requestMethod) {
         return getActivityContext().getTransletRuleRegistry().getTransletRule(requestName, requestMethod);
     }
@@ -786,6 +797,7 @@ public class CoreActivity extends AdviceActivity {
      * Returns the rule for the current translet.
      * @return the current {@link TransletRule}
      */
+    @NonNull
     protected TransletRule getTransletRule() {
         return getTranslet().getTransletRule();
     }
@@ -794,6 +806,7 @@ public class CoreActivity extends AdviceActivity {
      * Returns the request rule for the current translet.
      * @return the current {@link RequestRule}
      */
+    @NonNull
     protected RequestRule getRequestRule() {
         return getTranslet().getRequestRule();
     }
@@ -802,6 +815,7 @@ public class CoreActivity extends AdviceActivity {
      * Returns the response rule for the current translet.
      * @return the current {@link ResponseRule}
      */
+    @NonNull
     protected ResponseRule getResponseRule() {
         return getTranslet().getResponseRule();
     }
@@ -814,6 +828,7 @@ public class CoreActivity extends AdviceActivity {
      * 3. "UTF-8" as the final fallback.</p>
      * @return the definitive request encoding, never {@code null}
      */
+    @NonNull
     protected String getDefinitiveRequestEncoding() {
         String encoding = getRequestRule().getEncoding();
         if (encoding == null) {
@@ -829,6 +844,7 @@ public class CoreActivity extends AdviceActivity {
      * 2. The definitive request encoding.</p>
      * @return the definitive response encoding, never {@code null}
      */
+    @NonNull
     protected String getDefinitiveResponseEncoding() {
         String encoding = getResponseRule().getEncoding();
         if (encoding == null) {
@@ -838,6 +854,7 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
+    @Nullable
     public String getMultipartFormDataParser() {
         return (hasTranslet() ? getTranslet().getMultipartFormDataParser() : null);
     }

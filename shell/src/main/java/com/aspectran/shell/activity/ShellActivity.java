@@ -226,7 +226,9 @@ public class ShellActivity extends CoreActivity {
     }
 
     @Override
-    protected void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
+    protected void prepare(@NonNull String requestName,
+                           @NonNull MethodType requestMethod,
+                           @NonNull TransletRule transletRule)
             throws ActivityPrepareException {
         this.async = transletRule.isAsync();
         this.timeout = transletRule.getTimeout();
