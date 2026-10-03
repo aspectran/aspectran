@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.response.transform.xml;
 
+import org.jspecify.annotations.Nullable;
 import org.xml.sax.InputSource;
 
 /**
@@ -29,13 +30,14 @@ import org.xml.sax.InputSource;
  */
 public class ContentsInputSource extends InputSource {
 
+    @Nullable
     private final Object data;
 
     /**
      * Instantiates a new ContentsInputSource.
      * @param data the data to be the input source
      */
-    public ContentsInputSource(Object data) {
+    public ContentsInputSource(@Nullable Object data) {
         this.data = data;
     }
 
@@ -43,6 +45,7 @@ public class ContentsInputSource extends InputSource {
      * Returns the data to be the input source.
      * @return the data to be the input source
      */
+    @Nullable
     public Object getData() {
         return data;
     }

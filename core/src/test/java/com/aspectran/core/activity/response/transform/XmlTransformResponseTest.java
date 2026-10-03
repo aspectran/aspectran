@@ -99,4 +99,43 @@ class XmlTransformResponseTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void testContentResultToXml() throws TransformerException {
+        ContentResult contentResult = new ContentResult();
+        contentResult.setName("contentWrap");
+        contentResult.setExplicit(true);
+        contentResult.addActionResult(new ActionResult("item1", "val1"));
+        contentResult.addActionResult(new ActionResult("item2", "val2"));
+
+        StringWriter writer = new StringWriter();
+        XmlTransformResponse.transform(contentResult, writer, null, null);
+
+        String expected = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <contentWrap>
+              <item1>val1</item1>
+              <item2>val2</item2>
+            </contentWrap>
+            """;
+
+        expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        assertEquals(expected, writer.toString());
+    }
+
+    @Test
+    void testActionResultToXml() throws TransformerException {
+        ActionResult actionResult = new ActionResult("user", "john");
+
+        StringWriter writer = new StringWriter();
+        XmlTransformResponse.transform(actionResult, writer, null, null);
+
+        String expected = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <user>john</user>
+            """;
+
+        expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        assertEquals(expected, writer.toString());
+    }
+
 }

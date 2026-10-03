@@ -19,11 +19,13 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -70,6 +72,7 @@ public class ContentsXMLReader implements XMLReader {
 
     private static final Attributes NULL_ATTRS = new AttributesImpl();
 
+    @Nullable
     private StringifyContext stringifyContext;
 
     private ContentHandler handler;
@@ -80,7 +83,12 @@ public class ContentsXMLReader implements XMLReader {
     public ContentsXMLReader() {
     }
 
-    public void setStringifyContext(StringifyContext stringifyContext) {
+    @Nullable
+    public StringifyContext getStringifyContext() {
+        return stringifyContext;
+    }
+
+    public void setStringifyContext(@Nullable StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
     }
 
@@ -148,7 +156,9 @@ public class ContentsXMLReader implements XMLReader {
         if (handler == null) {
             throw new SAXException("No XML ContentHandler");
         }
-        ContentsInputSource cis = (ContentsInputSource)is;
+        if (!(is instanceof ContentsInputSource cis)) {
+            throw new SAXException("InputSource must be an instance of ContentsInputSource");
+        }
         Object data = cis.getData();
         handler.startDocument();
         if (data != null) {
@@ -156,6 +166,12 @@ public class ContentsXMLReader implements XMLReader {
                 if (!processResult.isEmpty()) {
                     parseProcessResult(processResult);
                 }
+            } else if (data instanceof ContentResult contentResult) {
+                if (!contentResult.isEmpty()) {
+                    parseContentResult(contentResult);
+                }
+            } else if (data instanceof ActionResult actionResult) {
+                parseActionResult(actionResult);
             } else {
                 parseObject(data);
             }
@@ -180,32 +196,7 @@ public class ContentsXMLReader implements XMLReader {
             }
         }
         for (ContentResult contentResult : processResult) {
-            String contentName = contentResult.getName();
-            if (contentResult.isExplicit()) {
-                if (contentName != null) {
-                    handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
-                } else {
-                    handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
-                }
-            }
-            for (ActionResult actionResult : contentResult) {
-                String actionId = actionResult.getActionId();
-                Object resultValue = actionResult.getResultValue();
-                if (actionId != null) {
-                    handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-                }
-                parseObject(resultValue);
-                if (actionId != null) {
-                    handler.endElement(StringUtils.EMPTY, actionId, actionId);
-                }
-            }
-            if (contentResult.isExplicit()) {
-                if (contentResult.getName() != null) {
-                    handler.endElement(StringUtils.EMPTY, contentName, contentName);
-                } else {
-                    handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
-                }
-            }
+            parseContentResult(contentResult);
         }
         if (processResult.isExplicit()) {
             if (contentsName != null) {
@@ -213,6 +204,49 @@ public class ContentsXMLReader implements XMLReader {
             } else {
                 handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
             }
+        }
+    }
+
+    /**
+     * Parses a {@link ContentResult} and generates corresponding SAX events.
+     * @param contentResult the content result to parse
+     * @throws SAXException if a SAX error occurs
+     */
+    private void parseContentResult(@NonNull ContentResult contentResult) throws SAXException {
+        String contentName = contentResult.getName();
+        if (contentResult.isExplicit()) {
+            if (contentName != null) {
+                handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
+            } else {
+                handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
+            }
+        }
+        for (ActionResult actionResult : contentResult) {
+            parseActionResult(actionResult);
+        }
+        if (contentResult.isExplicit()) {
+            if (contentName != null) {
+                handler.endElement(StringUtils.EMPTY, contentName, contentName);
+            } else {
+                handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
+            }
+        }
+    }
+
+    /**
+     * Parses an {@link ActionResult} and generates corresponding SAX events.
+     * @param actionResult the action result to parse
+     * @throws SAXException if a SAX error occurs
+     */
+    private void parseActionResult(@NonNull ActionResult actionResult) throws SAXException {
+        String actionId = actionResult.getActionId();
+        Object resultValue = actionResult.getResultValue();
+        if (actionId != null) {
+            handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
+        }
+        parseObject(resultValue);
+        if (actionId != null) {
+            handler.endElement(StringUtils.EMPTY, actionId, actionId);
         }
     }
 
@@ -234,12 +268,16 @@ public class ContentsXMLReader implements XMLReader {
         }
         if (object instanceof ProcessResult processResult) {
             parseProcessResult(processResult);
+        } else if (object instanceof ContentResult contentResult) {
+            parseContentResult(contentResult);
+        } else if (object instanceof ActionResult actionResult) {
+            parseActionResult(actionResult);
         } else if (object instanceof String ||
                 object instanceof Number ||
                 object instanceof Boolean) {
             parseString(object.toString());
         } else if (object instanceof Parameters parameters) {
-            for (Parameter p: parameters.getParameterValues()) {
+            for (Parameter p : parameters.getParameterValues()) {
                 String name = p.getName();
                 Object value = p.getValue();
                 checkCircularReference(object, value);
@@ -344,9 +382,10 @@ public class ContentsXMLReader implements XMLReader {
     }
 
     private void checkCircularReference(@NonNull Object wrapper, Object member) throws SAXException {
-        if (wrapper.equals(member)) {
+        if (wrapper == member) {
             throw new SAXException("XML Serialization Failure: Circular reference was detected" +
-                    " while converting member object " + member + " in " + wrapper);
+                    " while converting member object " + ObjectUtils.identityToString(member) +
+                    " in " + ObjectUtils.identityToString(wrapper));
         }
     }
 
