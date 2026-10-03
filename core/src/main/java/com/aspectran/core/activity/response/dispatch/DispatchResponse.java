@@ -25,7 +25,11 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.apon.Parameter;
+import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +58,8 @@ public class DispatchResponse implements Response {
      * Instantiates a new DispatchResponse.
      * @param dispatchRule the rule that defines the dispatch target and parameters
      */
-    public DispatchResponse(DispatchRule dispatchRule) {
+    public DispatchResponse(@NonNull DispatchRule dispatchRule) {
+        Assert.notNull(dispatchRule, "dispatchRule must not be null");
         this.dispatchRule = dispatchRule;
     }
 
@@ -65,7 +70,8 @@ public class DispatchResponse implements Response {
      *      occurs during dispatch
      */
     @Override
-    public void respond(Activity activity) throws ResponseException {
+    public void respond(@NonNull Activity activity) throws ResponseException {
+        Assert.notNull(activity, "activity must not be null");
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Response {}", dispatchRule);
@@ -73,6 +79,8 @@ public class DispatchResponse implements Response {
 
             ViewDispatcher viewDispatcher = getViewDispatcher(activity);
             viewDispatcher.dispatch(activity, dispatchRule);
+        } catch (ResponseException e) {
+            throw e;
         } catch (Exception e) {
             throw new DispatchResponseException(dispatchRule, e);
         }
@@ -82,6 +90,7 @@ public class DispatchResponse implements Response {
      * Returns the rule that defines the dispatch target.
      * @return the dispatch rule
      */
+    @NonNull
     public DispatchRule getDispatchRule() {
         return dispatchRule;
     }
@@ -100,6 +109,7 @@ public class DispatchResponse implements Response {
      * @return the content type
      */
     @Override
+    @Nullable
     public String getContentType() {
         return dispatchRule.getContentType();
     }
@@ -111,6 +121,7 @@ public class DispatchResponse implements Response {
      * @return a replicated {@code DispatchResponse} instance
      */
     @Override
+    @NonNull
     public Response replicate() {
         return new DispatchResponse(dispatchRule.replicate());
     }
@@ -131,7 +142,7 @@ public class DispatchResponse implements Response {
      * @throws ViewDispatcherException if the ViewDispatcher cannot be determined
      */
     @NonNull
-    private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
+    private ViewDispatcher getViewDispatcher(@NonNull Activity activity) throws ViewDispatcherException {
         ViewDispatcher viewDispatcher = dispatchRule.getViewDispatcher();
         if (viewDispatcher != null) {
             return viewDispatcher;
@@ -176,13 +187,14 @@ public class DispatchResponse implements Response {
      * {@link ActionResult}:
      * <ul>
      *   <li>If the result has an action ID, it is set as an attribute with the ID as the name.</li>
-     *   <li>If the result is a {@link Map}, each entry is set as an attribute.</li>
+     *   <li>If the result is a {@link Map} or {@link Parameters}, each entry is set as an attribute.</li>
      *   <li>If the result is another {@link ProcessResult}, the method recurses.</li>
      * </ul>
      * @param requestAdapter the request adapter to which attributes will be saved
      * @param processResult the process result containing the data to be saved
      */
-    public static void saveAttributes(RequestAdapter requestAdapter, ProcessResult processResult) {
+    public static void saveAttributes(@NonNull RequestAdapter requestAdapter, @Nullable ProcessResult processResult) {
+        Assert.notNull(requestAdapter, "requestAdapter must not be null");
         if (processResult != null) {
             for (ContentResult contentResult : processResult) {
                 for (ActionResult actionResult : contentResult) {
@@ -198,6 +210,10 @@ public class DispatchResponse implements Response {
                                 String name = entry.getKey().toString();
                                 Object value = entry.getValue();
                                 requestAdapter.setAttribute(name, value);
+                            }
+                        } else if (actionResultValue instanceof Parameters parameters) {
+                            for (Parameter p : parameters.getParameterValues()) {
+                                requestAdapter.setAttribute(p.getName(), p.getValue());
                             }
                         }
                     }

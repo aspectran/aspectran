@@ -35,6 +35,29 @@ public class ViewDispatcherException extends ResponseException {
     private static final long serialVersionUID = 5341799597740412582L;
 
     /**
+     * Creates a new ViewDispatcherException without a detail message.
+     */
+    public ViewDispatcherException() {
+        super();
+    }
+
+    /**
+     * Creates a new ViewDispatcherException with a specified detail message.
+     * @param msg the detail message
+     */
+    public ViewDispatcherException(String msg) {
+        super(msg);
+    }
+
+    /**
+     * Creates a new ViewDispatcherException with a specified root cause.
+     * @param cause the root cause
+     */
+    public ViewDispatcherException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
      * Creates a new ViewDispatcherException with a specified detail message and a nested cause.
      * @param msg the detail message
      * @param cause the nested exception
