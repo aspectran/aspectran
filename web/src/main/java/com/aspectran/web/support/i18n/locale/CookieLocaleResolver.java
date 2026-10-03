@@ -20,6 +20,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.Cookie;
 import com.aspectran.web.support.util.CookieGenerator;
 import com.aspectran.web.support.util.WebUtils;
@@ -46,13 +47,13 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(CookieLocaleResolver.class);
 
-    private static final String LOCALE_COOKIE_NAME = CookieLocaleResolver.class.getName() + ".LOCALE";
+    public static final String LOCALE_COOKIE_NAME = CookieLocaleResolver.class.getName() + ".LOCALE";
 
-    private static final String TIME_ZONE_COOKIE_NAME = CookieLocaleResolver.class.getName() + ".TIME_ZONE";
+    public static final String TIME_ZONE_COOKIE_NAME = CookieLocaleResolver.class.getName() + ".TIME_ZONE";
 
-    private volatile CookieGenerator localeCookieGenerator;
+    private CookieGenerator localeCookieGenerator = new CookieGenerator(LOCALE_COOKIE_NAME);
 
-    private volatile CookieGenerator timeZoneCookieGenerator;
+    private CookieGenerator timeZoneCookieGenerator = new CookieGenerator(TIME_ZONE_COOKIE_NAME);
 
     private boolean languageTagCompliant = true;
 
@@ -69,9 +70,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     public CookieGenerator getLocaleCookieGenerator() {
-        if (localeCookieGenerator == null) {
-            localeCookieGenerator = new CookieGenerator(LOCALE_COOKIE_NAME);
-        }
         return localeCookieGenerator;
     }
 
@@ -80,9 +78,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     public CookieGenerator getTimeZoneCookieGenerator() {
-        if (timeZoneCookieGenerator == null) {
-            timeZoneCookieGenerator = new CookieGenerator(TIME_ZONE_COOKIE_NAME);
-        }
         return timeZoneCookieGenerator;
     }
 
@@ -133,6 +128,15 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
         getLocaleCookieGenerator().setCookieHttpOnly(cookieHttpOnly);
         getTimeZoneCookieGenerator().setCookieHttpOnly(cookieHttpOnly);
+    }
+
+    /**
+     * Sets the `SameSite` attribute for cookies created by this resolver.
+     * @param sameSite `Strict`, `Lax`, `None`
+     */
+    public void setCookieSameSite(String sameSite) {
+        getLocaleCookieGenerator().setSameSite(sameSite);
+        getTimeZoneCookieGenerator().setSameSite(sameSite);
     }
 
     /**
@@ -200,15 +204,23 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public void setLocale(@NonNull Translet translet, Locale locale) {
+    public void setLocale(@NonNull Translet translet, @Nullable Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
-        getLocaleCookieGenerator().addCookie(translet.getResponseAdapter(), (locale != null ? toLocaleValue(locale) : ""));
+        if (locale != null) {
+            getLocaleCookieGenerator().addCookie(translet.getResponseAdapter(), toLocaleValue(locale));
+        } else {
+            getLocaleCookieGenerator().removeCookie(translet.getResponseAdapter());
+        }
     }
 
     @Override
-    public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
+    public void setTimeZone(@NonNull Translet translet, @Nullable TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
-        getTimeZoneCookieGenerator().addCookie(translet.getResponseAdapter(), (timeZone != null ? timeZone.getID() : ""));
+        if (timeZone != null) {
+            getTimeZoneCookieGenerator().addCookie(translet.getResponseAdapter(), timeZone.getID());
+        } else {
+            getTimeZoneCookieGenerator().removeCookie(translet.getResponseAdapter());
+        }
     }
 
     @Nullable
@@ -222,22 +234,24 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
         Locale locale = null;
         if (cookie != null) {
             String value = cookie.getValue();
-            try {
-                locale = parseLocaleValue(value);
-            } catch (IllegalArgumentException ex) {
-                if (isRejectInvalidCookies() && translet.getRaisedException() == null) {
-                    throw new IllegalStateException("Encountered invalid locale cookie '" +
-                            cookieName + "': [" + value + "] due to: " + ex.getMessage());
-                } else {
-                    // Lenient handling (e.g. error dispatch): ignore locale/timezone parse exceptions
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Ignoring invalid locale cookie '{}': [{}] due to: {}",
-                                cookieName, value, ex.getMessage());
+            if (StringUtils.hasText(value)) {
+                try {
+                    locale = parseLocaleValue(value);
+                } catch (IllegalArgumentException ex) {
+                    if (isRejectInvalidCookies() && translet.getRaisedException() == null) {
+                        throw new IllegalStateException("Encountered invalid locale cookie '" +
+                                cookieName + "': [" + value + "] due to: " + ex.getMessage());
+                    } else {
+                        // Lenient handling (e.g. error dispatch): ignore locale/timezone parse exceptions
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Ignoring invalid locale cookie '{}': [{}] due to: {}",
+                                    cookieName, value, ex.getMessage());
+                        }
                     }
                 }
-            }
-            if (locale != null && logger.isTraceEnabled()) {
-                logger.trace("Parsed cookie value [{}] into locale '{}'", cookie.getValue(), locale);
+                if (locale != null && logger.isTraceEnabled()) {
+                    logger.trace("Parsed cookie value [{}] into locale '{}'", value, locale);
+                }
             }
         }
         return locale;
@@ -249,27 +263,30 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
         if (cookieName == null) {
             return null;
         }
-        Cookie cookie = WebUtils.getCookie(translet, cookieName);
+        RequestAdapter requestAdapter = translet.getRequestAdapter();
+        Cookie cookie = WebUtils.getCookie(requestAdapter, cookieName);
         TimeZone timeZone = null;
         if (cookie != null) {
             String value = cookie.getValue();
-            try {
-                timeZone = LocaleUtils.parseTimeZoneString(value);
-            } catch (IllegalArgumentException ex) {
-                if (isRejectInvalidCookies() && translet.getRaisedException() == null) {
-                    throw new IllegalStateException("Encountered invalid time zone cookie '" +
-                            cookieName + "': [" + value + "] due to: " + ex.getMessage());
-                } else {
-                    // Lenient handling (e.g. error dispatch): ignore locale/timezone parse exceptions
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Ignoring invalid time zone cookie '{}': [{}] due to: {}",
-                                cookieName, value, ex.getMessage());
+            if (StringUtils.hasText(value)) {
+                try {
+                    timeZone = LocaleUtils.parseTimeZoneString(value);
+                } catch (IllegalArgumentException ex) {
+                    if (isRejectInvalidCookies() && translet.getRaisedException() == null) {
+                        throw new IllegalStateException("Encountered invalid time zone cookie '" +
+                                cookieName + "': [" + value + "] due to: " + ex.getMessage());
+                    } else {
+                        // Lenient handling (e.g. error dispatch): ignore locale/timezone parse exceptions
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Ignoring invalid time zone cookie '{}': [{}] due to: {}",
+                                    cookieName, value, ex.getMessage());
+                        }
                     }
                 }
-            }
-            if (timeZone != null && logger.isTraceEnabled()) {
-                logger.trace("Parsed cookie value [{}] into time zone '{}'",
-                        cookie.getValue(), timeZone.getID());
+                if (timeZone != null && logger.isTraceEnabled()) {
+                    logger.trace("Parsed cookie value [{}] into time zone '{}'",
+                            value, timeZone.getID());
+                }
             }
         }
         return timeZone;

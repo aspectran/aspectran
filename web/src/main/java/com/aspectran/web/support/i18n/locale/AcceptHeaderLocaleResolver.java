@@ -43,38 +43,51 @@ import java.util.TimeZone;
 public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 
     @Override
-    public Locale resolveLocale(Translet translet) {
+    public Locale resolveLocale(@NonNull Translet translet) {
         Locale defaultLocale = getDefaultLocale();
-        if (defaultLocale != null && translet.getRequestAdapter().getHeader(HttpHeaders.ACCEPT_LANGUAGE) == null) {
+        RequestAdapter requestAdapter = translet.getRequestAdapter();
+        String header = requestAdapter.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
+        if (defaultLocale != null && !StringUtils.hasText(header)) {
+            requestAdapter.setLocale(defaultLocale);
             return defaultLocale;
         }
-        Locale requestLocale = translet.getRequestAdapter().getLocale();
-        List<Locale> supportedLocales = getSupportedLocales();
-        if (supportedLocales == null || supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) {
-            return requestLocale;
+        Locale requestLocale = requestAdapter.getLocale();
+        if (requestLocale == null && StringUtils.hasText(header)) {
+            requestLocale = findFirstLocale(header);
         }
-        Locale supportedLocale = findSupportedLocale(translet.getRequestAdapter(), supportedLocales);
+        List<Locale> supportedLocales = getSupportedLocales();
+        if (supportedLocales == null || supportedLocales.isEmpty() ||
+                (requestLocale != null && supportedLocales.contains(requestLocale))) {
+            Locale resolved = (requestLocale != null ? requestLocale : defaultLocale);
+            if (resolved != null) {
+                requestAdapter.setLocale(resolved);
+            }
+            return resolved;
+        }
+        Locale supportedLocale = findSupportedLocale(header, supportedLocales);
         if (supportedLocale != null) {
+            requestAdapter.setLocale(supportedLocale);
             return supportedLocale;
         }
-        return (defaultLocale != null ? defaultLocale : requestLocale);
+        Locale resolvedLocale = (defaultLocale != null ? defaultLocale : requestLocale);
+        if (resolvedLocale != null) {
+            requestAdapter.setLocale(resolvedLocale);
+        }
+        return resolvedLocale;
     }
 
     @Override
-    public TimeZone resolveTimeZone(Translet translet) {
+    @Nullable
+    public TimeZone resolveTimeZone(@NonNull Translet translet) {
         return determineDefaultTimeZone(translet);
     }
 
     @Nullable
-    private Locale findSupportedLocale(@NonNull RequestAdapter requestAdapter, List<Locale> supportedLocales) {
-        String header = requestAdapter.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
+    private Locale findSupportedLocale(String header, List<Locale> supportedLocales) {
         if (StringUtils.hasText(header)) {
             try {
                 List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(header);
-                Locale match = Locale.lookup(languageRanges, supportedLocales);
-                if (match != null) {
-                    return match;
-                }
+                return Locale.lookup(languageRanges, supportedLocales);
             } catch (IllegalArgumentException e) {
                 // ignore parse exception
             }
@@ -82,14 +95,27 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
         return null;
     }
 
+    @Nullable
+    private Locale findFirstLocale(String header) {
+        try {
+            List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(header);
+            if (!languageRanges.isEmpty()) {
+                return Locale.forLanguageTag(languageRanges.getFirst().getRange());
+            }
+        } catch (IllegalArgumentException e) {
+            // ignore parse exception
+        }
+        return null;
+    }
+
     @Override
-    public void setLocale(Translet translet, Locale locale) {
+    public void setLocale(@NonNull Translet translet, @Nullable Locale locale) {
         throw new UnsupportedOperationException(
                 "Cannot change HTTP Accept-Language header - use a different locale resolution strategy");
     }
 
     @Override
-    public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
+    public void setTimeZone(@NonNull Translet translet, @Nullable TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
     }
 
