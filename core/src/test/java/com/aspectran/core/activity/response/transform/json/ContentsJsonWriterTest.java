@@ -58,4 +58,31 @@ class ContentsJsonWriterTest {
             {"action0":"value0","action1":"value3"}""", writer.toString());
     }
 
+    @Test
+    void testWriteContentResult() throws IOException {
+        ContentResult contentResult = new ContentResult();
+        contentResult.setName("content1");
+        contentResult.addActionResult(new ActionResult("item1", "val1"));
+        contentResult.addActionResult(new ActionResult("item2", "val2"));
+
+        StringWriter writer = new StringWriter();
+        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer).prettyPrint(false);
+        jsonWriter.writeValue(contentResult);
+
+        assertEquals("""
+            {"content1":{"item1":"val1","item2":"val2"}}""", writer.toString());
+    }
+
+    @Test
+    void testWriteActionResult() throws IOException {
+        ActionResult actionResult = new ActionResult("user", "john");
+
+        StringWriter writer = new StringWriter();
+        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer).prettyPrint(false);
+        jsonWriter.writeValue(actionResult);
+
+        assertEquals("""
+            {"user":"john"}""", writer.toString());
+    }
+
 }

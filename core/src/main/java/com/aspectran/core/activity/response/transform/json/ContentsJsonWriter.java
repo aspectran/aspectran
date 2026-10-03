@@ -21,6 +21,9 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.json.JsonWriter;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -42,14 +45,18 @@ public class ContentsJsonWriter extends JsonWriter {
      * Instantiates a new ContentsJsonWriter.
      * @param writer a {@code Writer} object that can send character text
      */
-    public ContentsJsonWriter(Writer writer) {
+    public ContentsJsonWriter(@NonNull Writer writer) {
         super(writer);
     }
 
     @Override
-    public void writeValue(Object object) throws IOException {
+    public void writeValue(@Nullable Object object) throws IOException {
         if (object instanceof ProcessResult processResult) {
             writeValue(processResult);
+        } else if (object instanceof ContentResult contentResult) {
+            writeValue(contentResult);
+        } else if (object instanceof ActionResult actionResult) {
+            writeValue(actionResult);
         } else {
             super.writeValue(object);
         }
@@ -63,7 +70,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param processResult the {@code ProcessResult} to write
      * @throws IOException if an I/O error occurs
      */
-    private void writeValue(ProcessResult processResult) throws IOException {
+    public void writeValue(@NonNull ProcessResult processResult) throws IOException {
         Assert.notNull(processResult, "processResult must not be null");
         if (processResult.getName() != null) {
             beginObject();
@@ -94,7 +101,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param contentResult the {@code ContentResult} to write
      * @throws IOException if an I/O error occurs
      */
-    private void writeValue(ContentResult contentResult) throws IOException {
+    public void writeValue(@NonNull ContentResult contentResult) throws IOException {
         Assert.notNull(contentResult, "contentResult must not be null");
         if (contentResult.getName() != null) {
             beginObject();
@@ -116,13 +123,35 @@ public class ContentsJsonWriter extends JsonWriter {
             beginObject();
             for (String actionId : contentResult.getActionIds()) {
                 ActionResult actionResult = contentResult.getActionResult(actionId);
-                writeName(actionResult.getActionId());
-                writeValue(actionResult.getResultValue());
+                if (actionResult != null) {
+                    writeName(actionId);
+                    writeValue(actionResult.getResultValue());
+                }
             }
             endObject();
         }
         if (contentResult.getName() != null) {
             endObject();
+        }
+    }
+
+    /**
+     * Writes an {@code ActionResult} to the output stream.
+     * <p>If the action result has an action ID, it is written as a JSON object
+     * with that ID as the key and its result value as the value. Otherwise,
+     * the result value is written directly.</p>
+     * @param actionResult the {@code ActionResult} to write
+     * @throws IOException if an I/O error occurs
+     */
+    public void writeValue(@NonNull ActionResult actionResult) throws IOException {
+        Assert.notNull(actionResult, "actionResult must not be null");
+        if (actionResult.getActionId() != null) {
+            beginObject();
+            writeName(actionResult.getActionId());
+            writeValue(actionResult.getResultValue());
+            endObject();
+        } else {
+            writeValue(actionResult.getResultValue());
         }
     }
 
