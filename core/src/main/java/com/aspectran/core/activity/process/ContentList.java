@@ -48,17 +48,36 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 
     /**
      * Instantiates a new ContentList.
+     */
+    public ContentList() {
+        this(false);
+    }
+
+    /**
+     * Instantiates a new ContentList.
      * @param explicit whether this content list was explicitly defined
      */
     public ContentList(boolean explicit) {
-        super(3);
+        this(3, explicit);
+    }
+
+    /**
+     * Instantiates a new ContentList with a specific initial capacity.
+     * @param initialCapacity the initial capacity
+     * @param explicit whether this content list was explicitly defined
+     */
+    public ContentList(int initialCapacity, boolean explicit) {
+        super(initialCapacity);
         this.explicit = explicit;
     }
 
-    private ContentList(ContentList contentList) {
-        super(contentList);
+    private ContentList(@NonNull ContentList contentList) {
+        super(contentList.size());
         this.explicit = contentList.isExplicit();
         this.name = contentList.getName();
+        for (ActionList actionList : contentList) {
+            add(new ActionList(actionList));
+        }
     }
 
     /**
@@ -91,7 +110,8 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
      * @param name the name of the action list to find
      * @return the corresponding {@link ActionList}, or {@code null} if not found
      */
-    public ActionList getActionList(String name) {
+    @Nullable
+    public ActionList getActionList(@Nullable String name) {
         for (ActionList actionList : this) {
             if (Objects.equals(name, actionList.getName())) {
                 return actionList;
@@ -104,13 +124,14 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
      * Adds an {@link ActionList} to this content list.
      * @param actionList the action list to add
      */
-    public void addActionList(ActionList actionList) {
+    public void addActionList(@Nullable ActionList actionList) {
         if (actionList != null) {
             add(actionList);
         }
     }
 
     @Override
+    @NonNull
     public ContentList replicate() {
         return new ContentList(this);
     }
@@ -129,7 +150,7 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
      * @return the new ContentList instance
      */
     @NonNull
-    public static ContentList newInstance(String name) {
+    public static ContentList newInstance(@Nullable String name) {
         ContentList contentList = new ContentList(true);
         contentList.setName(name);
         return contentList;

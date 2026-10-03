@@ -29,8 +29,10 @@ import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.HasActionRules;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -53,15 +55,42 @@ public class ActionList extends ArrayList<Executable> implements HasActionRules 
 
     private final boolean explicit;
 
+    @Nullable
     private String name;
+
+    /**
+     * Instantiates a new ActionList.
+     */
+    public ActionList() {
+        this(false);
+    }
 
     /**
      * Instantiates a new ActionList.
      * @param explicit whether this action list was explicitly defined
      */
     public ActionList(boolean explicit) {
-        super(5);
+        this(5, explicit);
+    }
+
+    /**
+     * Instantiates a new ActionList with a specific initial capacity.
+     * @param initialCapacity the initial capacity
+     * @param explicit whether this action list was explicitly defined
+     */
+    public ActionList(int initialCapacity, boolean explicit) {
+        super(initialCapacity);
         this.explicit = explicit;
+    }
+
+    /**
+     * Instantiates a new ActionList by copying another ActionList.
+     * @param actionList the action list to copy
+     */
+    public ActionList(@NonNull ActionList actionList) {
+        super(actionList);
+        this.explicit = actionList.isExplicit();
+        this.name = actionList.getName();
     }
 
     /**
@@ -76,6 +105,7 @@ public class ActionList extends ArrayList<Executable> implements HasActionRules 
      * Returns the name of this action list.
      * @return the name of the action list
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -84,54 +114,67 @@ public class ActionList extends ArrayList<Executable> implements HasActionRules 
      * Sets the name of this action list.
      * @param name the name of the action list
      */
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 
     @Override
-    public Executable putActionRule(HeaderActionRule headerActionRule) {
+    @NonNull
+    public Executable putActionRule(@NonNull HeaderActionRule headerActionRule) {
+        Assert.notNull(headerActionRule, "headerActionRule must not be null");
         Executable action = new HeaderAction(headerActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable putActionRule(EchoActionRule echoActionRule) {
+    @NonNull
+    public Executable putActionRule(@NonNull EchoActionRule echoActionRule) {
+        Assert.notNull(echoActionRule, "echoActionRule must not be null");
         Executable action = new EchoAction(echoActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+    @NonNull
+    public Executable putActionRule(@NonNull InvokeActionRule invokeActionRule) {
+        Assert.notNull(invokeActionRule, "invokeActionRule must not be null");
         Executable action = new InvokeAction(invokeActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+    @NonNull
+    public Executable putActionRule(@NonNull AnnotatedActionRule annotatedActionRule) {
+        Assert.notNull(annotatedActionRule, "annotatedActionRule must not be null");
         Executable action = new AnnotatedAction(annotatedActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable putActionRule(IncludeActionRule includeActionRule) {
+    @NonNull
+    public Executable putActionRule(@NonNull IncludeActionRule includeActionRule) {
+        Assert.notNull(includeActionRule, "includeActionRule must not be null");
         Executable action = new IncludeAction(includeActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable putActionRule(ChooseRule chooseRule) {
+    @NonNull
+    public Executable putActionRule(@NonNull ChooseRule chooseRule) {
+        Assert.notNull(chooseRule, "chooseRule must not be null");
         Executable action = new ChooseAction(chooseRule);
         add(action);
         return action;
     }
 
     @Override
-    public void putActionRule(Executable action) {
+    public void putActionRule(@NonNull Executable action) {
+        Assert.notNull(action, "action must not be null");
         add(action);
     }
 
@@ -149,7 +192,7 @@ public class ActionList extends ArrayList<Executable> implements HasActionRules 
      * @return the new ActionList instance
      */
     @NonNull
-    public static ActionList newInstance(String name) {
+    public static ActionList newInstance(@Nullable String name) {
         ActionList actionList = new ActionList(true);
         actionList.setName(name);
         return actionList;
