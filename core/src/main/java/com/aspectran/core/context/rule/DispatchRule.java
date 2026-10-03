@@ -211,7 +211,11 @@ public class DispatchRule implements Replicable<DispatchRule> {
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("default", getDefaultResponse());
-        tsb.append("viewDispatcher", viewDispatcher);
+        if (viewDispatcher != null) {
+            tsb.append("viewDispatcher", viewDispatcher);
+        } else {
+            tsb.append("dispatcherName", dispatcherName);
+        }
         return tsb.toString();
     }
 
