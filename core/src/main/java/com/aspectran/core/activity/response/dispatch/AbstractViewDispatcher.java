@@ -125,8 +125,8 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("name", super.toString());
-        tsb.append("defaultContentType", contentType);
+        tsb.append("class", getClass().getName());
+        tsb.append("contentType", contentType);
         tsb.append("prefix", prefix);
         tsb.append("suffix", suffix);
         return tsb.toString();

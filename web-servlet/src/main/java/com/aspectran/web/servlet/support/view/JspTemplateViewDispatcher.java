@@ -74,8 +74,8 @@ public class JspTemplateViewDispatcher extends AbstractJspViewDispatcher {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("name", super.toString());
-        tsb.append("defaultContentType", getContentType());
+        tsb.append("class", getClass().getName());
+        tsb.append("contentType", getContentType());
         tsb.append("prefix", getPrefix());
         tsb.append("suffix", getSuffix());
         tsb.append("template", template);
