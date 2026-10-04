@@ -259,7 +259,7 @@ public class BeanClassResolver {
                     resolveBeanClassOrReference(autowireRule, autowireTargetRule, false);
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
-                autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
+                    autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
                 AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
                 if (autowireTargetRules != null && autowireRule.isRequired()) {
                     for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
