@@ -19,16 +19,17 @@ import com.aspectran.utils.PathUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.Set;
 import java.util.jar.JarEntry;
 
 import static com.aspectran.utils.ClassUtils.CLASS_FILE_SUFFIX;
@@ -61,6 +62,7 @@ public class ResourceManager {
      * @param name the name of the resource
      * @return the resource URL, or {@code null} if not found
      */
+    @Nullable
     public URL getResource(String name) {
         return resourceEntries.get(name);
     }
@@ -123,7 +125,10 @@ public class ResourceManager {
      * @return an enumeration of {@link URL} objects for the resources
      */
     @NonNull
-    public static Enumeration<URL> findResources(Iterator<SiblingClassLoader> siblings) {
+    public static Enumeration<URL> findResources(@Nullable Iterator<SiblingClassLoader> siblings) {
+        if (siblings == null) {
+            return Collections.emptyEnumeration();
+        }
         return new Enumeration<>() {
             private Iterator<URL> iter;
             private URL next;
@@ -170,7 +175,8 @@ public class ResourceManager {
      * @return an enumeration of {@link URL} objects for the resource
      */
     @NonNull
-    public static Enumeration<URL> findResources(String name, Iterator<SiblingClassLoader> siblings) {
+    public static Enumeration<URL> findResources(
+            @Nullable String name, @Nullable Iterator<SiblingClassLoader> siblings) {
         return findResources(name, siblings, null);
     }
 
@@ -183,11 +189,16 @@ public class ResourceManager {
      */
     @NonNull
     public static Enumeration<URL> findResources(
-            String name, Iterator<SiblingClassLoader> siblings, Enumeration<URL> parentResources) {
+            @Nullable String name,
+            @Nullable Iterator<SiblingClassLoader> siblings,
+            @Nullable Enumeration<URL> parentResources) {
         if (name == null || siblings == null) {
             return Collections.emptyEnumeration();
         }
 
+        if (StringUtils.startsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
+            name = name.substring(1);
+        }
         if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);
         }
@@ -196,7 +207,7 @@ public class ResourceManager {
 
         return new Enumeration<>() {
             private URL next;
-            private boolean noMore; //for parent
+            private boolean noMore; // for parent
 
             private boolean hasNext() {
                 do {
@@ -247,9 +258,13 @@ public class ResourceManager {
      */
     @NonNull
     public static String resourceNameToClassName(@NonNull String resourceName) {
-        String className = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
-        className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
-        return className;
+        if (StringUtils.startsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
+            resourceName = resourceName.substring(1);
+        }
+        if (resourceName.endsWith(CLASS_FILE_SUFFIX)) {
+            resourceName = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
+        }
+        return resourceName.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
     }
 
     /**
@@ -268,6 +283,7 @@ public class ResourceManager {
      * @param packageName the package name to convert
      * @return the corresponding resource path (e.g., "com/example")
      */
+    @NonNull
     public static String packageNameToResourceName(@NonNull String packageName) {
         String resourceName = packageName.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
         if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
@@ -285,17 +301,16 @@ public class ResourceManager {
      * @return a sanitized array of unique, absolute resource locations
      * @throws InvalidResourceException if a location is invalid or cannot be resolved
      */
-    public static String[] checkResourceLocations(String[] resourceLocations, String basePath)
-            throws InvalidResourceException {
+    public static String @Nullable [] checkResourceLocations(
+            String @Nullable [] resourceLocations, @Nullable String basePath) throws InvalidResourceException {
         if (resourceLocations == null || resourceLocations.length == 0) {
             return null;
         }
 
-        String[] resourceLocationsToUse = resourceLocations.clone();
-        for (int i = 0; i < resourceLocationsToUse.length; i++) {
-            String tempLocation = resourceLocationsToUse[i];
-            if (tempLocation != null) {
-                tempLocation = PathUtils.cleanPath(tempLocation);
+        Set<String> uniqueLocations = new LinkedHashSet<>();
+        for (String location : resourceLocations) {
+            if (location != null) {
+                String tempLocation = PathUtils.cleanPath(location);
                 if (StringUtils.endsWith(tempLocation, REGULAR_FILE_SEPARATOR_CHAR)) {
                     tempLocation = tempLocation.substring(0, tempLocation.length() - 1);
                 }
@@ -314,7 +329,7 @@ public class ResourceManager {
                         tempLocation = url.getFile();
                     } catch (Exception e) {
                         throw new InvalidResourceException("Resource location [" + tempLocation +
-                                "] is neither a URL not a well-formed file path", e);
+                                "] is neither a URL nor a well-formed file path", e);
                     }
                 } else {
                     try {
@@ -335,25 +350,14 @@ public class ResourceManager {
                         throw new InvalidResourceException("Invalid resource location: " + tempLocation, e);
                     }
                 }
-                resourceLocationsToUse[i] = tempLocation;
+                uniqueLocations.add(tempLocation);
             }
         }
 
-        for (int i = 0; i < resourceLocationsToUse.length - 1; i++) {
-            String tempLocation1 = resourceLocationsToUse[i];
-            if (tempLocation1 != null) {
-                for (int j = i + 1; j < resourceLocationsToUse.length; j++) {
-                    String tempLocation2 = resourceLocationsToUse[j];
-                    if (tempLocation2 != null) {
-                        if (tempLocation1.equals(tempLocation2)) {
-                            resourceLocationsToUse[j] = null;
-                        }
-                    }
-                }
-            }
+        if (uniqueLocations.isEmpty()) {
+            return null;
         }
-
-        return Arrays.stream(resourceLocationsToUse).filter(Objects::nonNull).toArray(String[]::new);
+        return uniqueLocations.toArray(new String[0]);
     }
 
 }

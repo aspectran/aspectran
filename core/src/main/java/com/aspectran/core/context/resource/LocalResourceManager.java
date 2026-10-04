@@ -21,6 +21,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class LocalResourceManager extends ResourceManager {
      * @param owner the SiblingClassLoader that owns this resource manager
      * @throws InvalidResourceException if an error occurs during initialization
      */
-    LocalResourceManager(SiblingClassLoader owner) throws InvalidResourceException {
+    LocalResourceManager(@NonNull SiblingClassLoader owner) throws InvalidResourceException {
         this(owner, null);
     }
 
@@ -74,29 +75,28 @@ public class LocalResourceManager extends ResourceManager {
      * @param resourceLocation the path to a directory or a JAR file
      * @throws InvalidResourceException if the location is invalid or an error occurs during scanning
      */
-    LocalResourceManager(SiblingClassLoader owner, String resourceLocation) throws InvalidResourceException {
+    LocalResourceManager(@NonNull SiblingClassLoader owner, @Nullable String resourceLocation)
+            throws InvalidResourceException {
         super();
 
         this.owner = owner;
 
         if (StringUtils.hasLength(resourceLocation)) {
             File file = new File(resourceLocation);
-            if (!file.exists() || !file.canRead()) {
+            if (file.exists() && file.canRead()) {
+                if (!file.isDirectory() && !StringUtils.endsWithIgnoreCase(resourceLocation, ResourceUtils.JAR_FILE_EXTENSION)) {
+                    throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
+                }
+                this.resourceLocation = file.getAbsolutePath();
+                this.resourceNameStart = this.resourceLocation.length() + 1;
+                findResource(file);
+            } else {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Non-existent or inaccessible resource location: {}", resourceLocation);
                 }
                 this.resourceLocation = null;
                 this.resourceNameStart = 0;
-                return;
             }
-            if (!file.isDirectory() && !resourceLocation.toLowerCase().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) {
-                throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
-            }
-
-            this.resourceLocation = file.getAbsolutePath();
-            this.resourceNameStart = this.resourceLocation.length() + 1;
-
-            findResource(file);
         } else {
             this.resourceLocation = null;
             this.resourceNameStart = 0;
@@ -150,6 +150,8 @@ public class LocalResourceManager extends ResourceManager {
             } else {
                 findResourceFromJAR(file);
             }
+        } catch (InvalidResourceException e) {
+            throw e;
         } catch (Exception e) {
             throw new InvalidResourceException("Failed to find resource from [" + file + "]", e);
         }
@@ -161,25 +163,24 @@ public class LocalResourceManager extends ResourceManager {
      * Nested JAR files are collected to be loaded by new sibling class loaders.
      * @param dir the directory to scan
      * @param jarFileList a list to collect found JAR files
+     * @throws InvalidResourceException if an error occurs during resource registration
      */
-    private void findResourceInDir(@NonNull File dir, List<File> jarFileList) {
-        dir.listFiles(file -> {
-            String filePath = file.getAbsolutePath();
-            String resourceName = filePath.substring(resourceNameStart);
-            try {
+    private void findResourceInDir(@NonNull File dir, List<File> jarFileList) throws InvalidResourceException {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                String filePath = file.getAbsolutePath();
+                String resourceName = filePath.substring(resourceNameStart);
                 putResource(resourceName, file);
-            } catch (InvalidResourceException e) {
-                throw new RuntimeException(e);
-            }
-            if (file.isDirectory()) {
-                findResourceInDir(file, jarFileList);
-            } else if (file.isFile()) {
-                if (filePath.toLowerCase().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) {
-                    jarFileList.add(file);
+                if (file.isDirectory()) {
+                    findResourceInDir(file, jarFileList);
+                } else if (file.isFile()) {
+                    if (StringUtils.endsWithIgnoreCase(filePath, ResourceUtils.JAR_FILE_EXTENSION)) {
+                        jarFileList.add(file);
+                    }
                 }
             }
-            return false;
-        });
+        }
     }
 
     /**
@@ -210,6 +211,8 @@ public class LocalResourceManager extends ResourceManager {
                 putResource(workResourceFile, entry);
             }
         }
+        // Note: deleteOnExit executes in reverse order (LIFO).
+        // Register the directory first so that the contained file is deleted before the directory.
         workResourceDir.deleteOnExit();
         workResourceFile.deleteOnExit();
     }
@@ -243,15 +246,18 @@ public class LocalResourceManager extends ResourceManager {
                             try (Stream<Path> stream2 = Files.walk(p)) {
                                 stream2
                                     .sorted(Comparator.reverseOrder())
-                                    .map(Path::toFile)
-                                    .forEach(file -> {
-                                        if (logger.isTraceEnabled()) {
-                                            logger.trace("Delete temp resource: {}", file);
+                                    .forEach(path -> {
+                                        try {
+                                            if (logger.isTraceEnabled()) {
+                                                logger.trace("Delete temp resource: {}", path);
+                                            }
+                                            Files.deleteIfExists(path);
+                                        } catch (IOException e) {
+                                            logger.warn("Failed to delete temp resource: {}", path, e);
                                         }
-                                        file.delete();
                                     });
                             } catch (IOException e) {
-                                logger.warn("Failed to delete temp resource: {}", e.getMessage());
+                                logger.warn("Failed to walk temp resource directory: {}", p, e);
                             }
                         });
                 } catch (IOException e) {

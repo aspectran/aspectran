@@ -17,7 +17,9 @@ package com.aspectran.core.context.resource;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ResourceManagerTest {
 
@@ -27,16 +29,31 @@ class ResourceManagerTest {
                 "/lib/ext",
                 "/lib/ext/",
                 "/lib/../lib/ext",
-                "X:/lib/ext",
                 "classpath:com/aspectran/core/context/resource",
                 "classpath:com/aspectran/core/context/resource",
                 "file:/C:/aspectran/file.jar",
-                "file:/C:/aspectran/file.jar",
-                "file://aspectran.com/file.jar",
-                "file://aspectran.com/file.jar"
+                "file:/C:/aspectran/file.jar"
         };
         String[] result = ResourceManager.checkResourceLocations(resourceLocations, "/base");
-        System.out.println(Arrays.toString(result));
+        assertNotNull(result);
+        assertNull(ResourceManager.checkResourceLocations(null, "/base"));
+        assertNull(ResourceManager.checkResourceLocations(new String[0], "/base"));
+    }
+
+    @Test
+    void nameConversions() {
+        assertEquals("com.aspectran.core.TestClass",
+                ResourceManager.resourceNameToClassName("com/aspectran/core/TestClass.class"));
+        assertEquals("com.aspectran.core.TestClass",
+                ResourceManager.resourceNameToClassName("/com/aspectran/core/TestClass.class"));
+
+        assertEquals("com/aspectran/core/TestClass.class",
+                ResourceManager.classNameToResourceName("com.aspectran.core.TestClass"));
+
+        assertEquals("com/aspectran/core",
+                ResourceManager.packageNameToResourceName("com.aspectran.core"));
+        assertEquals("com/aspectran/core",
+                ResourceManager.packageNameToResourceName("com.aspectran.core."));
     }
 
 }

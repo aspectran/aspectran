@@ -17,6 +17,7 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.Serial;
@@ -28,13 +29,14 @@ import java.util.LinkedHashMap;
 import java.util.jar.JarEntry;
 
 import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.PathUtils.WINDOWS_FILE_SEPARATOR_CHAR;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_PREFIX;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
 
 /**
  * A specialized map that holds resource names and their corresponding URLs.
  * It extends {@link LinkedHashMap} to maintain the insertion order of resources.
- * Resource names are normalized to use forward slashes and no trailing slashes for consistency.
+ * Resource names are normalized to use forward slashes and no leading/trailing slashes for consistency.
  *
  * @since 2014. 12. 24
  */
@@ -56,7 +58,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
      * @param file the resource file
      * @throws InvalidResourceException if the file's URL is malformed
      */
-    public void putResource(String name, @NonNull File file) throws InvalidResourceException {
+    public void putResource(@NonNull String name, @NonNull File file) throws InvalidResourceException {
         URL url;
         try {
             url = file.toURI().toURL();
@@ -86,18 +88,48 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 
     /**
      * Overrides the default {@code put} method to normalize the resource name before storing it.
-     * Normalization includes replacing backslashes with forward slashes and removing any trailing slash.
+     * Normalization includes replacing backslashes with forward slashes and removing leading/trailing slashes.
      * @param name the resource name to be normalized
      * @param url the resource URL
      * @return the previous value associated with {@code name}, or {@code null} if there was no mapping for {@code name}
      */
     @Override
-    public URL put(String name, URL url) {
-        name = name.replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
-        if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
-            name = name.substring(0, name.length() - 1);
+    public URL put(@NonNull String name, URL url) {
+        String normalizedName = normalizeResourceName(name);
+        return super.put(normalizedName != null ? normalizedName : name, url);
+    }
+
+    @Override
+    public URL get(Object key) {
+        String normalizedName = normalizeResourceName(key);
+        return (normalizedName != null ? super.get(normalizedName) : null);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        String normalizedName = normalizeResourceName(key);
+        return (normalizedName != null && super.containsKey(normalizedName));
+    }
+
+    @Override
+    public URL remove(Object key) {
+        String normalizedName = normalizeResourceName(key);
+        return (normalizedName != null ? super.remove(normalizedName) : null);
+    }
+
+    @Nullable
+    private String normalizeResourceName(@Nullable Object key) {
+        if (key instanceof String name) {
+            name = name.replace(WINDOWS_FILE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
+            if (StringUtils.startsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
+                name = name.substring(1);
+            }
+            if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
+                name = name.substring(0, name.length() - 1);
+            }
+            return name;
         }
-        return super.put(name, url);
+        return null;
     }
 
 }

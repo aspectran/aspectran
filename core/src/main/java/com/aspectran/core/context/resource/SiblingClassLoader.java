@@ -21,20 +21,20 @@ import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
 
@@ -55,6 +55,10 @@ import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
  */
 public final class SiblingClassLoader extends ClassLoader {
 
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
+
     /** A unique identifier for this class loader instance. */
     private final int id;
 
@@ -71,7 +75,7 @@ public final class SiblingClassLoader extends ClassLoader {
     private final ResourceManager resourceManager;
 
     /** The list of other class loaders that are siblings to this one. */
-    private final List<SiblingClassLoader> siblings = new LinkedList<>();
+    private final List<SiblingClassLoader> siblings = new CopyOnWriteArrayList<>();
 
     /** A set of fully qualified class names to be excluded from this class loader. */
     private Set<String> excludeClassNames;
@@ -106,7 +110,7 @@ public final class SiblingClassLoader extends ClassLoader {
      * @param parent the parent class loader for delegation
      * @throws InvalidResourceException if an error occurs during initialization
      */
-    public SiblingClassLoader(String name, ClassLoader parent) throws InvalidResourceException {
+    public SiblingClassLoader(@Nullable String name, @Nullable ClassLoader parent) throws InvalidResourceException {
         super(name, parent != null ? parent : ClassUtils.getDefaultClassLoader());
 
         this.id = 1000;
@@ -152,7 +156,8 @@ public final class SiblingClassLoader extends ClassLoader {
      * @param resourceLocations paths to directories or JAR files
      * @throws InvalidResourceException if a resource location is invalid
      */
-    public SiblingClassLoader(String name, ClassLoader parent, String[] resourceLocations)
+    public SiblingClassLoader(
+            @Nullable String name, @Nullable ClassLoader parent, String @Nullable [] resourceLocations)
             throws InvalidResourceException {
         this(name, parent != null ? parent : ClassUtils.getDefaultClassLoader());
         if (resourceLocations != null) {
@@ -167,7 +172,8 @@ public final class SiblingClassLoader extends ClassLoader {
      * @param resourceLocation the resource path for this new sibling
      * @throws InvalidResourceException if the resource location is invalid
      */
-    private SiblingClassLoader(String name, @NonNull SiblingClassLoader parent, String resourceLocation)
+    private SiblingClassLoader(
+            @Nullable String name, @NonNull SiblingClassLoader parent, @Nullable String resourceLocation)
             throws InvalidResourceException {
         super(name, parent);
 
@@ -329,10 +335,8 @@ public final class SiblingClassLoader extends ClassLoader {
      * @return the new number of siblings
      */
     private int addSibling(SiblingClassLoader sibling) {
-        synchronized (siblings) {
-            siblings.add(sibling);
-            return siblings.size();
-        }
+        siblings.add(sibling);
+        return siblings.size();
     }
 
     /**
@@ -507,18 +511,8 @@ public final class SiblingClassLoader extends ClassLoader {
             return null;
         }
 
-        try {
-            URLConnection connection = url.openConnection();
-            BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            int i;
-            while ((i = input.read()) != -1) {
-                output.write(i);
-            }
-            input.close();
-            byte[] classData = output.toByteArray();
-            output.close();
-            return classData;
+        try (InputStream input = url.openStream()) {
+            return input.readAllBytes();
         } catch (IOException e) {
             throw new InvalidResourceException("Unable to read class file: " + url, e);
         }
@@ -636,40 +630,21 @@ public final class SiblingClassLoader extends ClassLoader {
      */
     @NonNull
     private static Iterator<SiblingClassLoader> getSiblings(@NonNull SiblingClassLoader root) {
+        Deque<SiblingClassLoader> queue = new ArrayDeque<>();
+        queue.add(root);
         return new Iterator<>() {
-            private SiblingClassLoader next = root;
-            private Iterator<SiblingClassLoader> iter = root.getSiblings().iterator();
-            private SiblingClassLoader first;
-
             @Override
             public boolean hasNext() {
-                return (next != null);
+                return !queue.isEmpty();
             }
 
             @Override
             public SiblingClassLoader next() {
-                if (next == null) {
+                SiblingClassLoader current = queue.poll();
+                if (current == null) {
                     throw new NoSuchElementException();
                 }
-                SiblingClassLoader current = next;
-                if (iter.hasNext()) {
-                    next = iter.next();
-                    if (first == null) {
-                        first = next;
-                    }
-                } else {
-                    if (first != null) {
-                        iter = first.getSiblings().iterator();
-                        if (iter.hasNext()) {
-                            next = iter.next();
-                            first = next;
-                        } else {
-                            next = null;
-                        }
-                    } else {
-                        next = null;
-                    }
-                }
+                queue.addAll(current.getSiblings());
                 return current;
             }
         };
