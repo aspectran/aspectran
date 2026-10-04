@@ -38,9 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *
  * <p>Created: 2026. 10. 05</p>
  */
-@AspectranTest(
-    rules = "/config/activity/annotated-method-invoker-test.xml"
-)
+@AspectranTest
 class HeaderActionTest {
 
     @Test
@@ -48,7 +46,6 @@ class HeaderActionTest {
         InstantActivity activity = new InstantActivity(context);
         ResponseAdapter responseAdapter = new DefaultResponseAdapter("mockResponse");
         activity.setResponseAdapter(responseAdapter);
-        activity.prepare("/test");
 
         // Pre-set existing header
         responseAdapter.setHeader("Cache-Control", "no-cache");
@@ -62,7 +59,10 @@ class HeaderActionTest {
         rule.addHeaderItemRule(itemRule);
 
         HeaderAction action = new HeaderAction(rule);
-        action.execute(activity);
+        activity.perform(() -> {
+            action.execute(activity);
+            return null;
+        });
 
         // Should override existing header value
         assertEquals("max-age=3600", responseAdapter.getHeader("Cache-Control"));
@@ -76,7 +76,6 @@ class HeaderActionTest {
         InstantActivity activity = new InstantActivity(context);
         ResponseAdapter responseAdapter = new DefaultResponseAdapter("mockResponse");
         activity.setResponseAdapter(responseAdapter);
-        activity.prepare("/test");
 
         // Pre-set existing header
         responseAdapter.setHeader("X-Custom-Header", "initial");
@@ -92,7 +91,10 @@ class HeaderActionTest {
         rule.addHeaderItemRule(itemRule);
 
         HeaderAction action = new HeaderAction(rule);
-        action.execute(activity);
+        activity.perform(() -> {
+            action.execute(activity);
+            return null;
+        });
 
         Collection<String> headers = responseAdapter.getHeaders("X-Custom-Header");
         assertNotNull(headers);
