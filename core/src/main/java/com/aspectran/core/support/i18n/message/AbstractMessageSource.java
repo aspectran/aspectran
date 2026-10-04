@@ -16,6 +16,7 @@
 package com.aspectran.core.support.i18n.message;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -59,11 +60,12 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     private boolean useCodeAsDefaultMessage = false;
 
     @Override
-    public void setParentMessageSource(MessageSource parent) {
+    public void setParentMessageSource(@Nullable MessageSource parent) {
         this.parentMessageSource = parent;
     }
 
     @Override
+    @Nullable
     public MessageSource getParentMessageSource() {
         return this.parentMessageSource;
     }
@@ -73,7 +75,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * and the full message String (may contain argument placeholders) as value.
      * @param commonMessages the common messages
      */
-    public void setCommonMessages(Properties commonMessages) {
+    public void setCommonMessages(@Nullable Properties commonMessages) {
         this.commonMessages = commonMessages;
     }
 
@@ -81,6 +83,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * Return a Properties object defining locale-independent common messages, if any.
      * @return the common messages
      */
+    @Nullable
     protected Properties getCommonMessages() {
         return this.commonMessages;
     }

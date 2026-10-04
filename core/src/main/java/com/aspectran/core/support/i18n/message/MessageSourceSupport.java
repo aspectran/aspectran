@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +107,7 @@ public class MessageSourceSupport {
      * @return the rendered default message (with resolved arguments)
      * @see #formatMessage(String, Object[], java.util.Locale)
      */
-    protected String renderDefaultMessage(String defaultMessage, Object[] args, Locale locale) {
+    protected String renderDefaultMessage(@Nullable String defaultMessage, @Nullable Object[] args, @NonNull Locale locale) {
         return formatMessage(defaultMessage, args, locale);
     }
 
@@ -118,19 +120,15 @@ public class MessageSourceSupport {
      * @param locale the Locale used for formatting
      * @return the formatted message (with resolved arguments)
      */
-    protected String formatMessage(String msg, Object[] args, Locale locale) {
+    protected String formatMessage(@Nullable String msg, @Nullable Object[] args, @NonNull Locale locale) {
         if (msg == null || (!this.alwaysUseMessageFormat && (args == null || args.length == 0))) {
             return msg;
         }
-        MessageFormat messageFormat = null;
+        MessageFormat messageFormat;
         synchronized (this.messageFormatsPerMessage) {
-            Map<Locale, MessageFormat> messageFormatsPerLocale = this.messageFormatsPerMessage.get(msg);
-            if (messageFormatsPerLocale != null) {
-                messageFormat = messageFormatsPerLocale.get(locale);
-            } else {
-                messageFormatsPerLocale = new HashMap<>();
-                this.messageFormatsPerMessage.put(msg, messageFormatsPerLocale);
-            }
+            Map<Locale, MessageFormat> messageFormatsPerLocale =
+                    this.messageFormatsPerMessage.computeIfAbsent(msg, k -> new HashMap<>());
+            messageFormat = messageFormatsPerLocale.get(locale);
             if (messageFormat == null) {
                 try {
                     messageFormat = createMessageFormat(msg, locale);
@@ -160,7 +158,8 @@ public class MessageSourceSupport {
      * @param locale the Locale to create a MessageFormat for
      * @return the MessageFormat instance
      */
-    protected MessageFormat createMessageFormat(String msg, Locale locale) {
+    @NonNull
+    protected MessageFormat createMessageFormat(@Nullable String msg, @NonNull Locale locale) {
         return new MessageFormat((msg != null ? msg : ""), locale);
     }
 
@@ -172,7 +171,8 @@ public class MessageSourceSupport {
      * @param locale the Locale to resolve against
      * @return the resolved argument array
      */
-    protected Object[] resolveArguments(Object[] args, Locale locale) {
+    @Nullable
+    protected Object[] resolveArguments(@Nullable Object[] args, @NonNull Locale locale) {
         return args;
     }
 

@@ -260,22 +260,14 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             return doGetBundle(basename, locale);
         } else {
             // Cache forever: prefer locale cache over repeated getBundle calls.
-            Map<Locale, ResourceBundle> localeMap = this.cachedResourceBundles.get(basename);
-            if (localeMap != null) {
-                ResourceBundle bundle = localeMap.get(locale);
-                if (bundle != null) {
-                    return bundle;
-                }
+            Map<Locale, ResourceBundle> localeMap =
+                    this.cachedResourceBundles.computeIfAbsent(basename, k -> new ConcurrentHashMap<>());
+            ResourceBundle bundle = localeMap.get(locale);
+            if (bundle != null) {
+                return bundle;
             }
             try {
-                ResourceBundle bundle = doGetBundle(basename, locale);
-                if (localeMap == null) {
-                    localeMap = new ConcurrentHashMap<>();
-                    Map<Locale, ResourceBundle> existing = this.cachedResourceBundles.putIfAbsent(basename, localeMap);
-                    if (existing != null) {
-                        localeMap = existing;
-                    }
-                }
+                bundle = doGetBundle(basename, locale);
                 localeMap.put(locale, bundle);
                 return bundle;
             } catch (MissingResourceException ex) {
@@ -353,9 +345,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     protected MessageFormat getMessageFormat(ResourceBundle bundle, String code, Locale locale)
             throws MissingResourceException {
         Map<String, Map<Locale, MessageFormat>> codeMap = this.cachedBundleMessageFormats.get(bundle);
-        Map<Locale, MessageFormat> localeMap = null;
         if (codeMap != null) {
-            localeMap = codeMap.get(code);
+            Map<Locale, MessageFormat> localeMap = codeMap.get(code);
             if (localeMap != null) {
                 MessageFormat result = localeMap.get(locale);
                 if (result != null) {
@@ -366,21 +357,10 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
         String msg = getStringOrNull(bundle, code);
         if (msg != null) {
-            if (codeMap == null) {
-                codeMap = new ConcurrentHashMap<>();
-                Map<String, Map<Locale, MessageFormat>> existing =
-                        this.cachedBundleMessageFormats.putIfAbsent(bundle, codeMap);
-                if (existing != null) {
-                    codeMap = existing;
-                }
-            }
-            if (localeMap == null) {
-                localeMap = new ConcurrentHashMap<>();
-                Map<Locale, MessageFormat> existing = codeMap.putIfAbsent(code, localeMap);
-                if (existing != null) {
-                    localeMap = existing;
-                }
-            }
+            Map<String, Map<Locale, MessageFormat>> actualCodeMap =
+                    this.cachedBundleMessageFormats.computeIfAbsent(bundle, k -> new ConcurrentHashMap<>());
+            Map<Locale, MessageFormat> localeMap =
+                    actualCodeMap.computeIfAbsent(code, k -> new ConcurrentHashMap<>());
             MessageFormat result = createMessageFormat(msg, locale);
             localeMap.put(locale, result);
             return result;

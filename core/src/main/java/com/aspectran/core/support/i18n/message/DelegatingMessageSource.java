@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Locale;
 
 /**
@@ -35,27 +39,30 @@ public class DelegatingMessageSource extends MessageSourceSupport implements Hie
     private MessageSource parentMessageSource;
 
     @Override
-    public void setParentMessageSource(MessageSource parent) {
+    public void setParentMessageSource(@Nullable MessageSource parent) {
         this.parentMessageSource = parent;
     }
 
     @Override
+    @Nullable
     public MessageSource getParentMessageSource() {
         return this.parentMessageSource;
     }
 
     @Override
+    @NonNull
     public String getMessage(String code, Locale locale) throws NoSuchMessageException {
         return getMessage(code, (Object[])null, locale);
     }
 
     @Override
-    public String getMessage(String code, String defaultMessage, Locale locale) {
+    public String getMessage(String code, @Nullable String defaultMessage, Locale locale) {
         return getMessage(code, null, defaultMessage, locale);
     }
 
     @Override
-    public String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException {
+    @NonNull
+    public String getMessage(String code, @Nullable Object[] args, Locale locale) throws NoSuchMessageException {
         if (this.parentMessageSource != null) {
             return this.parentMessageSource.getMessage(code, args, locale);
         } else {
@@ -64,12 +71,19 @@ public class DelegatingMessageSource extends MessageSourceSupport implements Hie
     }
 
     @Override
-    public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
+    public String getMessage(String code, @Nullable Object[] args, @Nullable String defaultMessage, Locale locale) {
         if (this.parentMessageSource != null) {
             return this.parentMessageSource.getMessage(code, args, defaultMessage, locale);
         } else {
             return renderDefaultMessage(defaultMessage, args, locale);
         }
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("parentMessageSource", parentMessageSource);
+        return tsb.toString();
     }
 
 }

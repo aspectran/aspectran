@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A sub-interface of {@link MessageSource} that supports hierarchical message resolution.
  *
@@ -34,12 +36,13 @@ public interface HierarchicalMessageSource extends MessageSource {
      *      resolve messages that this object can't resolve.
      *      May be {@code null}, in which case no further resolution is possible.
      */
-    void setParentMessageSource(MessageSource parent);
+    void setParentMessageSource(@Nullable MessageSource parent);
 
     /**
      * Return the parent of this MessageSource, or {@code null} if none.
      * @return the parent message source
      */
+    @Nullable
     MessageSource getParentMessageSource();
 
 }
