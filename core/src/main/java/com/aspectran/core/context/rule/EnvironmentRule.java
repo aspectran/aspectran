@@ -19,6 +19,7 @@ import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.HasPropertyRules;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -88,6 +89,16 @@ public class EnvironmentRule implements Describable, HasPropertyRules {
     @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("profile", profile);
+        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
+            tsb.append("properties", propertyItemRuleMap.keySet());
+        }
+        return tsb.toString();
     }
 
     /**

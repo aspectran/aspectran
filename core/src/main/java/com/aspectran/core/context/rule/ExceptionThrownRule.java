@@ -29,6 +29,7 @@ import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -256,6 +257,18 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
             defaultResponse = response;
         }
         return response;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("types", exceptionTypes);
+        tsb.append("action", action);
+        if (responseMap != null && !responseMap.isEmpty()) {
+            tsb.append("responses", responseMap.keySet());
+        }
+        tsb.append("defaultResponse", defaultResponse);
+        return tsb.toString();
     }
 
     /**

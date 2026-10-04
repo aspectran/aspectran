@@ -27,6 +27,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public abstract class ItemRuleUtils {
      * @param value the value actually assigned to the item
      * @return a {@code Class} determined by the type of item or its actual value
      */
-    public static Class<?> getPrototypeClass(@NonNull ItemRule itemRule, Object value) {
+    public static Class<?> getPrototypeClass(@NonNull ItemRule itemRule, @Nullable Object value) {
         ItemValueType valueType = itemRule.getValueType();
         switch (itemRule.getType()) {
             case ARRAY -> {
@@ -132,6 +133,7 @@ public abstract class ItemRuleUtils {
      * @return the item rule map
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @Nullable
     public static ItemRuleMap toItemRuleMap(List<ItemParameters> itemParametersList) throws IllegalRuleException {
         if (itemParametersList == null || itemParametersList.isEmpty()) {
             return null;

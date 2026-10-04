@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
@@ -50,6 +51,13 @@ public class ChooseRule {
      */
     public List<ChooseWhenRule> getChooseWhenRules() {
         return chooseWhenRules;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("chooseWhenRules", chooseWhenRules);
+        return tsb.toString();
     }
 
     /**

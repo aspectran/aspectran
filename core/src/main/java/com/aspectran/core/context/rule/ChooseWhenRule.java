@@ -26,6 +26,7 @@ import com.aspectran.core.context.asel.value.BooleanExpression;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * Represents a single conditional case within a {@link ChooseRule}.
@@ -182,6 +183,17 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
         Response response = new RedirectResponse(redirectRule);
         this.response = response;
         return response;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("test", getExpression());
+        if (actionList != null && !actionList.isEmpty()) {
+            tsb.append("actions", actionList.size());
+        }
+        tsb.append("response", response);
+        return tsb.toString();
     }
 
 }

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.Describable;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -96,7 +97,7 @@ public class ExceptionRule implements Describable {
             ExceptionThrownRule bestMatch = null;
             int deepest = Integer.MAX_VALUE;
             for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
-                int depth = getMatchedDepth(entry.getKey(), currentEx.getClass(), 0);
+                int depth = getMatchedDepth(entry.getKey(), currentEx.getClass());
                 if (depth >= 0 && depth < deepest) {
                     deepest = depth;
                     bestMatch = entry.getValue();
@@ -114,17 +115,19 @@ public class ExceptionRule implements Describable {
      * Returns the matched depth in the class hierarchy.
      * @param exceptionType the exception type name to match
      * @param exceptionClass the class of the exception to check
-     * @param depth the current depth in the hierarchy
      * @return the matched depth, or -1 if not matched
      */
-    private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
-        if (exceptionClass == null) {
-            return -1;
+    private int getMatchedDepth(String exceptionType, Class<?> exceptionClass) {
+        int depth = 0;
+        Class<?> clazz = exceptionClass;
+        while (clazz != null) {
+            if (clazz.getName().equals(exceptionType)) {
+                return depth;
+            }
+            clazz = clazz.getSuperclass();
+            depth++;
         }
-        if (exceptionClass.getName().equals(exceptionType)) {
-            return depth;
-        }
-        return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
+        return -1;
     }
 
     @Override
@@ -135,6 +138,18 @@ public class ExceptionRule implements Describable {
     @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (!exceptionThrownRuleMap.isEmpty()) {
+            tsb.append("exceptions", exceptionThrownRuleMap.keySet());
+        }
+        if (defaultExceptionThrownRule != null) {
+            tsb.append("default", defaultExceptionThrownRule);
+        }
+        return tsb.toString();
     }
 
 }

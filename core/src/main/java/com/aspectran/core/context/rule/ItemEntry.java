@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -95,6 +96,15 @@ public class ItemEntry {
      */
     public void setTokenizable(boolean tokenizable) {
         this.tokenizable = tokenizable;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", name);
+        tsb.append("value", value);
+        tsb.append("tokenizable", tokenizable);
+        return tsb.toString();
     }
 
     /**
