@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.util;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.AponFormat;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Contains methods to transform a given text to a specific style.
@@ -26,6 +27,9 @@ import com.aspectran.utils.apon.AponFormat;
  */
 public class TextStyler {
 
+    private TextStyler() {
+    }
+
     /**
      * Styles the given text based on the specified style alias.
      * @param text the text to style
@@ -33,7 +37,7 @@ public class TextStyler {
      * @return the styled text
      * @throws IllegalArgumentException if no text style type is found for the given alias
      */
-    public static String styling(String text, String style) {
+    public static String styling(@Nullable String text, @Nullable String style) {
         TextStyleType textStyleType = TextStyleType.resolve(style);
         if (style != null && textStyleType == null) {
             throw new IllegalArgumentException("No text style type for '" + style + "'");
@@ -47,16 +51,15 @@ public class TextStyler {
      * @param textStyleType the text style type
      * @return the styled text
      */
-    public static String styling(String text, TextStyleType textStyleType) {
-        if (textStyleType == TextStyleType.APON) {
-            return TextStyler.stripAponStyle(text);
-        } else if (textStyleType == TextStyleType.COMPACT) {
-            return TextStyler.compact(text);
-        } else if (textStyleType == TextStyleType.COMPRESSED) {
-            return TextStyler.compress(text);
-        } else {
+    public static String styling(@Nullable String text, @Nullable TextStyleType textStyleType) {
+        if (text == null || text.isEmpty() || textStyleType == null) {
             return text;
         }
+        return switch (textStyleType) {
+            case APON -> stripAponStyle(text);
+            case COMPACT -> compact(text);
+            case COMPRESSED -> compress(text);
+        };
     }
 
     /**
@@ -64,49 +67,49 @@ public class TextStyler {
      * @param text the text to strip APON style from
      * @return the text with APON style stripped
      */
-    public static String stripAponStyle(String text) {
+    public static String stripAponStyle(@Nullable String text) {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
         StringBuilder sb = new StringBuilder(text.length());
-        int start = 0;
-        int line = 0;
-        for (int end = 0; end < text.length(); end++) {
-            char c = text.charAt(end);
-            if (start == 0 && c == AponFormat.TEXT_LINE_START) {
-                if (line > 0) {
+        int lineCount = 0;
+        int len = text.length();
+        int i = 0;
+        boolean hasAponLines = false;
+
+        while (i < len) {
+            while (i < len && (text.charAt(i) == ' ' || text.charAt(i) == '\t')) {
+                i++;
+            }
+            if (i < len && text.charAt(i) == AponFormat.TEXT_LINE_START) {
+                hasAponLines = true;
+                int contentStart = i + 1;
+                while (i < len && text.charAt(i) != '\n' && text.charAt(i) != '\r') {
+                    i++;
+                }
+                if (lineCount > 0) {
                     sb.append(AponFormat.SYSTEM_NEW_LINE);
                 }
-                start = end + 1;
-                line++;
-            } else if (start > 0) {
-                if (c == '\n' || c == '\r') {
-                    if (end > start) {
-                        sb.append(text, start, end);
-                    }
-                    start = 0;
+                sb.append(text, contentStart, i);
+                lineCount++;
+            } else {
+                while (i < len && text.charAt(i) != '\n' && text.charAt(i) != '\r') {
+                    i++;
                 }
             }
+            if (i < len && text.charAt(i) == '\r') {
+                i++;
+            }
+            if (i < len && text.charAt(i) == '\n') {
+                i++;
+            }
         }
-        if (start > 0 && start < text.length()) {
-            sb.append(text, start, text.length());
-        }
-        if (!sb.isEmpty()) {
+
+        if (hasAponLines) {
             return sb.toString();
+        } else {
+            return text.strip();
         }
-        for (start = 0; start < text.length(); start++) {
-            if (text.charAt(start) != ' ') {
-                break;
-            }
-        }
-        int end = text.length();
-        while (end > 0) {
-            if (text.charAt(end - 1) != ' ') {
-                break;
-            }
-            end--;
-        }
-        return text.substring(start, end);
     }
 
     /**
@@ -115,51 +118,79 @@ public class TextStyler {
      * @param text the text to compact
      * @return the compacted text
      */
-    public static String compact(String text) {
+    public static String compact(@Nullable String text) {
         if (text == null || text.isEmpty()) {
             return text;
         }
-        text = text.trim();
         StringBuilder sb = new StringBuilder(text.length());
-        int start = 0;
-        for (int end = 0; end < text.length(); end++) {
-            char c = text.charAt(end);
-            if (c == '\n' || c == '\r') {
-                if (start > -1) {
-                    sb.append(text.substring(start, end).trim());
-                    sb.append(System.lineSeparator());
-                    start = -1;
-                }
-            } else if (start == -1) {
-                start = end;
+        int len = text.length();
+        int i = 0;
+        while (i < len) {
+            int lineStart = i;
+            while (i < len && text.charAt(i) != '\n' && text.charAt(i) != '\r') {
+                i++;
             }
-        }
-        if (start > -1) {
-            sb.append(text.substring(start).trim());
+            int lineEnd = i;
+            int trimStart = lineStart;
+            while (trimStart < lineEnd && Character.isWhitespace(text.charAt(trimStart))) {
+                trimStart++;
+            }
+            int trimEnd = lineEnd;
+            while (trimEnd > trimStart && Character.isWhitespace(text.charAt(trimEnd - 1))) {
+                trimEnd--;
+            }
+            if (trimStart < trimEnd) {
+                if (!sb.isEmpty()) {
+                    sb.append(System.lineSeparator());
+                }
+                sb.append(text, trimStart, trimEnd);
+            }
+            if (i < len && text.charAt(i) == '\r') {
+                i++;
+            }
+            if (i < len && text.charAt(i) == '\n') {
+                i++;
+            }
         }
         return sb.toString();
     }
 
-    public static String compress(String text) {
+    /**
+     * Compresses the given text into a single line by removing all newlines
+     * and trimming leading/trailing whitespace from each line.
+     * @param text the text to compress
+     * @return the compressed text
+     */
+    public static String compress(@Nullable String text) {
         if (text == null || text.isEmpty()) {
             return text;
         }
-        text = text.trim();
         StringBuilder sb = new StringBuilder(text.length());
-        int start = 0;
-        for (int end = 0; end < text.length(); end++) {
-            char c = text.charAt(end);
-            if (c == '\n' || c == '\r') {
-                if (start > -1) {
-                    sb.append(text.substring(start, end).trim());
-                    start = -1;
-                }
-            } else if (start == -1) {
-                start = end;
+        int len = text.length();
+        int i = 0;
+        while (i < len) {
+            int lineStart = i;
+            while (i < len && text.charAt(i) != '\n' && text.charAt(i) != '\r') {
+                i++;
             }
-        }
-        if (start > -1) {
-            sb.append(text.substring(start).trim());
+            int lineEnd = i;
+            int trimStart = lineStart;
+            while (trimStart < lineEnd && Character.isWhitespace(text.charAt(trimStart))) {
+                trimStart++;
+            }
+            int trimEnd = lineEnd;
+            while (trimEnd > trimStart && Character.isWhitespace(text.charAt(trimEnd - 1))) {
+                trimEnd--;
+            }
+            if (trimStart < trimEnd) {
+                sb.append(text, trimStart, trimEnd);
+            }
+            if (i < len && text.charAt(i) == '\r') {
+                i++;
+            }
+            if (i < len && text.charAt(i) == '\n') {
+                i++;
+            }
         }
         return sb.toString();
     }
