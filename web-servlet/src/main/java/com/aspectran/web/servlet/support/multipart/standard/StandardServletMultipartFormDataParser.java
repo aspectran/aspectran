@@ -135,7 +135,7 @@ public class StandardServletMultipartFormDataParser implements MultipartFormData
                 parts = request.getParts();
             } catch (Exception e) {
                 Throwable rootCause = ExceptionUtils.getRootCause(e);
-                String rootMsg = (rootCause != null ? rootCause.getMessage() : e.getMessage());
+                String rootMsg = rootCause.getMessage();
                 if (rootMsg != null && rootMsg.toLowerCase().contains("size")) {
                     throw new SizeLimitExceededException("Multipart upload size limit exceeded: " + rootMsg, e);
                 }

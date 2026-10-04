@@ -118,7 +118,7 @@ public abstract class AnnotatedMethodInvoker {
                         logger.debug("Failed to bind parameter '{}' (required type: {}). Reason: {}",
                                 pbr.getName(),
                                 pbr.getType().getSimpleName(),
-                                (rootCause != null ? rootCause.getMessage() : thrown.getMessage()));
+                                rootCause.getMessage());
                     }
                 }
             }
@@ -304,7 +304,7 @@ public abstract class AnnotatedMethodInvoker {
                     Throwable rootCause = ExceptionUtils.getRootCause(e);
                     logger.debug("Failed to bind property '{}' (required type: {}) for bean '{}'. Value: '{}'. Reason: {}",
                             paramName, setterType.getSimpleName(), type.getSimpleName(), value,
-                            (rootCause != null ? rootCause.getMessage() : e.getMessage()));
+                            rootCause.getMessage());
                 }
             }
         }
