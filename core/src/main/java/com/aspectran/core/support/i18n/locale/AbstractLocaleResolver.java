@@ -176,6 +176,11 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
         return timeZone;
     }
 
+    /**
+     * Determines whether the given locale is supported by this resolver.
+     * @param locale the locale to check
+     * @return {@code true} if supported, or if no supported locales are configured; {@code false} otherwise
+     */
     protected boolean isSupportedLocale(@Nullable Locale locale) {
         if (locale == null) {
             return false;

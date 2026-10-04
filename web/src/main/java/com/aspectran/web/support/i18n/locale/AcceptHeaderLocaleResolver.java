@@ -40,6 +40,8 @@ import java.util.TimeZone;
  * <p>Note: This implementation does not support {@link #setLocale} since the
  * {@code Accept-Language} header can only be changed by changing the client's
  * locale settings.</p>
+ *
+ * <p>Created: 2016. 3. 13.</p>
  */
 public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 

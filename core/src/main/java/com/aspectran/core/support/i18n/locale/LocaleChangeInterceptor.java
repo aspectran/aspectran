@@ -135,6 +135,12 @@ public class LocaleChangeInterceptor {
         return this.ignoreInvalidLocale;
     }
 
+    /**
+     * Handles the locale and timezone change request from the given translet,
+     * updating the resolved locale and time zone in the locale resolver or request adapter.
+     * @param translet the translet for the current request
+     * @param localeResolver the locale resolver to use for changing locale/timezone
+     */
     public void handle(@NonNull Translet translet, @Nullable LocaleResolver localeResolver) {
         RequestAdapter requestAdapter = translet.getRequestAdapter();
         if (!checkRequestMethod(requestAdapter.getRequestMethod())) {

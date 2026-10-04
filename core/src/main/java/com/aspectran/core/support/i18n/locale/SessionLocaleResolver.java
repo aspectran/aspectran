@@ -25,11 +25,11 @@ import java.util.TimeZone;
 
 /**
  * A {@link LocaleResolver} implementation that uses locale and time zone attributes
- * in the user's session.
+ * stored in the user's session.
  *
  * <p>This resolver checks for a custom locale/time zone in the session. If one is not
- * found, it falls back to the default locale specified in {@link AbstractLocaleResolver},
- * or ultimately to the locale from the request's "accept-header".
+ * found or is not supported, it falls back to the default locale/timezone determined by
+ * {@link #determineDefaultLocale(Translet)} and {@link #determineDefaultTimeZone(Translet)}.</p>
  *
  * <p>Created: 2016. 3. 13.</p>
  *

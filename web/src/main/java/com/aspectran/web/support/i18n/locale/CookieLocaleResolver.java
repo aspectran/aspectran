@@ -34,15 +34,15 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * <p>This class is a clone of org.springframework.web.servlet.i18n.CookieLocaleResolver</p>
- *
  * {@link LocaleResolver} implementation that uses a cookie sent back to the user
- * in case of a custom setting, with a fallback to the specified default locale
- * or the request's accept-header locale.
+ * to maintain customized locale and time zone settings, with fallback to the default
+ * locale or request-derived locale.
  *
  * <p>This is particularly useful for stateless applications without user sessions.
  * The cookie may optionally contain an associated time zone value as well;
  * alternatively, you may specify a default time zone.</p>
+ *
+ * <p>Created: 2016. 3. 13.</p>
  */
 public class CookieLocaleResolver extends AbstractLocaleResolver {
 

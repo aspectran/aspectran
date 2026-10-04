@@ -24,20 +24,22 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * {@link LocaleResolver} implementation
- * that always returns a fixed default locale and optionally time zone.
- * Default is the current JVM's default locale.
+ * {@link LocaleResolver} implementation that always resolves to a fixed locale
+ * and optionally a fixed time zone.
  *
- * <p>Note: Does not support {@code setLocale(Context)}, as the fixed
- * locale and time zone cannot be changed.
+ * <p>Unlike resolvers that dynamically determine the locale from request headers,
+ * cookies, or sessions, this resolver exposes a pre-configured fixed locale
+ * and applies it to the {@link com.aspectran.core.adapter.RequestAdapter}.</p>
+ *
+ * <p>Note: Does not support dynamic modifications via {@link #setLocale} or
+ * {@link #setTimeZone}; calling them will throw an {@link UnsupportedOperationException}.</p>
  *
  * <p>Created: 2016. 9. 5.</p>
  */
 public class FixedLocaleResolver extends AbstractLocaleResolver {
 
     /**
-     * Create a default FixedLocaleResolver, exposing a configured default
-     * locale (or the JVM's default locale as fallback).
+     * Creates a {@code FixedLocaleResolver} that exposes the JVM's default locale.
      * @see #setDefaultLocale
      * @see #setDefaultTimeZone
      */
@@ -46,17 +48,18 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
     }
 
     /**
-     * Create a FixedLocaleResolver that exposes the given locale.
-     * @param locale the locale to expose
+     * Creates a {@code FixedLocaleResolver} that exposes the specified fixed locale.
+     * @param locale the fixed locale to expose
      */
     public FixedLocaleResolver(Locale locale) {
         setDefaultLocale(locale);
     }
 
     /**
-     * Create a FixedLocaleResolver that exposes the given locale and time zone.
-     * @param locale the locale to expose
-     * @param timeZone the time zone to expose
+     * Creates a {@code FixedLocaleResolver} that exposes the specified fixed locale
+     * and time zone.
+     * @param locale the fixed locale to expose
+     * @param timeZone the fixed time zone to expose
      */
     public FixedLocaleResolver(Locale locale, TimeZone timeZone) {
         setDefaultLocale(locale);
