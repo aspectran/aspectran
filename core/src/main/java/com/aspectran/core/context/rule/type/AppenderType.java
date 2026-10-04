@@ -48,7 +48,7 @@ public enum AppenderType {
      * @return an {@code AppenderType}, may be {@code null}
      */
     @Nullable
-    public static AppenderType resolve(String alias) {
+    public static AppenderType resolve(@Nullable String alias) {
         if (alias != null) {
             for (AppenderType type : values()) {
                 if (type.alias.equals(alias)) {

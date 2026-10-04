@@ -45,7 +45,7 @@ public enum AppendableFileFormatType {
      * @return an {@code AppendableFileFormatType}, may be {@code null}
      */
     @Nullable
-    public static AppendableFileFormatType resolve(String alias) {
+    public static AppendableFileFormatType resolve(@Nullable String alias) {
         if (alias != null) {
             for (AppendableFileFormatType type : values()) {
                 if (type.alias.equals(alias)) {

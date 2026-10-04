@@ -108,7 +108,7 @@ public enum MisfirePolicy {
      * @return a {@code MisfirePolicy}, may be {@code null}
      */
     @Nullable
-    public static MisfirePolicy resolve(String alias) {
+    public static MisfirePolicy resolve(@Nullable String alias) {
         if (alias != null) {
             for (MisfirePolicy type : values()) {
                 if (type.alias.equalsIgnoreCase(alias)) {

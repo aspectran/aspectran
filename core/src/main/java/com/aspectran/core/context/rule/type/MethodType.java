@@ -77,7 +77,7 @@ public enum MethodType {
         }
     }
 
-    public boolean containsTo(MethodType[] types) {
+    public boolean containsTo(MethodType @Nullable [] types) {
         if (types != null) {
             for (MethodType type : types) {
                 if (equals(type)) {
@@ -88,7 +88,7 @@ public enum MethodType {
         return false;
     }
 
-    public boolean matches(String type) {
+    public boolean matches(@Nullable String type) {
         return name().equals(type);
     }
 
@@ -98,7 +98,8 @@ public enum MethodType {
      * @param methodType the method type as a {@code String}
      * @return a {@code MethodType}, may be {@code null}
      */
-    public static MethodType resolve(String methodType) {
+    @Nullable
+    public static MethodType resolve(@Nullable String methodType) {
         return (methodType != null ? mappings.get(methodType.toUpperCase()) : null);
     }
 
@@ -109,7 +110,8 @@ public enum MethodType {
      * @param defaultMethodType the default method type
      * @return a {@code MethodType}; If {@code null}, should be {@code defaultMethodType}
      */
-    public static MethodType resolve(String methodType, MethodType defaultMethodType) {
+    @Nullable
+    public static MethodType resolve(@Nullable String methodType, @Nullable MethodType defaultMethodType) {
         MethodType resolvedMethodType = resolve(methodType);
         return (resolvedMethodType != null ? resolvedMethodType : defaultMethodType);
     }
@@ -120,8 +122,10 @@ public enum MethodType {
      * @param value the method type as a {@code String}
      * @return a {@code MethodType}, may be {@code null}
      */
-    @Nullable
-    public static MethodType[] parse(String value) {
+    public static MethodType @Nullable [] parse(@Nullable String value) {
+        if (value == null) {
+            return null;
+        }
         MethodType[] types = new MethodType[MAX_COUNT];
         int count = 0;
 
@@ -158,7 +162,8 @@ public enum MethodType {
      * @param types an array of {@code MethodType}
      * @return a comma separated {@code String}
      */
-    public static String stringify(MethodType[] types) {
+    @Nullable
+    public static String stringify(MethodType @Nullable [] types) {
         if (types == null || types.length == 0) {
             return null;
         }

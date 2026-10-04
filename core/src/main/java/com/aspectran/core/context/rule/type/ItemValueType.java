@@ -62,7 +62,7 @@ public enum ItemValueType {
      * @return an {@code ItemValueType}, may be {@code null}
      */
     @Nullable
-    public static ItemValueType resolve(String alias) {
+    public static ItemValueType resolve(@Nullable String alias) {
         if (alias != null) {
             for (ItemValueType type : values()) {
                 if (type.alias.equals(alias)) {

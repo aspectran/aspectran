@@ -87,7 +87,7 @@ public enum BeanRefererType {
      * @return a {@code BeanRefererType}, may be {@code null}
      */
     @Nullable
-    public static BeanRefererType resolve(String alias) {
+    public static BeanRefererType resolve(@Nullable String alias) {
         if (alias != null) {
             for (BeanRefererType type : values()) {
                 if (type.alias.equals(alias)) {

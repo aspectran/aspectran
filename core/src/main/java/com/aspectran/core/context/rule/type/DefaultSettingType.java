@@ -73,7 +73,7 @@ public enum DefaultSettingType {
      * @return a {@code DefaultSettingType}, may be {@code null}
      */
     @Nullable
-    public static DefaultSettingType resolve(String alias) {
+    public static DefaultSettingType resolve(@Nullable String alias) {
         if (alias != null) {
             for (DefaultSettingType type : values()) {
                 if (type.alias.equals(alias)) {

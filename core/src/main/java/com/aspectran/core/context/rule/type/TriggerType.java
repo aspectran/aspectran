@@ -43,7 +43,7 @@ public enum TriggerType {
      * @return a {@code TriggerType}, may be {@code null}
      */
     @Nullable
-    public static TriggerType resolve(String alias) {
+    public static TriggerType resolve(@Nullable String alias) {
         if (alias != null) {
             for (TriggerType type : values()) {
                 if (type.alias.equals(alias)) {

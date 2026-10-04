@@ -49,7 +49,7 @@ public enum TokenType {
      * @return a {@code TokenType}, may be {@code null}
      */
     @Nullable
-    public static TokenType resolve(String alias) {
+    public static TokenType resolve(@Nullable String alias) {
         if (alias != null) {
             for (TokenType type : values()) {
                 if (type.alias.equals(alias)) {

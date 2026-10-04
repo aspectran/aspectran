@@ -52,7 +52,7 @@ public enum AdviceType {
      * @return an {@code AdviceType}, may be {@code null}
      */
     @Nullable
-    public static AdviceType resolve(String alias) {
+    public static AdviceType resolve(@Nullable String alias) {
         if (alias != null) {
             for (AdviceType type : values()) {
                 if (type.alias.equals(alias)) {

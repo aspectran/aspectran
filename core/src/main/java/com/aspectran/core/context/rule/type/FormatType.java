@@ -52,7 +52,7 @@ public enum FormatType {
      * @return a {@code FormatType}, may be {@code null}
      */
     @Nullable
-    public static FormatType resolve(String alias) {
+    public static FormatType resolve(@Nullable String alias) {
         if (alias != null) {
             for (FormatType type : values()) {
                 if (type.alias.equals(alias)) {
@@ -70,18 +70,17 @@ public enum FormatType {
      * @return a {@code FormatType}, may be {@code null}
      */
     @Nullable
-    public static FormatType resolve(ContentType contentType) {
-        if (contentType == ContentType.TEXT_PLAIN) {
-            return TEXT;
-        } else if (contentType == ContentType.APPLICATION_APON) {
-            return APON;
-        } else if (contentType == ContentType.APPLICATION_JSON) {
-            return JSON;
-        } else if (contentType == ContentType.APPLICATION_XML) {
-            return XML;
-        } else {
+    public static FormatType resolve(@Nullable ContentType contentType) {
+        if (contentType == null) {
             return null;
         }
+        return switch (contentType) {
+            case TEXT_PLAIN -> TEXT;
+            case APPLICATION_APON -> APON;
+            case APPLICATION_JSON -> JSON;
+            case APPLICATION_XML -> XML;
+            default -> null;
+        };
     }
 
 }

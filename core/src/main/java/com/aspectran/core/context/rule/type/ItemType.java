@@ -49,7 +49,7 @@ public enum ItemType {
      * @return an {@code ItemType}, may be {@code null}
      */
     @Nullable
-    public static ItemType resolve(String alias) {
+    public static ItemType resolve(@Nullable String alias) {
         if (alias != null) {
             for (ItemType type : values()) {
                 if (type.alias.equals(alias)) {

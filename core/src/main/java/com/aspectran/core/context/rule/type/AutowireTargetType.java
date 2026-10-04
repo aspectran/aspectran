@@ -49,7 +49,7 @@ public enum AutowireTargetType {
      * @return an {@code AutowireTargetType}, may be {@code null}
      */
     @Nullable
-    public static AutowireTargetType resolve(String alias) {
+    public static AutowireTargetType resolve(@Nullable String alias) {
         if (alias != null) {
             for (AutowireTargetType type : values()) {
                 if (type.alias.equals(alias)) {

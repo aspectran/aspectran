@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
  *     <dt>{@code activity}</dt>
  *     <dd>Activities are the target of the join points.</dd>
  *     <dt>{@code method}</dt>
- *     <dd>Target the Advisable methods in the Bean as a join points.
+ *     <dd>Target Advisable methods in the Bean as join points.
  *         The methods must be annotated with @Advisable.</dd>
  * </dl>
  */
@@ -31,13 +31,13 @@ public enum JoinpointTargetType {
 
     /**
      * Activities are the target of the join points.
-     **/
+     */
     ACTIVITY("activity"),
 
     /**
-     * Target the Advisable methods in the Bean as a join points.
+     * Target Advisable methods in the Bean as join points.
      * The methods must be annotated with @Advisable.
-     **/
+     */
     METHOD("method");
 
     private final String alias;
@@ -58,7 +58,7 @@ public enum JoinpointTargetType {
      * @return a {@code JoinpointTargetType}, may be {@code null}
      */
     @Nullable
-    public static JoinpointTargetType resolve(String alias) {
+    public static JoinpointTargetType resolve(@Nullable String alias) {
         if (alias != null) {
             for (JoinpointTargetType type : values()) {
                 if (type.alias.equals(alias)) {

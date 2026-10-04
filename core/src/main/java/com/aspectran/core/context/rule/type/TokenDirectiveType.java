@@ -48,7 +48,7 @@ public enum TokenDirectiveType {
      * @return a {@code TokenDirectiveType}, may be {@code null}
      */
     @Nullable
-    public static TokenDirectiveType resolve(String alias) {
+    public static TokenDirectiveType resolve(@Nullable String alias) {
         if (alias != null) {
             for (TokenDirectiveType type : values()) {
                 if (type.alias.equals(alias)) {

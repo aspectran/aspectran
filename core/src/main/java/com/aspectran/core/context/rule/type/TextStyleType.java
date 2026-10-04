@@ -46,7 +46,7 @@ public enum TextStyleType {
      * @return an {@code TextStyleType}, may be {@code null}
      */
     @Nullable
-    public static TextStyleType resolve(String alias) {
+    public static TextStyleType resolve(@Nullable String alias) {
         if (alias != null) {
             for (TextStyleType type : values()) {
                 if (type.alias.equals(alias)) {

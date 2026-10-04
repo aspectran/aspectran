@@ -43,7 +43,7 @@ public enum TriStateType {
         return switch (this) {
             case TRUE -> Boolean.TRUE;
             case FALSE -> Boolean.FALSE;
-            default -> null;
+            case UNSET -> null;
         };
     }
 
@@ -53,13 +53,11 @@ public enum TriStateType {
      * @return the boolean value
      */
     public boolean booleanValue(boolean defaultValue) {
-        if (this == TRUE) {
-            return true;
-        } else if (this == FALSE) {
-            return false;
-        } else {
-            return defaultValue;
-        }
+        return switch (this) {
+            case TRUE -> true;
+            case FALSE -> false;
+            case UNSET -> defaultValue;
+        };
     }
 
     /**
@@ -69,6 +67,19 @@ public enum TriStateType {
      * @return a {@code TriStateType}
      */
     public static TriStateType of(boolean bool) {
+        return (bool ? TRUE : FALSE);
+    }
+
+    /**
+     * Returns a {@code TriStateType} with a value represented
+     * by the specified {@code Boolean}.
+     * @param bool the {@code Boolean} object, may be {@code null}
+     * @return a {@code TriStateType}
+     */
+    public static TriStateType of(@Nullable Boolean bool) {
+        if (bool == null) {
+            return UNSET;
+        }
         return (bool ? TRUE : FALSE);
     }
 
