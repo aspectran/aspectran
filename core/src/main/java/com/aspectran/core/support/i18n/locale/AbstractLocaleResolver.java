@@ -17,6 +17,8 @@ package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -42,6 +44,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     /**
      * Return the configured list of supported locales.
      */
+    @Nullable
     public List<Locale> getSupportedLocales() {
         return this.supportedLocales;
     }
@@ -62,30 +65,33 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * {@link com.aspectran.core.adapter.RequestAdapter#getLocale()}.
      * @param locales the supported locales
      */
-    public void setSupportedLocales(List<Locale> locales) {
-        this.supportedLocales = locales;
+    public void setSupportedLocales(@Nullable List<Locale> locales) {
+        this.supportedLocales = (locales != null ? new ArrayList<>(locales) : null);
     }
 
     /**
      * Configure supported locales.
      * @param locales the supported locales
      */
-    public void setSupportedLocales(String[] locales) {
+    public void setSupportedLocales(String @Nullable ... locales) {
         if (locales == null || locales.length == 0) {
             this.supportedLocales = null;
             return;
         }
         List<Locale> supportedLocales = new ArrayList<>(locales.length);
         for (String locale : locales) {
-            supportedLocales.add(LocaleUtils.parseLocale(locale));
+            if (StringUtils.hasText(locale)) {
+                supportedLocales.add(LocaleUtils.parseLocale(locale));
+            }
         }
-        this.supportedLocales = supportedLocales;
+        this.supportedLocales = (!supportedLocales.isEmpty() ? supportedLocales : null);
     }
 
     /**
      * Return the default Locale that this resolver is supposed to fall back to, if any.
      * @return the default locale
      */
+    @Nullable
     public Locale getDefaultLocale() {
         return this.defaultLocale;
     }
@@ -94,7 +100,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * Set a default Locale that this resolver will return if no other locale found.
      * @param defaultLocale the default locale
      */
-    public void setDefaultLocale(Locale defaultLocale) {
+    public void setDefaultLocale(@Nullable Locale defaultLocale) {
         this.defaultLocale = defaultLocale;
     }
 
@@ -102,8 +108,8 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * Set a default Locale that this resolver will return if no other locale found.
      * @param defaultLocale the default locale
      */
-    public void setDefaultLocale(String defaultLocale) {
-        setDefaultLocale(LocaleUtils.parseLocale(defaultLocale));
+    public void setDefaultLocale(@Nullable String defaultLocale) {
+        setDefaultLocale(StringUtils.hasText(defaultLocale) ? LocaleUtils.parseLocale(defaultLocale) : null);
     }
 
     /**
@@ -119,7 +125,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * Set a default TimeZone that this resolver will return if no other time zone found.
      * @param defaultTimeZone the default time zone
      */
-    public void setDefaultTimeZone(TimeZone defaultTimeZone) {
+    public void setDefaultTimeZone(@Nullable TimeZone defaultTimeZone) {
         this.defaultTimeZone = defaultTimeZone;
     }
 
@@ -127,16 +133,17 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * Set a default TimeZone that this resolver will return if no other time zone found.
      * @param defaultTimeZone the default time zone
      */
-    public void setDefaultTimeZone(String defaultTimeZone) {
-        setDefaultTimeZone(LocaleUtils.parseTimeZoneString(defaultTimeZone));
+    public void setDefaultTimeZone(@Nullable String defaultTimeZone) {
+        setDefaultTimeZone(StringUtils.hasText(defaultTimeZone) ? LocaleUtils.parseTimeZoneString(defaultTimeZone) : null);
     }
 
     /**
      * Determines the default locale for the given translet.
      * @param translet the translet to resolve the locale for
-     * @return the default locale (never {@code null})
+     * @return the default locale (or {@code null} if none defined)
      * @see #setDefaultLocale
      */
+    @Nullable
     protected Locale determineDefaultLocale(@NonNull Translet translet) {
         Locale locale = translet.getRequestAdapter().getLocale();
         if (locale != null && !isSupportedLocale(locale)) {
@@ -157,6 +164,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * @return the default time zone (or {@code null} if none defined)
      * @see #setDefaultTimeZone
      */
+    @Nullable
     protected TimeZone determineDefaultTimeZone(@NonNull Translet translet) {
         TimeZone timeZone = translet.getRequestAdapter().getTimeZone();
         if (timeZone == null) {
@@ -168,7 +176,10 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
         return timeZone;
     }
 
-    private boolean isSupportedLocale(Locale locale) {
+    protected boolean isSupportedLocale(@Nullable Locale locale) {
+        if (locale == null) {
+            return false;
+        }
         if (supportedLocales == null) {
             return true;
         }
@@ -182,6 +193,17 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("defaultLocale", defaultLocale);
+        if (defaultTimeZone != null) {
+            tsb.append("defaultTimeZone", defaultTimeZone.getID());
+        }
+        tsb.append("supportedLocales", supportedLocales);
+        return tsb.toString();
     }
 
 }

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ public class LocaleChangeInterceptor {
         return this.ignoreInvalidLocale;
     }
 
-    public void handle(@NonNull Translet translet, LocaleResolver localeResolver) {
+    public void handle(@NonNull Translet translet, @Nullable LocaleResolver localeResolver) {
         RequestAdapter requestAdapter = translet.getRequestAdapter();
         if (!checkRequestMethod(requestAdapter.getRequestMethod())) {
             return;
@@ -212,6 +213,16 @@ public class LocaleChangeInterceptor {
     @Nullable
     protected Locale parseLocaleValue(String localeValue) {
         return LocaleUtils.parseLocale(localeValue);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("localeParamName", localeParamName);
+        tsb.append("timeZoneParamName", timeZoneParamName);
+        tsb.append("requestMethods", requestMethods);
+        tsb.append("ignoreInvalidLocale", ignoreInvalidLocale);
+        return tsb.toString();
     }
 
 }

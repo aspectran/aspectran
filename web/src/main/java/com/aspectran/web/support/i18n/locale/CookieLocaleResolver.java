@@ -21,6 +21,7 @@ import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.LocaleUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.web.support.http.Cookie;
 import com.aspectran.web.support.util.CookieGenerator;
 import com.aspectran.web.support.util.WebUtils;
@@ -184,9 +185,10 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
+    @Nullable
     public Locale resolveLocale(@NonNull Translet translet) {
         Locale locale = parseLocaleCookie(translet);
-        if (locale != null) {
+        if (locale != null && isSupportedLocale(locale)) {
             translet.getRequestAdapter().setLocale(locale);
             return locale;
         }
@@ -194,6 +196,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
+    @Nullable
     public TimeZone resolveTimeZone(@NonNull Translet translet) {
         TimeZone timeZone = parseTimeZoneCookie(translet);
         if (timeZone != null) {
@@ -316,6 +319,17 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      */
     protected String toLocaleValue(Locale locale) {
         return (isLanguageTagCompliant() ? locale.toLanguageTag() : locale.toString());
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("defaultLocale", getDefaultLocale());
+        TimeZone timeZone = getDefaultTimeZone();
+        tsb.append("defaultTimeZone", timeZone != null ? timeZone.getID() : null);
+        tsb.append("localeCookieName", getLocaleCookieGenerator().getCookieName());
+        tsb.append("timeZoneCookieName", getTimeZoneCookieGenerator().getCookieName());
+        return tsb.toString();
     }
 
 }

@@ -21,6 +21,7 @@ import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -43,37 +44,20 @@ import java.util.TimeZone;
 public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 
     @Override
+    @Nullable
     public Locale resolveLocale(@NonNull Translet translet) {
-        Locale defaultLocale = getDefaultLocale();
         RequestAdapter requestAdapter = translet.getRequestAdapter();
         String header = requestAdapter.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
-        if (defaultLocale != null && !StringUtils.hasText(header)) {
-            requestAdapter.setLocale(defaultLocale);
-            return defaultLocale;
-        }
-        Locale requestLocale = requestAdapter.getLocale();
-        if (requestLocale == null && StringUtils.hasText(header)) {
-            requestLocale = findFirstLocale(header);
-        }
-        List<Locale> supportedLocales = getSupportedLocales();
-        if (supportedLocales == null || supportedLocales.isEmpty() ||
-                (requestLocale != null && supportedLocales.contains(requestLocale))) {
-            Locale resolved = (requestLocale != null ? requestLocale : defaultLocale);
-            if (resolved != null) {
-                requestAdapter.setLocale(resolved);
+        if (StringUtils.hasText(header)) {
+            List<Locale> supportedLocales = getSupportedLocales();
+            Locale locale = (supportedLocales != null && !supportedLocales.isEmpty() ?
+                    findSupportedLocale(header, supportedLocales) : findFirstLocale(header));
+            if (locale != null) {
+                requestAdapter.setLocale(locale);
+                return locale;
             }
-            return resolved;
         }
-        Locale supportedLocale = findSupportedLocale(header, supportedLocales);
-        if (supportedLocale != null) {
-            requestAdapter.setLocale(supportedLocale);
-            return supportedLocale;
-        }
-        Locale resolvedLocale = (defaultLocale != null ? defaultLocale : requestLocale);
-        if (resolvedLocale != null) {
-            requestAdapter.setLocale(resolvedLocale);
-        }
-        return resolvedLocale;
+        return determineDefaultLocale(translet);
     }
 
     @Override
@@ -117,6 +101,14 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
     @Override
     public void setTimeZone(@NonNull Translet translet, @Nullable TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("defaultLocale", getDefaultLocale());
+        tsb.append("supportedLocales", getSupportedLocales());
+        return tsb.toString();
     }
 
 }

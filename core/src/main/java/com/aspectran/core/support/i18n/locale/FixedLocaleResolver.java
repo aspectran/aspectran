@@ -16,7 +16,9 @@
 package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -62,33 +64,43 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
+    @Nullable
     public Locale resolveLocale(@NonNull Translet translet) {
         Locale locale = getDefaultLocale();
-        if (locale == null) {
-            locale = Locale.getDefault();
+        if (locale != null) {
+            translet.getRequestAdapter().setLocale(locale);
         }
-        translet.getRequestAdapter().setLocale(locale);
         return locale;
     }
 
     @Override
+    @Nullable
     public TimeZone resolveTimeZone(@NonNull Translet translet) {
         TimeZone timeZone = getDefaultTimeZone();
-        if (timeZone == null) {
-            timeZone = TimeZone.getDefault();
+        if (timeZone != null) {
+            translet.getRequestAdapter().setTimeZone(timeZone);
+            return timeZone;
         }
-        translet.getRequestAdapter().setTimeZone(timeZone);
-        return timeZone;
+        return null;
     }
 
     @Override
-    public void setLocale(Translet translet, Locale locale) {
+    public void setLocale(@NonNull Translet translet, @Nullable Locale locale) {
         throw new UnsupportedOperationException("Cannot change fixed locale - use a different locale resolution strategy");
     }
 
     @Override
-    public void setTimeZone(Translet translet, TimeZone timeZone) {
+    public void setTimeZone(@NonNull Translet translet, @Nullable TimeZone timeZone) {
         throw new UnsupportedOperationException("Cannot change fixed locale - use a different locale resolution strategy");
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("defaultLocale", getDefaultLocale());
+        TimeZone timeZone = getDefaultTimeZone();
+        tsb.append("defaultTimeZone", timeZone != null ? timeZone.getID() : null);
+        return tsb.toString();
     }
 
 }

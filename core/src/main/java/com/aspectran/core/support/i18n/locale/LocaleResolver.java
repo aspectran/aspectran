@@ -16,6 +16,7 @@
 package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
@@ -43,16 +44,18 @@ public interface LocaleResolver {
     /**
      * Resolves the current locale from the given translet.
      * @param translet the translet to resolve the locale for
-     * @return the current locale (never {@code null})
+     * @return the current locale, or {@code null} if none could be resolved
      */
-    Locale resolveLocale(Translet translet);
+    @Nullable
+    Locale resolveLocale(@NonNull Translet translet);
 
     /**
      * Resolves the current time zone from the given translet.
      * @param translet the translet to resolve the time zone for
-     * @return the current time zone (never {@code null})
+     * @return the current time zone (or {@code null} if none defined)
      */
-    TimeZone resolveTimeZone(Translet translet);
+    @Nullable
+    TimeZone resolveTimeZone(@NonNull Translet translet);
 
     /**
      * Sets the current locale to the given one.
@@ -63,7 +66,7 @@ public interface LocaleResolver {
      * @throws UnsupportedOperationException if the {@code LocaleResolver} implementation
      *      does not support dynamically changing the locale
      */
-    void setLocale(Translet translet, @Nullable Locale locale);
+    void setLocale(@NonNull Translet translet, @Nullable Locale locale);
 
     /**
      * Sets the current time zone to the given one.
@@ -74,6 +77,6 @@ public interface LocaleResolver {
      * @throws UnsupportedOperationException if the {@code LocaleResolver} implementation
      *      does not support dynamically changing the time zone
      */
-    void setTimeZone(Translet translet, @Nullable TimeZone timeZone);
+    void setTimeZone(@NonNull Translet translet, @Nullable TimeZone timeZone);
 
 }
