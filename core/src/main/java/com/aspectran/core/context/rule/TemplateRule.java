@@ -521,25 +521,26 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        if (!builtin) {
+        if (builtin && id != null) {
             tsb.append("id", id);
-        }
-        tsb.append("engine", engine);
-        if (file != null) {
-            tsb.append("file", file);
-        } else if (resource != null) {
-            tsb.append("resource", resource);
-        } else if (url != null) {
-            tsb.append("url", url);
-        } else if (name != null) {
-            tsb.append("name", name);
         } else {
-            tsb.appendSize("contentLength", content);
+            tsb.append("engine", engine);
+            if (file != null) {
+                tsb.append("file", file);
+            } else if (resource != null) {
+                tsb.append("resource", resource);
+            } else if (url != null) {
+                tsb.append("url", url);
+            } else if (name != null) {
+                tsb.append("name", name);
+            } else {
+                tsb.appendSize("contentLength", content);
+            }
+            tsb.append("style", textStyle);
+            tsb.append("contentType", contentType);
+            tsb.append("encoding", encoding);
+            tsb.append("noCache", noCache);
         }
-        tsb.append("style", textStyle);
-        tsb.append("contentType", contentType);
-        tsb.append("encoding", encoding);
-        tsb.append("noCache", noCache);
         return tsb.toString();
     }
 

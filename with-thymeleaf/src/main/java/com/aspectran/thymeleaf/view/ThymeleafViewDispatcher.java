@@ -84,14 +84,14 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
                 responseAdapter.setEncoding(encoding);
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to Thymeleaf template {}", viewName);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Dispatching to Thymeleaf template {}", viewName);
             }
 
             ThymeleafTemplateEngine.process(templateEngine, viewName, activity);
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to Thymeleaf template " +
-                    dispatchRule.toString(this, viewName), e);
+                    dispatchRule.toString(viewName), e);
         }
     }
 

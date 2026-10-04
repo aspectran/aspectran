@@ -90,14 +90,14 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
                 responseAdapter.setEncoding(encoding);
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to FreeMarker template {}", viewName);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Dispatching to FreeMarker template {}", viewName);
             }
 
             FreeMarkerTemplateEngine.process(configuration, viewName, activity);
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to FreeMarker template " +
-                    dispatchRule.toString(this, viewName), e);
+                    dispatchRule.toString(viewName), e);
         }
     }
 

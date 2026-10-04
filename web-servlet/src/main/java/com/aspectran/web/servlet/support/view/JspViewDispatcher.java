@@ -40,8 +40,8 @@ public class JspViewDispatcher extends AbstractJspViewDispatcher {
     @Override
     protected void doDispatch(Activity activity, HttpServletResponse response, String viewName)
             throws ServletException, IOException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Dispatching to {}", viewName);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Dispatching to {}", viewName);
         }
         forward(activity, response, viewName);
     }

@@ -168,6 +168,7 @@ public class DispatchResponse implements Response {
             }
             if (viewDispatcher.isSingleton()) {
                 dispatchRule.setViewDispatcher(viewDispatcher);
+                dispatchRule.setDispatcherNameToUse(dispatcherName);
             }
             return viewDispatcher;
         } catch (Exception e) {

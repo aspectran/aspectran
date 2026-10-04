@@ -84,8 +84,7 @@ public abstract class AbstractJspViewDispatcher extends AbstractViewDispatcher {
             // Delegate to subclass for actual dispatch
             doDispatch(activity, response, viewName);
         } catch (Exception e) {
-            throw new ViewDispatcherException("Failed to dispatch to JSP " +
-                    dispatchRule.toString(this, viewName), e);
+            throw new ViewDispatcherException("Failed to dispatch to JSP " + dispatchRule.toString(viewName), e);
         }
     }
 

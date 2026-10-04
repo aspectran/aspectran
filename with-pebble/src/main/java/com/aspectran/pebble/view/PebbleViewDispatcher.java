@@ -86,14 +86,14 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
                 responseAdapter.setEncoding(encoding);
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to Pebble template {}", viewName);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Dispatching to Pebble template {}", viewName);
             }
 
             PebbleTemplateEngine.process(pebbleEngine, viewName, activity);
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
-                    dispatchRule.toString(this, viewName), e);
+                    dispatchRule.toString(viewName), e);
         }
     }
 

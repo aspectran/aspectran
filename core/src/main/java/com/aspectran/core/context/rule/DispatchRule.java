@@ -49,6 +49,8 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     private ViewDispatcher viewDispatcher;
 
+    private String dispatcherNameToUse;
+
     /**
      * Gets the dispatch name, which typically corresponds to a view template name.
      * @return the view name
@@ -188,6 +190,22 @@ public class DispatchRule implements Replicable<DispatchRule> {
         this.viewDispatcher = viewDispatcher;
     }
 
+    /**
+     * Gets the dispatcher name to use.
+     * @return the dispatcher name to use
+     */
+    public String getDispatcherNameToUse() {
+        return dispatcherNameToUse;
+    }
+
+    /**
+     * Sets the dispatcher name to use.
+     * @param dispatcherNameToUse the dispatcher name to use
+     */
+    public void setDispatcherNameToUse(String dispatcherNameToUse) {
+        this.dispatcherNameToUse = dispatcherNameToUse;
+    }
+
     @Override
     public DispatchRule replicate() {
         return replicate(this);
@@ -195,27 +213,22 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     @Override
     public String toString() {
-        return toString(viewDispatcher, null);
+        return toString(null);
     }
 
     /**
      * Returns a string representation of {@code DispatchRule} with used {@code Dispatcher}.
-     * @param viewDispatcher the view dispatcher
-     * @param viewName the target view name
+     * @param resolvedViewName the resolved view name to use; if null, the default name is used
      * @return a string representation of {@code DispatchRule}.
      */
-    public String toString(ViewDispatcher viewDispatcher, String viewName) {
+    public String toString(String resolvedViewName) {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("type", RESPONSE_TYPE);
-        tsb.appendForce("name", viewName != null ? viewName : name);
+        tsb.appendForce("name", resolvedViewName != null ? resolvedViewName : name);
+        tsb.append("dispatcher", dispatcherNameToUse);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("default", getDefaultResponse());
-        if (viewDispatcher != null) {
-            tsb.append("viewDispatcher", viewDispatcher);
-        } else {
-            tsb.append("dispatcherName", dispatcherName);
-        }
         return tsb.toString();
     }
 
@@ -281,6 +294,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
     public static DispatchRule replicate(@NonNull DispatchRule dispatchRule) {
         DispatchRule dr = new DispatchRule();
         dr.setName(dispatchRule.getName(), dispatchRule.getNameTokens());
+        dr.setDispatcherName(dispatchRule.getDispatcherName());
         dr.setContentType(dispatchRule.getContentType());
         dr.setEncoding(dispatchRule.getEncoding());
         dr.setDefaultResponse(dispatchRule.getDefaultResponse());

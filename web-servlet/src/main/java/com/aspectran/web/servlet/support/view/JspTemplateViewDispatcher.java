@@ -65,8 +65,8 @@ public class JspTemplateViewDispatcher extends AbstractJspViewDispatcher {
 
         activity.getRequestAdapter().setAttribute(includePageKey, viewName);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Dispatching to {} for {}", template, viewName);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Dispatching to {} for {}", template, viewName);
         }
         forward(activity, response, template);
     }
