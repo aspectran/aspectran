@@ -18,6 +18,7 @@ package com.aspectran.web.servlet.adapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import jakarta.servlet.http.HttpSessionBindingEvent;
 import jakarta.servlet.http.HttpSessionBindingListener;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ import java.io.Serializable;
  *
  * @since 2.0.0
  */
-public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener, Serializable {
+public final class HttpSessionScope extends SessionScope implements HttpSessionBindingListener, Serializable {
 
     @Serial
     private static final long serialVersionUID = 209145824535745248L;
@@ -45,7 +46,6 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
      * Creates a new {@code HttpSessionScope}.
      */
     public HttpSessionScope() {
-        super();
     }
 
     /**
@@ -53,7 +53,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
      * <p>This method is called by the servlet container when this object is bound to a session.</p>
      */
     @Override
-    public void valueBound(HttpSessionBindingEvent event) {
+    public void valueBound(@NonNull HttpSessionBindingEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("New HttpSessionScope bound in session {}", event.getSession());
         }
@@ -65,7 +65,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
      * from a session. It triggers the destruction of all beans in this scope.</p>
      */
     @Override
-    public void valueUnbound(HttpSessionBindingEvent event) {
+    public void valueUnbound(@NonNull HttpSessionBindingEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("HttpSessionScope removed from session {}", event.getSession());
         }

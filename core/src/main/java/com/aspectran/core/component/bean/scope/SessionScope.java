@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * JVMs in a clustered environment by matching bean rules based on their
  * ID or class name.</p>
  */
-public final class SessionScope extends AbstractScope implements SessionBindingListener {
+public class SessionScope extends AbstractScope implements SessionBindingListener {
 
     public static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
