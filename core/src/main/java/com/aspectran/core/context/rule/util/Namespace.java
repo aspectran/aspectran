@@ -34,12 +34,15 @@ import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
  */
 public class Namespace {
 
+    private Namespace() {
+    }
+
     /**
      * Splits a namespace string into an array of its components.
      * @param namespace the namespace string
      * @return an array of namespace components, or {@code null} if the input is empty
      */
-    public static String @Nullable [] splitNamespace(String namespace) {
+    public static String @Nullable [] splitNamespace(@Nullable String namespace) {
         if (!StringUtils.hasText(namespace)) {
             return null;
         }
@@ -66,7 +69,7 @@ public class Namespace {
      * @param lastName the last name to append
      * @return the combined namespace string
      */
-    public static String applyNamespace(String[] nameArray, String lastName) {
+    public static String applyNamespace(String @Nullable [] nameArray, @Nullable String lastName) {
         if (nameArray == null || nameArray.length == 0) {
             return lastName;
         }
@@ -85,7 +88,7 @@ public class Namespace {
             }
             sb.append(lastName);
         }
-        return sb.toString();
+        return (!sb.isEmpty() ? sb.toString() : lastName);
     }
 
     /**
@@ -94,7 +97,7 @@ public class Namespace {
      * @param lastName the last name to append
      * @return the combined translet name string
      */
-    public static String applyNamespaceForTranslet(String[] nameArray, String lastName) {
+    public static String applyNamespaceForTranslet(String @Nullable [] nameArray, @Nullable String lastName) {
         if (nameArray == null || nameArray.length == 0) {
             return lastName;
         }
@@ -113,33 +116,36 @@ public class Namespace {
             }
             sb.append(lastName);
         }
-        if (nameArray[0] == null && sb.charAt(0) != NAME_SEPARATOR_CHAR) {
+        if (nameArray[0] == null && (sb.isEmpty() || sb.charAt(0) != NAME_SEPARATOR_CHAR)) {
             sb.insert(0, NAME_SEPARATOR);
         }
         if (nameArray.length > 1 && nameArray[nameArray.length - 1] == null &&
-            sb.charAt(sb.length() - 1) != NAME_SEPARATOR_CHAR) {
+            (sb.isEmpty() || sb.charAt(sb.length() - 1) != NAME_SEPARATOR_CHAR)) {
             sb.append(NAME_SEPARATOR);
         }
         return sb.toString();
     }
 
     /**
-     * Returns the translet name of the prefix and suffix are combined.
+     * Returns the translet name combined with the prefix and suffix.
+     * @param defaultSettings the default settings
      * @param transletName the translet name
      * @return the new translet name
      */
-    public static String applyTransletNamePattern(DefaultSettings defaultSettings, String transletName) {
+    public static String applyTransletNamePattern(
+            @Nullable DefaultSettings defaultSettings, @Nullable String transletName) {
         return applyTransletNamePattern(defaultSettings, transletName, false);
     }
 
     /**
-     * Returns the translet name of the prefix and suffix are combined.
+     * Returns the translet name combined with the prefix and suffix.
+     * @param defaultSettings the default settings
      * @param transletName the translet name
-     * @param absolutely whether to allow absolutely name for translet
+     * @param absolutely whether to allow an absolute name for the translet
      * @return the new translet name
      */
     public static String applyTransletNamePattern(
-            DefaultSettings defaultSettings, String transletName, boolean absolutely) {
+            @Nullable DefaultSettings defaultSettings, @Nullable String transletName, boolean absolutely) {
         String prefix = null;
         String suffix = null;
         if (defaultSettings != null) {
@@ -158,14 +164,17 @@ public class Namespace {
      * @return the new translet name
      */
     public static String applyTransletNamePattern(
-            String prefix, String transletName, String suffix, boolean absolutely) {
+            @Nullable String prefix, @Nullable String transletName, @Nullable String suffix, boolean absolutely) {
         if (prefix == null && suffix == null) {
             return transletName;
         }
         if (absolutely && StringUtils.startsWith(transletName, NAME_SEPARATOR_CHAR)) {
             return transletName;
         }
-        StringBuilder sb = new StringBuilder();
+        int capacity = (prefix != null ? prefix.length() : 0)
+                + (transletName != null ? transletName.length() : 0)
+                + (suffix != null ? suffix.length() : 0);
+        StringBuilder sb = new StringBuilder(capacity);
         if (prefix != null) {
             sb.append(prefix);
         }

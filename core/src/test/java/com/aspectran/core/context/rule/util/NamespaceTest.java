@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * <p>Created: 2023/06/18</p>
@@ -30,6 +31,9 @@ class NamespaceTest {
         String namespace = ".abc.def.ghi.";
         String[] nameArray = Namespace.splitNamespace(namespace);
         assertArrayEquals(new String[] {"abc", "def", "ghi"}, nameArray);
+
+        assertNull(Namespace.splitNamespace(null));
+        assertNull(Namespace.splitNamespace("   "));
     }
 
     @Test
@@ -38,6 +42,11 @@ class NamespaceTest {
         String[] nameArray = Namespace.splitNamespace(namespace);
         String result = Namespace.applyNamespace(nameArray, "jkl.mno");
         assertEquals("abc.def.ghi.jkl.mno", result);
+
+        assertNull(Namespace.applyNamespace(null, null));
+        assertEquals("lastName", Namespace.applyNamespace(null, "lastName"));
+        assertEquals("lastName", Namespace.applyNamespace(new String[0], "lastName"));
+        assertNull(Namespace.applyNamespace(new String[] {null, ""}, null));
     }
 
     @Test
@@ -62,6 +71,14 @@ class NamespaceTest {
         String[] nameArray = Namespace.splitNamespace(namespace);
         String result = Namespace.applyNamespaceForTranslet(nameArray, "");
         assertEquals("/abc/def/ghi/", result);
+    }
+
+    @Test
+    void applyNamespaceForTransletEmptyAndNull() {
+        assertNull(Namespace.applyNamespaceForTranslet(null, null));
+        assertEquals("/translet", Namespace.applyNamespaceForTranslet(null, "/translet"));
+        assertEquals("/", Namespace.applyNamespaceForTranslet(new String[] {null}, null));
+        assertEquals("/", Namespace.applyNamespaceForTranslet(new String[] {null, null}, null));
     }
 
     @Test
@@ -98,6 +115,15 @@ class NamespaceTest {
         String suffix = "//jkl//";
         String result = Namespace.applyTransletNamePattern(prefix, name, suffix, false);
         assertEquals("//abc//def//ghi//jkl//", result);
+    }
+
+    @Test
+    void applyTransletNamePatternAbsolute() {
+        String prefix = "/prefix";
+        String name = "/absolute/translet";
+        String suffix = ".apon";
+        String result = Namespace.applyTransletNamePattern(prefix, name, suffix, true);
+        assertEquals("/absolute/translet", result);
     }
 
 }
