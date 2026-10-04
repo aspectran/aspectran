@@ -72,8 +72,16 @@ public class HeaderAction implements Executable {
                 for (Map.Entry<String, List<String>> entry : valueMap.entrySet()) {
                     String name = entry.getKey();
                     List<String> values = entry.getValue();
-                    for (String value : values) {
-                        responseAdapter.addHeader(name, value);
+                    if (values != null && !values.isEmpty()) {
+                        boolean first = true;
+                        for (String value : values) {
+                            if (first) {
+                                responseAdapter.setHeader(name, value);
+                                first = false;
+                            } else {
+                                responseAdapter.addHeader(name, value);
+                            }
+                        }
                     }
                 }
             }
