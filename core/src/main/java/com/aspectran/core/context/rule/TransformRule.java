@@ -214,7 +214,7 @@ public class TransformRule implements Replicable<TransformRule> {
         tsb.appendForce("format", formatType);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
-        tsb.append("default", getDefaultResponse());
+        tsb.append("default", defaultResponse);
         tsb.append("pretty", pretty);
         tsb.append("template", templateId);
         tsb.append("template", templateRule);
