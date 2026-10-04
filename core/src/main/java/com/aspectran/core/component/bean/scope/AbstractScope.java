@@ -23,6 +23,7 @@ import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ObjectUtils;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,19 +54,21 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public BeanInstance getBeanInstance(BeanRule beanRule) {
+    @Nullable
+    public BeanInstance getBeanInstance(@NonNull BeanRule beanRule) {
         return scopedBeanInstances.get(beanRule);
     }
 
     @Override
-    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
+    public void putBeanInstance(@NonNull BeanRule beanRule, @NonNull BeanInstance beanInstance) {
         Assert.notNull(beanRule, "beanRule must not be null");
         Assert.notNull(beanInstance, "beanInstance must not be null");
         scopedBeanInstances.put(beanRule, beanInstance);
     }
 
     @Override
-    public BeanRule getBeanRuleByInstance(Object bean) {
+    @Nullable
+    public BeanRule getBeanRuleByInstance(@NonNull Object bean) {
         Assert.notNull(bean, "bean must not be null");
         for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanInstances.entrySet()) {
             if (entry.getValue().getBean() == bean) {
@@ -76,23 +79,26 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public boolean hasInstance(Object bean) {
+    public boolean hasInstance(@NonNull Object bean) {
         return (getBeanRuleByInstance(bean) != null);
     }
 
     @Override
-    public boolean containsBeanRule(BeanRule beanRule) {
+    public boolean containsBeanRule(@NonNull BeanRule beanRule) {
         return scopedBeanInstances.containsKey(beanRule);
     }
 
     @Override
-    public void destroy(Object bean) throws Exception {
+    public void destroy(@NonNull Object bean) throws Exception {
         BeanRule beanRule = getBeanRuleByInstance(bean);
         if (beanRule != null) {
             BeanInstance instance = scopedBeanInstances.get(beanRule);
             if (instance != null) {
-                doDestroy(beanRule, instance);
-                scopedBeanInstances.remove(beanRule);
+                try {
+                    doDestroy(beanRule, instance);
+                } finally {
+                    scopedBeanInstances.remove(beanRule);
+                }
             }
         }
     }
@@ -107,11 +113,9 @@ public abstract class AbstractScope implements Scope {
      */
     @Override
     public void destroy() {
-        if (logger.isDebugEnabled()) {
-            if (!scopedBeanInstances.isEmpty()) {
-                logger.debug("Destroy {} scoped beans from {}", getScopeType(),
-                        ObjectUtils.simpleIdentityToString(this));
-            }
+        if (logger.isTraceEnabled() && !scopedBeanInstances.isEmpty()) {
+            logger.trace("Destroy {} {} scoped beans from {}", scopedBeanInstances.size(),
+                    getScopeType(), ObjectUtils.simpleIdentityToString(this));
         }
 
         List<BeanRule> beanRulesToDestroy = new ArrayList<>(scopedBeanInstances.keySet());
@@ -125,11 +129,7 @@ public abstract class AbstractScope implements Scope {
                 if (beanRule.isLazyDestroy()) {
                     lazyDestroyBeans.add(beanRule);
                 } else {
-                    try {
-                        doDestroy(beanRule, instance);
-                    } catch (Exception e) {
-                        logger.error("Could not destroy {} scoped bean {}", getScopeType(), beanRule, e);
-                    }
+                    destroyScopedBean(beanRule, instance);
                 }
             }
         }
@@ -138,15 +138,19 @@ public abstract class AbstractScope implements Scope {
         for (BeanRule beanRule : lazyDestroyBeans) {
             BeanInstance instance = scopedBeanInstances.get(beanRule);
             if (instance.getBean() != null) {
-                try {
-                    doDestroy(beanRule, instance);
-                } catch (Exception e) {
-                    logger.error("Could not destroy {} scoped bean {}", getScopeType(), beanRule, e);
-                }
+                destroyScopedBean(beanRule, instance);
             }
         }
 
         scopedBeanInstances.clear();
+    }
+
+    private void destroyScopedBean(BeanRule beanRule, BeanInstance instance) {
+        try {
+            doDestroy(beanRule, instance);
+        } catch (Exception e) {
+            logger.error("Could not destroy {} scoped bean {}", getScopeType(), beanRule, e);
+        }
     }
 
     /**

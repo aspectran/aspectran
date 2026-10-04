@@ -20,9 +20,11 @@ import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionBindingListener;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -35,24 +37,23 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * JVMs in a clustered environment by matching bean rules based on their
  * ID or class name.</p>
  */
-public class SessionScope extends AbstractScope implements SessionBindingListener {
-
-    private static final ScopeType scopeType = ScopeType.SESSION;
-
-    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+public final class SessionScope extends AbstractScope implements SessionBindingListener {
 
     public static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
+    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+
     public SessionScope() {
-        super();
     }
 
     @Override
+    @NonNull
     public ScopeType getScopeType() {
-        return scopeType;
+        return ScopeType.SESSION;
     }
 
     @Override
+    @NonNull
     public ReadWriteLock getScopeLock() {
         return scopeLock;
     }
@@ -64,17 +65,20 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
     }
 
     @Override
-    public BeanInstance getBeanInstance(BeanRule beanRule) {
+    @Nullable
+    public BeanInstance getBeanInstance(@NonNull BeanRule beanRule) {
         BeanInstance beanInstance = super.getBeanInstance(beanRule);
         if (beanInstance == null) {
             BeanRule matchingBeanRule = findMatchingBeanRule(beanRule);
-            beanInstance = super.getBeanInstance(matchingBeanRule);
+            if (matchingBeanRule != null) {
+                beanInstance = super.getBeanInstance(matchingBeanRule);
+            }
         }
         return beanInstance;
     }
 
     @Override
-    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
+    public void putBeanInstance(@NonNull BeanRule beanRule, @NonNull BeanInstance beanInstance) {
         BeanRule matchingBeanRule = findMatchingBeanRule(beanRule);
         if (matchingBeanRule == null) {
             matchingBeanRule = beanRule;
@@ -83,27 +87,27 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
     }
 
     @Override
-    public boolean containsBeanRule(BeanRule beanRule) {
+    public boolean containsBeanRule(@NonNull BeanRule beanRule) {
         return (findMatchingBeanRule(beanRule) != null);
     }
 
     @Nullable
-    private BeanRule findMatchingBeanRule(BeanRule beanRule) {
+    private BeanRule findMatchingBeanRule(@NonNull BeanRule beanRule) {
+        String beanId = beanRule.getId();
+        String beanClassName = (beanId == null ? beanRule.getTargetBeanClassName() : null);
+
         for (Map.Entry<BeanRule, BeanInstance> entry : getScopedBeanInstances().entrySet()) {
             BeanRule target = entry.getKey();
             // If the bean rule to find has an ID, it must match the target's ID.
-            if (beanRule.getId() != null) {
-                if (beanRule.getId().equals(target.getId())) {
+            if (beanId != null) {
+                if (beanId.equals(target.getId())) {
                     return target;
                 }
-            } else {
+            } else if (target.getId() == null) {
                 // If the bean rule to find has no ID, match by class name,
                 // but only against targets that also have no ID.
-                if (target.getId() == null) {
-                    String className = beanRule.getTargetBeanClassName();
-                    if (className != null && className.equals(target.getTargetBeanClassName())) {
-                        return target;
-                    }
+                if (Objects.equals(beanClassName, target.getTargetBeanClassName())) {
+                    return target;
                 }
             }
         }

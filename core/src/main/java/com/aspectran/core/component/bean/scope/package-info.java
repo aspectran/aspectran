@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Support for AOP-based scoping of target objects.
+ * Provides bean scoping mechanisms and implementations (such as Singleton, Request,
+ * and Session scopes) for managing the lifecycle and storage of scoped bean instances.
  */
 package com.aspectran.core.component.bean.scope;

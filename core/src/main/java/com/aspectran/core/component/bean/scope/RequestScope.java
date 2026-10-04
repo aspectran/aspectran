@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.locks.ReadWriteLock;
@@ -28,15 +29,13 @@ import java.util.concurrent.locks.ReadWriteLock;
  */
 public final class RequestScope extends AbstractScope {
 
-    private static final ScopeType scopeType = ScopeType.REQUEST;
-
     public RequestScope() {
-        super();
     }
 
     @Override
+    @NonNull
     public ScopeType getScopeType() {
-        return scopeType;
+        return ScopeType.REQUEST;
     }
 
     @Override
