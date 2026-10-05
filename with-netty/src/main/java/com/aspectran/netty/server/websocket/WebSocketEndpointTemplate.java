@@ -117,7 +117,7 @@ public class WebSocketEndpointTemplate implements Comparable<WebSocketEndpointTe
             return null;
         }
 
-        Map<String, String> params = (template ? new LinkedHashMap<>() : Collections.emptyMap());
+        Map<String, String> params = null;
         for (int i = 0; i < segments.length; i++) {
             String seg = segments[i];
             String reqSeg = reqParts[i];
@@ -129,11 +129,14 @@ public class WebSocketEndpointTemplate implements Comparable<WebSocketEndpointTe
                 if (reqSeg.isEmpty()) {
                     return null;
                 }
+                if (params == null) {
+                    params = new LinkedHashMap<>();
+                }
                 String decoded = URLDecoder.decode(reqSeg, StandardCharsets.UTF_8);
                 params.put(variableNames[i], decoded);
             }
         }
-        return params;
+        return (params != null ? params : Collections.emptyMap());
     }
 
     @Override
@@ -151,7 +154,7 @@ public class WebSocketEndpointTemplate implements Comparable<WebSocketEndpointTe
         return this.pattern.compareTo(other.pattern);
     }
 
-    private static String[] splitPath(String path) {
+    private static String @NonNull [] splitPath(@NonNull String path) {
         if (path.isEmpty() || "/".equals(path)) {
             return new String[0];
         }

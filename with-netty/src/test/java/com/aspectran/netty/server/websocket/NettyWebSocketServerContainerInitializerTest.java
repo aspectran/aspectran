@@ -24,6 +24,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.EmptyHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.net.SocketAddress;
@@ -199,15 +201,15 @@ class NettyWebSocketServerContainerInitializerTest {
         final AtomicInteger closeCode = new AtomicInteger();
         private volatile Session httpSession;
 
-        @Override public String getId() { return "test-ws-id"; }
-        @Override public Channel getChannel() { return channel; }
-        @Override public SocketAddress getLocalAddress() { return channel.localAddress(); }
+        @Override public @NonNull String getId() { return "test-ws-id"; }
+        @Override public @NonNull Channel getChannel() { return channel; }
+        @Override public @Nullable SocketAddress getLocalAddress() { return channel.localAddress(); }
         @Override public SocketAddress getRemoteAddress() { return channel.remoteAddress(); }
-        @Override public String getUri() { return "/ws"; }
-        @Override public String getPath() { return "/ws"; }
-        @Override public Map<String, String> getPathParameters() { return Collections.emptyMap(); }
-        @Override public HttpHeaders getHandshakeHeaders() { return EmptyHttpHeaders.INSTANCE; }
-        @Override public Map<String, Object> getAttributes() { return new HashMap<>(); }
+        @Override public @NonNull String getUri() { return "/ws"; }
+        @Override public @NonNull String getPath() { return "/ws"; }
+        @Override public @NonNull Map<String, String> getPathParameters() { return Collections.emptyMap(); }
+        @Override public @NonNull HttpHeaders getHandshakeHeaders() { return EmptyHttpHeaders.INSTANCE; }
+        @Override public @NonNull Map<String, Object> getAttributes() { return new HashMap<>(); }
         @Override public <T> T getAttribute(String name) { return null; }
         @Override public void setAttribute(String name, Object value) {}
         @Override public Object removeAttribute(String name) { return null; }
