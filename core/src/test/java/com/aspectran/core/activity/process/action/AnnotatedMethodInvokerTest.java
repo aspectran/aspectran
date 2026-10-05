@@ -34,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Test case for {@link AnnotatedMethodInvoker}.
  */
-@AspectranTest(
-    rules = "/config/activity/annotated-method-invoker-test.xml"
-)
+@AspectranTest
 class AnnotatedMethodInvokerTest {
 
     @Test
@@ -46,7 +44,6 @@ class AnnotatedMethodInvokerTest {
         parameterMap.setParameter("name", "tester");
         parameterMap.setParameter("age", "20");
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -74,7 +71,6 @@ class AnnotatedMethodInvokerTest {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameter("msg", "hello");
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -98,7 +94,6 @@ class AnnotatedMethodInvokerTest {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameterValues("items", new String[] {"a", "b", "c"});
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -122,7 +117,6 @@ class AnnotatedMethodInvokerTest {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameterValues("items", new String[] {"a", "b", "c"});
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -147,7 +141,6 @@ class AnnotatedMethodInvokerTest {
         parameterMap.setParameter("name", "tester");
         parameterMap.setParameter("age", "30");
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -168,7 +161,6 @@ class AnnotatedMethodInvokerTest {
     @Test
     void testInvokeRequiredMissing(@NonNull ActivityContext context) throws Exception {
         InstantActivity activity = new InstantActivity(context);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -194,7 +186,6 @@ class AnnotatedMethodInvokerTest {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameter("age", "not-a-number");
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             MockAction action = new MockAction();
@@ -219,7 +210,6 @@ class AnnotatedMethodInvokerTest {
     @Test
     void testInvokeWithFileParameter(@NonNull ActivityContext context) throws Exception {
         InstantActivity activity = new InstantActivity(context);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             FileParameter fileParam = new com.aspectran.core.activity.request.FileParameter(
@@ -242,7 +232,6 @@ class AnnotatedMethodInvokerTest {
     @Test
     void testInvokeWithFileParametersArray(@NonNull ActivityContext context) throws Exception {
         InstantActivity activity = new InstantActivity(context);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             com.aspectran.core.activity.request.FileParameter[] files = new com.aspectran.core.activity.request.FileParameter[] {
@@ -270,7 +259,6 @@ class AnnotatedMethodInvokerTest {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameter("title", "My Document");
         activity.setParameterMap(parameterMap);
-        activity.prepare("/test");
 
         activity.perform(() -> {
             com.aspectran.core.activity.request.FileParameter fileParam =
@@ -286,6 +274,73 @@ class AnnotatedMethodInvokerTest {
 
             Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
             assertEquals("My Document:doc.pdf", result);
+            return null;
+        });
+    }
+
+    @Test
+    void testInvokeWithSet(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+        ParameterMap parameterMap = new ParameterMap();
+        parameterMap.setParameterValues("items", new String[] {"a", "b", "c"});
+        activity.setParameterMap(parameterMap);
+
+        activity.perform(() -> {
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withSet", java.util.Set.class);
+
+            ParameterBindingRule pbr1 = new ParameterBindingRule();
+            pbr1.setName("items");
+            pbr1.setType(java.util.Set.class);
+
+            ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            assertEquals("a:b:c", result);
+            return null;
+        });
+    }
+
+    @Test
+    void testInvokeWithActivity(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+
+        activity.perform(() -> {
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withActivity", com.aspectran.core.activity.Activity.class);
+
+            ParameterBindingRule pbr1 = new ParameterBindingRule();
+            pbr1.setName("act");
+            pbr1.setType(com.aspectran.core.activity.Activity.class);
+
+            ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            assertEquals("ok", result);
+            return null;
+        });
+    }
+
+    @Test
+    void testInvokeModelPreservesDefaultValues(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+        ParameterMap parameterMap = new ParameterMap();
+        parameterMap.setParameter("name", "tester");
+        // 'age' is intentionally omitted to verify default value preservation
+        activity.setParameterMap(parameterMap);
+
+        activity.perform(() -> {
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withModelWithDefault", ModelWithDefault.class);
+
+            ParameterBindingRule pbr1 = new ParameterBindingRule();
+            pbr1.setName("model");
+            pbr1.setType(ModelWithDefault.class);
+
+            ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            assertEquals("tester:99", result.toString());
             return null;
         });
     }
@@ -307,7 +362,19 @@ class AnnotatedMethodInvokerTest {
             return (items != null ? String.join("-", items) : "null");
         }
 
+        public String withSet(java.util.Set<String> items) {
+            return (items != null ? String.join(":", items) : "null");
+        }
+
+        public String withActivity(com.aspectran.core.activity.Activity act) {
+            return (act != null ? "ok" : "fail");
+        }
+
         public TestModel withModel(TestModel model) {
+            return model;
+        }
+
+        public ModelWithDefault withModelWithDefault(ModelWithDefault model) {
             return model;
         }
 
@@ -327,6 +394,32 @@ class AnnotatedMethodInvokerTest {
     public static class TestModel {
         private String name;
         private int age;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return name + ":" + age;
+        }
+    }
+
+    public static class ModelWithDefault {
+        private String name;
+        private int age = 99;
 
         public String getName() {
             return name;

@@ -21,12 +21,16 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.FileParameterMap;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
-import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.converter.TypeConversionException;
 import com.aspectran.core.component.converter.TypeConverter;
 import com.aspectran.core.component.converter.TypeConverterRegistry;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.utils.BeanDescriptor;
 import com.aspectran.utils.BeanUtils;
@@ -44,11 +48,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An abstract utility class that provides the core logic for invoking methods whose
@@ -94,7 +101,7 @@ public abstract class AnnotatedMethodInvoker {
                     args[i] = resolveArgument(activity, pbr);
                 } catch (TypeConversionException e) {
                     thrown = e;
-                    if (e.getCause() instanceof NumberFormatException && pbr.getType().isPrimitive()) {
+                    if (pbr.getType().isPrimitive()) {
                         args[i] = TypeUtils.getPrimitiveDefaultValue(pbr.getType());
                     }
                 } catch (IllegalArgumentException e) {
@@ -110,6 +117,10 @@ public abstract class AnnotatedMethodInvoker {
                     } else {
                         throw new IllegalArgumentException("Missing required parameter '" + pbr.getName() + "'");
                     }
+                }
+
+                if (args[i] == null && pbr.getType().isPrimitive()) {
+                    args[i] = TypeUtils.getPrimitiveDefaultValue(pbr.getType());
                 }
 
                 if (thrown != null) {
@@ -150,90 +161,114 @@ public abstract class AnnotatedMethodInvoker {
             throws Exception {
         Class<?> type = pbr.getType();
         String name = pbr.getName();
-        Translet translet = (activity.hasTranslet() ? activity.getTranslet() : null);
+        Translet translet = (activity.hasTranslet() ? activity.getTranslet() : new InstantTranslet(activity));
 
-        if (type == Translet.class) {
-            return (translet != null ? translet : new InstantTranslet(activity));
+        if (Translet.class.isAssignableFrom(type)) {
+            return translet;
         }
-        if (type.isArray() && type.getComponentType() == Translet.class) {
-            return new Translet[] { (translet != null ? translet : new InstantTranslet(activity)) };
+        if (type.isArray() && Translet.class.isAssignableFrom(type.getComponentType())) {
+            return new Translet[] { translet };
+        }
+        if (Activity.class.isAssignableFrom(type)) {
+            return activity;
+        }
+        if (Environment.class.isAssignableFrom(type)) {
+            return activity.getEnvironment();
+        }
+        if (ApplicationAdapter.class.isAssignableFrom(type)) {
+            return activity.getApplicationAdapter();
+        }
+        if (RequestAdapter.class.isAssignableFrom(type)) {
+            return (translet.getRequestAdapter() != null ? translet.getRequestAdapter() : activity.getRequestAdapter());
+        }
+        if (ResponseAdapter.class.isAssignableFrom(type)) {
+            return (translet.getResponseAdapter() != null ? translet.getResponseAdapter() : activity.getResponseAdapter());
+        }
+        if (SessionAdapter.class.isAssignableFrom(type)) {
+            return (translet.getSessionAdapter() != null ? translet.getSessionAdapter() : activity.getSessionAdapter());
         }
         if (FileParameter.class.isAssignableFrom(type)) {
-            return (translet != null ? translet.getFileParameter(name) : null);
+            return translet.getFileParameter(name);
         }
         if (type.isArray() && FileParameter.class.isAssignableFrom(type.getComponentType())) {
-            return (translet != null ? translet.getFileParameterValues(name) : null);
+            return translet.getFileParameterValues(name);
         }
         if (type == FileParameterMap.class) {
-            return (translet != null && translet.getRequestAdapter() != null
-                    ? translet.getRequestAdapter().getFileParameterMap() : null);
+            return (translet.getRequestAdapter() != null ? translet.getRequestAdapter().getFileParameterMap() : null);
         }
 
         Object result = Void.TYPE;
-        if (translet != null) {
-            if (type.isArray()) {
-                Object value = translet.getParameterValues(name);
-                result = resolveValue(value, type, pbr.getAnnotations(), activity);
-            } else if (type == ParameterMap.class) {
-                ParameterMap parameterMap = new ParameterMap();
-                for (String paramName : translet.getParameterNames()) {
-                    parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
+        if (type.isArray()) {
+            Object value = translet.getParameterValues(name);
+            result = resolveValue(value, type, pbr.getAnnotations(), activity);
+        } else if (type == ParameterMap.class) {
+            ParameterMap parameterMap = new ParameterMap();
+            for (String paramName : translet.getParameterNames()) {
+                parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
+            }
+            result = parameterMap;
+        } else if (Map.class.isAssignableFrom(type)) {
+            if (!type.isInterface()) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
+                map.putAll(translet.getAllParameters());
+                result = map;
+            } else {
+                result = new HashMap<>(translet.getAllParameters());
+            }
+        } else if (Collection.class.isAssignableFrom(type)) {
+            String[] values = translet.getParameterValues(name);
+            if (!type.isInterface()) {
+                @SuppressWarnings("unchecked")
+                Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
+                if (values != null) {
+                    collection.addAll(Arrays.asList(values));
                 }
-                result = parameterMap;
-            } else if (Map.class.isAssignableFrom(type)) {
-                if (!type.isInterface()) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
-                    map.putAll(translet.getAllParameters());
-                    result = map;
+                result = collection;
+            } else if (Set.class.isAssignableFrom(type)) {
+                if (values != null) {
+                    result = new LinkedHashSet<>(Arrays.asList(values));
                 } else {
-                    result = new HashMap<>(translet.getAllParameters());
+                    result = new LinkedHashSet<>();
                 }
-            } else if (Collection.class.isAssignableFrom(type)) {
-                String[] values = translet.getParameterValues(name);
-                if (!type.isInterface()) {
-                    @SuppressWarnings("unchecked")
-                    Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
-                    if (values != null) {
-                        collection.addAll(Arrays.asList(values));
-                    }
-                    result = collection;
+            } else {
+                if (values != null) {
+                    result = new ArrayList<>(Arrays.asList(values));
                 } else {
-                    if (values != null) {
-                        result = new ArrayList<>(Arrays.asList(values));
-                    } else {
-                        result = new ArrayList<>();
-                    }
+                    result = new ArrayList<>();
                 }
-            } else if (Parameters.class.isAssignableFrom(type)) {
+            }
+        } else if (Parameters.class.isAssignableFrom(type)) {
+            RequestAdapter requestAdapter = translet.getRequestAdapter();
+            if (requestAdapter != null) {
                 if (type.isInterface()) {
-                    result = translet.getRequestAdapter().getBodyAsParameters();
+                    result = requestAdapter.getBodyAsParameters();
                     if (result == null) {
-                        result = translet.getRequestAdapter().getParameters();
+                        result = requestAdapter.getParameters();
                     }
                 } else {
                     @SuppressWarnings("unchecked")
                     Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
-                    result = translet.getRequestAdapter().getBodyAsParameters(requiredType);
+                    result = requestAdapter.getBodyAsParameters(requiredType);
                     if (result == null) {
-                        result = translet.getRequestAdapter().getParameters(requiredType);
+                        result = requestAdapter.getParameters(requiredType);
                     }
                 }
-            } else {
-                Object value = translet.getParameter(name);
-                result = resolveValue(value, type, pbr.getAnnotations(), activity);
             }
+        } else {
+            Object value = translet.getParameter(name);
+            result = resolveValue(value, type, pbr.getAnnotations(), activity);
         }
 
         if (result == Void.TYPE) {
-            if (translet != null && !type.isAnnotationPresent(Component.class)) {
-                result = bindModel(activity, type);
-            } else {
+            if (type.isInterface() || Modifier.isAbstract(type.getModifiers()) || activity.containsBean(type)) {
                 try {
                     result = activity.getBean(type);
                 } catch (NoUniqueBeanException e) {
                     result = activity.getBean(type, name);
                 }
+            } else {
+                result = bindModel(activity, type);
             }
         }
         return (result != Void.TYPE ? result : null);
@@ -249,14 +284,15 @@ public abstract class AnnotatedMethodInvoker {
      */
     @NonNull
     private static Object bindModel(@NonNull Activity activity, Class<?> type) throws Exception {
-        Translet translet = activity.getTranslet();
+        Translet translet = (activity.hasTranslet() ? activity.getTranslet() : new InstantTranslet(activity));
         Object model = ClassUtils.createInstance(type);
         BeanDescriptor bd = BeanDescriptor.getInstance(type);
         for (String name : bd.getWritablePropertyNames()) {
             Method method = bd.getSetter(name);
             Class<?> setterType = bd.getSetterType(name);
             Annotation[] methodAnnos = method.getAnnotations();
-            Annotation[] paramAnnos = method.getParameterAnnotations()[0];
+            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+            Annotation[] paramAnnos = (parameterAnnotations.length > 0 ? parameterAnnotations[0] : new Annotation[0]);
             Annotation[] annotations = new Annotation[methodAnnos.length + paramAnnos.length];
             System.arraycopy(methodAnnos, 0, annotations, 0, methodAnnos.length);
             System.arraycopy(paramAnnos, 0, annotations, methodAnnos.length, paramAnnos.length);
@@ -294,17 +330,19 @@ public abstract class AnnotatedMethodInvoker {
                 value = translet.getParameter(paramName);
             }
 
-            try {
-                Object result = resolveValue(value, setterType, annotations, activity);
-                if (result != null && result != Void.TYPE) {
-                    BeanUtils.setProperty(model, name, result);
-                }
-            } catch (TypeConversionException e) {
-                if (logger.isDebugEnabled()) {
-                    Throwable rootCause = ExceptionUtils.getRootCause(e);
-                    logger.debug("Failed to bind property '{}' (required type: {}) for bean '{}'. Value: '{}'. Reason: {}",
-                            paramName, setterType.getSimpleName(), type.getSimpleName(), value,
-                            rootCause.getMessage());
+            if (value != null) {
+                try {
+                    Object result = resolveValue(value, setterType, annotations, activity);
+                    if (result != null && result != Void.TYPE) {
+                        BeanUtils.setProperty(model, name, result);
+                    }
+                } catch (TypeConversionException e) {
+                    if (logger.isDebugEnabled()) {
+                        Throwable rootCause = ExceptionUtils.getRootCause(e);
+                        logger.debug("Failed to bind property '{}' (required type: {}) for bean '{}'. Value: '{}'. Reason: {}",
+                                paramName, setterType.getSimpleName(), type.getSimpleName(), value,
+                                rootCause.getMessage());
+                    }
                 }
             }
         }
@@ -337,7 +375,7 @@ public abstract class AnnotatedMethodInvoker {
             if (value == null) {
                 return null;
             }
-            String[] values = (value instanceof String[] ? (String[])value : new String[] { value.toString() });
+            String[] values = (value instanceof String[] strings ? strings : new String[] { value.toString() });
             Object array = Array.newInstance(componentType, values.length);
             for (int i = 0; i < values.length; i++) {
                 try {
@@ -354,7 +392,9 @@ public abstract class AnnotatedMethodInvoker {
             if (converter == null) {
                 return Void.TYPE;
             }
-            String stringValue = (value instanceof String[] ? ((String[])value)[0] : (value != null ? value.toString() : null));
+            String stringValue = (value instanceof String[] strings
+                    ? (strings.length > 0 ? strings[0] : null)
+                    : (value != null ? value.toString() : null));
             try {
                 Object result = converter.convert(stringValue, annotations, activity);
                 if (result == null && targetType.isPrimitive()) {

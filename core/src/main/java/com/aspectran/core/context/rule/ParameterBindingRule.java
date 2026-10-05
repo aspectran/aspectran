@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 
@@ -117,6 +118,33 @@ public class ParameterBindingRule {
      */
     public void setAnnotations(Annotation[] annotations) {
         this.annotations = annotations;
+    }
+
+    /**
+     * Returns the annotation of the specified type if present on the parameter.
+     * @param <A> the annotation type
+     * @param annotationClass the Class object corresponding to the annotation type
+     * @return the parameter's annotation for the specified annotation type if present on this parameter, else null
+     */
+    @Nullable
+    public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+        if (annotations != null) {
+            for (Annotation annotation : annotations) {
+                if (annotation.annotationType() == annotationClass) {
+                    return annotationClass.cast(annotation);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if an annotation for the specified type is present on the parameter, else false.
+     * @param annotationClass the Class object corresponding to the annotation type
+     * @return true if an annotation for the specified type is present on this parameter, else false
+     */
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+        return (getAnnotation(annotationClass) != null);
     }
 
     @Override
