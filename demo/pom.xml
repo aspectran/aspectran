@@ -32,6 +32,8 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.demo</automatic.module.name>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <skipPublishing>true</skipPublishing>
     </properties>
 
     <dependencies>
