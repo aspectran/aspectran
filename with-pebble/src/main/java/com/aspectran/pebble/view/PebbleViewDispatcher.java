@@ -80,7 +80,7 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
 
             String encoding = dispatchRule.getEncoding();
             if (encoding == null && responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getDefinitiveResponseEncoding();
+                encoding = (activity.hasTranslet() ? activity.getTranslet().getDefinitiveResponseEncoding() : null);
             }
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);

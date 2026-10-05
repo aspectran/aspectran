@@ -83,7 +83,7 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
             }
 
             String encoding = dispatchRule.getEncoding();
-            if (encoding == null && responseAdapter.getEncoding() == null) {
+            if (encoding == null && responseAdapter.getEncoding() == null && activity.hasTranslet()) {
                 encoding = activity.getTranslet().getDefinitiveResponseEncoding();
             }
             if (encoding != null) {
