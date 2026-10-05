@@ -33,6 +33,9 @@ import org.jspecify.annotations.NonNull;
  */
 public class TransformResponseFactory {
 
+    private TransformResponseFactory() {
+    }
+
     /**
      * Creates a new Transform object with specified TransformRule.
      * @param transformRule the transform rule
@@ -41,30 +44,32 @@ public class TransformResponseFactory {
     @NonNull
     public static Response create(@NonNull TransformRule transformRule) {
         FormatType formatType = transformRule.getFormatType();
-        Response res;
-        if (formatType == FormatType.APON) {
-            if (transformRule.getContentType() == null) {
-                transformRule.setContentType(ContentType.APPLICATION_APON.toString());
-            }
-            res = new AponTransformResponse(transformRule);
-        } else if (formatType == FormatType.JSON) {
-            if (transformRule.getContentType() == null) {
-                transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
-            }
-            res = new JsonTransformResponse(transformRule);
-        } else if (formatType == FormatType.TEXT) {
-            res = new TextTransformResponse(transformRule);
-        } else if (formatType == FormatType.XML) {
-            if (transformRule.getContentType() == null) {
-                transformRule.setContentType(ContentType.APPLICATION_XML.toString());
-            }
-            res = new XmlTransformResponse(transformRule);
-        } else if (formatType == FormatType.XSL) {
-            res = new XslTransformResponse(transformRule);
-        } else {
-            res = new NoneTransformResponse(transformRule);
+        if (formatType == null) {
+            return new NoneTransformResponse(transformRule);
         }
-        return res;
+        return switch (formatType) {
+            case APON -> {
+                if (transformRule.getContentType() == null) {
+                    transformRule.setContentType(ContentType.APPLICATION_APON.toString());
+                }
+                yield new AponTransformResponse(transformRule);
+            }
+            case JSON -> {
+                if (transformRule.getContentType() == null) {
+                    transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
+                }
+                yield new JsonTransformResponse(transformRule);
+            }
+            case TEXT -> new TextTransformResponse(transformRule);
+            case XML -> {
+                if (transformRule.getContentType() == null) {
+                    transformRule.setContentType(ContentType.APPLICATION_XML.toString());
+                }
+                yield new XmlTransformResponse(transformRule);
+            }
+            case XSL -> new XslTransformResponse(transformRule);
+            default -> new NoneTransformResponse(transformRule);
+        };
     }
 
 }

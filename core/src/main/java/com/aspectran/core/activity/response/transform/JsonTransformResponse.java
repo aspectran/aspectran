@@ -69,7 +69,7 @@ public class JsonTransformResponse extends TransformResponse {
 
         if (this.encoding != null) {
             responseAdapter.setEncoding(this.encoding);
-        } else if (responseAdapter.getEncoding() == null) {
+        } else if (responseAdapter.getEncoding() == null && activity.hasTranslet()) {
             String encoding = activity.getTranslet().getDefinitiveResponseEncoding();
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
@@ -85,7 +85,7 @@ public class JsonTransformResponse extends TransformResponse {
         StringifyContext stringifyContext = activity.getStringifyContext();
 
         // support for jsonp
-        String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
+        String callback = (activity.hasTranslet() ? activity.getTranslet().getParameter(CALLBACK_PARAM_NAME) : null);
         if (callback != null) {
             writer.write(callback + ROUND_BRACKET_OPEN);
         }

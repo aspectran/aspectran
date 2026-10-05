@@ -67,11 +67,11 @@ public class XslTransformResponse extends TransformResponse {
 
     private final TemplateRule templateRule;
 
-    private Templates templates;
+    private volatile Templates templates;
 
-    private String contentType;
+    private volatile String contentType;
 
-    private String outputEncoding;
+    private volatile String outputEncoding;
 
     private volatile long templateLastModifiedTime;
 

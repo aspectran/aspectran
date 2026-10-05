@@ -70,7 +70,7 @@ public class TextTransformResponse extends TransformResponse {
 
         if (this.encoding != null) {
             responseAdapter.setEncoding(this.encoding);
-        } else if (responseAdapter.getEncoding() == null) {
+        } else if (responseAdapter.getEncoding() == null && activity.hasTranslet()) {
             String encoding = activity.getTranslet().getDefinitiveResponseEncoding();
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
