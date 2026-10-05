@@ -64,11 +64,11 @@ public class HeaderAction implements Executable {
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
             return Void.TYPE;
         }
-        try {
-            ItemEvaluator itemEvaluator = activity.getItemEvaluator();
-            MultiValueMap<String, String> valueMap = itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
-            if (!valueMap.isEmpty()) {
-                ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        ItemEvaluator itemEvaluator = activity.getItemEvaluator();
+        MultiValueMap<String, String> valueMap = itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
+        if (!valueMap.isEmpty()) {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
+            if (responseAdapter != null) {
                 for (Map.Entry<String, List<String>> entry : valueMap.entrySet()) {
                     String name = entry.getKey();
                     List<String> values = entry.getValue();
@@ -85,10 +85,8 @@ public class HeaderAction implements Executable {
                     }
                 }
             }
-            return valueMap;
-        } catch (Exception e) {
-            throw new ActionExecutionException(this, e);
         }
+        return valueMap;
     }
 
     /**

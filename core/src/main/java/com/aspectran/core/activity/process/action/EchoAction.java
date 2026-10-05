@@ -52,11 +52,7 @@ public class EchoAction implements Executable {
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
             return Void.TYPE;
         }
-        try {
-            return activity.getItemEvaluator().evaluate(itemRuleMap);
-        } catch (Exception e) {
-            throw new ActionExecutionException(this, e);
-        }
+        return activity.getItemEvaluator().evaluate(itemRuleMap);
     }
 
     /**

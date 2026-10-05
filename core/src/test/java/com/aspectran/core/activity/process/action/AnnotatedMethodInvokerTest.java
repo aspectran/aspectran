@@ -345,6 +345,57 @@ class AnnotatedMethodInvokerTest {
         });
     }
 
+    @Test
+    void testInvokeRequiredPrimitiveMissing(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+
+        activity.perform(() -> {
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("simple", String.class, int.class);
+
+            ParameterBindingRule pbr1 = new ParameterBindingRule();
+            pbr1.setName("name");
+            pbr1.setType(String.class);
+
+            ParameterBindingRule pbr2 = new ParameterBindingRule();
+            pbr2.setName("age");
+            pbr2.setType(int.class);
+            pbr2.setRequired(true);
+
+            ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1, pbr2 };
+
+            assertThrows(ParameterBindingException.class, () -> {
+                AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            });
+            return null;
+        });
+    }
+
+    @Test
+    void testInvokeWithComplexModel(@NonNull ActivityContext context) throws Exception {
+        InstantActivity activity = new InstantActivity(context);
+        ParameterMap parameterMap = new ParameterMap();
+        parameterMap.setParameter("title", "Aspectran");
+        parameterMap.setParameterValues("tags", new String[] {"java", "framework"});
+        parameterMap.setParameterValues("roles", new String[] {"admin", "user"});
+        activity.setParameterMap(parameterMap);
+
+        activity.perform(() -> {
+            MockAction action = new MockAction();
+            Method method = MockAction.class.getMethod("withComplexModel", ComplexModel.class);
+
+            ParameterBindingRule pbr1 = new ParameterBindingRule();
+            pbr1.setName("model");
+            pbr1.setType(ComplexModel.class);
+
+            ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
+
+            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            assertEquals("Aspectran:java,framework:admin,user", result.toString());
+            return null;
+        });
+    }
+
     public static class MockAction {
         public String simple(String name, int age) {
             return name + ":" + age;
@@ -375,6 +426,10 @@ class AnnotatedMethodInvokerTest {
         }
 
         public ModelWithDefault withModelWithDefault(ModelWithDefault model) {
+            return model;
+        }
+
+        public ComplexModel withComplexModel(ComplexModel model) {
             return model;
         }
 
@@ -440,6 +495,43 @@ class AnnotatedMethodInvokerTest {
         @Override
         public String toString() {
             return name + ":" + age;
+        }
+    }
+
+    public static class ComplexModel {
+        private String title;
+        private List<String> tags;
+        private java.util.Set<String> roles;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public List<String> getTags() {
+            return tags;
+        }
+
+        public void setTags(List<String> tags) {
+            this.tags = tags;
+        }
+
+        public java.util.Set<String> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(java.util.Set<String> roles) {
+            this.roles = roles;
+        }
+
+        @Override
+        public String toString() {
+            return title + ":" +
+                    (tags != null ? String.join(",", tags) : "") + ":" +
+                    (roles != null ? String.join(",", roles) : "");
         }
     }
 

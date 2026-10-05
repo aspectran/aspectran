@@ -26,6 +26,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.converter.TypeConversionException;
 import com.aspectran.core.component.converter.TypeConverter;
@@ -37,6 +38,7 @@ import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.TypeUtils;
 import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
@@ -71,6 +73,8 @@ public abstract class AnnotatedMethodInvoker {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotatedMethodInvoker.class);
 
+    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = {};
+
     /**
      * Invokes the specified annotated method on the target bean with parameter binding.
      * @param activity the current activity, used as the source for resolving arguments
@@ -86,7 +90,7 @@ public abstract class AnnotatedMethodInvoker {
             @Nullable ParameterBindingRule[] parameterBindingRules) throws Exception {
         ParameterBindingRule pbr = null;
         try {
-            if (parameterBindingRules == null) {
+            if (parameterBindingRules == null || parameterBindingRules.length == 0) {
                 return method.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
             }
 
@@ -261,7 +265,23 @@ public abstract class AnnotatedMethodInvoker {
         }
 
         if (result == Void.TYPE) {
-            if (type.isInterface() || Modifier.isAbstract(type.getModifiers()) || activity.containsBean(type)) {
+            if (pbr.isAnnotationPresent(Qualifier.class)) {
+                Qualifier qualifier = pbr.getAnnotation(Qualifier.class);
+                String qualifierValue = (qualifier != null ? StringUtils.emptyToNull(qualifier.value()) : null);
+                if (qualifierValue != null) {
+                    result = activity.getBean(type, qualifierValue);
+                } else if (name != null && activity.containsBean(type, name)) {
+                    result = activity.getBean(type, name);
+                } else {
+                    result = activity.getBean(type);
+                }
+            } else if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
+                try {
+                    result = activity.getBean(type);
+                } catch (NoUniqueBeanException e) {
+                    result = activity.getBean(type, name);
+                }
+            } else if (type.isAnnotationPresent(Component.class) && activity.containsBean(type)) {
                 try {
                     result = activity.getBean(type);
                 } catch (NoUniqueBeanException e) {
@@ -292,10 +312,17 @@ public abstract class AnnotatedMethodInvoker {
             Class<?> setterType = bd.getSetterType(name);
             Annotation[] methodAnnos = method.getAnnotations();
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            Annotation[] paramAnnos = (parameterAnnotations.length > 0 ? parameterAnnotations[0] : new Annotation[0]);
-            Annotation[] annotations = new Annotation[methodAnnos.length + paramAnnos.length];
-            System.arraycopy(methodAnnos, 0, annotations, 0, methodAnnos.length);
-            System.arraycopy(paramAnnos, 0, annotations, methodAnnos.length, paramAnnos.length);
+            Annotation[] paramAnnos = (parameterAnnotations.length > 0 ? parameterAnnotations[0] : null);
+            Annotation[] annotations;
+            if (methodAnnos.length == 0) {
+                annotations = (paramAnnos != null ? paramAnnos : EMPTY_ANNOTATION_ARRAY);
+            } else if (paramAnnos == null || paramAnnos.length == 0) {
+                annotations = methodAnnos;
+            } else {
+                annotations = new Annotation[methodAnnos.length + paramAnnos.length];
+                System.arraycopy(methodAnnos, 0, annotations, 0, methodAnnos.length);
+                System.arraycopy(paramAnnos, 0, annotations, methodAnnos.length, paramAnnos.length);
+            }
 
             String paramName = name;
             for (Annotation anno : annotations) {
@@ -319,6 +346,22 @@ public abstract class AnnotatedMethodInvoker {
                 FileParameter[] fps = translet.getFileParameterValues(paramName);
                 if (fps != null) {
                     BeanUtils.setProperty(model, name, fps);
+                }
+                continue;
+            }
+            if (Collection.class.isAssignableFrom(setterType)) {
+                String[] values = translet.getParameterValues(paramName);
+                if (values != null) {
+                    if (!setterType.isInterface()) {
+                        @SuppressWarnings("unchecked")
+                        Collection<String> collection = (Collection<String>)ClassUtils.createInstance(setterType);
+                        collection.addAll(Arrays.asList(values));
+                        BeanUtils.setProperty(model, name, collection);
+                    } else if (Set.class.isAssignableFrom(setterType)) {
+                        BeanUtils.setProperty(model, name, new LinkedHashSet<>(Arrays.asList(values)));
+                    } else {
+                        BeanUtils.setProperty(model, name, new ArrayList<>(Arrays.asList(values)));
+                    }
                 }
                 continue;
             }
@@ -397,7 +440,7 @@ public abstract class AnnotatedMethodInvoker {
                     : (value != null ? value.toString() : null));
             try {
                 Object result = converter.convert(stringValue, annotations, activity);
-                if (result == null && targetType.isPrimitive()) {
+                if (result == null && stringValue != null && targetType.isPrimitive()) {
                     return TypeUtils.getPrimitiveDefaultValue(targetType);
                 }
                 return result;

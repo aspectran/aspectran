@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -100,16 +101,16 @@ public class InvokeAction implements Executable {
      * @throws Exception if an error occurs during method invocation
      */
     private Object execute(Activity activity, Object bean) throws Exception {
-        try {
-            ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
-            if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-                Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(propertyItemRuleMap);
-                for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                    BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());
-                }
+        ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
+        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
+            Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(propertyItemRuleMap);
+            for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+                BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());
             }
+        }
 
-            Method method = invokeActionRule.getMethod();
+        Method method = invokeActionRule.getMethod();
+        try {
             if (method != null) {
                 // Pre-resolved method for efficiency
                 ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
@@ -123,12 +124,8 @@ public class InvokeAction implements Executable {
                 // Dynamically resolve method by name
                 return invokeMethodByName(activity, bean);
             }
-        } catch (ActionExecutionException e) {
-            throw e;
         } catch (InvocationTargetException e) {
-            throw new ActionExecutionException(this, ExceptionUtils.getCause(e));
-        } catch (Exception e) {
-            throw new ActionExecutionException(this, e);
+            throw ExceptionUtils.getCause(e);
         }
     }
 
@@ -146,24 +143,23 @@ public class InvokeAction implements Executable {
         ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
 
         // First-time invocation: determine if the translet is a required argument.
-        if (activity.hasTranslet() && this.requiresTranslet == null) {
+        if (requiresTranslet == null) {
             try {
                 Object result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, true);
-                this.requiresTranslet = Boolean.TRUE;
+                requiresTranslet = Boolean.TRUE;
                 return result;
             } catch (NoSuchMethodException e) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("No such accessible method to invoke action " + invokeActionRule +
-                            " with Translet. Trying without it.");
+                    logger.trace("No such accessible method to invoke action {} with Translet. Trying without it.",
+                            invokeActionRule);
                 }
-                this.requiresTranslet = Boolean.FALSE;
+                requiresTranslet = Boolean.FALSE;
                 // Fall through to invoke without the translet
             }
         }
 
         // Subsequent invocations use the cached 'requiresTranslet' value.
-        boolean transletRequired = (activity.hasTranslet() && this.requiresTranslet == Boolean.TRUE);
-        return invokeMethod(activity, bean, methodName, argumentItemRuleMap, transletRequired);
+        return invokeMethod(activity, bean, methodName, argumentItemRuleMap, requiresTranslet);
     }
 
     /**
@@ -209,7 +205,8 @@ public class InvokeAction implements Executable {
             throws Exception {
         Object[] args;
         if (requiresTranslet) {
-            args = new Object[] { activity.getTranslet() };
+            Translet translet = (activity.hasTranslet() ? activity.getTranslet() : new InstantTranslet(activity));
+            args = new Object[] { translet };
         } else {
             args = MethodUtils.EMPTY_OBJECT_ARRAY;
         }
@@ -294,7 +291,7 @@ public class InvokeAction implements Executable {
         if (requiresTranslet) {
             index = 1;
             args = new Object[size + index];
-            args[0] = activity.getTranslet();
+            args[0] = (activity.hasTranslet() ? activity.getTranslet() : new InstantTranslet(activity));
         } else {
             index = 0;
             args = new Object[size];
@@ -324,7 +321,7 @@ public class InvokeAction implements Executable {
 
             if (requiresTranslet) {
                 paramTypes[0] = Translet.class;
-                args[0] = activity.getTranslet();
+                args[0] = (activity.hasTranslet() ? activity.getTranslet() : new InstantTranslet(activity));
             }
 
             int i = offset;
@@ -336,8 +333,9 @@ public class InvokeAction implements Executable {
             }
             return new MethodArguments(paramTypes, args);
         } else if (requiresTranslet) {
-            Class<?>[] paramTypes = new Class<?>[]{Translet.class};
-            Object[] args = new Object[]{activity.getTranslet()};
+            Class<?>[] paramTypes = new Class<?>[] {Translet.class};
+            Translet translet = (activity.hasTranslet() ? activity.getTranslet() : new InstantTranslet(activity));
+            Object[] args = new Object[] {translet};
             return new MethodArguments(paramTypes, args);
         } else {
             return MethodArguments.EMPTY;
@@ -349,7 +347,8 @@ public class InvokeAction implements Executable {
      */
     private static class MethodArguments {
 
-        static final MethodArguments EMPTY = new MethodArguments(null, null);
+        static final MethodArguments EMPTY = new MethodArguments(
+                MethodUtils.EMPTY_CLASS_PARAMETERS, MethodUtils.EMPTY_OBJECT_ARRAY);
 
         final Class<?>[] paramTypes;
 

@@ -54,20 +54,11 @@ public class AnnotatedAction implements Executable {
      * @throws ActionExecutionException if an error occurs during method invocation
      */
     @Override
-    public Object execute(@NonNull Activity activity) throws ActionExecutionException {
-        try {
-            Object bean = resolveBean(activity);
-            Method method = annotatedActionRule.getMethod();
-            ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
-            Object result = AnnotatedMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
-            if (method.getReturnType() == Void.TYPE) {
-                return Void.TYPE;
-            } else {
-                return result;
-            }
-        } catch (Exception e) {
-            throw new ActionExecutionException(this, e);
-        }
+    public Object execute(@NonNull Activity activity) throws Exception {
+        Object bean = resolveBean(activity);
+        Method method = annotatedActionRule.getMethod();
+        ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
+        return AnnotatedMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
     }
 
     /**
@@ -79,7 +70,7 @@ public class AnnotatedAction implements Executable {
      * @throws ActionExecutionException if a required bean instance cannot be resolved
      */
     protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
-        // A static advice method does not require a bean instance.
+        // A static method does not require a bean instance.
         Method method = annotatedActionRule.getMethod();
         if (Modifier.isStatic(method.getModifiers())) {
             return null;

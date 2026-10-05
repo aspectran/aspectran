@@ -58,25 +58,21 @@ public class IncludeAction implements Executable {
      */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
-        try {
-            InstantActivity instantActivity = new InstantActivity(activity);
-            ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
-            ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
-            if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                Map<String, Object> attributeMap = activity.getItemEvaluator().evaluate(attributeItemRuleMap);
-                instantActivity.setAttributeMap(attributeMap);
-            }
-            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                ParameterMap parameterMap = activity.getItemEvaluator().evaluateAsParameterMap(parameterItemRuleMap);
-                instantActivity.setParameterMap(parameterMap);
-            }
-            instantActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
-            instantActivity.perform();
-            ProcessResult processResult = instantActivity.getProcessResult();
-            return (processResult != null ? processResult : Void.TYPE);
-        } catch (Exception e) {
-            throw new ActionExecutionException(this, e);
+        InstantActivity instantActivity = new InstantActivity(activity);
+        ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
+        ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
+        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+            Map<String, Object> attributeMap = activity.getItemEvaluator().evaluate(attributeItemRuleMap);
+            instantActivity.setAttributeMap(attributeMap);
         }
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+            ParameterMap parameterMap = activity.getItemEvaluator().evaluateAsParameterMap(parameterItemRuleMap);
+            instantActivity.setParameterMap(parameterMap);
+        }
+        instantActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
+        instantActivity.perform();
+        ProcessResult processResult = instantActivity.getProcessResult();
+        return (processResult != null ? processResult : Void.TYPE);
     }
 
     /**
