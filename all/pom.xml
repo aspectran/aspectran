@@ -292,6 +292,20 @@
                 </executions>
             </plugin>
 
+            <!-- Generate Sources JAR from unpacked sources -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Clean everything once finished so that IDE doesn't find the unpacked files -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
