@@ -24,8 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Maps an incoming request to the annotated method.
- * Supports specifying a path/value, a target translet, allowed HTTP methods,
+ * Maps an incoming request to the annotated action method as a translet.
+ * Supports specifying translet name/path mapping, allowed request methods,
  * and async execution options.
  */
 @Documented
@@ -33,13 +33,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Request {
 
-    /** The request mapping value or path. */
+    /** The translet name or request path (alias for {@link #translet()}). */
     String value() default "";
 
-    /** Optional translet name to execute for this request. */
+    /** The translet name or request path (alias for {@link #value()}). */
     String translet() default "";
 
-    /** Allowed HTTP method(s) for this mapping. */
+    /** Allowed request method(s) for this mapping. */
     MethodType[] method() default {};
 
     /** Whether to execute asynchronously. */

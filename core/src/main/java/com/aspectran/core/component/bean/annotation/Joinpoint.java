@@ -37,7 +37,7 @@ public @interface Joinpoint {
     /** The target type this join point applies to. */
     JoinpointTargetType target() default JoinpointTargetType.ACTIVITY;
 
-    /** Allowed methods/HTTP verbs for this join point (if applicable). */
+    /** Allowed request method(s) for this join point (if applicable). */
     MethodType[] methods() default {};
 
     /** Required request headers to match. */

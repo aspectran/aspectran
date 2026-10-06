@@ -652,6 +652,9 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToGetAnno != null) {
             transletName = StringUtils.emptyToNull(requestToGetAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestToGetAnno.translet());
+            }
             allowedMethods = new MethodType[] {MethodType.GET};
             if (requestToGetAnno.async()) {
                 async = Boolean.TRUE;
@@ -661,6 +664,9 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToPostAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPostAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestToPostAnno.translet());
+            }
             allowedMethods = new MethodType[] {MethodType.POST};
             if (requestToPostAnno.async()) {
                 async = Boolean.TRUE;
@@ -670,6 +676,9 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToPutAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPutAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestToPutAnno.translet());
+            }
             allowedMethods = new MethodType[] {MethodType.PUT};
             if (requestToPutAnno.async()) {
                 async = Boolean.TRUE;
@@ -679,6 +688,9 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToPatchAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestToPatchAnno.translet());
+            }
             allowedMethods = new MethodType[] {MethodType.PATCH};
             if (requestToPatchAnno.async()) {
                 async = Boolean.TRUE;
@@ -688,6 +700,9 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToDeleteAnno != null) {
             transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(requestToDeleteAnno.translet());
+            }
             allowedMethods = new MethodType[] {MethodType.DELETE};
             if (requestToDeleteAnno.async()) {
                 async = Boolean.TRUE;

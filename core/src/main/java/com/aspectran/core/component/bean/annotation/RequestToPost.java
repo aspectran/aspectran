@@ -22,16 +22,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Maps POST requests to the annotated method.
- * Supports a path/value and async execution options.
+ * Maps POST requests to the annotated action method as a translet.
+ * Supports specifying translet name/path mapping and async execution options.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RequestToPost {
 
-    /** The request mapping value or path. */
+    /** The translet name or request path (alias for {@link #translet()}). */
     String value() default "";
+
+    /** The translet name or request path (alias for {@link #value()}). */
+    String translet() default "";
 
     /** Whether to execute asynchronously. */
     boolean async() default false;
