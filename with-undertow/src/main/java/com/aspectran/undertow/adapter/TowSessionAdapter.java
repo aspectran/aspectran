@@ -16,13 +16,16 @@
 package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
+import com.aspectran.undertow.server.session.TowSession;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * An adapter that wraps an {@link HttpServerExchange} to expose session management
@@ -36,14 +39,23 @@ import java.util.Enumeration;
  */
 public class TowSessionAdapter extends AbstractSessionAdapter {
 
+    private final HttpServerExchange exchange;
+
+    private final SessionManager sessionManager;
+
+    private final SessionConfig sessionConfig;
+
     private boolean newSession;
 
     /**
      * Creates a new {@code TowSessionAdapter}.
      * @param exchange the native {@link HttpServerExchange} from which the session is obtained
      */
-    public TowSessionAdapter(HttpServerExchange exchange) {
+    public TowSessionAdapter(@NonNull HttpServerExchange exchange) {
         super(exchange);
+        this.exchange = exchange;
+        this.sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
+        this.sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
     }
 
     /**
@@ -95,6 +107,17 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
+    public Set<String> getAttributeNameSet() {
+        Session sess = getSession(false);
+        return (sess != null ? sess.getAttributeNames() : Collections.emptySet());
+    }
+
+    @Override
+    public boolean containsAttribute(String name) {
+        return (getAttribute(name) != null);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         Session sess = getSession(false);
@@ -117,6 +140,16 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    @Override
+    public void clear() {
+        Session sess = getSession(false);
+        if (sess != null) {
+            for (String name : sess.getAttributeNames()) {
+                sess.removeAttribute(name);
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      * <p>Does not create a session if one does not exist.
@@ -125,7 +158,7 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
     public void invalidate() {
         Session sess = getSession(false);
         if (sess != null) {
-            sess.invalidate(getAdaptee());
+            sess.invalidate(exchange);
         }
     }
 
@@ -144,15 +177,30 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         return (sess == null || newSession);
     }
 
+    @Override
+    public long getRemainingInactiveInterval() {
+        Session sess = getSession(false);
+        if (sess instanceof TowSession towSession) {
+            return towSession.getRemainingInactiveInterval();
+        }
+        return super.getRemainingInactiveInterval();
+    }
+
+    @Override
+    public String changeSessionId() {
+        Session sess = getSession(false);
+        if (sess != null && sessionConfig != null) {
+            return sess.changeSessionId(exchange, sessionConfig);
+        }
+        return null;
+    }
+
     /**
      * Gets the underlying Undertow {@link Session}, creating it if necessary.
      * @param create {@code true} to create a new session if one does not exist
      * @return the session, or {@code null} if {@code create} is false and no session exists
      */
     public Session getSession(boolean create) {
-        HttpServerExchange exchange = super.getAdaptee();
-        SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
-        SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
         if (sessionConfig == null || sessionManager == null) {
             return null;
         }

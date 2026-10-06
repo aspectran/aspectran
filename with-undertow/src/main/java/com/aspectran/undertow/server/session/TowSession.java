@@ -145,6 +145,10 @@ public final class TowSession implements io.undertow.server.session.Session {
         }
     }
 
+    public long getRemainingInactiveInterval() {
+        return session.getRemainingInactiveInterval();
+    }
+
     /**
      * Checks if an attribute should not be persisted.
      * This is used to prevent Undertow's internal attributes from being

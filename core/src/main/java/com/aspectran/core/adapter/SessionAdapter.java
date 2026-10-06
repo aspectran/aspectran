@@ -18,7 +18,10 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides an abstraction for a user session within a specific runtime environment.
@@ -97,12 +100,45 @@ public interface SessionAdapter {
     Enumeration<String> getAttributeNames();
 
     /**
+     * Returns an unmodifiable {@code Set} of all attribute names bound to this session.
+     * @return an unmodifiable set of attribute names, or an empty set if the session is invalid
+     */
+    default Set<String> getAttributeNameSet() {
+        Enumeration<String> names = getAttributeNames();
+        if (names == null) {
+            return Collections.emptySet();
+        }
+        return Collections.list(names).stream().collect(Collectors.toUnmodifiableSet());
+    }
+
+    /**
+     * Returns whether an attribute with the specified name exists in this session.
+     * @param name the name of the attribute to check
+     * @return {@code true} if the attribute exists; {@code false} otherwise
+     */
+    default boolean containsAttribute(String name) {
+        return (getAttribute(name) != null);
+    }
+
+    /**
      * Returns the session attribute with the specified name.
      * @param <T> the type of the attribute
      * @param name the name of the attribute
      * @return the attribute value, or {@code null} if the attribute is not found
      */
     <T> T getAttribute(String name);
+
+    /**
+     * Returns the session attribute with the specified name, or a default value if not found.
+     * @param <T> the type of the attribute
+     * @param name the name of the attribute
+     * @param defaultValue the default value to return if the attribute is not found
+     * @return the attribute value, or {@code defaultValue} if not found
+     */
+    default <T> T getAttribute(String name, T defaultValue) {
+        T value = getAttribute(name);
+        return (value != null ? value : defaultValue);
+    }
 
     /**
      * Binds an object as an attribute to this session.
@@ -116,6 +152,18 @@ public interface SessionAdapter {
      * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
+
+    /**
+     * Removes all attributes currently bound to this session.
+     */
+    default void clear() {
+        Enumeration<String> names = getAttributeNames();
+        if (names != null) {
+            for (String name : Collections.list(names)) {
+                removeAttribute(name);
+            }
+        }
+    }
 
     /**
      * Invalidates this session and unbinds any objects bound to it.
@@ -136,5 +184,29 @@ public interface SessionAdapter {
      * @return {@code true} if the session is new, {@code false} otherwise
      */
     boolean isNew();
+
+    /**
+     * Returns the remaining time in milliseconds until this session becomes inactive.
+     * A negative value indicates that the session never times out.
+     * @return the remaining time in milliseconds
+     */
+    default long getRemainingInactiveInterval() {
+        int maxInactiveInterval = getMaxInactiveInterval();
+        if (maxInactiveInterval <= 0) {
+            return -1L;
+        }
+        long lastAccessedTime = getLastAccessedTime();
+        if (lastAccessedTime <= 0L) {
+            return maxInactiveInterval * 1000L;
+        }
+        long remaining = (lastAccessedTime + (maxInactiveInterval * 1000L)) - System.currentTimeMillis();
+        return Math.max(remaining, 0L);
+    }
+
+    /**
+     * Changes the current session ID to a new one and returns the new session ID.
+     * @return the new session ID, or {@code null} if the session is invalid or cannot be changed
+     */
+    String changeSessionId();
 
 }

@@ -29,6 +29,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * An adapter that exposes session management in a Netty environment
@@ -121,6 +122,17 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
+    public Set<String> getAttributeNameSet() {
+        Session sess = getSession(false);
+        return (sess != null ? sess.getAttributeNames() : Collections.emptySet());
+    }
+
+    @Override
+    public boolean containsAttribute(String name) {
+        return (getAttribute(name) != null);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         Session sess = getSession(false);
@@ -140,6 +152,16 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
         Session sess = getSession(false);
         if (sess != null) {
             sess.removeAttribute(name);
+        }
+    }
+
+    @Override
+    public void clear() {
+        Session sess = getSession(false);
+        if (sess != null) {
+            for (String name : sess.getAttributeNames()) {
+                sess.removeAttribute(name);
+            }
         }
     }
 
@@ -165,6 +187,29 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
     public boolean isNew() {
         Session sess = getSession(false);
         return (sess == null || newSession);
+    }
+
+    @Override
+    public long getRemainingInactiveInterval() {
+        Session sess = getSession(false);
+        return (sess != null ? sess.getRemainingInactiveInterval() : -1L);
+    }
+
+    @Override
+    public String changeSessionId() {
+        Session sess = getSession(false);
+        if (sess != null && sessionManager != null && sessionConfig != null) {
+            String newId = sessionManager.createSessionId();
+            String oldId = sess.getId();
+            String renewedId = sessionManager.renewSessionId(oldId, newId);
+            if (renewedId != null) {
+                if (responseAdapter != null) {
+                    responseAdapter.addHeader(HttpHeaderNames.SET_COOKIE.toString(), sessionConfig.encodeCookie(renewedId));
+                }
+                return renewedId;
+            }
+        }
+        return null;
     }
 
     /**

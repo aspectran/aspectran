@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * Acts as a delegate for session management on a per-request basis.
@@ -97,6 +98,28 @@ public class SessionAgent {
     }
 
     /**
+     * Returns a {@link Set} of {@link String} objects containing the names of all the
+     * objects bound to this session.
+     * @return a set of attribute names
+     */
+    public Set<String> getAttributeNameSet() {
+        Session session = getSession(false);
+        if (session == null) {
+            return Collections.emptySet();
+        }
+        return session.getAttributeNames();
+    }
+
+    /**
+     * Returns whether an attribute with the specified name exists in this session.
+     * @param name the name of the attribute to check
+     * @return {@code true} if the attribute exists; {@code false} otherwise
+     */
+    public boolean containsAttribute(String name) {
+        return (getAttribute(name) != null);
+    }
+
+    /**
      * Returns the object bound with the specified name in this session, or
      * {@code null} if no object is bound under the name.
      * @param <T> the type of the attribute
@@ -128,6 +151,18 @@ public class SessionAgent {
         Session session = getSession(false);
         if (session != null) {
             session.removeAttribute(name);
+        }
+    }
+
+    /**
+     * Removes all objects bound to this session.
+     */
+    public void clear() {
+        Session session = getSession(false);
+        if (session != null) {
+            for (String name : session.getAttributeNames()) {
+                session.removeAttribute(name);
+            }
         }
     }
 
@@ -190,6 +225,29 @@ public class SessionAgent {
     public boolean isNew() {
         Session session = getSession(false);
         return (session == null || session.isNew());
+    }
+
+    /**
+     * Returns the remaining time until this session becomes inactive.
+     * @return the remaining time in milliseconds
+     */
+    public long getRemainingInactiveInterval() {
+        Session session = getSession(false);
+        return (session != null ? session.getRemainingInactiveInterval() : -1L);
+    }
+
+    /**
+     * Changes the current session ID to a new one and returns the new session ID.
+     * @return the new session ID, or {@code null} if the session is invalid
+     */
+    public String changeSessionId() {
+        Session session = getSession(false);
+        if (session != null) {
+            String newSessionId = sessionManager.createSessionId();
+            sessionId = sessionManager.renewSessionId(session.getId(), newSessionId);
+            return sessionId;
+        }
+        return null;
     }
 
     /**

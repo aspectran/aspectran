@@ -136,11 +136,6 @@ class FlashMapTest {
         }
 
         @Override
-        public boolean isNew() {
-            return false;
-        }
-
-        @Override
         public long getCreationTime() {
             return 0;
         }
@@ -192,6 +187,16 @@ class FlashMapTest {
         @Override
         public boolean isValid() {
             return true;
+        }
+
+        @Override
+        public boolean isNew() {
+            return false;
+        }
+
+        @Override
+        public String changeSessionId() {
+            return "mock-new-session-id";
         }
     }
 

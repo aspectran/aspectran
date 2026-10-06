@@ -18,6 +18,7 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * A concrete {@link SessionAdapter} that wraps and delegates to a {@link SessionAgent}.
@@ -71,6 +72,16 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
+    public Set<String> getAttributeNameSet() {
+        return getSessionAgent().getAttributeNameSet();
+    }
+
+    @Override
+    public boolean containsAttribute(String name) {
+        return getSessionAgent().containsAttribute(name);
+    }
+
+    @Override
     public <T> T getAttribute(String name) {
         return getSessionAgent().getAttribute(name);
     }
@@ -86,6 +97,11 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
+    public void clear() {
+        getSessionAgent().clear();
+    }
+
+    @Override
     public void invalidate() {
         getSessionAgent().invalidate();
     }
@@ -98,6 +114,16 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
     @Override
     public boolean isNew() {
         return getSessionAgent().isNew();
+    }
+
+    @Override
+    public long getRemainingInactiveInterval() {
+        return getSessionAgent().getRemainingInactiveInterval();
+    }
+
+    @Override
+    public String changeSessionId() {
+        return getSessionAgent().changeSessionId();
     }
 
     /**

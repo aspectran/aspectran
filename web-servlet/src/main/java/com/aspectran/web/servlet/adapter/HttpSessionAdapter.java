@@ -158,6 +158,15 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         return (session == null || session.isNew());
     }
 
+    @Override
+    public String changeSessionId() {
+        HttpServletRequest request = super.getAdaptee();
+        if (request != null) {
+            return request.changeSessionId();
+        }
+        return null;
+    }
+
     /**
      * Gets the underlying {@link HttpSession}, creating it if necessary.
      * @param create {@code true} to create a new session if one does not exist
