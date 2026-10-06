@@ -66,7 +66,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -699,8 +698,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             } else {
                 setOwnBasePath(false);
                 try {
-                    String tmpDir = SystemUtils.getJavaIoTmpDir();
-                    baseDir = Files.createTempDirectory(Path.of(tmpDir), TMP_BASE_DIRNAME_PREFIX).toFile();
+                    baseDir = Files.createTempDirectory(TMP_BASE_DIRNAME_PREFIX).toFile();
                     baseDir.deleteOnExit();
                 } catch (IOException e) {
                     throw new IOException("Could not verify base directory", e);
