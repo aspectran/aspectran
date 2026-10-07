@@ -195,11 +195,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 JobListener defaultJobListener = new ActivityJobListener(getLoggingGroup());
                 scheduler.getListenerManager().addJobListener(defaultJobListener);
 
-                if (getStartDelaySeconds() > 0) {
-                    scheduler.startDelayed(getStartDelaySeconds());
-                } else {
-                    scheduler.start();
-                }
+                scheduler.start();
             }
         } catch (Exception e) {
             throw new SchedulerServiceException("Could not start " + getServiceName(), e);
