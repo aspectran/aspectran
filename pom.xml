@@ -135,7 +135,7 @@
 
         <ognl.version>3.4.14</ognl.version>
         <httpclient5.version>5.6.4</httpclient5.version>
-        <netty.version>4.2.18.Final</netty.version>
+        <netty.version>4.2.19.Final</netty.version>
     </properties>
 
     <dependencyManagement>
