@@ -56,6 +56,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLException;
+import java.io.IOException;
+import java.net.SocketException;
+import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.ExecutorService;
 
 import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_HOST;
@@ -362,8 +366,57 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     @Override
     public void exceptionCaught(@NonNull ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("Netty pipeline exception caught", cause);
+        if (isClientAbortException(cause)) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Client connection closed: {}", ctx.channel(), cause);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Client connection closed: {} ({})", ctx.channel(),
+                        cause.getMessage() != null ? cause.getMessage() : cause);
+            }
+        } else {
+            logger.error("Netty pipeline exception caught", cause);
+        }
         ctx.close();
+    }
+
+    static boolean isClientAbortException(Throwable cause) {
+        if (cause == null) {
+            return false;
+        }
+        Throwable t = cause;
+        while (t != null) {
+            if (t instanceof ClosedChannelException || t instanceof SocketException) {
+                return true;
+            }
+            if (t instanceof SSLException sslEx) {
+                String msg = sslEx.getMessage();
+                if (msg != null && (msg.contains("SSLEngine closed already") ||
+                        msg.toLowerCase().contains("connection reset"))) {
+                    return true;
+                }
+            }
+            if (t instanceof IOException) {
+                String msg = t.getMessage();
+                if (msg != null) {
+                    String lower = msg.toLowerCase();
+                    if (lower.contains("connection reset") ||
+                            lower.contains("broken pipe") ||
+                            lower.contains("connection abort") ||
+                            lower.contains("socket closed") ||
+                            lower.contains("forcibly closed")) {
+                        return true;
+                    }
+                }
+            }
+            if ("ClientAbortException".equals(t.getClass().getSimpleName())) {
+                return true;
+            }
+            if (t == t.getCause()) {
+                break;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
 }
