@@ -74,7 +74,7 @@ class DefaultTowServerTest {
         String result2;
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet("http://127.0.0.1:8099/hello_jsp");
+            HttpGet request = new HttpGet("http://127.0.0.1:8098/hello_jsp");
             result2 = httpClient.execute(request, response -> EntityUtils.toString(response.getEntity()).trim());
         }
 
@@ -84,7 +84,7 @@ class DefaultTowServerTest {
     @Test
     void testHeadRequest() throws IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpHead request = new HttpHead("http://127.0.0.1:8099/hello_jsp");
+            HttpHead request = new HttpHead("http://127.0.0.1:8098/hello_jsp");
             httpClient.execute(request, response -> {
                 assertEquals(200, response.getCode());
                 Header contentLengthHeader = response.getFirstHeader("Content-Length");

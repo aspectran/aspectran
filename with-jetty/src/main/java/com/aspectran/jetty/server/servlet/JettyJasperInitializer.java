@@ -77,7 +77,9 @@ public class JettyJasperInitializer extends JasperInitializer implements Activit
             ServletContext context, boolean namespaceAware, boolean validate, boolean blockExternal) {
         JettyTldScanner tldScanner = new JettyTldScanner(context, namespaceAware, validate, blockExternal);
         tldScanner.setClassLoader(context.getClassLoader());
-        tldScanner.setTldResources(tldResources);
+        if (tldResources != null && tldResources.length > 0) {
+            tldScanner.setTldResources(tldResources);
+        }
         return tldScanner;
     }
 

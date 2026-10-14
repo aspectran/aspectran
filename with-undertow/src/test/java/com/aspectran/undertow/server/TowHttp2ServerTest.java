@@ -69,6 +69,7 @@ class TowHttp2ServerTest {
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.touchContextConfig().setBasePath(basePath);
 
+        System.setProperty("tow.server.listener.http.port", "0");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
         towServer = aspectran.getBean("tow.server");
 
@@ -117,6 +118,7 @@ class TowHttp2ServerTest {
 
     @AfterAll
     void finish() throws Exception {
+        System.clearProperty("tow.server.listener.http.port");
         if (towServer != null && towServer.isRunning()) {
             towServer.stop();
         }

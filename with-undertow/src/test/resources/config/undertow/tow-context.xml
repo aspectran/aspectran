@@ -47,7 +47,9 @@
         <property name="servletContainerInitializers" type="array">
             <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
                 <property name="tldResources" type="array">
-                    <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
+                    <value>classpath:META-INF/c-1_2.tld</value>
+                    <value>classpath:META-INF/fn-1_1.tld</value>
+                    <value>classpath:META-INF/fmt-1_1.tld</value>
                 </property>
             </bean>
         </property>

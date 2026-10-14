@@ -521,8 +521,8 @@ public class JsrWebSocketSession implements Session {
             nettySession.sendText(text).addListener(future -> {
                 if (handler != null) {
                     handler.onResult(future.isSuccess() ?
-                            new SendResult(JsrWebSocketSession.this) :
-                            new SendResult(JsrWebSocketSession.this, future.cause()));
+                            new SendResult() :
+                            new SendResult(future.cause()));
                 }
             });
         }
@@ -564,8 +564,8 @@ public class JsrWebSocketSession implements Session {
             nettySession.sendBinary(bytes).addListener(future -> {
                 if (handler != null) {
                     handler.onResult(future.isSuccess() ?
-                            new SendResult(JsrWebSocketSession.this) :
-                            new SendResult(JsrWebSocketSession.this, future.cause()));
+                            new SendResult() :
+                            new SendResult(future.cause()));
                 }
             });
         }
@@ -588,7 +588,7 @@ public class JsrWebSocketSession implements Session {
                 sendText(encodeTextObject(data), handler);
             } catch (EncodeException e) {
                 if (handler != null) {
-                    handler.onResult(new SendResult(JsrWebSocketSession.this, e));
+                    handler.onResult(new SendResult(e));
                 }
             }
         }

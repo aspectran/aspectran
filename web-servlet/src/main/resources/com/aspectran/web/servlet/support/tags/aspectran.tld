@@ -7,7 +7,7 @@
     <description>Aspectran JSP Tag Library</description>
     <tlib-version>2.0</tlib-version>
     <short-name>aspectran</short-name>
-    <uri>http://aspectran.com/tags</uri>
+    <uri>aspectran.tags</uri>
 
     <tag>
         <description>Sets default HTML escape value for the current page.

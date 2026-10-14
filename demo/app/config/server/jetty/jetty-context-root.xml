@@ -42,12 +42,7 @@
             </bean>
         </property>
         <property name="servletContainerInitializers" type="array">
-            <bean class="com.aspectran.jetty.server.servlet.JettyJasperInitializer">
-                <property name="tldResources" type="array">
-                    <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
-                    <value>/webapps/%{jetty.context.root.name}/WEB-INF/taglibs/</value>
-                </property>
-            </bean>
+            <bean class="com.aspectran.jetty.server.servlet.JettyJasperInitializer"/>
         </property>
         <property name="webSocketServerContainerInitializer">
             <bean class="com.aspectran.jetty.server.servlet.JettyWebSocketServerContainerInitializer">
