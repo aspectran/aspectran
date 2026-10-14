@@ -58,8 +58,10 @@
         <property name="servletContainerInitializers" type="array">
             <bean class="com.aspectran.jetty.server.servlet.JettyJasperInitializer">
                 <property name="tldResources" type="array">
-                    <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
-                    <value>/webroot/WEB-INF/taglibs/</value>
+                    <value>classpath:com/aspectran/web/servlet/support/tags/aspectran.tld</value>
+                    <value>classpath:META-INF/c-1_2.tld</value>
+                    <value>classpath:META-INF/fn-1_1.tld</value>
+                    <value>classpath:META-INF/fmt-1_1.tld</value>
                 </property>
             </bean>
         </property>

@@ -9,7 +9,7 @@
 
     <environment>
         <property name="tow.server.startup" valueType="boolean">false</property>
-        <property name="tow.server.listener.http.port" valueType="int">8099</property>
+        <property name="tow.server.listener.http.port" valueType="int">%{system:tow.server.listener.http.port:8098}</property>
         <property name="tow.server.listener.http.host">0.0.0.0</property>
     </environment>
 

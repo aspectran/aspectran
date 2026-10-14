@@ -29,7 +29,10 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Scans for and loads Tag Library Descriptors contained in a web application.
@@ -37,6 +40,25 @@ import java.util.Map;
 public class TowTldScanner extends TldScanner {
 
     private final Logger logger = LoggerFactory.getLogger(TowTldScanner.class);
+
+    private static final String[] ASPECTRAN_TAGLIB_RESOURCES = {
+        "com/aspectran/web/servlet/support/tags/aspectran.tld"
+    };
+
+    private static final String ASPECTRAN_TAGLIB_URI = "aspectran.tags";
+
+    private static final String LEGACY_ASPECTRAN_TAGLIB_URI = "http://aspectran.com/tags";
+
+    private static final String[] JSTL_TAGLIB_MARKERS = {
+        "META-INF/c.tld",
+        "META-INF/fmt.tld",
+        "META-INF/fn.tld",
+        "META-INF/c-1_2.tld",
+        "META-INF/fmt-1_1.tld",
+        "META-INF/fn-1_1.tld"
+    };
+
+    private ClassLoader classLoader;
 
     private URL[] tldResources;
 
@@ -52,6 +74,13 @@ public class TowTldScanner extends TldScanner {
      */
     public TowTldScanner(ServletContext context, boolean namespaceAware, boolean validation, boolean blockExternal) {
         super(context, namespaceAware, validation, blockExternal);
+        this.classLoader = (context != null ? context.getClassLoader() : null);
+    }
+
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        super.setClassLoader(classLoader);
+        this.classLoader = classLoader;
     }
 
     /**
@@ -67,14 +96,85 @@ public class TowTldScanner extends TldScanner {
         scanPlatform();
         scanJspConfig();
         scanResourcePaths("/WEB-INF/");
+        scanClasspath();
+        scanTldResources();
+
+        Map<String, TldResourcePath> result = getUriTldResourcePathMap();
+        if (result != null) {
+            TldResourcePath aspectranPath = result.get(ASPECTRAN_TAGLIB_URI);
+            if (aspectranPath != null) {
+                result.putIfAbsent(LEGACY_ASPECTRAN_TAGLIB_URI, aspectranPath);
+            } else {
+                aspectranPath = result.get(LEGACY_ASPECTRAN_TAGLIB_URI);
+                if (aspectranPath != null) {
+                    result.putIfAbsent(ASPECTRAN_TAGLIB_URI, aspectranPath);
+                }
+            }
+        }
+
+        if (logger.isDebugEnabled() && result != null) {
+            for (Map.Entry<String, TldResourcePath> entry : result.entrySet()) {
+                logger.debug("Found TLD: {} [{}]", entry.getKey(), entry.getValue().getUrl());
+            }
+        }
+    }
+
+    /**
+     * Scans the classpath for well-known tag libraries like JSTL and Aspectran.
+     * @throws IOException if an I/O error occurs
+     */
+    private void scanClasspath() throws IOException {
+        ClassLoader cl = (classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader());
+        if (cl == null) {
+            cl = getClass().getClassLoader();
+        }
+        if (cl == null) {
+            return;
+        }
+
+        // Scan Aspectran Tag Library
+        for (String resource : ASPECTRAN_TAGLIB_RESOURCES) {
+            URL aspectranTldUrl = cl.getResource(resource);
+            if (aspectranTldUrl != null) {
+                parseTld(aspectranTldUrl);
+                break;
+            }
+        }
+
+        // Scan JSTL Tag Libraries
+        Set<URL> scannedJars = new HashSet<>();
+        for (String marker : JSTL_TAGLIB_MARKERS) {
+            Enumeration<URL> urls = cl.getResources(marker);
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                if (ResourceUtils.isJarURL(url) || ResourceUtils.isJarFileURL(url)) {
+                    URL jarUrl = ResourceUtils.extractJarFileURL(url);
+                    if (scannedJars.add(jarUrl)) {
+                        try (Jar jar = JarFactory.newInstance(jarUrl)) {
+                            scanJar(jar);
+                        }
+                    }
+                } else if (ResourceUtils.isFileURL(url)) {
+                    parseTld(url);
+                }
+            }
+        }
+    }
+
+    /**
+     * Scans the user-specified TLD resources.
+     * @throws IOException if an I/O error occurs
+     */
+    private void scanTldResources() throws IOException {
         if (tldResources != null) {
             for (URL url : tldResources) {
                 if (url != null) {
                     if (url.getPath().endsWith(".tld")) {
                         parseTld(url);
                     } else if (ResourceUtils.isJarURL(url) || ResourceUtils.isJarFileURL(url)) {
-                        Jar jar = JarFactory.newInstance(url);
-                        scanJar(jar);
+                        try (Jar jar = JarFactory.newInstance(url)) {
+                            scanJar(jar);
+                        }
                     } else if (ResourceUtils.isFileURL(url)) {
                         File dir = ResourceUtils.getFile(url);
                         if (dir.isDirectory()) {
@@ -85,10 +185,6 @@ public class TowTldScanner extends TldScanner {
                     }
                 }
             }
-        }
-        Map<String, TldResourcePath> result = getUriTldResourcePathMap();
-        for (Map.Entry<String, TldResourcePath> entry : result.entrySet()) {
-            logger.debug("Found TLD: {} [{}]", entry.getKey(), entry.getValue().getUrl());
         }
     }
 
@@ -101,8 +197,7 @@ public class TowTldScanner extends TldScanner {
             if (file.isFile()) {
                 String filePath = file.getAbsolutePath();
                 if (filePath.toLowerCase().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) {
-                    try {
-                        Jar jar = JarFactory.newInstance(file.toURI().toURL());
+                    try (Jar jar = JarFactory.newInstance(file.toURI().toURL())) {
                         scanJar(jar);
                     } catch (IOException e) {
                         throw new RuntimeException(e);

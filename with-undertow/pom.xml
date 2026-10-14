@@ -119,12 +119,6 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>${jakarta.servlet.jsp.jstl.impl.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.mortbay.jasper</groupId>
-            <artifactId>taglibs-standard</artifactId>
-            <version>${taglibs-standard.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- Additional testing dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>

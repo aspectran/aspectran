@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://aspectran.com/tags" prefix="aspectran" %>
+<%@ taglib prefix="aspectran" uri="aspectran.tags" %>
 <div class="row g-3 pt-3">
     <div class="col-lg-4" style="position:relative;">
         <h2>Customer List</h2>
