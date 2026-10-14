@@ -36,6 +36,9 @@ public class PathBasedLoggingGroupHandlerWrapper implements LoggingGroupHandlerW
 
     private Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 
+    /**
+     * Constructs a new {@code PathBasedLoggingGroupHandlerWrapper}.
+     */
     public PathBasedLoggingGroupHandlerWrapper() {
     }
 

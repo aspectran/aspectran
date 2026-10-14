@@ -62,20 +62,39 @@ public class JettyFilter extends FilterHolder {
 
     private JettyFilterServletMapping[] servletMappings;
 
+    /**
+     * Creates a new filter with the specified name and filter class name.
+     * @param name the filter name
+     * @param filterClass the filter class name
+     * @throws ClassNotFoundException if the class is not found
+     */
     public JettyFilter(String name, String filterClass) throws ClassNotFoundException {
         this(name, ClassUtils.loadClass(filterClass));
     }
 
+    /**
+     * Creates a new filter with the specified name and filter class.
+     * @param name the filter name
+     * @param filterClass the filter class
+     */
     public JettyFilter(String name, Class<? extends Filter> filterClass) {
         super();
         setName(name);
         setHeldClass(filterClass);
     }
 
+    /**
+     * Returns the URL pattern mappings for this filter.
+     * @return the URL mappings
+     */
     public JettyFilterUrlMapping[] getUrlMappings() {
         return urlMappings;
     }
 
+    /**
+     * Sets the URL patterns to which this filter applies.
+     * @param mappingUrls the mapping urls
+     */
     public void setMappingUrls(String[] mappingUrls) {
         if (mappingUrls != null) {
             List<JettyFilterMapping> mappingList = new ArrayList<>(mappingUrls.length);
@@ -86,26 +105,38 @@ public class JettyFilter extends FilterHolder {
         }
     }
 
+    /**
+     * Sets the URL pattern mappings for this filter.
+     * @param jettyFilterMappings the filter mappings
+     */
     public void setUrlMappings(JettyFilterMapping[] jettyFilterMappings) {
         if (jettyFilterMappings != null) {
             List<JettyFilterUrlMapping> urlMappingList;
-            if (this.urlMappings != null) {
-                urlMappingList = new ArrayList<>(this.servletMappings.length + jettyFilterMappings.length);
-                urlMappingList.addAll(Arrays.asList(this.urlMappings));
+            if (urlMappings != null) {
+                urlMappingList = new ArrayList<>(servletMappings.length + jettyFilterMappings.length);
+                urlMappingList.addAll(Arrays.asList(urlMappings));
             } else {
                 urlMappingList = new ArrayList<>(jettyFilterMappings.length);
             }
             for (JettyFilterMapping mapping : jettyFilterMappings) {
                 urlMappingList.addAll(JettyFilterUrlMapping.of(getName(), mapping));
             }
-            this.urlMappings = urlMappingList.toArray(new JettyFilterUrlMapping[0]);
+            urlMappings = urlMappingList.toArray(new JettyFilterUrlMapping[0]);
         }
     }
 
+    /**
+     * Returns the servlet name mappings for this filter.
+     * @return the servlet mappings
+     */
     public JettyFilterServletMapping[] getServletMappings() {
         return servletMappings;
     }
 
+    /**
+     * Sets the servlet names to which this filter applies.
+     * @param mappingServlets the mapping servlets
+     */
     public void setMappingServlets(String[] mappingServlets) {
         if (mappingServlets != null) {
             List<JettyFilterMapping> mappingList = new ArrayList<>(mappingServlets.length);
@@ -116,22 +147,30 @@ public class JettyFilter extends FilterHolder {
         }
     }
 
+    /**
+     * Sets the servlet name mappings for this filter.
+     * @param jettyFilterMappings the filter mappings
+     */
     public void setServletMappings(JettyFilterMapping[] jettyFilterMappings) {
         if (jettyFilterMappings != null) {
             List<JettyFilterServletMapping> servletMappingList;
-            if (this.servletMappings != null) {
-                servletMappingList = new ArrayList<>(this.servletMappings.length + jettyFilterMappings.length);
-                servletMappingList.addAll(Arrays.asList(this.servletMappings));
+            if (servletMappings != null) {
+                servletMappingList = new ArrayList<>(servletMappings.length + jettyFilterMappings.length);
+                servletMappingList.addAll(Arrays.asList(servletMappings));
             } else {
                 servletMappingList = new ArrayList<>(jettyFilterMappings.length);
             }
             for (JettyFilterMapping jettyFilterMapping : jettyFilterMappings) {
                 servletMappingList.addAll(JettyFilterServletMapping.of(getName(), jettyFilterMapping));
             }
-            this.servletMappings = servletMappingList.toArray(new JettyFilterServletMapping[0]);
+            servletMappings = servletMappingList.toArray(new JettyFilterServletMapping[0]);
         }
     }
 
+    /**
+     * Sets the initialization parameters for this filter.
+     * @param initParams the init params
+     */
     public void setInitParams(Map<String, String> initParams) {
         if (initParams != null) {
             for (Map.Entry<String, String> entry : initParams.entrySet()) {

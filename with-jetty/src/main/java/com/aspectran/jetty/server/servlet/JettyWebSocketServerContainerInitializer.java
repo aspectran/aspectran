@@ -35,38 +35,76 @@ public class JettyWebSocketServerContainerInitializer {
 
     private Integer maxTextMessageSize;
 
+    /**
+     * Returns the idle timeout of this initializer.
+     * @return the idle timeout of this initializer
+     */
     public Long getIdleTimeout() {
         return idleTimeout;
     }
 
+    /**
+     * Sets the idle timeout of this initializer.
+     * @param idleTimeout the idle timeout of this initializer
+     */
     public void setIdleTimeout(long idleTimeout) {
         this.idleTimeout = idleTimeout;
     }
 
+    /**
+     * Returns the async send timeout of this initializer.
+     * @return the async send timeout of this initializer
+     */
     public Long getAsyncSendTimeout() {
         return asyncSendTimeout;
     }
 
+    /**
+     * Sets the async send timeout of this initializer.
+     * @param asyncSendTimeout the async send timeout of this initializer
+     */
     public void setAsyncSendTimeout(long asyncSendTimeout) {
         this.asyncSendTimeout = asyncSendTimeout;
     }
 
+    /**
+     * Returns the maximum binary message size of this initializer.
+     * @return the maximum binary message size of this initializer
+     */
     public Integer getMaxBinaryMessageSize() {
         return maxBinaryMessageSize;
     }
 
+    /**
+     * Sets the maximum binary message size of this initializer.
+     * @param maxBinaryMessageSize the maximum binary message size of this initializer
+     */
     public void setMaxBinaryMessageSize(int maxBinaryMessageSize) {
         this.maxBinaryMessageSize = maxBinaryMessageSize;
     }
 
+    /**
+     * Returns the maximum text message size of this initializer.
+     * @return the maximum text message size of this initializer
+     */
     public Integer getMaxTextMessageSize() {
         return maxTextMessageSize;
     }
 
+    /**
+     * Sets the maximum text message size of this initializer.
+     * @param maxTextMessageSize the maximum text message size of this initializer
+     */
     public void setMaxTextMessageSize(int maxTextMessageSize) {
         this.maxTextMessageSize = maxTextMessageSize;
     }
 
+    /**
+     * Customizes the provided {@link ServerContainer} by applying the configuration settings
+     * such as idle timeout, async send timeout, maximum binary message size, and
+     * maximum text message size if they are not null.
+     * @param serverContainer the {@link ServerContainer} to customize
+     */
     public void customize(ServerContainer serverContainer) {
         if (idleTimeout != null) {
             serverContainer.setDefaultMaxSessionIdleTimeout(idleTimeout);

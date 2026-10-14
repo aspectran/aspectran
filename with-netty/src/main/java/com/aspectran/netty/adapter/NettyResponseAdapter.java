@@ -317,7 +317,7 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void redirect(String location) {
-        if (!activity.isResponded() && activity.getTranslet() != null) {
+        if (!activity.isResponded() && activity.hasTranslet()) {
             activity.getTranslet().redirect(location);
             return;
         }
@@ -327,7 +327,7 @@ public class NettyResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) {
-        if (!activity.isResponded() && activity.getTranslet() != null) {
+        if (!activity.isResponded() && activity.hasTranslet()) {
             activity.getTranslet().redirect(redirectRule);
             return WebUtils.getRedirectTarget(redirectRule, activity);
         }

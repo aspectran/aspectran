@@ -198,8 +198,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
             throw new IllegalArgumentException("requestName must not be null or empty");
         }
         Activity currentActivity = getCurrentActivity();
-        Translet translet = currentActivity.getTranslet();
-        if (translet == null) {
+        if (!currentActivity.hasTranslet()) {
             throw new IllegalStateException("No Translet in " + currentActivity);
         }
         try {

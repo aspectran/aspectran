@@ -42,6 +42,10 @@ public class JettyCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
+    /**
+     * Constructs a new JettyCommand.
+     * @param registry the command registry
+     */
     public JettyCommand(CommandRegistry registry) {
         super(registry);
 

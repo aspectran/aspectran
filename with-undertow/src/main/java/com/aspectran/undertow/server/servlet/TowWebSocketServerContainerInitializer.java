@@ -83,34 +83,66 @@ public class TowWebSocketServerContainerInitializer {
         this.threadLocalCacheSize = threadLocalCacheSize;
     }
 
+    /**
+     * Retrieves the idle timeout value for the WebSocket server container.
+     * @return the idle timeout value in milliseconds, or null if not set
+     */
     public Long getIdleTimeout() {
         return idleTimeout;
     }
 
+    /**
+     * Sets the idle timeout for the WebSocket server container.
+     * @param idleTimeout the idle timeout value, in milliseconds, after which idle connections will be closed
+     */
     public void setIdleTimeout(long idleTimeout) {
         this.idleTimeout = idleTimeout;
     }
 
+    /**
+     * Retrieves the async send timeout value for the WebSocket server container.
+     * @return the async send timeout value in milliseconds, or null if not set
+     */
     public Long getAsyncSendTimeout() {
         return asyncSendTimeout;
     }
 
+    /**
+     * Sets the async send timeout for the WebSocket server container.
+     * @param asyncSendTimeout the async send timeout value, in milliseconds, after which async sends will time out
+     */
     public void setAsyncSendTimeout(long asyncSendTimeout) {
         this.asyncSendTimeout = asyncSendTimeout;
     }
 
+    /**
+     * Retrieves the maximum binary message size for the WebSocket server container.
+     * @return the maximum binary message size in bytes, or null if not set
+     */
     public Integer getMaxBinaryMessageSize() {
         return maxBinaryMessageSize;
     }
 
+    /**
+     * Sets the maximum binary message size for the WebSocket server container.
+     * @param maxBinaryMessageSize the maximum binary message size in bytes, or null to disable
+     */
     public void setMaxBinaryMessageSize(int maxBinaryMessageSize) {
         this.maxBinaryMessageSize = maxBinaryMessageSize;
     }
 
+    /**
+     * Retrieves the maximum text message size for the WebSocket server container.
+     * @return the maximum text message size in bytes, or null if not set
+     */
     public Integer getMaxTextMessageSize() {
         return maxTextMessageSize;
     }
 
+    /**
+     * Sets the maximum text message size for the WebSocket server container.
+     * @param maxTextMessageSize the maximum text message size in bytes, or null to disable
+     */
     public void setMaxTextMessageSize(int maxTextMessageSize) {
         this.maxTextMessageSize = maxTextMessageSize;
     }

@@ -37,6 +37,12 @@ public interface StaticResourceResolvable {
      */
     Set<String> findStaticResources() throws IOException;
 
+    /**
+     * Finds top-level directories and files that are likely to be static resources.
+     * @param base the base path
+     * @return a set of resource paths
+     * @throws IOException if an I/O error occurs
+     */
     default Set<String> findStaticResources(Path base) throws IOException {
         Set<String> resources = new HashSet<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(base)) {
@@ -54,6 +60,13 @@ public interface StaticResourceResolvable {
         return resources;
     }
 
+    /**
+     * Finds top-level directories and files that are likely to be static resources.
+     * @param parent the parent directory
+     * @param prefix the prefix path
+     * @param resources the set of resource paths
+     * @throws IOException if an I/O error occurs
+     */
     default void findStaticResourceDirs(Path parent, String prefix, Set<String> resources) throws IOException {
         Set<Path> children = new HashSet<>();
         boolean found = false;

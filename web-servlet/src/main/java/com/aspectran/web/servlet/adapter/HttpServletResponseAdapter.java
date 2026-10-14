@@ -156,7 +156,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public void redirect(String location) throws IOException {
-        if (!activity.isResponded() && activity.getTranslet() != null) {
+        if (!activity.isResponded() && activity.hasTranslet()) {
             activity.getTranslet().redirect(location);
             return;
         }
@@ -169,7 +169,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
-        if (!activity.isResponded() && activity.getTranslet() != null) {
+        if (!activity.isResponded() && activity.hasTranslet()) {
             activity.getTranslet().redirect(redirectRule);
             return WebUtils.getRedirectTarget(redirectRule, activity);
         }

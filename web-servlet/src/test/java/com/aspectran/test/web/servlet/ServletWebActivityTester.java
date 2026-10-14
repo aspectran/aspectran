@@ -123,7 +123,7 @@ public class ServletWebActivityTester {
      * @param request the mock request
      * @return the resulting Translet
      */
-    public Translet perform(MockHttpServletRequest request) {
+    public Translet perform(@NonNull MockHttpServletRequest request) {
         request.setServletContext(webService.getServletContext());
         this.lastRequest = request;
 

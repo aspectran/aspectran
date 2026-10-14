@@ -27,6 +27,9 @@ import org.eclipse.jetty.session.SessionDataStoreFactory;
  */
 public class JettySessionHandler extends SessionHandler {
 
+    /**
+     * Constructs a new JettySessionHandler.
+     */
     public JettySessionHandler() {
         super();
 
@@ -34,6 +37,11 @@ public class JettySessionHandler extends SessionHandler {
         setUsingUriParameters(false);
     }
 
+    /**
+     * Sets the session data store factory.
+     * @param sessionDataStoreFactory the session data store factory
+     * @throws Exception if an error occurs
+     */
     public void setSessionDataStore(SessionDataStoreFactory sessionDataStoreFactory) throws Exception {
         Assert.notNull(sessionDataStoreFactory, "sessionDataStoreFactory must not be null");
         SessionDataStore sessionDataStore = sessionDataStoreFactory.getSessionDataStore(this);

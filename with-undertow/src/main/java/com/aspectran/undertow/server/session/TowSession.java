@@ -145,6 +145,10 @@ public final class TowSession implements io.undertow.server.session.Session {
         }
     }
 
+    /**
+     * Returns the remaining inactive interval for this session.
+     * @return the remaining inactive interval in seconds
+     */
     public long getRemainingInactiveInterval() {
         return session.getRemainingInactiveInterval();
     }

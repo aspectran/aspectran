@@ -27,10 +27,19 @@ import java.util.EventListener;
  */
 public class JettyListener extends ListenerHolder {
 
+    /**
+     * Constructs a {@code JettyListener} instance with a specified listener class.
+     * @param listenerClass the listener class
+     * @throws ClassNotFoundException if the listener class cannot be found
+     */
     public JettyListener(String listenerClass) throws ClassNotFoundException {
         this(ClassUtils.loadClass(listenerClass));
     }
 
+    /**
+     * Constructs a {@code JettyListener} instance with a specified listener class.
+     * @param listenerClass the listener class
+     */
     public JettyListener(Class<? extends EventListener> listenerClass) {
         super(listenerClass);
     }

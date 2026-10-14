@@ -83,6 +83,10 @@ public class JettyTldScanner extends TldScanner {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Set the TLD resources to scan.
+     * @param tldResources the TLD resources
+     */
     public void setTldResources(URL[] tldResources) {
         this.tldResources = tldResources;
     }
@@ -184,6 +188,10 @@ public class JettyTldScanner extends TldScanner {
         }
     }
 
+    /**
+     * Scans the given directory for JAR files.
+     * @param dir the directory to scan
+     */
     private void scanDir(@NonNull File dir) {
         dir.listFiles(file -> {
             if (file.isFile()) {
@@ -200,6 +208,11 @@ public class JettyTldScanner extends TldScanner {
         });
     }
 
+    /**
+     * Parses a TLD file from a URL.
+     * @param url the URL of the TLD file
+     * @throws IOException if an I/O error occurs
+     */
     private void parseTld(URL url) throws IOException {
         TldResourcePath tldResourcePath = new TldResourcePath(url, null);
         try {
@@ -209,6 +222,11 @@ public class JettyTldScanner extends TldScanner {
         }
     }
 
+    /**
+     * Scans a JAR file for TLD files.
+     * @param jar the JAR file to scan
+     * @throws IOException if an I/O error occurs
+     */
     private void scanJar(@NonNull Jar jar) throws IOException {
         boolean found = false;
         URL jarFileUrl = jar.getJarFileURL();

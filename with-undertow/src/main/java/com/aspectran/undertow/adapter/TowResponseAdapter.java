@@ -270,7 +270,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public void redirect(String location) throws IOException {
-        if (!activity.isResponded() && activity.getTranslet() != null) {
+        if (!activity.isResponded() && activity.hasTranslet()) {
             activity.getTranslet().redirect(location);
             return;
         }
@@ -284,7 +284,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
-        if (!activity.isResponded() && activity.getTranslet() != null) {
+        if (!activity.isResponded() && activity.hasTranslet()) {
             activity.getTranslet().redirect(redirectRule);
             return WebUtils.getRedirectTarget(redirectRule, activity);
         }
@@ -311,13 +311,6 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public String transformPath(String path) {
         return path;
-    }
-
-    private void ifSetChunked() {
-        HeaderMap responseHeaders = getHttpServerExchange().getResponseHeaders();
-        if (!responseHeaders.contains(Headers.CONTENT_LENGTH)) {
-            getHttpServerExchange().getResponseHeaders().put(Headers.TRANSFER_ENCODING, Headers.CHUNKED.toString());
-        }
     }
 
     private void ifStartBlocking() {

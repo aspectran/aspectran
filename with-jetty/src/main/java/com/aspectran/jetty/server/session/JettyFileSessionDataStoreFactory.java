@@ -34,6 +34,10 @@ public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactor
 
     private ApplicationAdapter applicationAdapter;
 
+    /**
+     * Retrieves the {@link ApplicationAdapter} that is aware of the Aspectran.
+     * @return the {@link ApplicationAdapter}
+     */
     public ApplicationAdapter getApplicationAdapter() {
         Assert.state(applicationAdapter != null, "ApplicationAdapter is not set");
         return applicationAdapter;
@@ -44,6 +48,15 @@ public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactor
         this.applicationAdapter = applicationAdapter;
     }
 
+    /**
+     * Sets the directory path where session data will be stored.
+     * This method resolves the given directory path to a real file system path
+     * using the {@link ApplicationAdapter}, ensuring that the directory exists
+     * and is writable. If the directory cannot be created or is not writable,
+     * an {@link IOException} is thrown.
+     * @param storeDir the directory path to store session data, relative to the application's base path
+     * @throws IOException if the directory cannot be created or is not writable
+     */
     public void setStoreDir(String storeDir) throws IOException {
         Path path = getApplicationAdapter().getRealPath(storeDir);
         Files.createDirectories(path);

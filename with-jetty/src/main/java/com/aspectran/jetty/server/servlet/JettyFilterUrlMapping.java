@@ -30,11 +30,22 @@ import java.util.List;
  */
 public class JettyFilterUrlMapping extends FilterMapping {
 
-    public JettyFilterUrlMapping(String filterName, String mapping) {
+    /**
+     * Constructs a {@code JettyFilterUrlMapping} instance with a specified filter name and mapping.
+     * @param filterName the name of the filter to be mapped
+     * @param mapping the target URL or servlet name to map the filter to
+     */
+    JettyFilterUrlMapping(String filterName, String mapping) {
         this(filterName, mapping, DispatcherType.REQUEST);
     }
 
-    public JettyFilterUrlMapping(String filterName, String mapping, DispatcherType... dispatchers) {
+    /**
+     * Constructs a {@code JettyFilterUrlMapping} instance with a specified filter name, mapping, and dispatcher types.
+     * @param filterName the name of the filter to be mapped
+     * @param mapping the target URL or servlet name to map the filter to
+     * @param dispatchers the dispatcher types this filter will apply to; if not specified, default dispatcher types may apply
+     */
+    JettyFilterUrlMapping(String filterName, String mapping, DispatcherType... dispatchers) {
         super();
         setFilterName(filterName);
         setPathSpec(mapping);
@@ -43,6 +54,12 @@ public class JettyFilterUrlMapping extends FilterMapping {
         }
     }
 
+    /**
+     * Constructs a {@code JettyFilterUrlMapping} instance with a specified filter name and mapping.
+     * @param filterName the name of the filter to be mapped
+     * @param jettyFilterMapping the filter mapping containing the target URL or servlet name to map the filter to
+     * @return a list of JettyFilterUrlMapping instances
+     */
     @NonNull
     static List<JettyFilterUrlMapping> of(String filterName, @NonNull JettyFilterMapping jettyFilterMapping) {
         DispatcherType[] dispatchers = jettyFilterMapping.getDispatchers();

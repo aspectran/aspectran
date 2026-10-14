@@ -32,10 +32,21 @@ public class JettyErrorPage {
 
     private final Class<? extends Throwable> exceptionType;
 
+    /**
+     * Constructs a {@code JettyErrorPage} instance for handling errors caused by a specific exception type.
+     * @param location the path to the error page that should be displayed
+     * @param exceptionType the fully qualified name of the exception class to map to the error page
+     * @throws ClassNotFoundException if the specified exception class cannot be found
+     */
     public JettyErrorPage(String location, String exceptionType) throws ClassNotFoundException {
         this(location, ClassUtils.loadClass(exceptionType));
     }
 
+    /**
+     * Constructs a {@code JettyErrorPage} instance for handling errors caused by a specific exception type.
+     * @param location the path to the error page that should be displayed
+     * @param exceptionType the exception class to map to the error page
+     */
     public JettyErrorPage(String location, Class<? extends Throwable> exceptionType) {
         this.location = location;
         this.errorCode = null;
@@ -43,6 +54,11 @@ public class JettyErrorPage {
         this.exceptionType = exceptionType;
     }
 
+    /**
+     * Constructs a {@code JettyErrorPage} instance for handling errors based on a specific HTTP status code.
+     * @param location the path to the error page that should be displayed
+     * @param errorCode the HTTP status code to map to the error page
+     */
     public JettyErrorPage(String location, int errorCode) {
         this.location = location;
         this.errorCode = errorCode;
@@ -50,6 +66,12 @@ public class JettyErrorPage {
         this.exceptionType = null;
     }
 
+    /**
+     * Constructs a {@code JettyErrorPage} instance for handling errors based on a range of HTTP status codes.
+     * @param location the path to the error page that should be displayed
+     * @param fromErrorCode the starting HTTP status code to map to the error page
+     * @param toErrorCode the ending HTTP status code to map to the error page
+     */
     public JettyErrorPage(String location, int fromErrorCode, int toErrorCode) {
         this.location = location;
         this.errorCode = fromErrorCode;
@@ -57,18 +79,34 @@ public class JettyErrorPage {
         this.exceptionType = null;
     }
 
+    /**
+     * Returns the path to the error page that should be displayed.
+     * @return the path to the error page
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Returns the HTTP status code to map to the error page.
+     * @return the HTTP status code
+     */
     public Integer getErrorCode() {
         return errorCode;
     }
 
+    /**
+     * Returns the ending HTTP status code to map to the error page.
+     * @return the ending HTTP status code
+     */
     public Integer getToErrorCode() {
         return toErrorCode;
     }
 
+    /**
+     * Returns the type of exception to map to the error page.
+     * @return the type of exception
+     */
     public Class<? extends Throwable> getExceptionType() {
         return exceptionType;
     }

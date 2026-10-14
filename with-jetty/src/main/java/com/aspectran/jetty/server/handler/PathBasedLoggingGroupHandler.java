@@ -51,7 +51,7 @@ public class PathBasedLoggingGroupHandler extends Handler.Wrapper {
     /**
      * Sets the mapping between logging group names and their corresponding path patterns.
      * @param pathPatternsByGroupName a map where the key is the logging group name and the value
-     *                                is a string in APON format defining include/exclude patterns
+     *      is a string in APON format defining include/exclude patterns
      */
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
         if (pathPatternsByGroupName != null) {

@@ -42,6 +42,10 @@ public class UndertowCommand extends AbstractCommand {
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
+    /**
+     * Constructs a new UndertowCommand.
+     * @param registry the command registry
+     */
     public UndertowCommand(CommandRegistry registry) {
         super(registry);
 

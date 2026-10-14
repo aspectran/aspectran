@@ -246,18 +246,34 @@ public class HttpsListenerConfig {
         this.trustStorePassword = trustStorePassword;
     }
 
+    /**
+     * Returns the key managers.
+     * @return the key managers
+     */
     public KeyManager[] getKeyManagers() {
         return keyManagers;
     }
 
+    /**
+     * Sets the key managers.
+     * @param keyManagers the key managers
+     */
     public void setKeyManagers(KeyManager... keyManagers) {
         this.keyManagers = keyManagers;
     }
 
+    /**
+     * Returns the trust managers.
+     * @return the trust managers
+     */
     public TrustManager[] getTrustManagers() {
         return trustManagers;
     }
 
+    /**
+     * Sets the trust managers.
+     * @param trustManagers the trust managers
+     */
     public void setTrustManagers(TrustManager... trustManagers) {
         this.trustManagers = trustManagers;
     }
