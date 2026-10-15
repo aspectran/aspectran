@@ -1,12 +1,13 @@
 # Aspectran - Java application framework
 
+[![Web Frameworks Benchmark](https://web-frameworks-benchmark.vercel.app/frameworks/java/aspectran/badge-language.svg)](https://web-frameworks-benchmark.vercel.app/frameworks/java/aspectran/)
 [![Build Status](https://github.com/aspectran/aspectran/workflows/Java%20CI/badge.svg)](https://github.com/aspectran/aspectran/actions?query=workflow%3A%22Java+CI%22)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.aspectran/aspectran-project)](https://central.sonatype.com/artifact/com.aspectran/aspectran-project)
 [![javadoc](https://javadoc.io/badge2/com.aspectran/aspectran-all/javadoc.svg)](https://javadoc.io/doc/com.aspectran/aspectran-all)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-[![asciicast](https://asciinema.org/a/1264203.png)](https://asciinema.org/a/1264203)
+[![asciicast](https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/screenshots/asciinema/1264203.png)](https://asciinema.org/a/1264203)
 
 Aspectran is a lightweight, high‑performance framework for building both simple shell applications and
 large enterprise web services on the JVM. It emphasizes an intuitive POJO‑centric programming model while
