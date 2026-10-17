@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Contains parameter classes used for parsing APON (Aspectran Object Notation) configuration.
+ * Contains parameter classes used for parsing APON (Aspectran Parameters Object Notation) configuration.
  * These classes mirror the structure of the configuration and act as data holders
  * during the conversion from text-based settings to the final Rule object model.
  */
