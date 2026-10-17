@@ -146,6 +146,9 @@ public abstract class AbstractShellService extends DefaultCoreService implements
         if (isVerbose()) {
             String description = getActivityContext().getDescription();
             if (description != null) {
+                if (greetings == null && console.isReading()) {
+                    console.clearLine();
+                }
                 console.writeLine(description);
             }
         }

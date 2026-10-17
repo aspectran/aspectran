@@ -60,6 +60,9 @@ public class DefaultShellServiceBuilder {
                 shellService.pauseTimeout = 0L;
                 shellService.printGreetings();
                 shellService.printDescription();
+                if (shellService.getConsole().isReading()) {
+                    shellService.getConsole().redrawLine();
+                }
             }
 
             @Override

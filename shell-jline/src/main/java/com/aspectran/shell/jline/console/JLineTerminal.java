@@ -343,8 +343,12 @@ public class JLineTerminal {
         if (!isColorlessDumb()) {
             LineReader reader = getReadingReader();
             if (reader != null) {
-                reader.callWidget(LineReader.REDRAW_LINE);
-                reader.callWidget(LineReader.REDISPLAY);
+                try {
+                    reader.callWidget(LineReader.REDRAW_LINE);
+                    reader.callWidget(LineReader.REDISPLAY);
+                } catch (Exception e) {
+                    // ignore
+                }
             }
         }
     }
