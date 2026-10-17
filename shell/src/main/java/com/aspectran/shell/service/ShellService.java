@@ -33,6 +33,11 @@ import com.aspectran.shell.console.ShellConsole;
  */
 public interface ShellService extends CoreService {
 
+    @Override
+    default boolean isShellService() {
+        return true;
+    }
+
     /**
      * Returns the shell console used for input and output.
      * @return the shell console

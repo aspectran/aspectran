@@ -42,6 +42,11 @@ import java.util.Map;
  */
 public interface DaemonService extends CoreService {
 
+    @Override
+    default boolean isDaemonService() {
+        return true;
+    }
+
     /**
      * Returns the daemon that owns this service.
      * @return the daemon instance, or {@code null} if not associated with a daemon

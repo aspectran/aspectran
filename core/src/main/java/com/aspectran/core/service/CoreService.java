@@ -77,6 +77,22 @@ public interface CoreService {
     }
 
     /**
+     * Returns whether this service is a daemon service.
+     * @return {@code true} if this service is a daemon service, {@code false} otherwise
+     */
+    default boolean isDaemonService() {
+        return false;
+    }
+
+    /**
+     * Returns whether this service is a shell service.
+     * @return {@code true} if this service is a shell service, {@code false} otherwise
+     */
+    default boolean isShellService() {
+        return false;
+    }
+
+    /**
      * Returns the name of this service.
      * @return the service name
      */
