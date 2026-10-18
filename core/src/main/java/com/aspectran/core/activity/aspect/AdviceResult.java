@@ -47,11 +47,6 @@ public class AdviceResult {
     private Map<String, Object> afterAdviceResultMap;
 
     /**
-     * Stores the result of AROUND advice executions keyed by aspect ID.
-     */
-    private Map<String, Object> aroundAdviceResultMap;
-
-    /**
      * Stores the result of FINALLY advice executions keyed by aspect ID.
      */
     private Map<String, Object> finallyAdviceResultMap;
@@ -114,22 +109,6 @@ public class AdviceResult {
         afterAdviceResultMap.put(aspectId, actionResult);
     }
 
-    public Object getAroundAdviceResult(String aspectId) {
-        return (aroundAdviceResultMap != null ? aroundAdviceResultMap.get(aspectId) : null);
-    }
-
-    /**
-     * Stores the result of an AROUND advice execution for the specified aspect.
-     * @param aspectId the unique identifier of the aspect
-     * @param actionResult the result produced by the AROUND advice
-     */
-    private void putAroundAdviceResult(String aspectId, Object actionResult) {
-        if (aroundAdviceResultMap == null) {
-            aroundAdviceResultMap = new HashMap<>();
-        }
-        aroundAdviceResultMap.put(aspectId, actionResult);
-    }
-
     public Object getFinallyAdviceResult(String aspectId) {
         return (finallyAdviceResultMap != null ? finallyAdviceResultMap.get(aspectId) : null);
     }
@@ -156,7 +135,6 @@ public class AdviceResult {
         switch (adviceRule.getAdviceType()) {
             case BEFORE -> putBeforeAdviceResult(adviceRule.getAspectId(), adviceResult);
             case AFTER -> putAfterAdviceResult(adviceRule.getAspectId(), adviceResult);
-            case AROUND -> putAroundAdviceResult(adviceRule.getAspectId(), adviceResult);
             case FINALLY -> putFinallyAdviceResult(adviceRule.getAspectId(), adviceResult);
             case null, default -> throw new UnsupportedOperationException("Unrecognized advice type: " +
                     adviceRule.getAdviceType());

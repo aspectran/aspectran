@@ -329,9 +329,9 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
 
         // for Finally thrown
-        if (isExceptionRaised() && adviceRule.getExceptionRule() != null) {
+        if (isExceptionRaised() && adviceRule.getExceptionThrownRule() != null) {
             try {
-                handleException(adviceRule.getExceptionRule());
+                handleException(adviceRule.getExceptionThrownRule());
             } catch (Exception e) {
                 if (adviceRule.getAspectRule().isIsolated()) {
                     logger.error("Failed to execute isolated advice action {}", adviceRule, e);
@@ -448,13 +448,16 @@ public abstract class AdviceActivity extends AbstractActivity {
     /**
      * Handles a list of {@link ExceptionRule}s, executing the appropriate exception handling advice.
      * @param exceptionRuleList the list of exception rules to process
-     * @throws ActionExecutionException if an error occurs during the execution of an exception handling action
      */
     @Override
-    public void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException {
+    public void handleException(List<ExceptionRule> exceptionRuleList) {
         if (exceptionRuleList != null) {
             for (ExceptionRule exceptionRule : exceptionRuleList) {
-                handleException(exceptionRule);
+                try {
+                    handleException(exceptionRule);
+                } catch (Exception e) {
+                    logger.error("Failed to execute exception handling rule {}", exceptionRule, e);
+                }
             }
         }
     }
@@ -463,56 +466,68 @@ public abstract class AdviceActivity extends AbstractActivity {
      * Handles a single {@link ExceptionRule}, executing the associated action if the current
      * raised exception matches the rule's criteria.
      * @param exceptionRule the exception rule to handle
-     * @return the {@link ExceptionThrownRule} that was matched and handled, or {@code null} if no match
+     * @return {@code true} if the exception was handled; {@code false} otherwise
      * @throws ActionExecutionException if an error occurs during the execution of the exception handling action
      */
-    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
+    protected boolean handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
         if (exceptionRule != null) {
             ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
-            if (exceptionThrownRule != null) {
-                Executable action = exceptionThrownRule.getAction();
-                if (action != null) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Advice {}", action);
-                    }
-                    try {
-                        if (action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) {
-                            AdviceRule adviceRule = ((AnnotatedAdviceAction)action).getAdviceRule();
-                            Object adviceBean = getAdviceBean(adviceRule.getAspectId());
-                            if (adviceBean == null) {
-                                resolveAdviceBean(adviceRule);
-                            }
-                        }
+            return handleException(exceptionThrownRule);
+        }
+        return false;
+    }
 
-                        Object resultValue = action.execute(this);
-                        if (hasTranslet() && !action.isHidden() && resultValue != Void.TYPE) {
-                            if (resultValue instanceof ProcessResult processResult) {
+    /**
+     * Handles a single {@link ExceptionThrownRule}, executing the associated action if the current
+     * raised exception matches the rule's criteria.
+     * @param exceptionThrownRule the exception thrown rule to handle
+     * @return {@code true} if the exception was handled; {@code false} otherwise
+     * @throws ActionExecutionException if an error occurs during the execution of the exception handling action
+     */
+    protected boolean handleException(ExceptionThrownRule exceptionThrownRule) throws ActionExecutionException {
+        if (exceptionThrownRule != null && exceptionThrownRule.matches(getRaisedException())) {
+            Executable action = exceptionThrownRule.getAction();
+            if (action != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Advice {}", action);
+                }
+                try {
+                    if (action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) {
+                        AdviceRule adviceRule = ((AnnotatedAdviceAction)action).getAdviceRule();
+                        Object adviceBean = getAdviceBean(adviceRule.getAspectId());
+                        if (adviceBean == null) {
+                            resolveAdviceBean(adviceRule);
+                        }
+                    }
+
+                    Object resultValue = action.execute(this);
+                    if (hasTranslet() && !action.isHidden() && resultValue != Void.TYPE) {
+                        if (resultValue instanceof ProcessResult processResult) {
+                            getTranslet().setProcessResult(processResult);
+                        } else {
+                            ProcessResult processResult = getTranslet().getProcessResult();
+                            ContentResult contentResult;
+                            if (processResult == null) {
+                                processResult = new ProcessResult(1);
+                                contentResult = new ContentResult(processResult, 1);
                                 getTranslet().setProcessResult(processResult);
                             } else {
-                                ProcessResult processResult = getTranslet().getProcessResult();
-                                ContentResult contentResult;
-                                if (processResult == null) {
-                                    processResult = new ProcessResult(1);
+                                contentResult = processResult.lastContentResult();
+                                if (contentResult == null) {
                                     contentResult = new ContentResult(processResult, 1);
-                                    getTranslet().setProcessResult(processResult);
-                                } else {
-                                    contentResult = processResult.lastContentResult();
-                                    if (contentResult == null) {
-                                        contentResult = new ContentResult(processResult, 1);
-                                    }
                                 }
-                                contentResult.addActionResult(action, resultValue);
                             }
+                            contentResult.addActionResult(action, resultValue);
                         }
-                    } catch (Exception e) {
-                        throw new ActionExecutionException("Failed to execute exception handling advice action " +
-                                action, e);
                     }
+                } catch (Exception e) {
+                    throw new ActionExecutionException("Failed to execute exception handling advice action " +
+                            action, e);
                 }
-                return exceptionThrownRule;
             }
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -644,18 +659,6 @@ public abstract class AdviceActivity extends AbstractActivity {
     @SuppressWarnings("unchecked")
     public <V> V getAfterAdviceResult(String aspectId) {
         return (adviceResult != null ? (V) adviceResult.getAfterAdviceResult(aspectId) : null);
-    }
-
-    /**
-     * Retrieves the result of an 'around' advice execution for a given aspect ID.
-     * @param <V> the type of the result
-     * @param aspectId the ID of the aspect
-     * @return the result of the 'around' advice, or {@code null} if not found
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public <V> V getAroundAdviceResult(String aspectId) {
-        return (adviceResult != null ? (V) adviceResult.getAroundAdviceResult(aspectId) : null);
     }
 
     /**

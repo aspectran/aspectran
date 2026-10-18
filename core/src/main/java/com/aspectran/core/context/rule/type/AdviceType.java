@@ -18,19 +18,18 @@ package com.aspectran.core.context.rule.type;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Advice types include "around", "before" and "after" advice.
+ * Advice types include "before", "after", "finally", and "thrown" advice.
  * <dl>
  * <dt>Before advice: <dd>Advice that executes before a join point.
  * <dt>After advice: <dd>Advice to be executed after a join point completes normally.
  * <dt>Finally advice: <dd>Advice to be executed regardless of the means by which a join point exits (normal or exceptional return).
- * <dt>Around advice: <dd>Before advice + After advice
+ * <dt>Thrown advice: <dd>Advice to be executed when a join point exits with an exception.
  * </dl>
  */
 public enum AdviceType {
 
     BEFORE("before"),
     AFTER("after"),
-    AROUND("around"),
     THROWN("thrown"),
     FINALLY("finally");
 

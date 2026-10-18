@@ -27,7 +27,6 @@ public class AdviceParameters extends DefaultParameters {
     public static final ParameterKey bean;
     public static final ParameterKey beforeAdvice;
     public static final ParameterKey afterAdvice;
-    public static final ParameterKey aroundAdvice;
     public static final ParameterKey finallyAdvice;
 
     private static final ParameterKey[] parameterKeys;
@@ -36,14 +35,12 @@ public class AdviceParameters extends DefaultParameters {
         bean = new ParameterKey("bean", ValueType.STRING);
         beforeAdvice = new ParameterKey("before", AdviceActionParameters.class);
         afterAdvice = new ParameterKey("after", AdviceActionParameters.class);
-        aroundAdvice = new ParameterKey("around", AdviceActionParameters.class);
         finallyAdvice = new ParameterKey("finally", AdviceActionParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 bean,
                 beforeAdvice,
                 afterAdvice,
-                aroundAdvice,
                 finallyAdvice
         };
     }

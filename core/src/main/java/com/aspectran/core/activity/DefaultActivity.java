@@ -144,12 +144,6 @@ public final class DefaultActivity extends AbstractActivity {
 
     @Override
     @Nullable
-    public <V> V getAroundAdviceResult(String aspectId) {
-        return null;
-    }
-
-    @Override
-    @Nullable
     public <V> V getFinallyAdviceResult(String aspectId) {
         return null;
     }

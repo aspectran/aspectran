@@ -328,7 +328,7 @@ public class AspectRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Gets the list of advice rules (before, after, around, finally).
+     * Gets the list of advice rules (before, after, finally).
      * @return the list of advice rules
      */
     public List<AdviceRule> getAdviceRuleList() {
@@ -374,14 +374,6 @@ public class AspectRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Creates and adds a new 'around' advice rule.
-     * @return the new advice rule
-     */
-    public AdviceRule newAroundAdviceRule() {
-        return newAdviceRule(AdviceType.AROUND);
-    }
-
-    /**
      * Creates and adds a new 'finally' advice rule.
      * @return the new advice rule
      */
@@ -395,6 +387,22 @@ public class AspectRule implements BeanReferenceable, Describable {
      */
     public AdviceRule newThrownAdviceRule() {
         return newAdviceRule(AdviceType.THROWN);
+    }
+
+    /**
+     * Creates and adds a new 'thrown' advice rule for specific exception types.
+     * @param exceptionTypes the exception types to handle
+     * @return the new advice rule
+     */
+    @SafeVarargs
+    public final AdviceRule newThrownAdviceRule(Class<? extends Throwable>... exceptionTypes) {
+        AdviceRule adviceRule = newAdviceRule(AdviceType.THROWN);
+        if (exceptionTypes != null && exceptionTypes.length > 0) {
+            ExceptionThrownRule etr = ExceptionThrownRule.newInstance(exceptionTypes, null);
+            adviceRule.setExceptionThrownRule(etr);
+            putExceptionThrownRule(etr);
+        }
+        return adviceRule;
     }
 
     private List<AdviceRule> touchAdviceRuleList() {
@@ -415,9 +423,24 @@ public class AspectRule implements BeanReferenceable, Describable {
     /**
      * Sets the exception handling rule for this aspect.
      * @param exceptionRule the exception rule
+     * @throws IllegalArgumentException if the exception rule is not associated with this aspect rule
      */
     public void setExceptionRule(ExceptionRule exceptionRule) {
+        if (exceptionRule != null && exceptionRule.getAspectRule() != this) {
+            throw new IllegalArgumentException("The ExceptionRule is not associated with this AspectRule");
+        }
         this.exceptionRule = exceptionRule;
+    }
+
+    /**
+     * Gets the exception handling rule, creating it if it does not exist.
+     * @return the exception rule
+     */
+    public ExceptionRule touchExceptionRule() {
+        if (exceptionRule == null) {
+            exceptionRule = new ExceptionRule(this);
+        }
+        return exceptionRule;
     }
 
     /**
@@ -425,10 +448,7 @@ public class AspectRule implements BeanReferenceable, Describable {
      * @param exceptionThrownRule the rule for a specific exception
      */
     public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
-        if (exceptionRule == null) {
-            exceptionRule = new ExceptionRule();
-        }
-        exceptionRule.putExceptionThrownRule(exceptionThrownRule);
+        touchExceptionRule().putExceptionThrownRule(exceptionThrownRule);
     }
 
     /**

@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 
 /**
  * A {@code NodeletAdder} for parsing advice elements like {@code <before>},
- * {@code <after>}, {@code <around>}, and {@code <finally>}.
+ * {@code <after>}, and {@code <finally>}.
  *
  * @since 2013. 8. 11.
  */
@@ -58,14 +58,6 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
             .nodelet(attrs -> {
                 AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                 AdviceRule adviceRule = aspectRule.newAfterAdviceRule();
-                AspectranNodeParsingContext.pushObject(adviceRule);
-            })
-            .with(ActionInnerNodeletAdder.instance())
-            .endNodelet(text -> AspectranNodeParsingContext.popObject())
-        .parent().child("around")
-            .nodelet(attrs -> {
-                AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
-                AdviceRule adviceRule = aspectRule.newAroundAdviceRule();
                 AspectranNodeParsingContext.pushObject(adviceRule);
             })
             .with(ActionInnerNodeletAdder.instance())

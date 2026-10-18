@@ -135,7 +135,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         return settingsAdviceRuleList;
     }
 
-    private void setSettingsAdviceRuleList(List<SettingsAdviceRule> settingsAdviceRuleList) {
+    private void setSettingsAdviceRuleList(@NonNull List<SettingsAdviceRule> settingsAdviceRuleList) {
         this.settingsAdviceRuleList = settingsAdviceRuleList;
     }
 
@@ -148,7 +148,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         return beforeAdviceRuleList;
     }
 
-    private void setBeforeAdviceRuleList(List<AdviceRule> beforeAdviceRuleList) {
+    private void setBeforeAdviceRuleList(@NonNull List<AdviceRule> beforeAdviceRuleList) {
         this.beforeAdviceRuleList = beforeAdviceRuleList;
     }
 
@@ -161,7 +161,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         return afterAdviceRuleList;
     }
 
-    private void setAfterAdviceRuleList(List<AdviceRule> afterAdviceRuleList) {
+    private void setAfterAdviceRuleList(@NonNull List<AdviceRule> afterAdviceRuleList) {
         this.afterAdviceRuleList = afterAdviceRuleList;
     }
 
@@ -175,7 +175,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         return finallyAdviceRuleList;
     }
 
-    private void setFinallyAdviceRuleList(List<AdviceRule> finallyAdviceRuleList) {
+    private void setFinallyAdviceRuleList(@NonNull List<AdviceRule> finallyAdviceRuleList) {
         this.finallyAdviceRuleList = finallyAdviceRuleList;
     }
 
@@ -185,7 +185,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
      * The newly added rule will be inserted at the beginning of the list.
      * @param settingsAdviceRule the {@link SettingsAdviceRule} to be added to the settings advice rule list
      */
-    public void addAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+    public void addAdviceRule(@NonNull SettingsAdviceRule settingsAdviceRule) {
         if (settingsAdviceRuleList == null) {
             settingsAdviceRuleList = new LinkedList<>();
         }
@@ -194,19 +194,14 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
     /**
      * Adds an advice rule, dispatching it to the appropriate list based on its type.
-     * 'AROUND' advice is added to both the 'before' and 'after' lists to wrap the
-     * join point execution.
      * @param adviceRule the advice rule to add
      */
     public void addAdviceRule(@NonNull AdviceRule adviceRule) {
         switch (adviceRule.getAdviceType()) {
             case BEFORE -> addBeforeAdviceRule(adviceRule);
             case AFTER -> addAfterAdviceRule(adviceRule);
-            case AROUND -> {
-                addBeforeAdviceRule(adviceRule);
-                addAfterAdviceRule(adviceRule);
-            }
             case FINALLY -> addFinallyAdviceRule(adviceRule);
+            default -> {}
         }
     }
 
@@ -215,7 +210,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
      * aspect's order of precedence (ascending).
      * @param adviceRule the advice rule to add
      */
-    private void addBeforeAdviceRule(AdviceRule adviceRule) {
+    private void addBeforeAdviceRule(@NonNull AdviceRule adviceRule) {
         if (beforeAdviceRuleList == null) {
             beforeAdviceRuleList = new LinkedList<>();
             beforeAdviceRuleList.add(adviceRule);
@@ -232,7 +227,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
      * nested "onion-like" execution chain).
      * @param adviceRule the advice rule to add
      */
-    private void addAfterAdviceRule(AdviceRule adviceRule) {
+    private void addAfterAdviceRule(@NonNull AdviceRule adviceRule) {
         if (afterAdviceRuleList == null) {
             afterAdviceRuleList = new LinkedList<>();
             afterAdviceRuleList.add(adviceRule);
@@ -248,7 +243,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
      * aspect's order of precedence (descending).
      * @param adviceRule the advice rule to add
      */
-    private void addFinallyAdviceRule(AdviceRule adviceRule) {
+    private void addFinallyAdviceRule(@NonNull AdviceRule adviceRule) {
         if (finallyAdviceRuleList == null) {
             finallyAdviceRuleList = new LinkedList<>();
             finallyAdviceRuleList.add(adviceRule);
@@ -267,21 +262,42 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         return exceptionRuleList;
     }
 
-    private void setExceptionRuleList(List<ExceptionRule> exceptionRuleList) {
+    private void setExceptionRuleList(@NonNull List<ExceptionRule> exceptionRuleList) {
         this.exceptionRuleList = exceptionRuleList;
     }
 
-    private void addExceptionRule(ExceptionRule exceptionRule) {
+    /**
+     * Adds an exception handling rule, inserting it into the list according to the
+     * aspect's order of precedence (ascending, so lower order values execute first).
+     * @param exceptionRule the exception rule to add
+     */
+    private void addExceptionRule(@NonNull ExceptionRule exceptionRule) {
         if (exceptionRuleList == null) {
             exceptionRuleList = new LinkedList<>();
+            exceptionRuleList.add(exceptionRule);
+        } else {
+            int leftInt = exceptionRule.getOrder();
+            int index = findLessThanIndexForExceptionRule(exceptionRuleList, leftInt);
+            exceptionRuleList.add(index, exceptionRule);
         }
-        exceptionRuleList.addFirst(exceptionRule);
     }
 
     private int findLessThanIndex(@NonNull List<AdviceRule> adviceRuleList, int leftInt) {
         int index = 0;
         for (AdviceRule rule : adviceRuleList) {
             int rightInt = rule.getAspectRule().getOrder();
+            if (leftInt < rightInt) {
+                return index;
+            }
+            index++;
+        }
+        return index;
+    }
+
+    private int findLessThanIndexForExceptionRule(@NonNull List<ExceptionRule> exceptionRuleList, int leftInt) {
+        int index = 0;
+        for (ExceptionRule rule : exceptionRuleList) {
+            int rightInt = rule.getOrder();
             if (leftInt < rightInt) {
                 return index;
             }

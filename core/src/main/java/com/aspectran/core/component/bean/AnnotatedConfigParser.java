@@ -25,7 +25,6 @@ import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.After;
-import com.aspectran.core.component.bean.annotation.Around;
 import com.aspectran.core.component.bean.annotation.Aspect;
 import com.aspectran.core.component.bean.annotation.AttrItem;
 import com.aspectran.core.component.bean.annotation.Autowired;
@@ -425,9 +424,6 @@ public class AnnotatedConfigParser {
                 adviceRule.setAdviceAction(createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
                 AdviceRule adviceRule = aspectRule.newAfterAdviceRule();
-                adviceRule.setAdviceAction(createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method));
-            } else if (method.isAnnotationPresent(Around.class)) {
-                AdviceRule adviceRule = aspectRule.newAroundAdviceRule();
                 adviceRule.setAdviceAction(createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(Finally.class)) {
                 AdviceRule adviceRule = aspectRule.newFinallyAdviceRule();
@@ -1092,11 +1088,13 @@ public class AnnotatedConfigParser {
             if (qualifier == null) {
                 qualifier = param.getName();
             }
+
             Format formatAnno = param.getAnnotation(Format.class);
             String format = null;
             if (formatAnno != null) {
                 format = StringUtils.emptyToNull(formatAnno.value());
             }
+
             // The framework automatically injects translet parameter, so they are not
             // treated as required request parameters even if annotated with @NonNull.
             @SuppressWarnings("deprecation")

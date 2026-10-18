@@ -498,13 +498,6 @@ public interface Translet {
      */
     <V> V getAfterAdviceResult(String aspectId);
 
-    /**
-     * Retrieves the result of an 'around' advice execution for a given aspect.
-     * @param <V> the type of the result
-     * @param aspectId the ID of the aspect
-     * @return the result of the around advice, or {@code null}
-     */
-    <V> V getAroundAdviceResult(String aspectId);
 
     /**
      * Retrieves the result of a 'finally' advice execution for a given aspect.

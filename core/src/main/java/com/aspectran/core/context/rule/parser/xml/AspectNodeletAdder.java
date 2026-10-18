@@ -114,7 +114,8 @@ class AspectNodeletAdder implements NodeletAdder {
                 .with(AdviceInnerNodeletAdder.instance())
             .parent().child("exception")
                 .nodelet(attrs -> {
-                    ExceptionRule exceptionRule = new ExceptionRule();
+                    AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
+                    ExceptionRule exceptionRule = new ExceptionRule(aspectRule);
                     AspectranNodeParsingContext.pushObject(exceptionRule);
                 })
                 .with(ExceptionInnerNodeletAdder.instance())

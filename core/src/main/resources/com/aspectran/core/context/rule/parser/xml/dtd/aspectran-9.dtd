@@ -60,14 +60,13 @@
   target  (activity | method) #IMPLIED
 >
 
-<!ELEMENT advice (before?, after?, around?, finally?)>
+<!ELEMENT advice (before?, after?, finally?)>
 <!ATTLIST advice
   bean    CDATA #IMPLIED
 >
 
 <!ELEMENT before  (headers | echo | (action | invoke))>
 <!ELEMENT after   (headers | echo | (action | invoke))>
-<!ELEMENT around  (action | invoke)>
 <!ELEMENT finally (thrown?, (headers | echo | (action | invoke)))>
 
 <!ELEMENT exception (description*, thrown+)>

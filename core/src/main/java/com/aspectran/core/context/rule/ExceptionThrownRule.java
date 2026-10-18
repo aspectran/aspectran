@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.AdviceAction;
-import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
@@ -91,6 +90,36 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     /**
+     * Checks if the given exception matches any of the handled exception types.
+     * If no exception types are defined, it matches all exceptions.
+     * @param ex the exception to check
+     * @return true if the exception matches, false otherwise
+     */
+    public boolean matches(Throwable ex) {
+        if (ex == null) {
+            return false;
+        }
+        if (exceptionTypes == null || exceptionTypes.length == 0) {
+            return true;
+        }
+        Throwable currentEx = ex;
+        while (currentEx != null) {
+            Class<?> clazz = currentEx.getClass();
+            while (clazz != null) {
+                String className = clazz.getName();
+                for (String exceptionType : exceptionTypes) {
+                    if (className.equals(exceptionType)) {
+                        return true;
+                    }
+                }
+                clazz = clazz.getSuperclass();
+            }
+            currentEx = currentEx.getCause();
+        }
+        return false;
+    }
+
+    /**
      * Gets the action to be executed when the exception is thrown.
      * @return the executable action
      */
@@ -102,7 +131,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
      * Sets the action to be executed.
      * @param action the executable action
      */
-    public void setAction(AnnotatedAction action) {
+    public void setAction(Executable action) {
         this.action = action;
     }
 
@@ -278,7 +307,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
      * @return a new ExceptionThrownRule instance
      */
     @NonNull
-    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, AnnotatedAction action) {
+    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, Executable action) {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
         if (types != null && types.length > 0) {
             String[] exceptionTypes = new String[types.length];

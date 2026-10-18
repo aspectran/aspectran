@@ -16,7 +16,6 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.component.bean.annotation.After;
-import com.aspectran.core.component.bean.annotation.Around;
 import com.aspectran.core.component.bean.annotation.Aspect;
 import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -77,15 +76,6 @@ public class SampleAnnotatedAspect {
     @Finally
     public String seeYouAgain() {
         String msg = "Finally: See you again.";
-
-        logger.info("===> aspect02: {}", msg);
-
-        return msg;
-    }
-
-    @Around
-    public String around() {
-        String msg = "Around Method: Hi~~~~~~~~~~~~~~";
 
         logger.info("===> aspect02: {}", msg);
 

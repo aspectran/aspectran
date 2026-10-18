@@ -343,15 +343,6 @@ public class ParametersToRules {
                 }
             }
 
-            AdviceActionParameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
-            if (aroundAdviceParameters != null) {
-                ActionParameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
-                if (actionParameters != null) {
-                    AdviceRule adviceRule = aspectRule.newAroundAdviceRule();
-                    toActionRule(actionParameters, adviceRule);
-                }
-            }
-
             AdviceActionParameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
             if (finallyAdviceParameters != null) {
                 AdviceRule adviceRule = aspectRule.newFinallyAdviceRule();
@@ -369,7 +360,7 @@ public class ParametersToRules {
 
         ExceptionParameters exceptionParameters = aspectParameters.getParameters(AspectParameters.exception);
         if (exceptionParameters != null) {
-            ExceptionRule exceptionRule = new ExceptionRule();
+            ExceptionRule exceptionRule = new ExceptionRule(aspectRule);
 
             List<DescriptionParameters> descriptionParametersList2 = exceptionParameters.getParametersList(ExceptionParameters.description);
             if (descriptionParametersList2 != null) {

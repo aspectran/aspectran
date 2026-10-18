@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,6 +33,8 @@ import java.util.Map;
  */
 public class ExceptionRule implements Describable {
 
+    private final AspectRule aspectRule;
+
     private final List<ExceptionThrownRule> exceptionThrownRuleList = new ArrayList<>();
 
     private final Map<String, ExceptionThrownRule> exceptionThrownRuleMap = new LinkedHashMap<>();
@@ -41,27 +44,43 @@ public class ExceptionRule implements Describable {
     private DescriptionRule descriptionRule;
 
     /**
+     * Instantiates a new ExceptionRule.
+     */
+    public ExceptionRule() {
+        this(null);
+    }
+
+    /**
+     * Instantiates a new ExceptionRule with the associated aspect rule.
+     * @param aspectRule the aspect rule that this exception rule belongs to
+     */
+    public ExceptionRule(@Nullable AspectRule aspectRule) {
+        this.aspectRule = aspectRule;
+    }
+
+    /**
+     * Gets the aspect rule that this exception rule belongs to.
+     * @return the aspect rule, or {@code null} if not associated with an aspect
+     */
+    public AspectRule getAspectRule() {
+        return aspectRule;
+    }
+
+    /**
+     * Gets the order of precedence for this exception rule.
+     * If associated with an aspect rule, returns the aspect rule's order.
+     * @return the order of precedence
+     */
+    public int getOrder() {
+        return (aspectRule != null ? aspectRule.getOrder() : Integer.MAX_VALUE);
+    }
+
+    /**
      * Gets the list of all exception thrown rules.
      * @return the list of exception thrown rules
      */
     public List<ExceptionThrownRule> getExceptionThrownRuleList() {
         return exceptionThrownRuleList;
-    }
-
-    /**
-     * Gets the map of exception types to their corresponding thrown rules.
-     * @return the map of exception thrown rules
-     */
-    public Map<String, ExceptionThrownRule> getExceptionThrownRuleMap() {
-        return exceptionThrownRuleMap;
-    }
-
-    /**
-     * Gets the default exception thrown rule, which is used when no specific type matches.
-     * @return the default exception thrown rule
-     */
-    public ExceptionThrownRule getDefaultExceptionThrownRule() {
-        return defaultExceptionThrownRule;
     }
 
     /**

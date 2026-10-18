@@ -391,11 +391,6 @@ public class RulesToParameters {
                     if (adviceRule.getAdviceAction() != null) {
                         toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
-                } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
-                    AdviceActionParameters adviceActionParameters = adviceParameters.attachParameters(AdviceParameters.aroundAdvice);
-                    if (adviceRule.getAdviceAction() != null) {
-                        toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
-                    }
                 } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.attachParameters(AdviceParameters.finallyAdvice);
                     if (adviceRule.getExceptionThrownRule() != null) {

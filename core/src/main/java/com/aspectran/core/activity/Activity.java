@@ -17,7 +17,6 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
-import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -291,9 +290,8 @@ public interface Activity {
      * Handles exceptions based on a list of exception rules.
      * This method typically dispatches to an error handling translet or performs other recovery actions.
      * @param exceptionRuleList the list of exception rules to apply
-     * @throws ActionExecutionException if an error occurs while executing an action during exception handling
      */
-    void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException;
+    void handleException(List<ExceptionRule> exceptionRuleList);
 
     /**
      * Returns the value of a specified setting from the current activity scope.
@@ -460,14 +458,6 @@ public interface Activity {
      * @return the AFTER advice result, or {@code null} if none
      */
     <V> V getAfterAdviceResult(String aspectId);
-
-    /**
-     * Returns the value produced by the registered AROUND advice for the given aspect ID.
-     * @param <V> the result type
-     * @param aspectId the aspect identifier
-     * @return the AROUND advice result, or {@code null} if none
-     */
-    <V> V getAroundAdviceResult(String aspectId);
 
     /**
      * Returns the value produced by the registered FINALLY advice for the given aspect ID.

@@ -33,7 +33,6 @@ import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.ChooseWhenRule;
-import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -359,7 +358,7 @@ public class CoreActivity extends AdviceActivity {
                     }
                 }
 
-                if (!forwarding) {
+                if (!forwarding && !isExceptionRaised()) {
                     if (instantAction != null) {
                         result = instantAction.execute();
                     }
@@ -375,8 +374,18 @@ public class CoreActivity extends AdviceActivity {
                 }
             } finally {
                 if (!forwarding) {
-                    setCurrentAdviceType(AdviceType.FINALLY);
-                    executeAdvice(getFinallyAdviceRuleList());
+                    try {
+                        if (isExceptionRaised()) {
+                            setCurrentAdviceType(AdviceType.THROWN);
+                            processExceptionRules();
+                        }
+                    } catch (Exception e) {
+                        logger.error("A new exception occurred while processing exception rules. " +
+                                "The original exception will be preserved.", e);
+                    } finally {
+                        setCurrentAdviceType(AdviceType.FINALLY);
+                        executeAdvice(getFinallyAdviceRuleList());
+                    }
                 }
             }
 
@@ -529,7 +538,6 @@ public class CoreActivity extends AdviceActivity {
      */
     private void handleRaisedException() throws Exception {
         try {
-            processExceptionRules();
             if (translet != null) {
                 response();
             }
@@ -545,14 +553,17 @@ public class CoreActivity extends AdviceActivity {
      * Executes all applicable exception handling rules for the currently raised exception.
      * <p>It processes rules defined both within the current translet and within any
      * active AOP aspects. This method resets the response state before processing the rules.</p>
-     * @throws ActionExecutionException if an action within an exception handler fails
      */
-    private void processExceptionRules() throws ActionExecutionException {
+    private void processExceptionRules() {
         reserveResponse(null);
         responded = false;
 
         if (hasTranslet() && getTransletRule().getExceptionRule() != null) {
-            handleException(getTransletRule().getExceptionRule());
+            try {
+                handleException(getTransletRule().getExceptionRule());
+            } catch (Exception e) {
+                logger.error("Failed to execute exception handling rule for Translet {}", getTransletRule(), e);
+            }
         }
         if (getExceptionRuleList() != null) {
             handleException(getExceptionRuleList());
@@ -560,17 +571,19 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
-        ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
-        if (hasTranslet() && exceptionThrownRule != null && !isResponseReserved()) {
-            Response response = getDesiredResponse();
-            String contentType = (response != null ? response.getContentType() : null);
-            Response targetResponse = exceptionThrownRule.getResponse(contentType);
-            if (targetResponse != null) {
-                reserveResponse(targetResponse);
+    protected boolean handleException(ExceptionThrownRule exceptionThrownRule) throws ActionExecutionException {
+        if (super.handleException(exceptionThrownRule)) {
+            if (hasTranslet() && !isResponseReserved()) {
+                Response response = getDesiredResponse();
+                String contentType = (response != null ? response.getContentType() : null);
+                Response targetResponse = exceptionThrownRule.getResponse(contentType);
+                if (targetResponse != null) {
+                    reserveResponse(targetResponse);
+                }
             }
+            return true;
         }
-        return exceptionThrownRule;
+        return false;
     }
 
     /**

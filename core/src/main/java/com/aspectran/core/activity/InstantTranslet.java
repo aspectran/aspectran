@@ -408,11 +408,6 @@ public class InstantTranslet implements Translet {
     }
 
     @Override
-    public <V> V getAroundAdviceResult(String aspectId) {
-        return activity.getAroundAdviceResult(aspectId);
-    }
-
-    @Override
     public <V> V getFinallyAdviceResult(String aspectId) {
         return activity.getFinallyAdviceResult(aspectId);
     }

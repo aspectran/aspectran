@@ -47,8 +47,6 @@ public class AdviceRule implements HasActionRules {
 
     private Executable adviceAction;
 
-    private ExceptionRule exceptionRule;
-
     private ExceptionThrownRule exceptionThrownRule;
 
     /**
@@ -113,12 +111,14 @@ public class AdviceRule implements HasActionRules {
     @Override
     public Executable putActionRule(HeaderActionRule headerActionRule) {
         adviceAction = new HeaderAction(headerActionRule);
+        registerExceptionThrownRuleIfNeeded();
         return adviceAction;
     }
 
     @Override
     public Executable putActionRule(EchoActionRule echoActionRule) {
         adviceAction = new EchoAction(echoActionRule);
+        registerExceptionThrownRuleIfNeeded();
         return adviceAction;
     }
 
@@ -131,6 +131,7 @@ public class AdviceRule implements HasActionRules {
                     "itself or on the parent aspect rule. Rule: " + invokeActionRule);
         }
         adviceAction = new AdviceAction(this, invokeActionRule);
+        registerExceptionThrownRuleIfNeeded();
         return adviceAction;
     }
 
@@ -176,6 +177,19 @@ public class AdviceRule implements HasActionRules {
      */
     public void setAdviceAction(Executable adviceAction) {
         this.adviceAction = adviceAction;
+        registerExceptionThrownRuleIfNeeded();
+    }
+
+    private void registerExceptionThrownRuleIfNeeded() {
+        if (adviceType == AdviceType.THROWN && aspectRule != null && adviceAction != null) {
+            if (exceptionThrownRule == null) {
+                ExceptionThrownRule etr = ExceptionThrownRule.newInstance(null, adviceAction);
+                this.exceptionThrownRule = etr;
+                aspectRule.putExceptionThrownRule(etr);
+            } else if (exceptionThrownRule.getAction() == null) {
+                exceptionThrownRule.setAction(adviceAction);
+            }
+        }
     }
 
     /**
@@ -187,14 +201,6 @@ public class AdviceRule implements HasActionRules {
     }
 
     /**
-     * Gets the exception handling rule for this advice.
-     * @return the exception rule
-     */
-    public ExceptionRule getExceptionRule() {
-        return exceptionRule;
-    }
-
-    /**
      * Gets the rule for a specific exception type that may be thrown.
      * @return the exception thrown rule
      */
@@ -203,14 +209,10 @@ public class AdviceRule implements HasActionRules {
     }
 
     /**
-     * Sets the rule for a specific exception type, wrapping it in an {@link ExceptionRule}.
+     * Sets the rule for a specific exception type.
      * @param exceptionThrownRule the exception thrown rule
      */
     public void setExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
-        ExceptionRule exceptionRule = new ExceptionRule();
-        exceptionRule.putExceptionThrownRule(exceptionThrownRule);
-
-        this.exceptionRule = exceptionRule;
         this.exceptionThrownRule = exceptionThrownRule;
     }
 
