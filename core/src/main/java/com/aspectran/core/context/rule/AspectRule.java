@@ -389,22 +389,6 @@ public class AspectRule implements BeanReferenceable, Describable {
         return newAdviceRule(AdviceType.THROWN);
     }
 
-    /**
-     * Creates and adds a new 'thrown' advice rule for specific exception types.
-     * @param exceptionTypes the exception types to handle
-     * @return the new advice rule
-     */
-    @SafeVarargs
-    public final AdviceRule newThrownAdviceRule(Class<? extends Throwable>... exceptionTypes) {
-        AdviceRule adviceRule = newAdviceRule(AdviceType.THROWN);
-        if (exceptionTypes != null && exceptionTypes.length > 0) {
-            ExceptionThrownRule etr = ExceptionThrownRule.newInstance(exceptionTypes, null);
-            adviceRule.setExceptionThrownRule(etr);
-            putExceptionThrownRule(etr);
-        }
-        return adviceRule;
-    }
-
     private List<AdviceRule> touchAdviceRuleList() {
         if (adviceRuleList == null) {
             adviceRuleList = new ArrayList<>();
