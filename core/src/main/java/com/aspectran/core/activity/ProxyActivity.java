@@ -145,31 +145,20 @@ public final class ProxyActivity extends AdviceActivity {
         return activityData;
     }
 
-    /**
-     * This operation is not supported in a proxy activity.
-     * @throws UnsupportedOperationException always
-     */
     @Override
+    @Nullable
     public Response getDeclaredResponse() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
-    /**
-     * This operation is not supported in a proxy activity.
-     * @throws UnsupportedOperationException always
-     */
     @Override
     public boolean isResponseReserved() {
-        throw new UnsupportedOperationException();
+        return false;
     }
 
-    /**
-     * This operation is not supported in a proxy activity.
-     * @throws UnsupportedOperationException always
-     */
     @Override
     public boolean isResponded() {
-        throw new UnsupportedOperationException();
+        return false;
     }
 
 }

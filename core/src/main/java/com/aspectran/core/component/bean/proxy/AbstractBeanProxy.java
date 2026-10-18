@@ -37,10 +37,13 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -51,12 +54,14 @@ import java.util.concurrent.Future;
 /**
  * Base support class for bean proxies that apply Aspectran AOP advice.
  * This class handles the core logic of intercepting method invocations,
- * applying relevant advice (before, after, finally), and managing
+ * applying relevant advice (before, after, thrown, finally), and managing
  * synchronous and asynchronous executions.
  *
  * <p>Created: 2017. 1. 27.</p>
  */
 public abstract class AbstractBeanProxy {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractBeanProxy.class);
 
     private final ActivityContext context;
 
@@ -266,24 +271,30 @@ public abstract class AbstractBeanProxy {
                 return superInvoker.invoke();
             }
 
+            boolean handled = false;
             try {
-                try {
-                    executeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), activity);
-                    Object result = superInvoker.invoke();
-                    executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), activity);
-                    return result;
-                } catch (Exception e) {
-                    activity.setRaisedException(e);
-                    throw e;
-                } finally {
-                    executeAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), activity);
-                }
+                executeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), activity);
+                Object result = superInvoker.invoke();
+                executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), activity);
+                return result;
             } catch (Exception e) {
-                activity.setRaisedException(e);
-                if (handleException(adviceRuleRegistry.getExceptionRuleList(), activity)) {
-                    return null;
+                if (e instanceof ActionExecutionException && e.getCause() != null) {
+                    activity.setRaisedException(ExceptionUtils.getCause(e));
+                } else {
+                    activity.setRaisedException(e);
                 }
-                throw e;
+                try {
+                    handled = handleException(adviceRuleRegistry.getExceptionRuleList(), activity);
+                } catch (Exception ex) {
+                    logger.error("A new exception occurred while processing exception rules. " +
+                            "The original exception will be preserved.", ex);
+                }
+                if (!handled) {
+                    throw e;
+                }
+                return null;
+            } finally {
+                executeAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), activity);
             }
         } finally {
             activityToUse.popHint(pushedCount);
@@ -361,10 +372,8 @@ public abstract class AbstractBeanProxy {
      * @param exceptionRuleList the list of applicable exception rules
      * @param activity the current activity, which holds the raised exception
      * @return true if the exception was handled and a response is reserved, false otherwise
-     * @throws ActionExecutionException if the exception handling action fails
      */
-    private boolean handleException(List<ExceptionRule> exceptionRuleList, @NonNull Activity activity)
-            throws ActionExecutionException {
+    private boolean handleException(List<ExceptionRule> exceptionRuleList, @NonNull Activity activity) {
         if (exceptionRuleList != null) {
             activity.handleException(exceptionRuleList);
             return activity.isResponseReserved();
@@ -374,23 +383,22 @@ public abstract class AbstractBeanProxy {
 
     /**
      * Checks if a method is marked as advisable (i.e., eligible for AOP interception).
-     /**
-      * A method is advisable if it is annotated with {@link Advisable} or {@link Async}.
-      * @param method the method to check
-      * @return true if the method is advisable, false otherwise
-      */
-     private boolean isAdvisableMethod(@NonNull Method method) {
-         return (method.isAnnotationPresent(Advisable.class) || method.isAnnotationPresent(Async.class));
-     }
+     * A method is advisable if it is annotated with {@link Advisable} or {@link Async}.
+     * @param method the method to check
+     * @return true if the method is advisable, false otherwise
+     */
+    private boolean isAdvisableMethod(@NonNull Method method) {
+        return (method.isAnnotationPresent(Advisable.class) || method.isAnnotationPresent(Async.class));
+    }
 
-     /**
-      * A method is hintable if it has hints configured in the proxy.
-      * @param method the method to check
-      * @return true if the method is hintable, false otherwise
-      */
-     private boolean isHintableMethod(@NonNull Method method) {
-         return (methodHints != null && methodHints.containsKey(method));
-     }
+    /**
+     * A method is hintable if it has hints configured in the proxy.
+     * @param method the method to check
+     * @return true if the method is hintable, false otherwise
+     */
+    private boolean isHintableMethod(@NonNull Method method) {
+        return (methodHints != null && methodHints.containsKey(method));
+    }
 
     /**
      * Checks if the given bean rule is the same as the bean associated with the advice rule.
