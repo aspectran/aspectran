@@ -427,6 +427,10 @@ public abstract class AbstractActivity implements Activity {
         return flashMapManager;
     }
 
+    /**
+     * Sets the FlashMapManager for this activity.
+     * @param flashMapManager the FlashMapManager to be set
+     */
     protected void setFlashMapManager(FlashMapManager flashMapManager) {
         this.flashMapManager = flashMapManager;
     }
@@ -436,6 +440,10 @@ public abstract class AbstractActivity implements Activity {
         return localeResolver;
     }
 
+    /**
+     * Sets the LocaleResolver for this activity.
+     * @param localeResolver the LocaleResolver to be set
+     */
     protected void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
     }
