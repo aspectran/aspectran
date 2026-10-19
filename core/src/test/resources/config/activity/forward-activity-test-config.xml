@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <bean id="forwardTestHelper" class="com.aspectran.core.activity.ForwardActivityTest$ForwardTestHelper"/>
+
+    <!-- Single Forward Aspects -->
+    <aspect id="aspect1" order="1">
+        <joinpoint>
+            pointcut: {
+                +: /step1
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="before1"/>
+            </before>
+            <after>
+                <invoke method="after1"/>
+            </after>
+            <finally>
+                <invoke method="finally1"/>
+            </finally>
+        </advice>
+    </aspect>
+
+    <aspect id="aspect2" order="2">
+        <joinpoint>
+            pointcut: {
+                +: /step2
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="before2"/>
+            </before>
+            <after>
+                <invoke method="after2"/>
+            </after>
+            <finally>
+                <invoke method="finally2"/>
+            </finally>
+        </advice>
+    </aspect>
+
+    <!-- Single Forward Translets -->
+    <translet name="/step1">
+        <action bean="forwardTestHelper" method="actionStep1"/>
+        <forward translet="/step2">
+            <attribute name="forwardAttr">forwardVal</attribute>
+        </forward>
+    </translet>
+
+    <translet name="/step2">
+        <action bean="forwardTestHelper" method="actionStep2"/>
+        <transform format="text">
+            <template>Step 2 completed: @{forwardAttr}</template>
+        </transform>
+    </translet>
+
+    <!-- Multi Forward Chain Aspects -->
+    <aspect id="chainAspect1" order="1">
+        <joinpoint>
+            pointcut: {
+                +: /chain1
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="chainBefore1"/>
+            </before>
+            <after>
+                <invoke method="chainAfter1"/>
+            </after>
+            <finally>
+                <invoke method="chainFinally1"/>
+            </finally>
+        </advice>
+    </aspect>
+
+    <aspect id="chainAspect2" order="2">
+        <joinpoint>
+            pointcut: {
+                +: /chain2
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="chainBefore2"/>
+            </before>
+            <after>
+                <invoke method="chainAfter2"/>
+            </after>
+            <finally>
+                <invoke method="chainFinally2"/>
+            </finally>
+        </advice>
+    </aspect>
+
+    <aspect id="chainAspect3" order="3">
+        <joinpoint>
+            pointcut: {
+                +: /chain3
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="chainBefore3"/>
+            </before>
+            <after>
+                <invoke method="chainAfter3"/>
+            </after>
+            <finally>
+                <invoke method="chainFinally3"/>
+            </finally>
+        </advice>
+    </aspect>
+
+    <!-- Multi Forward Chain Translets -->
+    <translet name="/chain1">
+        <action bean="forwardTestHelper" method="chainAction1"/>
+        <forward translet="/chain2"/>
+    </translet>
+
+    <translet name="/chain2">
+        <action bean="forwardTestHelper" method="chainAction2"/>
+        <forward translet="/chain3"/>
+    </translet>
+
+    <translet name="/chain3">
+        <action bean="forwardTestHelper" method="chainAction3"/>
+        <transform format="text">
+            <template>Chain completed</template>
+        </transform>
+    </translet>
+
+    <!-- Exception Handling Aspects -->
+    <aspect id="errorAspect1" order="1">
+        <joinpoint>
+            pointcut: {
+                +: /error-step1
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="errorBefore1"/>
+            </before>
+            <after>
+                <invoke method="errorAfter1"/>
+            </after>
+            <finally>
+                <invoke method="errorFinally1"/>
+            </finally>
+        </advice>
+        <exception>
+            <thrown type="java.lang.Exception">
+                <action bean="forwardTestHelper" method="errorThrown1"/>
+            </thrown>
+        </exception>
+    </aspect>
+
+    <aspect id="errorAspect2" order="2">
+        <joinpoint>
+            pointcut: {
+                +: /error-step2
+            }
+        </joinpoint>
+        <advice bean="forwardTestHelper">
+            <before>
+                <invoke method="errorBefore2"/>
+            </before>
+            <after>
+                <invoke method="errorAfter2"/>
+            </after>
+            <finally>
+                <invoke method="errorFinally2"/>
+            </finally>
+        </advice>
+        <exception>
+            <thrown type="java.lang.Exception">
+                <action bean="forwardTestHelper" method="errorThrown2"/>
+            </thrown>
+        </exception>
+    </aspect>
+
+    <!-- Exception Translets -->
+    <translet name="/error-step1">
+        <action bean="forwardTestHelper" method="errorAction1"/>
+        <forward translet="/error-step2"/>
+    </translet>
+
+    <translet name="/error-step2">
+        <action bean="forwardTestHelper" method="errorAction2"/>
+        <transform format="text">
+            <template>Should not reach here</template>
+        </transform>
+    </translet>
+
+    <!-- ProcessResult Carried Over Translets -->
+    <translet name="/data-step1">
+        <action id="data1" bean="forwardTestHelper" method="produceData1"/>
+        <forward translet="/data-step2"/>
+    </translet>
+
+    <translet name="/data-step2">
+        <action id="data2" bean="forwardTestHelper" method="produceData2"/>
+        <transform format="text">
+            <template>@{data1}+@{data2}</template>
+        </transform>
+    </translet>
+
+</aspectran>

@@ -21,7 +21,6 @@ import com.aspectran.core.activity.HintParameters;
 import com.aspectran.core.activity.ProxyActivity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
-import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.component.aspect.AdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.RelevantAspectRuleHolder;
@@ -37,7 +36,6 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.jspecify.annotations.NonNull;
@@ -278,11 +276,7 @@ public abstract class AbstractBeanProxy {
                 executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), activity);
                 return result;
             } catch (Exception e) {
-                if (e instanceof ActionExecutionException && e.getCause() != null) {
-                    activity.setRaisedException(ExceptionUtils.getCause(e));
-                } else {
-                    activity.setRaisedException(e);
-                }
+                activity.setRaisedException(e);
                 try {
                     handled = handleException(adviceRuleRegistry.getExceptionRuleList(), activity);
                 } catch (Exception ex) {

@@ -49,7 +49,6 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -338,6 +337,8 @@ public class CoreActivity extends AdviceActivity {
             }
 
             try {
+                // Runs 'before' advice for the initial translet as well as during forwarding
+                // for the target translet (already executed advice is automatically skipped)
                 setCurrentAdviceType(AdviceType.BEFORE);
                 executeAdvice(getBeforeAdviceRuleList());
 
@@ -367,11 +368,7 @@ public class CoreActivity extends AdviceActivity {
                     executeAdvice(getAfterAdviceRuleList());
                 }
             } catch (Exception e) {
-                if (e instanceof ActionExecutionException && e.getCause() != null) {
-                    setRaisedException(ExceptionUtils.getCause(e));
-                } else {
-                    setRaisedException(e);
-                }
+                setRaisedException(e);
             } finally {
                 if (!forwarding) {
                     try {
@@ -383,18 +380,20 @@ public class CoreActivity extends AdviceActivity {
                         logger.error("A new exception occurred while processing exception rules. " +
                                 "The original exception will be preserved.", e);
                     } finally {
-                        setCurrentAdviceType(AdviceType.FINALLY);
-                        executeAdvice(getFinallyAdviceRuleList());
+                        try {
+                            setCurrentAdviceType(AdviceType.FINALLY);
+                            executeAdvice(getFinallyAdviceRuleList());
+                        } finally {
+                            setCurrentAdviceType(null);
+                        }
                     }
                 }
             }
 
             if (!forwarding) {
                 if (isExceptionRaised()) {
-                    setCurrentAdviceType(AdviceType.THROWN);
                     handleRaisedException();
                 }
-                setCurrentAdviceType(null);
             }
         } catch (ActivityTerminatedException e) {
             throw e;

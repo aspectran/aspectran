@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.process.action;
 
-import com.aspectran.core.activity.process.ProcessException;
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.utils.ExceptionUtils;
 import org.jspecify.annotations.NonNull;
@@ -27,12 +27,12 @@ import java.io.Serial;
  *
  * <p>This exception is typically thrown when there is an error during the process of
  * binding request parameters or other data sources to the arguments of a method
- * being invoked by an action. It extends {@link ProcessException} to indicate that
- * the error occurred during the parameter binding phase of action execution.</p>
+ * being invoked by an action. It extends {@link ActivityException} to indicate that
+ * an error occurred during parameter resolution or data conversion prior to action invocation.</p>
  *
  * <p>Created: 2009. 02. 26</p>
  */
-public class ParameterBindingException extends ProcessException {
+public class ParameterBindingException extends ActivityException {
 
     @Serial
     private static final long serialVersionUID = 1094222427227812288L;
