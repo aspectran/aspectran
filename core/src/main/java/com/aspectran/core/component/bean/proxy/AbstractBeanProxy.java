@@ -100,7 +100,7 @@ public abstract class AbstractBeanProxy {
      * @return the result of the method invocation
      * @throws Exception if the invocation fails
      */
-    protected Object invoke(Method method, Object[] args, SuperInvoker superInvoker)
+    protected Object invoke(@NonNull Method method, Object[] args, @NonNull SuperInvoker superInvoker)
             throws Exception {
         if (isAdvisableMethod(method)) {
             Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
@@ -114,15 +114,18 @@ public abstract class AbstractBeanProxy {
                 }
             }
             return invoke(method, args, superInvoker, activity);
-        } else if (isHintableMethod(method)) {
-            Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
-            if (activity != null) {
-                List<HintParameters> hints = methodHints.get(method);
-                int pushedCount = activity.pushHint(hints);
-                try {
-                    return superInvoker.invoke();
-                } finally {
-                    activity.popHint(pushedCount);
+        }
+        if (methodHints != null) {
+            List<HintParameters> hints = methodHints.get(method);
+            if (hints != null) {
+                Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
+                if (activity != null) {
+                    int pushedCount = activity.pushHint(hints);
+                    try {
+                        return superInvoker.invoke();
+                    } finally {
+                        activity.popHint(pushedCount);
+                    }
                 }
             }
         }
@@ -225,11 +228,11 @@ public abstract class AbstractBeanProxy {
                     return result;
                 }
             } catch (Exception e) {
-                Exception cause = e;
-                if (e instanceof ActivityPerformException && e.getCause() instanceof Exception ex) {
-                    cause = ex;
-                }
                 if (executor.getAsyncUncaughtExceptionHandler() != null) {
+                    Exception cause = e;
+                    if (e instanceof ActivityPerformException && e.getCause() instanceof Exception ex) {
+                        cause = ex;
+                    }
                     executor.getAsyncUncaughtExceptionHandler().handleUncaughtException(cause, method, args);
                 }
                 throw e;
@@ -350,7 +353,7 @@ public abstract class AbstractBeanProxy {
      * @param activity the current activity
      * @throws AdviceException if an advice action fails
      */
-    private void executeAdvice(List<AdviceRule> adviceRuleList, Activity activity)
+    private void executeAdvice(@Nullable List<AdviceRule> adviceRuleList, @NonNull Activity activity)
             throws AdviceException {
         if (adviceRuleList != null) {
             for (AdviceRule adviceRule : adviceRuleList) {
@@ -386,22 +389,13 @@ public abstract class AbstractBeanProxy {
     }
 
     /**
-     * A method is hintable if it has hints configured in the proxy.
-     * @param method the method to check
-     * @return true if the method is hintable, false otherwise
-     */
-    private boolean isHintableMethod(@NonNull Method method) {
-        return (methodHints != null && methodHints.containsKey(method));
-    }
-
-    /**
      * Checks if the given bean rule is the same as the bean associated with the advice rule.
      * This is used to prevent an advice from advising itself if it's defined as a bean.
      * @param beanRule the bean rule of the advised bean
      * @param adviceRule the advice rule being considered
      * @return true if they refer to the same bean, false otherwise
      */
-    private boolean isSameBean(@NonNull BeanRule beanRule, AdviceRule adviceRule) {
+    private boolean isSameBean(@NonNull BeanRule beanRule, @NonNull AdviceRule adviceRule) {
         if (beanRule.getId() != null && beanRule.getId().equals(adviceRule.getAdviceBeanId())) {
             return true;
         }
