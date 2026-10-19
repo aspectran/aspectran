@@ -212,6 +212,28 @@ public abstract class AdviceActivity extends AbstractActivity {
             throw ex;
         }
 
+        List<AdviceRule> adviceRuleList = aspectRule.getAdviceRuleList();
+        if (adviceRuleList != null && currentAdviceType == AdviceType.FINALLY) {
+            // Exception thrown when registering BEFORE or AFTER advice in the FINALLY activity phase
+            AdviceConstraintViolationException ex = null;
+            for (AdviceRule adviceRule : adviceRuleList) {
+                AdviceType adviceType = adviceRule.getAdviceType();
+                if (adviceType == AdviceType.BEFORE || adviceType == AdviceType.AFTER) {
+                    if (ex == null) {
+                        ex = new AdviceConstraintViolationException();
+                    }
+                    String msg = "BEFORE or AFTER advice should never be registered after the FINALLY activity phase";
+                    msg = ex.addViolation(aspectRule, msg);
+                    if (msg != null) {
+                        logger.error(msg);
+                    }
+                }
+            }
+            if (ex != null) {
+                throw ex;
+            }
+        }
+
         if (relevantAspectRules != null && relevantAspectRules.contains(aspectRule)) {
             return;
         }
@@ -219,28 +241,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         touchRelevantAspectRules().add(aspectRule);
         touchAdviceRuleRegistry().register(aspectRule);
 
-        List<AdviceRule> adviceRuleList = aspectRule.getAdviceRuleList();
         if (adviceRuleList != null) {
-            if (currentAdviceType == AdviceType.FINALLY) {
-                // Exception thrown when registering BEFORE or AFTER advice in the FINALLY activity phase
-                AdviceConstraintViolationException ex = null;
-                for (AdviceRule adviceRule : adviceRuleList) {
-                    AdviceType adviceType = adviceRule.getAdviceType();
-                    if (adviceType == AdviceType.BEFORE || adviceType == AdviceType.AFTER) {
-                        if (ex == null) {
-                            ex = new AdviceConstraintViolationException();
-                        }
-                        String msg = "BEFORE or AFTER advice should never be registered after the FINALLY activity phase";
-                        msg = ex.addViolation(aspectRule, msg);
-                        if (msg != null) {
-                            logger.error(msg);
-                        }
-                    }
-                }
-                if (ex != null) {
-                    throw ex;
-                }
-            }
             if (currentAdviceRule != null) {
                 AdviceRule adviceRule1 = currentAdviceRule;
                 AdviceType adviceType1 = adviceRule1.getAdviceType();
@@ -323,7 +324,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             setCurrentAdviceType(AdviceType.FINALLY);
             try {
                 executeAdvice(adviceRuleList);
-            } catch (AdviceException e) {
+            } catch (AdviceException ignored) {
                 // FINALLY advice suppresses exceptions internally and never throws AdviceException
             }
         }
@@ -335,25 +336,23 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param adviceRuleList the list of advice rules to execute
      * @throws AdviceException if an error occurs during advice execution
      */
-    private void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException {
-        if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
-            while (true) {
-                AdviceRule adviceRuleToUse = null;
-                if (executedAdviceRules == null) {
-                    adviceRuleToUse = adviceRuleList.getFirst();
-                } else {
-                    for (AdviceRule adviceRule : adviceRuleList) {
-                        if (!executedAdviceRules.contains(adviceRule)) {
-                            adviceRuleToUse = adviceRule;
-                            break;
-                        }
+    private void executeAdvice(@NonNull List<AdviceRule> adviceRuleList) throws AdviceException {
+        while (true) {
+            AdviceRule adviceRuleToUse = null;
+            if (executedAdviceRules == null) {
+                adviceRuleToUse = adviceRuleList.getFirst();
+            } else {
+                for (AdviceRule adviceRule : adviceRuleList) {
+                    if (!executedAdviceRules.contains(adviceRule)) {
+                        adviceRuleToUse = adviceRule;
+                        break;
                     }
                 }
-                if (adviceRuleToUse != null) {
-                    executeAdvice(adviceRuleToUse);
-                } else {
-                    break;
-                }
+            }
+            if (adviceRuleToUse != null) {
+                executeAdvice(adviceRuleToUse);
+            } else {
+                break;
             }
         }
     }
@@ -473,6 +472,9 @@ public abstract class AdviceActivity extends AbstractActivity {
         if (headerRule == null) {
             return true;
         }
+        if (getRequestAdapter() == null) {
+            return false;
+        }
         int eqIdx = headerRule.indexOf('=');
         if (eqIdx > 0) {
             boolean isNot = (headerRule.charAt(eqIdx - 1) == '!');
@@ -579,11 +581,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @return a list of before advice rules, or {@code null} if none
      */
     protected List<AdviceRule> getBeforeAdviceRuleList() {
-        if (adviceRuleRegistry != null) {
-            return adviceRuleRegistry.getBeforeAdviceRuleList();
-        } else {
-            return null;
-        }
+        return (adviceRuleRegistry != null ? adviceRuleRegistry.getBeforeAdviceRuleList() : null);
     }
 
     /**
@@ -591,11 +589,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @return a list of after advice rules, or {@code null} if none
      */
     protected List<AdviceRule> getAfterAdviceRuleList() {
-        if (adviceRuleRegistry != null) {
-            return adviceRuleRegistry.getAfterAdviceRuleList();
-        } else {
-            return null;
-        }
+        return (adviceRuleRegistry != null ? adviceRuleRegistry.getAfterAdviceRuleList() : null);
     }
 
     /**
@@ -603,11 +597,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @return a list of finally advice rules, or {@code null} if none
      */
     protected List<AdviceRule> getFinallyAdviceRuleList() {
-        if (adviceRuleRegistry != null) {
-            return adviceRuleRegistry.getFinallyAdviceRuleList();
-        } else {
-            return null;
-        }
+        return (adviceRuleRegistry != null ? adviceRuleRegistry.getFinallyAdviceRuleList() : null);
     }
 
     /**
@@ -615,11 +605,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @return a list of exception rules, or {@code null} if none
      */
     protected List<ExceptionRule> getExceptionRuleList() {
-        if (adviceRuleRegistry != null) {
-            return adviceRuleRegistry.getExceptionRuleList();
-        } else {
-            return null;
-        }
+        return (adviceRuleRegistry != null ? adviceRuleRegistry.getExceptionRuleList() : null);
     }
 
     /**
@@ -677,7 +663,9 @@ public abstract class AdviceActivity extends AbstractActivity {
                     logger.error("Failed to resolve advice bean {}", adviceRule, e);
                 }
             }
-            putAdviceBean(adviceRule.getAspectId(), adviceBean);
+            if (adviceBean != null) {
+                putAdviceBean(adviceRule.getAspectId(), adviceBean);
+            }
         }
     }
 
