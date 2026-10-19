@@ -339,8 +339,7 @@ public class CoreActivity extends AdviceActivity {
             try {
                 // Runs 'before' advice for the initial translet as well as during forwarding
                 // for the target translet (already executed advice is automatically skipped)
-                setCurrentAdviceType(AdviceType.BEFORE);
-                executeAdvice(getBeforeAdviceRuleList());
+                executeBeforeAdvice();
 
                 if (translet != null) {
                     if (!isResponseReserved()) {
@@ -364,8 +363,7 @@ public class CoreActivity extends AdviceActivity {
                         result = instantAction.execute();
                     }
 
-                    setCurrentAdviceType(AdviceType.AFTER);
-                    executeAdvice(getAfterAdviceRuleList());
+                    executeAfterAdvice();
                 }
             } catch (Exception e) {
                 setRaisedException(e);
@@ -380,9 +378,7 @@ public class CoreActivity extends AdviceActivity {
                         logger.error("A new exception occurred while processing exception rules. " +
                                 "The original exception will be preserved.", e);
                     } finally {
-                        setCurrentAdviceType(AdviceType.FINALLY);
-                        executeAdvice(getFinallyAdviceRuleList());
-                        setCurrentAdviceType(null);
+                        executeFinallyAdvice();
                     }
                 }
             }

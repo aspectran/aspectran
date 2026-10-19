@@ -273,13 +273,6 @@ public interface Activity {
     void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
 
     /**
-     * Executes a list of advice actions.
-     * @param adviceRuleList the list of advice rules to execute
-     * @throws AdviceException if an error occurs during advice execution
-     */
-    void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException;
-
-    /**
      * Executes a single advice action.
      * @param adviceRule the advice rule to execute
      * @throws AdviceException if an error occurs during advice execution

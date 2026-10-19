@@ -104,11 +104,6 @@ public final class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(List<AdviceRule> adviceRuleList) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void executeAdvice(AdviceRule adviceRule) {
         throw new UnsupportedOperationException();
     }

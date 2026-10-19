@@ -286,12 +286,56 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
+     * Executes the 'before' advice rules applicable to the current activity.
+     * <p>Sets the current advice type to {@link AdviceType#BEFORE} to indicate
+     * the beginning of the activity execution phase.</p>
+     * @throws AdviceException if an error occurs during advice execution
+     */
+    protected void executeBeforeAdvice() throws AdviceException {
+        setCurrentAdviceType(AdviceType.BEFORE);
+        List<AdviceRule> adviceRuleList = getBeforeAdviceRuleList();
+        if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
+            executeAdvice(adviceRuleList);
+        }
+    }
+
+    /**
+     * Executes the 'after' advice rules applicable to the current activity.
+     * <p>Sets the current advice type to {@link AdviceType#AFTER} only if advice rules exist.</p>
+     * @throws AdviceException if an error occurs during advice execution
+     */
+    protected void executeAfterAdvice() throws AdviceException {
+        List<AdviceRule> adviceRuleList = getAfterAdviceRuleList();
+        if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
+            setCurrentAdviceType(AdviceType.AFTER);
+            executeAdvice(adviceRuleList);
+        }
+    }
+
+    /**
+     * Executes the 'finally' advice rules applicable to the current activity.
+     * <p>Sets the current advice type to {@link AdviceType#FINALLY} during execution,
+     * and resets it to {@code null} afterwards.</p>
+     */
+    protected void executeFinallyAdvice() {
+        List<AdviceRule> adviceRuleList = getFinallyAdviceRuleList();
+        if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
+            setCurrentAdviceType(AdviceType.FINALLY);
+            try {
+                executeAdvice(adviceRuleList);
+            } catch (AdviceException e) {
+                // FINALLY advice suppresses exceptions internally and never throws AdviceException
+            }
+        }
+        setCurrentAdviceType(null);
+    }
+
+    /**
      * Executes a list of {@link AdviceRule}s sequentially, ensuring each is executed only once.
      * @param adviceRuleList the list of advice rules to execute
      * @throws AdviceException if an error occurs during advice execution
      */
-    @Override
-    public void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException {
+    private void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException {
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
             while (true) {
                 AdviceRule adviceRuleToUse = null;
