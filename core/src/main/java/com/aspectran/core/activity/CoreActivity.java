@@ -380,12 +380,9 @@ public class CoreActivity extends AdviceActivity {
                         logger.error("A new exception occurred while processing exception rules. " +
                                 "The original exception will be preserved.", e);
                     } finally {
-                        try {
-                            setCurrentAdviceType(AdviceType.FINALLY);
-                            executeAdvice(getFinallyAdviceRuleList());
-                        } finally {
-                            setCurrentAdviceType(null);
-                        }
+                        setCurrentAdviceType(AdviceType.FINALLY);
+                        executeAdvice(getFinallyAdviceRuleList());
+                        setCurrentAdviceType(null);
                     }
                 }
             }
