@@ -483,7 +483,7 @@ public class ToStringBuilder {
             if (i > 0) {
                 appendComma();
             }
-            buffer.append(types[i].getTypeName());
+            buffer.append(types[i].getSimpleName());
         }
         buffer.append(')');
     }
@@ -504,7 +504,7 @@ public class ToStringBuilder {
     private static void checkCircularReference(Object wrapper, Object member) {
         if (wrapper == member) {
             throw new IllegalArgumentException("Serialization Failure: Circular reference was detected " +
-                "while serializing object " + ObjectUtils.identityToString(wrapper) + " " + wrapper);
+                    "while serializing object " + ObjectUtils.identityToString(wrapper) + " " + wrapper);
         }
     }
 

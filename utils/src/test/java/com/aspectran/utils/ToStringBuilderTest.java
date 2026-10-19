@@ -19,6 +19,7 @@ import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -161,6 +162,14 @@ class ToStringBuilderTest {
         String expected = "Size {size1=2, size2=2, size2=2, size2=2}";
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testMethod() throws NoSuchMethodException {
+        Method method = String.class.getMethod("substring", int.class, int.class);
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("method", method);
+        assertEquals("{method=java.lang.String.substring(int, int)}", tsb.toString());
     }
 
 }
