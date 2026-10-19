@@ -21,7 +21,6 @@ import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.context.rule.ability.HasActionRules;
-import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
@@ -46,6 +45,8 @@ public class AdviceRule implements HasActionRules {
     private final AdviceType adviceType;
 
     private Executable adviceAction;
+
+    private String description;
 
     private ExceptionThrownRule exceptionThrownRule;
 
@@ -180,24 +181,30 @@ public class AdviceRule implements HasActionRules {
         registerExceptionThrownRuleIfNeeded();
     }
 
-    private void registerExceptionThrownRuleIfNeeded() {
-        if (adviceType == AdviceType.THROWN && aspectRule != null && adviceAction != null) {
-            if (exceptionThrownRule == null) {
-                ExceptionThrownRule etr = ExceptionThrownRule.newInstance(null, adviceAction);
-                this.exceptionThrownRule = etr;
-                aspectRule.putExceptionThrownRule(etr);
-            } else if (exceptionThrownRule.getAction() == null) {
-                exceptionThrownRule.setAction(adviceAction);
-            }
-        }
+    /**
+     * Sets the description and the executable action for the advice.
+     * @param description the description of the advice action
+     * @param adviceAction the executable advice action
+     */
+    public void setAdviceAction(String description, Executable adviceAction) {
+        this.description = description;
+        setAdviceAction(adviceAction);
     }
 
     /**
-     * Gets the type of the advice action.
-     * @return the action type
+     * Gets the description of the advice rule.
+     * @return the description
      */
-    public ActionType getActionType() {
-        return (adviceAction != null ? adviceAction.getActionType() : null);
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description of the advice rule.
+     * @param description the description
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -216,6 +223,18 @@ public class AdviceRule implements HasActionRules {
         this.exceptionThrownRule = exceptionThrownRule;
     }
 
+    private void registerExceptionThrownRuleIfNeeded() {
+        if (adviceType == AdviceType.THROWN && aspectRule != null && adviceAction != null) {
+            if (exceptionThrownRule == null) {
+                ExceptionThrownRule etr = ExceptionThrownRule.newInstance(null, adviceAction);
+                this.exceptionThrownRule = etr;
+                aspectRule.putExceptionThrownRule(etr);
+            } else if (exceptionThrownRule.getAction() == null) {
+                exceptionThrownRule.setAction(adviceAction);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -224,7 +243,11 @@ public class AdviceRule implements HasActionRules {
         if (adviceBeanId == null) {
             tsb.append("bean", adviceBeanClass);
         }
-        tsb.append("action", toString(adviceAction, null));
+        if (description != null) {
+            tsb.append("action", description);
+        } else {
+            tsb.append("action", toString(adviceAction, null));
+        }
         return tsb.toString();
     }
 
@@ -235,8 +258,11 @@ public class AdviceRule implements HasActionRules {
         ToStringBuilder tsb = new ToStringBuilder();
         if (adviceRule != null) {
             tsb.append("type", adviceRule.getAdviceType());
+            tsb.append("aspect", adviceRule.getAspectId());
         }
-        if (adviceAction != null) {
+        if (adviceRule != null && adviceRule.getDescription() != null) {
+            tsb.append("action", adviceRule.getDescription());
+        } else if (adviceAction != null) {
             if (adviceAction.getActionType() != null) {
                 tsb.append("action", adviceAction.toString());
             } else {

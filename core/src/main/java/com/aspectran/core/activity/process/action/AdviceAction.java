@@ -80,6 +80,7 @@ public class AdviceAction extends InvokeAction {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", adviceRule.getAdviceType());
+        tsb.append("aspect", adviceRule.getAspectId());
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
             tsb.append("action", super.toString());
         } else {

@@ -27,7 +27,6 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
-import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
@@ -133,14 +132,6 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
      */
     public void setAction(Executable action) {
         this.action = action;
-    }
-
-    /**
-     * Gets the type of the executable action.
-     * @return the action type
-     */
-    public ActionType getActionType() {
-        return (action != null ? action.getActionType() : null);
     }
 
     /**

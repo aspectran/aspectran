@@ -184,10 +184,11 @@ public class EntityManagerAdviceRegister {
         aspectRule.setJoinpointRule(joinpointRule);
 
         AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
-        beforeAdviceRule.setAdviceAction(activity -> new EntityManagerAdvice(entityManagerFactory));
+        beforeAdviceRule.setAdviceAction("new EntityManagerAdvice()", activity ->
+                new EntityManagerAdvice(entityManagerFactory));
 
         AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
-        afterAdviceRule.setAdviceAction(activity -> {
+        afterAdviceRule.setAdviceAction("EntityManagerAdvice.commit()", activity -> {
             EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (entityManagerAdvice != null) {
                 entityManagerAdvice.commit();
@@ -196,7 +197,7 @@ public class EntityManagerAdviceRegister {
         });
 
         AdviceRule thrownAdviceRule = aspectRule.newThrownAdviceRule();
-        thrownAdviceRule.setAdviceAction(activity -> {
+        thrownAdviceRule.setAdviceAction("EntityManagerAdvice.rollback()", activity -> {
             EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (entityManagerAdvice != null) {
                 entityManagerAdvice.rollback();
@@ -205,7 +206,7 @@ public class EntityManagerAdviceRegister {
         });
 
         AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
-        finallyAdviceRule.setAdviceAction(activity -> {
+        finallyAdviceRule.setAdviceAction("EntityManagerAdvice.close()", activity -> {
             EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (entityManagerAdvice != null) {
                 entityManagerAdvice.close();

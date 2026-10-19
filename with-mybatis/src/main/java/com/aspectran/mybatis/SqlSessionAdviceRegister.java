@@ -241,7 +241,7 @@ public class SqlSessionAdviceRegister {
         aspectRule.setJoinpointRule(joinpointRule);
 
         AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
-        beforeAdviceRule.setAdviceAction(activity -> {
+        beforeAdviceRule.setAdviceAction("new SqlSessionAdvice()", activity -> {
             SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
             if (executorType != null) {
                 sqlSessionAdvice.setExecutorType(executorType);
@@ -262,7 +262,7 @@ public class SqlSessionAdviceRegister {
         });
 
         AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
-        afterAdviceRule.setAdviceAction(activity -> {
+        afterAdviceRule.setAdviceAction("SqlSessionAdvice.commit()", activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.commit();
@@ -271,7 +271,7 @@ public class SqlSessionAdviceRegister {
         });
 
         AdviceRule thrownAdviceRule = aspectRule.newThrownAdviceRule();
-        thrownAdviceRule.setAdviceAction(activity -> {
+        thrownAdviceRule.setAdviceAction("SqlSessionAdvice.rollback()", activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.rollback();
@@ -280,7 +280,7 @@ public class SqlSessionAdviceRegister {
         });
 
         AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
-        finallyAdviceRule.setAdviceAction(activity -> {
+        finallyAdviceRule.setAdviceAction("SqlSessionAdvice.close()", activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.close();
