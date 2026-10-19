@@ -17,6 +17,8 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a command that performs a specific, predefined operation within the execution
@@ -66,6 +68,18 @@ public interface Executable {
      */
     default ActionType getActionType() {
         return null;
+    }
+
+    /**
+     * Appends the string representation of this action to the specified {@link ToStringBuilder}.
+     * @param tsb the builder to append to
+     */
+    default void toString(@NonNull ToStringBuilder tsb) {
+        if (getActionType() != null) {
+            tsb.append(getActionType().toString(), this);
+        } else {
+            tsb.append("instance", toString());
+        }
     }
 
 }

@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Method;
@@ -85,14 +84,7 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
 
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", adviceRule.getAdviceType());
-        tsb.append("aspect", adviceRule.getAspectId());
-        tsb.append("action", super.toString());
-        if (adviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
-            tsb.append("order", adviceRule.getAspectRule().getOrder());
-        }
-        return tsb.toString();
+        return AdviceRule.toString(this, adviceRule);
     }
 
 }

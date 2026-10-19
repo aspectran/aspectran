@@ -77,12 +77,9 @@ public class AdviceAction extends InvokeAction {
     }
 
     @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", adviceRule.getAdviceType());
-        tsb.append("aspect", adviceRule.getAspectId());
+    public void toString(@NonNull ToStringBuilder tsb) {
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
-            tsb.append("action", super.toString());
+            super.toString(tsb);
         } else {
             if (getInvokeActionRule().getMethod() != null) {
                 tsb.append("method", getInvokeActionRule().getMethod());
@@ -95,10 +92,11 @@ public class AdviceAction extends InvokeAction {
                 tsb.append("method", getInvokeActionRule().getMethodName());
             }
         }
-        if (adviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
-            tsb.append("order", adviceRule.getAspectRule().getOrder());
-        }
-        return tsb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return AdviceRule.toString(this, adviceRule);
     }
 
 }

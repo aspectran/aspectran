@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.AdviceAction;
-import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
@@ -252,9 +251,6 @@ public class AdviceRule implements HasActionRules {
     }
 
     public static String toString(Executable adviceAction, @Nullable AdviceRule adviceRule) {
-        if (adviceAction instanceof AdviceAction || adviceAction instanceof AnnotatedAdviceAction) {
-            return adviceAction.toString();
-        }
         ToStringBuilder tsb = new ToStringBuilder();
         if (adviceRule != null) {
             tsb.append("type", adviceRule.getAdviceType());
@@ -263,11 +259,7 @@ public class AdviceRule implements HasActionRules {
         if (adviceRule != null && adviceRule.getDescription() != null) {
             tsb.append("action", adviceRule.getDescription());
         } else if (adviceAction != null) {
-            if (adviceAction.getActionType() != null) {
-                tsb.append("action", adviceAction.toString());
-            } else {
-                tsb.append("instance", adviceAction.toString());
-            }
+            adviceAction.toString(tsb);
         }
         if (adviceRule != null && adviceRule.getAspectRule() != null) {
             int order = adviceRule.getAspectRule().getOrder();

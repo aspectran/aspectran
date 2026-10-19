@@ -186,9 +186,14 @@ public class InvokeAction implements Executable {
     }
 
     @Override
+    public void toString(@NonNull ToStringBuilder tsb) {
+        tsb.append(getActionType().toString(), invokeActionRule);
+    }
+
+    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append(getActionType().toString(), invokeActionRule);
+        toString(tsb);
         return tsb.toString();
     }
 
