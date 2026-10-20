@@ -222,7 +222,7 @@ public class SqlSessionAdvice {
                 }
             }
 
-            if (logger.isDebugEnabled()) {
+            if (logger.isTraceEnabled()) {
                 ToStringBuilder tsb = new ToStringBuilder((arbitrarilyClosed ? "Reopen " : "Open ") +
                         ObjectUtils.simpleIdentityToString(sqlSession));
                 tsb.append("executorType",
@@ -236,7 +236,7 @@ public class SqlSessionAdvice {
                 if (readOnly) {
                     tsb.appendForce("rollbackOnClose", readOnlyRollbackOnClose);
                 }
-                logger.debug(tsb.toString());
+                logger.trace(tsb.toString());
             }
 
             arbitrarilyClosed = false;
@@ -253,8 +253,8 @@ public class SqlSessionAdvice {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Commit transaction for {}", ObjectUtils.simpleIdentityToString(sqlSession));
+        if (logger.isTraceEnabled()) {
+            logger.trace("Commit transaction for {}", ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession.commit();
@@ -269,11 +269,11 @@ public class SqlSessionAdvice {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
+        if (logger.isTraceEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Commit transaction for " +
                     ObjectUtils.simpleIdentityToString(sqlSession));
             tsb.append("force", force);
-            logger.debug(tsb.toString());
+            logger.trace(tsb.toString());
         }
 
         sqlSession.commit(force);
@@ -289,8 +289,8 @@ public class SqlSessionAdvice {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Rollback transaction for {}", ObjectUtils.simpleIdentityToString(sqlSession));
+        if (logger.isTraceEnabled()) {
+            logger.trace("Rollback transaction for {}", ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession.rollback();
@@ -306,11 +306,11 @@ public class SqlSessionAdvice {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
+        if (logger.isTraceEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Rollback transaction for " +
                     ObjectUtils.simpleIdentityToString(sqlSession));
             tsb.append("force", force);
-            logger.debug(tsb.toString());
+            logger.trace(tsb.toString());
         }
 
         sqlSession.rollback(force);
@@ -347,8 +347,8 @@ public class SqlSessionAdvice {
         arbitrarilyClosed = arbitrarily;
         sqlSession.close();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Close {}", ObjectUtils.simpleIdentityToString(sqlSession));
+        if (logger.isTraceEnabled()) {
+            logger.trace("Close {}", ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession = null;

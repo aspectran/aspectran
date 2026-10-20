@@ -15,6 +15,8 @@
  */
 package com.aspectran.mybatis;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.ActivityContext;
@@ -33,6 +35,7 @@ import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,25 +243,46 @@ public class SqlSessionAdviceRegister {
 
         aspectRule.setJoinpointRule(joinpointRule);
 
+        ToStringBuilder sqlSessionDesc = new ToStringBuilder();
+        sqlSessionDesc.append("executorType",
+                (executorType != null ? executorType : sqlSessionFactory.getConfiguration().getDefaultExecutorType()));
+        if (isolationLevel != null) {
+            sqlSessionDesc.append("isolationLevel", isolationLevel);
+        } else {
+            sqlSessionDesc.appendForce("autoCommit", autoCommit);
+        }
+        sqlSessionDesc.appendForce("readOnly", readOnly);
+        if (readOnly) {
+            sqlSessionDesc.appendForce("rollbackOnClose", readOnlyRollbackOnClose);
+        }
+
         AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
-        beforeAdviceRule.setAdviceAction("new SqlSessionAdvice()", activity -> {
-            SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
-            if (executorType != null) {
-                sqlSessionAdvice.setExecutorType(executorType);
+        beforeAdviceRule.setAdviceAction(new Executable() {
+            @Override
+            public Object execute(Activity activity) throws Exception {
+                SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
+                if (executorType != null) {
+                    sqlSessionAdvice.setExecutorType(executorType);
+                }
+                if (isolationLevel != null) {
+                    sqlSessionAdvice.setIsolationLevel(isolationLevel);
+                }
+                if (autoCommit) {
+                    sqlSessionAdvice.setAutoCommit(true);
+                }
+                if (readOnly) {
+                    sqlSessionAdvice.setReadOnly(true);
+                }
+                if (readOnlyRollbackOnClose) {
+                    sqlSessionAdvice.setReadOnlyRollbackOnClose(true);
+                }
+                return sqlSessionAdvice;
             }
-            if (isolationLevel != null) {
-                sqlSessionAdvice.setIsolationLevel(isolationLevel);
+
+            @Override
+            public void toString(@NonNull ToStringBuilder tsb) {
+                tsb.append("sqlSession", sqlSessionDesc);
             }
-            if (autoCommit) {
-                sqlSessionAdvice.setAutoCommit(true);
-            }
-            if (readOnly) {
-                sqlSessionAdvice.setReadOnly(true);
-            }
-            if (readOnlyRollbackOnClose) {
-                sqlSessionAdvice.setReadOnlyRollbackOnClose(true);
-            }
-            return sqlSessionAdvice;
         });
 
         AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();

@@ -97,8 +97,8 @@ public class EntityManagerAdvice {
         if (entityManager == null) {
             entityManager = entityManagerFactory.createEntityManager();
 
-            if (logger.isDebugEnabled()) {
-                logger.debug((arbitrarilyClosed ? "Reopen " : "Open ") +
+            if (logger.isTraceEnabled()) {
+                logger.trace((arbitrarilyClosed ? "Reopen " : "Open ") +
                         ObjectUtils.simpleIdentityToString(entityManager));
             }
 
@@ -125,8 +125,8 @@ public class EntityManagerAdvice {
             arbitrarilyClosed = arbitrarily;
             entityManager.close();
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Close {}", ObjectUtils.simpleIdentityToString(entityManager));
+            if (logger.isTraceEnabled()) {
+                logger.trace("Close {}", ObjectUtils.simpleIdentityToString(entityManager));
             }
 
             entityManager = null;
@@ -184,8 +184,8 @@ public class EntityManagerAdvice {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Begin transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
+            if (logger.isTraceEnabled()) {
+                logger.trace("Begin transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
             }
             transaction.begin();
             transactional = true;
@@ -199,8 +199,8 @@ public class EntityManagerAdvice {
         if (transactional) {
             EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Commit transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Commit transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
                 }
                 transaction.commit();
             }
@@ -215,8 +215,8 @@ public class EntityManagerAdvice {
         if (transactional) {
             EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Rollback transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Rollback transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
                 }
                 transaction.rollback();
             }
