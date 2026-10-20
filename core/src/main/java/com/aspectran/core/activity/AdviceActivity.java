@@ -391,7 +391,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         Executable action = adviceRule.getAdviceAction();
         if (action != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Advice {}", AdviceRule.toString(action, adviceRule));
+                logger.debug("Advice {}", adviceRule.toString(action));
             }
 
             AdviceRule oldAdviceRule = currentAdviceRule;
@@ -535,7 +535,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             Executable action = exceptionThrownRule.getAction();
             if (action != null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Advice {}", action);
+                    logger.debug("Advice {}", exceptionThrownRule.toString(action));
                 }
                 try {
                     if (action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) {

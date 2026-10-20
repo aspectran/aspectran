@@ -17,6 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
@@ -36,6 +37,7 @@ import org.jspecify.annotations.NonNull;
  * All actions are executed by the {@link Activity} engine and operate on the data
  * contained within the {@link com.aspectran.core.activity.Translet} context.</p>
  */
+@FunctionalInterface
 public interface Executable {
 
     /**
@@ -75,11 +77,13 @@ public interface Executable {
      * @param tsb the builder to append to
      */
     default void toString(@NonNull ToStringBuilder tsb) {
-        if (getActionType() != null) {
-            tsb.append(getActionType().toString(), this);
-        } else {
-            tsb.append("instance", toString());
+        if (getActionId() != null) {
+            tsb.append("id", getActionId());
         }
+        if (getActionType() != null) {
+            tsb.append("type", getActionType());
+        }
+        tsb.append("class", ObjectUtils.identityToString(this));
     }
 
 }

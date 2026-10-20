@@ -63,7 +63,7 @@ public class InvokeAction implements Executable {
      * Instantiates a new InvokeAction.
      * @param invokeActionRule the rule that defines the bean and method to invoke
      */
-    public InvokeAction(InvokeActionRule invokeActionRule) {
+    public InvokeAction(@NonNull InvokeActionRule invokeActionRule) {
         this.invokeActionRule = invokeActionRule;
     }
 

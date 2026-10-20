@@ -84,7 +84,10 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
 
     @Override
     public String toString() {
-        return AdviceRule.toString(this, adviceRule);
+        if (adviceRule == null) {
+            return super.toString();
+        }
+        return adviceRule.toString(this);
     }
 
 }

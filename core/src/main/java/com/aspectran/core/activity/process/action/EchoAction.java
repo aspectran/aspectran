@@ -36,7 +36,7 @@ public class EchoAction implements Executable {
      * Instantiates a new EchoAction.
      * @param echoActionRule the rule that defines the items to be evaluated
      */
-    public EchoAction(EchoActionRule echoActionRule) {
+    public EchoAction(@NonNull EchoActionRule echoActionRule) {
         this.echoActionRule = echoActionRule;
     }
 

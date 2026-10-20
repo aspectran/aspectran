@@ -44,7 +44,7 @@ public class IncludeAction implements Executable {
      * Instantiates a new IncludeAction.
      * @param includeActionRule the rule that defines the target translet to include
      */
-    public IncludeAction(IncludeActionRule includeActionRule) {
+    public IncludeAction(@NonNull IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
 

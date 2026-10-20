@@ -48,7 +48,7 @@ public class HeaderAction implements Executable {
      * Instantiates a new HeaderAction.
      * @param headerActionRule the rule that defines the headers to be set
      */
-    public HeaderAction(HeaderActionRule headerActionRule) {
+    public HeaderAction(@NonNull HeaderActionRule headerActionRule) {
         this.headerActionRule = headerActionRule;
     }
 

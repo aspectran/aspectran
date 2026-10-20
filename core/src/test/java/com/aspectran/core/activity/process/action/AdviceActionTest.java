@@ -110,7 +110,7 @@ class AdviceActionTest {
         Executable echoAction = adviceRule.putActionRule(echoActionRule);
 
         assertEquals("{type=before, aspect=webTransletSettings, echo={attributes=[staticCodes]}}",
-                AdviceRule.toString(echoAction, adviceRule));
+                adviceRule.toString(echoAction));
     }
 
     @Test
@@ -130,7 +130,7 @@ class AdviceActionTest {
         Executable headerAction = adviceRule.putActionRule(headerActionRule);
 
         assertEquals("{type=before, aspect=webSecuritySettings, header={headers=[X-Frame-Options]}}",
-                AdviceRule.toString(headerAction, adviceRule));
+                adviceRule.toString(headerAction));
     }
 
     @Test
@@ -143,7 +143,32 @@ class AdviceActionTest {
         adviceRule.setDescription("new SqlSessionAdvice()");
 
         assertEquals("{type=before, aspect=simpleTxAspect, action=new SqlSessionAdvice(), order=0}",
-                AdviceRule.toString(null, adviceRule));
+                adviceRule.toString(null));
+    }
+
+    @Test
+    void testAdviceActionWithNullAdviceRuleToString() throws NoSuchMethodException {
+        Method method = SampleAdvice.class.getMethod("checkPermission", Translet.class);
+        InvokeActionRule invokeActionRule = new InvokeActionRule();
+        invokeActionRule.setBeanId("sampleBean");
+        invokeActionRule.setMethod(method);
+
+        AdviceAction adviceAction = new AdviceAction(null, invokeActionRule);
+
+        assertEquals("{invoke={bean=sampleBean, method=" +
+                SampleAdvice.class.getName() + ".checkPermission(Translet)}}", adviceAction.toString());
+    }
+
+    @Test
+    void testAnnotatedAdviceActionWithNullAdviceRuleToString() throws NoSuchMethodException {
+        Method method = SampleAdvice.class.getMethod("checkPermission", Translet.class);
+        AnnotatedActionRule actionRule = new AnnotatedActionRule();
+        actionRule.setMethod(method);
+
+        AnnotatedAdviceAction adviceAction = new AnnotatedAdviceAction(null, actionRule);
+
+        assertEquals("{advice={method=" +
+                SampleAdvice.class.getName() + ".checkPermission(Translet)}}", adviceAction.toString());
     }
 
     public static class SampleAdvice {

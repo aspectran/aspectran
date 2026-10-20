@@ -78,7 +78,7 @@ public class AdviceAction extends InvokeAction {
 
     @Override
     public void toString(@NonNull ToStringBuilder tsb) {
-        if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
+        if (adviceRule == null || getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
             super.toString(tsb);
         } else {
             if (getInvokeActionRule().getMethod() != null) {
@@ -96,7 +96,10 @@ public class AdviceAction extends InvokeAction {
 
     @Override
     public String toString() {
-        return AdviceRule.toString(this, adviceRule);
+        if (adviceRule == null) {
+            return super.toString();
+        }
+        return adviceRule.toString(this);
     }
 
 }

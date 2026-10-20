@@ -43,7 +43,7 @@ public class AnnotatedAction implements Executable {
      * Instantiates a new AnnotatedAction.
      * @param annotatedActionRule the rule that defines this annotated action
      */
-    public AnnotatedAction(AnnotatedActionRule annotatedActionRule) {
+    public AnnotatedAction(@NonNull AnnotatedActionRule annotatedActionRule) {
         this.annotatedActionRule = annotatedActionRule;
     }
 
