@@ -292,11 +292,11 @@ public abstract class AdviceActivity extends AbstractActivity {
      * the beginning of the activity execution phase.</p>
      * @throws AdviceException if an error occurs during advice execution
      */
-    protected void executeBeforeAdvice() throws AdviceException {
+    protected void executeBeforeAdvices() throws AdviceException {
         setCurrentAdviceType(AdviceType.BEFORE);
         List<AdviceRule> adviceRuleList = getBeforeAdviceRuleList();
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
-            executeAdvice(adviceRuleList);
+            executeAdvices(adviceRuleList);
         }
     }
 
@@ -305,11 +305,11 @@ public abstract class AdviceActivity extends AbstractActivity {
      * <p>Sets the current advice type to {@link AdviceType#AFTER} only if advice rules exist.</p>
      * @throws AdviceException if an error occurs during advice execution
      */
-    protected void executeAfterAdvice() throws AdviceException {
+    protected void executeAfterAdvices() throws AdviceException {
         List<AdviceRule> adviceRuleList = getAfterAdviceRuleList();
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
             setCurrentAdviceType(AdviceType.AFTER);
-            executeAdvice(adviceRuleList);
+            executeAdvices(adviceRuleList);
         }
     }
 
@@ -318,12 +318,12 @@ public abstract class AdviceActivity extends AbstractActivity {
      * <p>Sets the current advice type to {@link AdviceType#FINALLY} during execution,
      * and resets it to {@code null} afterwards.</p>
      */
-    protected void executeFinallyAdvice() {
+    protected void executeFinallyAdvices() {
         List<AdviceRule> adviceRuleList = getFinallyAdviceRuleList();
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
             setCurrentAdviceType(AdviceType.FINALLY);
             try {
-                executeAdvice(adviceRuleList);
+                executeAdvices(adviceRuleList);
             } catch (AdviceException ignored) {
                 // FINALLY advice suppresses exceptions internally and never throws AdviceException
             }
@@ -336,7 +336,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param adviceRuleList the list of advice rules to execute
      * @throws AdviceException if an error occurs during advice execution
      */
-    private void executeAdvice(@NonNull List<AdviceRule> adviceRuleList) throws AdviceException {
+    private void executeAdvices(@NonNull List<AdviceRule> adviceRuleList) throws AdviceException {
         while (true) {
             AdviceRule adviceRuleToUse = null;
             if (executedAdviceRules == null) {
