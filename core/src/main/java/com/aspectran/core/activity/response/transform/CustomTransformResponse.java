@@ -109,6 +109,9 @@ public class CustomTransformResponse implements Response {
 
     @Override
     public String toString() {
+        if (customTransformRule == null) {
+            return super.toString();
+        }
         return customTransformRule.toString();
     }
 

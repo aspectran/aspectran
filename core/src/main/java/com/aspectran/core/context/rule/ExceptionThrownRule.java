@@ -29,6 +29,7 @@ import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Defines a rule for handling a specific type of exception.
@@ -173,21 +174,21 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Executable putActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(@NonNull HeaderActionRule headerActionRule) {
         Executable action = new HeaderAction(headerActionRule);
         this.action = action;
         return action;
     }
 
     @Override
-    public Executable putActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(@NonNull EchoActionRule echoActionRule) {
         Executable action = new EchoAction(echoActionRule);
         this.action = action;
         return action;
     }
 
     @Override
-    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(@NonNull InvokeActionRule invokeActionRule) {
         InvokeAction action;
         if (adviceRule != null) {
             if (adviceRule.getAdviceBeanId() == null && adviceRule.getAdviceBeanClass() == null &&
@@ -233,7 +234,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Response putResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(@NonNull TransformRule transformRule) {
         Response response = TransformResponseFactory.create(transformRule);
         touchResponseMap().put(transformRule.getContentType(), response);
         if (transformRule.isDefaultResponse()) {
@@ -246,7 +247,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Response putResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(@NonNull DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         touchResponseMap().put(dispatchRule.getContentType(), response);
         if (dispatchRule.isDefaultResponse()) {
@@ -267,7 +268,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Response putResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(@NonNull RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
         touchResponseMap().put(redirectRule.getContentType(), response);
         if (redirectRule.isDefaultResponse()) {
@@ -282,8 +283,38 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("types", exceptionTypes);
+        if (exceptionTypes != null && exceptionTypes.length > 0) {
+            tsb.append("types", exceptionTypes);
+        }
         tsb.append("action", action);
+        if (responseMap != null && !responseMap.isEmpty()) {
+            tsb.append("responses", responseMap.keySet());
+        }
+        tsb.append("defaultResponse", defaultResponse);
+        return tsb.toString();
+    }
+
+    /**
+     * Generates a string representation of the current ExceptionThrownRule instance,
+     * containing its type, aspect ID, description, and other relevant attributes.
+     * @param adviceAction the executable action associated with the advice,
+     *      used to generate additional string content if the description is not set
+     * @return the string representation of the ExceptionThrownRule instance
+     */
+    public String toString(@Nullable Executable adviceAction) {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (adviceRule != null) {
+            tsb.append("type", adviceRule.getAdviceType());
+            tsb.append("aspect", adviceRule.getAspectId());
+            if (adviceRule.getDescription() != null) {
+                tsb.append("action", adviceRule.getDescription());
+            } else if (adviceAction != null) {
+                adviceAction.toString(tsb);
+            }
+        }
+        if (exceptionTypes != null && exceptionTypes.length > 0) {
+            tsb.append("exceptionTypes", exceptionTypes);
+        }
         if (responseMap != null && !responseMap.isEmpty()) {
             tsb.append("responses", responseMap.keySet());
         }

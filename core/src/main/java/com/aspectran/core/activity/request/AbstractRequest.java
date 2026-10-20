@@ -22,6 +22,7 @@ import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
+import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public abstract class AbstractRequest {
      * Creates a new request with the specified method type.
      * @param requestMethod the request method (e.g., GET, POST)
      */
-    public AbstractRequest(MethodType requestMethod) {
+    public AbstractRequest(@Nullable MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 

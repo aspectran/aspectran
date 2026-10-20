@@ -36,6 +36,7 @@ import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,10 +99,7 @@ public abstract class AbstractActivity implements Activity {
      * @param context the activity context
      * @throws IllegalArgumentException if the context is null
      */
-    protected AbstractActivity(ActivityContext context) {
-        if (context == null) {
-            throw new IllegalArgumentException("context must not be null");
-        }
+    protected AbstractActivity(@NonNull ActivityContext context) {
         this.context = context;
     }
 

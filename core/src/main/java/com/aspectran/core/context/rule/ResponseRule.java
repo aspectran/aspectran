@@ -29,6 +29,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.charset.Charset;
 
@@ -118,37 +119,37 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
     }
 
     @Override
-    public Executable putActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(@NonNull HeaderActionRule headerActionRule) {
         return touchActionList().putActionRule(headerActionRule);
     }
 
     @Override
-    public Executable putActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(@NonNull EchoActionRule echoActionRule) {
         return touchActionList().putActionRule(echoActionRule);
     }
 
     @Override
-    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(@NonNull InvokeActionRule invokeActionRule) {
         return touchActionList().putActionRule(invokeActionRule);
     }
 
     @Override
-    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(@NonNull AnnotatedActionRule annotatedActionRule) {
         return touchActionList().putActionRule(annotatedActionRule);
     }
 
     @Override
-    public Executable putActionRule(IncludeActionRule includeActionRule) {
+    public Executable putActionRule(@NonNull IncludeActionRule includeActionRule) {
         return touchActionList().putActionRule(includeActionRule);
     }
 
     @Override
-    public Executable putActionRule(ChooseRule chooseRule) {
+    public Executable putActionRule(@NonNull ChooseRule chooseRule) {
         return touchActionList().putActionRule(chooseRule);
     }
 
     @Override
-    public void putActionRule(Executable action) {
+    public void putActionRule(@NonNull Executable action) {
         touchActionList().putActionRule(action);
     }
 
@@ -188,28 +189,28 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
     }
 
     @Override
-    public Response putResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(@NonNull TransformRule transformRule) {
         Response response = TransformResponseFactory.create(transformRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response putResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(@NonNull DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response putResponseRule(ForwardRule forwardRule) {
+    public Response putResponseRule(@NonNull ForwardRule forwardRule) {
         Response response = new ForwardResponse(forwardRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response putResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(@NonNull RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
         this.response = response;
         return response;
@@ -237,7 +238,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
      * @throws IllegalRuleException if the encoding is unsupported
      */
     @NonNull
-    public static ResponseRule newInstance(String name, String encoding) throws IllegalRuleException {
+    public static ResponseRule newInstance(@Nullable String name, String encoding) throws IllegalRuleException {
         if (encoding != null) {
             try {
                 Charset.forName(encoding);
@@ -258,7 +259,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
      * @return a new ResponseRule instance
      */
     @NonNull
-    public static ResponseRule newInstance(TransformRule transformRule) {
+    public static ResponseRule newInstance(@NonNull TransformRule transformRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.putResponseRule(transformRule);
         return responseRule;
@@ -270,7 +271,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
      * @return a new ResponseRule instance
      */
     @NonNull
-    public static ResponseRule newInstance(DispatchRule dispatchRule) {
+    public static ResponseRule newInstance(@NonNull DispatchRule dispatchRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.putResponseRule(dispatchRule);
         return responseRule;
@@ -282,7 +283,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
      * @return a new ResponseRule instance
      */
     @NonNull
-    public static ResponseRule newInstance(ForwardRule forwardRule) {
+    public static ResponseRule newInstance(@NonNull ForwardRule forwardRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.putResponseRule(forwardRule);
         return responseRule;
@@ -294,7 +295,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
      * @return a new ResponseRule instance
      */
     @NonNull
-    public static ResponseRule newInstance(RedirectRule redirectRule) {
+    public static ResponseRule newInstance(@NonNull RedirectRule redirectRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.putResponseRule(redirectRule);
         return responseRule;
@@ -306,7 +307,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
      * @return a new ResponseRule instance
      */
     @NonNull
-    public static ResponseRule newInstance(CustomTransformResponse response) {
+    public static ResponseRule newInstance(@NonNull CustomTransformResponse response) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.setResponse(response);
         return responseRule;

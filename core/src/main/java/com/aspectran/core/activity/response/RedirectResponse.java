@@ -20,7 +20,9 @@ import com.aspectran.core.activity.FlashMap;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,8 @@ public class RedirectResponse implements Response {
      * Instantiates a new RedirectResponse.
      * @param redirectRule the rule that defines the redirect target and parameters
      */
-    public RedirectResponse(RedirectRule redirectRule) {
+    public RedirectResponse(@NonNull RedirectRule redirectRule) {
+        Assert.notNull(redirectRule, "redirectRule must not be null");
         this.redirectRule = redirectRule;
     }
 
@@ -94,11 +97,7 @@ public class RedirectResponse implements Response {
 
     @Override
     public String getContentType() {
-        if (redirectRule != null) {
-            return redirectRule.getContentType();
-        } else {
-            return null;
-        }
+        return redirectRule.getContentType();
     }
 
     @Override
@@ -116,6 +115,9 @@ public class RedirectResponse implements Response {
 
     @Override
     public String toString() {
+        if (redirectRule == null) {
+            return super.toString();
+        }
         return redirectRule.toString();
     }
 

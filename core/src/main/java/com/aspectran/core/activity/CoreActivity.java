@@ -557,9 +557,7 @@ public class CoreActivity extends AdviceActivity {
                 logger.error("Failed to execute exception handling rule for Translet {}", getTransletRule(), e);
             }
         }
-        if (getExceptionRuleList() != null) {
-            handleException(getExceptionRuleList());
-        }
+        handleException(getExceptionRuleList());
     }
 
     @Override

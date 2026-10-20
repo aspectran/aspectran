@@ -109,21 +109,21 @@ public class AdviceRule implements HasActionRules {
     }
 
     @Override
-    public Executable putActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(@NonNull HeaderActionRule headerActionRule) {
         adviceAction = new HeaderAction(headerActionRule);
         registerExceptionThrownRuleIfNeeded();
         return adviceAction;
     }
 
     @Override
-    public Executable putActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(@NonNull EchoActionRule echoActionRule) {
         adviceAction = new EchoAction(echoActionRule);
         registerExceptionThrownRuleIfNeeded();
         return adviceAction;
     }
 
     @Override
-    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(@NonNull InvokeActionRule invokeActionRule) {
         if (adviceBeanId == null && adviceBeanClass == null &&
                 invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
             throw new IllegalStateException("No bean specified for an invoke action. An invoke action " +
@@ -238,35 +238,41 @@ public class AdviceRule implements HasActionRules {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", adviceType);
-        tsb.append("bean", adviceBeanId);
-        if (adviceBeanId == null) {
+        if (adviceBeanId != null) {
+            tsb.append("bean", adviceBeanId);
+        } else if (adviceBeanClass != null) {
             tsb.append("bean", adviceBeanClass);
         }
         if (description != null) {
             tsb.append("action", description);
-        } else {
-            tsb.append("action", toString(adviceAction, null));
+        } else if (adviceAction != null) {
+            adviceAction.toString(tsb);
         }
         return tsb.toString();
     }
 
-    public static String toString(Executable adviceAction, @Nullable AdviceRule adviceRule) {
+    /**
+     * Generates a string representation of the current AdviceRule instance,
+     * containing its type, aspect ID, description, and other relevant attributes.
+     * @param adviceAction the executable action associated with the advice,
+     *      used to generate additional string content if the description is not set
+     * @return the string representation of the AdviceRule instance
+     */
+    public String toString(@Nullable Executable adviceAction) {
         ToStringBuilder tsb = new ToStringBuilder();
-        if (adviceRule != null) {
-            tsb.append("type", adviceRule.getAdviceType());
-            tsb.append("aspect", adviceRule.getAspectId());
-        }
-        if (adviceRule != null && adviceRule.getDescription() != null) {
-            tsb.append("action", adviceRule.getDescription());
+        tsb.append("type", adviceType);
+        tsb.append("aspect", aspectId);
+        if (description != null) {
+            tsb.append("action", description);
         } else if (adviceAction != null) {
             adviceAction.toString(tsb);
         }
-        if (adviceRule != null && adviceRule.getAspectRule() != null) {
-            int order = adviceRule.getAspectRule().getOrder();
+        if (aspectRule != null) {
+            int order = aspectRule.getOrder();
             if (order != Integer.MAX_VALUE) {
                 tsb.append("order", order);
             }
-            tsb.append("isolated", adviceRule.getAspectRule().getIsolated());
+            tsb.append("isolated", aspectRule.getIsolated());
         }
         return tsb.toString();
     }

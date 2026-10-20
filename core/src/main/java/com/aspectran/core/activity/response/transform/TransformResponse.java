@@ -21,6 +21,7 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.Assert;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,8 @@ public abstract class TransformResponse implements Response {
      * Instantiates a new TransformResponse.
      * @param transformRule the transform rule
      */
-    public TransformResponse(TransformRule transformRule) {
+    public TransformResponse(@NonNull TransformRule transformRule) {
+        Assert.notNull(transformRule, "transformRule must not be null");
         this.transformRule = transformRule;
     }
 
@@ -100,6 +102,9 @@ public abstract class TransformResponse implements Response {
 
     @Override
     public String toString() {
+        if (transformRule == null) {
+            return super.toString();
+        }
         return transformRule.toString();
     }
 

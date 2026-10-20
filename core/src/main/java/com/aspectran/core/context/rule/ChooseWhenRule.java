@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a single conditional case within a {@link ChooseRule}.
@@ -112,37 +113,37 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Executable putActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(@NonNull HeaderActionRule headerActionRule) {
         return touchActionList().putActionRule(headerActionRule);
     }
 
     @Override
-    public Executable putActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(@NonNull EchoActionRule echoActionRule) {
         return touchActionList().putActionRule(echoActionRule);
     }
 
     @Override
-    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(@NonNull InvokeActionRule invokeActionRule) {
         return touchActionList().putActionRule(invokeActionRule);
     }
 
     @Override
-    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(@NonNull AnnotatedActionRule annotatedActionRule) {
         return touchActionList().putActionRule(annotatedActionRule);
     }
 
     @Override
-    public Executable putActionRule(IncludeActionRule includeActionRule) {
+    public Executable putActionRule(@NonNull IncludeActionRule includeActionRule) {
         return touchActionList().putActionRule(includeActionRule);
     }
 
     @Override
-    public Executable putActionRule(ChooseRule chooseRule) {
+    public Executable putActionRule(@NonNull ChooseRule chooseRule) {
         return touchActionList().putActionRule(chooseRule);
     }
 
     @Override
-    public void putActionRule(Executable action) {
+    public void putActionRule(@NonNull Executable action) {
         touchActionList().putActionRule(action);
     }
 
@@ -158,28 +159,28 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Response putResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(@NonNull TransformRule transformRule) {
         Response response = TransformResponseFactory.create(transformRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response putResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(@NonNull DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response putResponseRule(ForwardRule forwardRule) {
+    public Response putResponseRule(@NonNull ForwardRule forwardRule) {
         Response response = new ForwardResponse(forwardRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response putResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(@NonNull RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
         this.response = response;
         return response;

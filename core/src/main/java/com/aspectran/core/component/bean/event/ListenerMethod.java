@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean.event;
 
 import com.aspectran.core.component.bean.annotation.EventListener;
 import com.aspectran.utils.ExceptionUtils;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +39,7 @@ public class ListenerMethod {
      * @param bean the bean instance
      * @param method the listener method
      */
-    ListenerMethod(Object bean, Method method) {
+    ListenerMethod(@NonNull Object bean, @NonNull Method method) {
         this.bean = bean;
         this.method = method;
     }

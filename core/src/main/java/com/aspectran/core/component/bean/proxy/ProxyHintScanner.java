@@ -150,7 +150,7 @@ public abstract class ProxyHintScanner {
      * @param iface the interface to inspect
      * @param allInterfaces the list to populate with discovered interfaces
      */
-    private static void getAllInterfaces(@NonNull Class<?> iface, List<Class<?>> allInterfaces) {
+    private static void getAllInterfaces(@NonNull Class<?> iface, @NonNull List<Class<?>> allInterfaces) {
         for (Class<?> superIface : iface.getInterfaces()) {
             if (!allInterfaces.contains(superIface)) {
                 allInterfaces.add(superIface);

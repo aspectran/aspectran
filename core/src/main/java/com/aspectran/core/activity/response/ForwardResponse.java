@@ -19,6 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.Assert;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +47,8 @@ public class ForwardResponse implements Response {
      * Instantiates a new ForwardResponse.
      * @param forwardRule the rule that defines the forwarding target and attributes
      */
-    public ForwardResponse(ForwardRule forwardRule) {
+    public ForwardResponse(@NonNull ForwardRule forwardRule) {
+        Assert.notNull(forwardRule, "forwardRule must not be null");
         this.forwardRule = forwardRule;
     }
 
@@ -78,11 +81,7 @@ public class ForwardResponse implements Response {
 
     @Override
     public String getContentType() {
-        if (forwardRule != null) {
-            return forwardRule.getContentType();
-        } else {
-            return null;
-        }
+        return forwardRule.getContentType();
     }
 
     @Override
@@ -100,6 +99,9 @@ public class ForwardResponse implements Response {
 
     @Override
     public String toString() {
+        if (forwardRule == null) {
+            return super.toString();
+        }
         return forwardRule.toString();
     }
 

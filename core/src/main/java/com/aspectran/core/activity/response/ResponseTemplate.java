@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public class ResponseTemplate implements Response, ResponseAdapter {
      * @param responseAdapter the underlying {@code ResponseAdapter} to use for generating the response
      */
     public ResponseTemplate(@NonNull ResponseAdapter responseAdapter) {
+        Assert.notNull(responseAdapter, "responseAdapter must not be null");
         this.responseAdapter = responseAdapter;
     }
 

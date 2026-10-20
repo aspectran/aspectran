@@ -178,6 +178,9 @@ public class DispatchResponse implements Response {
 
     @Override
     public String toString() {
+        if (dispatchRule == null) {
+            return super.toString();
+        }
         return dispatchRule.toString();
     }
 

@@ -280,37 +280,37 @@ public class TransletRule
     }
 
     @Override
-    public Executable putActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(@NonNull HeaderActionRule headerActionRule) {
         return touchActionList().putActionRule(headerActionRule);
     }
 
     @Override
-    public Executable putActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(@NonNull EchoActionRule echoActionRule) {
         return touchActionList().putActionRule(echoActionRule);
     }
 
     @Override
-    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(@NonNull InvokeActionRule invokeActionRule) {
         return touchActionList().putActionRule(invokeActionRule);
     }
 
     @Override
-    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(@NonNull AnnotatedActionRule annotatedActionRule) {
         return touchActionList().putActionRule(annotatedActionRule);
     }
 
     @Override
-    public Executable putActionRule(IncludeActionRule includeActionRule) {
+    public Executable putActionRule(@NonNull IncludeActionRule includeActionRule) {
         return touchActionList().putActionRule(includeActionRule);
     }
 
     @Override
-    public Executable putActionRule(ChooseRule chooseRule) {
+    public Executable putActionRule(@NonNull ChooseRule chooseRule) {
         return touchActionList().putActionRule(chooseRule);
     }
 
     @Override
-    public void putActionRule(Executable action) {
+    public void putActionRule(@NonNull Executable action) {
         touchActionList().putActionRule(action);
     }
 
@@ -376,7 +376,7 @@ public class TransletRule
      * Adds a response rule to the list.
      * @param responseRule the response rule to add
      */
-    public void addResponseRule(ResponseRule responseRule) {
+    public void addResponseRule(@NonNull ResponseRule responseRule) {
         if (responseRuleList == null) {
             responseRuleList = new ArrayList<>();
         }
@@ -384,7 +384,7 @@ public class TransletRule
     }
 
     @Override
-    public Response putResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(@NonNull TransformRule transformRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);
         }
@@ -392,7 +392,7 @@ public class TransletRule
     }
 
     @Override
-    public Response putResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(@NonNull DispatchRule dispatchRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);
         }
@@ -400,7 +400,7 @@ public class TransletRule
     }
 
     @Override
-    public Response putResponseRule(ForwardRule forwardRule) {
+    public Response putResponseRule(@NonNull ForwardRule forwardRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);
         }
@@ -408,7 +408,7 @@ public class TransletRule
     }
 
     @Override
-    public Response putResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(@NonNull RedirectRule redirectRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);
         }
