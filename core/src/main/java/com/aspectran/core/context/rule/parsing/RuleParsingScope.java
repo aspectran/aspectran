@@ -31,7 +31,7 @@ import java.util.Set;
  *
  * <p>Created: 2015. 10. 2.</p>
  */
-public class RuleParsingScope implements Replicable<RuleParsingScope>, Describable {
+public class RuleParsingScope implements Describable, Replicable<RuleParsingScope> {
 
     private final RuleParsingContext ruleParsingContext;
 

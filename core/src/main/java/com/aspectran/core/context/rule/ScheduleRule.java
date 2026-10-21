@@ -215,6 +215,11 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     @Override
+    public BeanRefererType getBeanRefererType() {
+        return BEAN_REFERER_TYPE;
+    }
+
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
@@ -222,11 +227,6 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
-    }
-
-    @Override
-    public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERER_TYPE;
     }
 
     @Override

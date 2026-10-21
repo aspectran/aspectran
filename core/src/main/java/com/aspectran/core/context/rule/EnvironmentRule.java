@@ -28,7 +28,7 @@ import org.jspecify.annotations.NonNull;
  *
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
-public class EnvironmentRule implements Describable, HasPropertyRules {
+public class EnvironmentRule implements HasPropertyRules, Describable {
 
     private String profile;
 

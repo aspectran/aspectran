@@ -98,7 +98,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 if (object instanceof ItemRuleMap irm) {
                     irm.putItemRule(itemRule);
                 }  else if (object instanceof TransletRule transletRule) {
-                    RequestRule requestRule = transletRule.touchRequestRule(false);
+                    RequestRule requestRule = transletRule.touchRequestRule();
                     if (getName().equals(ParameterNodeletAdder.instance().getName())) {
                         requestRule.addParameterItemRule(itemRule);
                     } else if (getName().equals(AttributeNodeletAdder.instance().getName())) {

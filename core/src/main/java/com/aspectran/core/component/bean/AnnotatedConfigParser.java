@@ -725,7 +725,7 @@ public class AnnotatedConfigParser {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
                 }
             }
-            transletRule.touchRequestRule(false).setParameterItemRuleMap(itemRuleMap);
+            transletRule.touchRequestRule().setParameterItemRuleMap(itemRuleMap);
         }
 
         AttrItem[] attrItemAnnos = method.getAnnotationsByType(AttrItem.class);
@@ -737,7 +737,7 @@ public class AnnotatedConfigParser {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
                 }
             }
-            transletRule.touchRequestRule(false).setAttributeItemRuleMap(itemRuleMap);
+            transletRule.touchRequestRule().setAttributeItemRuleMap(itemRuleMap);
         }
 
         Multipart multipartAnno = method.getAnnotation(Multipart.class);
@@ -745,13 +745,13 @@ public class AnnotatedConfigParser {
             multipartAnno = beanClass.getAnnotation(Multipart.class);
         }
         if (multipartAnno != null) {
-            transletRule.touchRequestRule(false).setMultipartFormDataParser(multipartAnno.value());
+            transletRule.touchRequestRule().setMultipartFormDataParser(multipartAnno.value());
         } else {
             for (Class<?> paramType : method.getParameterTypes()) {
                 if (FileParameter.class.isAssignableFrom(paramType) ||
                         (paramType.isArray() && FileParameter.class.isAssignableFrom(paramType.getComponentType())) ||
                         FileParameterMap.class.isAssignableFrom(paramType)) {
-                    transletRule.touchRequestRule(false).setMultipartFormDataParser("");
+                    transletRule.touchRequestRule().setMultipartFormDataParser("");
                     break;
                 }
             }

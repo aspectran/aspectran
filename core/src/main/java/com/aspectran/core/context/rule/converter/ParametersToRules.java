@@ -579,7 +579,7 @@ public class ParametersToRules {
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                RequestRule requestRule = transletRule.touchRequestRule(false);
+                RequestRule requestRule = transletRule.touchRequestRule();
                 irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, requestRule.getParameterItemRuleMap());
                 requestRule.setParameterItemRuleMap(irm);
             }
@@ -589,7 +589,7 @@ public class ParametersToRules {
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                RequestRule requestRule = transletRule.touchRequestRule(false);
+                RequestRule requestRule = transletRule.touchRequestRule();
                 irm = ruleParsingContext.getRuleProfileEvaluator().merge(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }

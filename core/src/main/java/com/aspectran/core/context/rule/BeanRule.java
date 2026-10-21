@@ -43,7 +43,7 @@ import java.util.List;
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Describable, HasArgumentRules, HasPropertyRules {
+public class BeanRule implements HasArgumentRules, HasPropertyRules, Replicable<BeanRule>, BeanReferenceable, Describable {
 
     public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
@@ -91,10 +91,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     private String[] dependsOn;
 
-    private ItemRuleMap argumentItemRuleMap;
-
-    private ItemRuleMap propertyItemRuleMap;
-
     private Boolean lazyInit;
 
     private Boolean lazyDestroy;
@@ -110,6 +106,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     private boolean innerBean;
 
     private Boolean proxied;
+
+    private ItemRuleMap argumentItemRuleMap;
+
+    private ItemRuleMap propertyItemRuleMap;
 
     private List<AutowireRule> autowireRuleList;
 
@@ -364,7 +364,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
      * @return true if a factory is required
      */
     public boolean isFactoryProductionRequired() {
-        return (!isFactoryOffered() && (isFactoryBean() || getFactoryMethod() != null));
+        return (!factoryOffered && (factoryBean || factoryMethod != null));
+    }
+
+    /**
+     * Returns whether this bean can be created by a factory.
+     * @return true if this bean can be created by a factory; false otherwise
+     */
+    public boolean isFactoryable() {
+        return (factoryOffered || factoryBean || factoryMethod != null);
     }
 
     /**
@@ -372,7 +380,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
      * @return the target bean class
      */
     public Class<?> getTargetBeanClass() {
-        return (targetBeanClass != null ?  targetBeanClass : beanClass);
+        return (targetBeanClass != null ? targetBeanClass : beanClass);
     }
 
     /**
@@ -573,58 +581,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return BooleanUtils.toBoolean(important);
     }
 
-    @Override
-    public ItemRuleMap getArgumentItemRuleMap() {
-        return argumentItemRuleMap;
-    }
-
-    @Override
-    public void setArgumentItemRuleMap(ItemRuleMap constructorArgumentItemRuleMap) {
-        this.argumentItemRuleMap = constructorArgumentItemRuleMap;
-    }
-
-    @Override
-    public void addArgumentItemRule(ItemRule constructorArgumentItemRule) {
-        if (argumentItemRuleMap == null) {
-            argumentItemRuleMap = new ItemRuleMap();
-        }
-        argumentItemRuleMap.putItemRule(constructorArgumentItemRule);
-    }
-
-    @Override
-    public ItemRule newArgumentItemRule(String argumentName) {
-        throw new UnsupportedOperationException("Argument name not supported");
-    }
-
-    /**
-     * Adds a new constructor argument item rule and returns it.
-     * @return the constructor argument item rule
-     */
-    public ItemRule newArgumentItemRule() {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setAutoNamed(true);
-        addArgumentItemRule(itemRule);
-        return itemRule;
-    }
-
-    @Override
-    public ItemRuleMap getPropertyItemRuleMap() {
-        return propertyItemRuleMap;
-    }
-
-    @Override
-    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-        this.propertyItemRuleMap = propertyItemRuleMap;
-    }
-
-    @Override
-    public void addPropertyItemRule(ItemRule propertyItemRule) {
-        if (propertyItemRuleMap == null) {
-            propertyItemRuleMap = new ItemRuleMap();
-        }
-        propertyItemRuleMap.putItemRule(propertyItemRule);
-    }
-
     /**
      * Returns whether this bean implements FactoryBean.
      * @return true if the bean class implements FactoryBean
@@ -689,12 +645,56 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         this.proxied = proxied;
     }
 
+    @Override
+    public ItemRuleMap getArgumentItemRuleMap() {
+        return argumentItemRuleMap;
+    }
+
+    @Override
+    public void setArgumentItemRuleMap(ItemRuleMap constructorArgumentItemRuleMap) {
+        this.argumentItemRuleMap = constructorArgumentItemRuleMap;
+    }
+
+    @Override
+    public void addArgumentItemRule(ItemRule constructorArgumentItemRule) {
+        if (argumentItemRuleMap == null) {
+            argumentItemRuleMap = new ItemRuleMap();
+        }
+        argumentItemRuleMap.putItemRule(constructorArgumentItemRule);
+    }
+
+    @Override
+    public ItemRule newArgumentItemRule(String argumentName) {
+        throw new UnsupportedOperationException("Named constructor argument is not supported");
+    }
+
     /**
-     * Returns whether this bean can be created by a factory.
-     * @return true if this bean can be created by a factory; false otherwise
+     * Adds a new constructor argument item rule and returns it.
+     * @return the constructor argument item rule
      */
-    public boolean isFactoryable() {
-        return (factoryOffered || factoryBean || factoryMethod != null);
+    public ItemRule newArgumentItemRule() {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setAutoNamed(true);
+        addArgumentItemRule(itemRule);
+        return itemRule;
+    }
+
+    @Override
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
+    }
+
+    @Override
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
+    }
+
+    @Override
+    public void addPropertyItemRule(ItemRule propertyItemRule) {
+        if (propertyItemRuleMap == null) {
+            propertyItemRuleMap = new ItemRuleMap();
+        }
+        propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
     /**
@@ -781,13 +781,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     @Override
-    public DescriptionRule getDescriptionRule() {
-        return descriptionRule;
-    }
-
-    @Override
-    public void setDescriptionRule(DescriptionRule descriptionRule) {
-        this.descriptionRule = descriptionRule;
+    public BeanRefererType getBeanRefererType() {
+        return BEAN_REFERER_TYPE;
     }
 
     @Override
@@ -796,8 +791,13 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     @Override
-    public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERER_TYPE;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
+    }
+
+    @Override
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
     @Override

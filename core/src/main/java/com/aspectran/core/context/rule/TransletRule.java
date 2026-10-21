@@ -100,16 +100,16 @@ public class TransletRule
     }
 
     /**
-     * Returns the array of HTTP methods allowed for this translet.
-     * @return the allowed methods
+     * Returns the array of request methods allowed for this translet.
+     * @return the allowed request methods
      */
     public MethodType[] getAllowedMethods() {
         return allowedMethods;
     }
 
     /**
-     * Sets the array of HTTP methods allowed for this translet.
-     * @param allowedMethods the allowed methods
+     * Sets the array of request methods allowed for this translet.
+     * @param allowedMethods the allowed request methods
      */
     public void setAllowedMethods(MethodType[] allowedMethods) {
         this.allowedMethods = allowedMethods;
@@ -204,6 +204,14 @@ public class TransletRule
     }
 
     /**
+     * Returns whether this translet should be executed asynchronously.
+     * @return a Boolean indicating whether the processing is asynchronous.
+     */
+    public Boolean getAsync() {
+        return async;
+    }
+
+    /**
      * Sets whether this translet should be executed asynchronously.
      * @param async true for asynchronous execution
      */
@@ -245,12 +253,11 @@ public class TransletRule
 
     /**
      * Gets the request rule, creating it if it does not exist.
-     * @param explicit whether the rule is explicitly defined
      * @return the request rule
      */
-    public RequestRule touchRequestRule(boolean explicit) {
+    public RequestRule touchRequestRule() {
         if (requestRule == null) {
-            requestRule = RequestRule.newInstance(explicit);
+            requestRule = RequestRule.newInstance(false);
         }
         return requestRule;
     }
@@ -482,6 +489,16 @@ public class TransletRule
     }
 
     @Override
+    public TransletRule replicate() {
+        return replicate(this);
+    }
+
+    @Override
+    public BeanRefererType getBeanRefererType() {
+        return BeanRefererType.TRANSLET_RULE;
+    }
+
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
@@ -489,11 +506,6 @@ public class TransletRule
     @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
-    }
-
-    @Override
-    public TransletRule replicate() {
-        return replicate(this);
     }
 
     @Override
@@ -526,7 +538,7 @@ public class TransletRule
      * @param name the translet name
      * @param scanPath the path to scan for dynamic translets
      * @param maskPattern the pattern to exclude from scanning
-     * @param method the allowed HTTP methods
+     * @param method the allowed request methods
      * @param async whether to execute asynchronously
      * @param timeout the timeout for async execution
      * @return a new TransletRule instance
@@ -544,7 +556,7 @@ public class TransletRule
      * @param name the translet name
      * @param scanPath the path to scan for dynamic translets
      * @param maskPattern the pattern to exclude from scanning
-     * @param method the allowed HTTP methods
+     * @param method the allowed request methods
      * @param async whether to execute asynchronously
      * @param timeout the timeout for async execution
      * @return a new TransletRule instance
@@ -562,7 +574,7 @@ public class TransletRule
      * @param name the translet name
      * @param scanPath the path to scan for dynamic translets
      * @param maskPattern the pattern to exclude from scanning
-     * @param allowedMethods the allowed HTTP methods
+     * @param allowedMethods the allowed request methods
      * @param async whether to execute asynchronously
      * @param timeout the timeout for async execution
      * @return a new TransletRule instance
@@ -578,7 +590,7 @@ public class TransletRule
     /**
      * Creates a new instance of TransletRule.
      * @param name the translet name
-     * @param allowedMethods the allowed HTTP methods
+     * @param allowedMethods the allowed request methods
      * @param async whether to execute asynchronously
      * @param timeout the timeout for async execution
      * @return a new TransletRule instance
@@ -716,11 +728,6 @@ public class TransletRule
             }
         }
         return rr;
-    }
-
-    @Override
-    public BeanRefererType getBeanRefererType() {
-        return BeanRefererType.TRANSLET_RULE;
     }
 
 }

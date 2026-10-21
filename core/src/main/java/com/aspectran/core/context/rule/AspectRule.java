@@ -83,7 +83,7 @@ import java.util.List;
  * &lt;aspect&gt;
  * </pre></p>
  */
-public class AspectRule implements BeanReferenceable, Describable {
+public class AspectRule implements Describable, BeanReferenceable {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.ASPECT_RULE;
 
@@ -452,6 +452,11 @@ public class AspectRule implements BeanReferenceable, Describable {
     }
 
     @Override
+    public BeanRefererType getBeanRefererType() {
+        return BEAN_REFERER_TYPE;
+    }
+
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
@@ -459,11 +464,6 @@ public class AspectRule implements BeanReferenceable, Describable {
     @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
-    }
-
-    @Override
-    public BeanRefererType getBeanRefererType() {
-        return BEAN_REFERER_TYPE;
     }
 
     @Override

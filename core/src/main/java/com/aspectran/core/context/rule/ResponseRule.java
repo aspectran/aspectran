@@ -45,9 +45,6 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
 
     private String name;
 
-    /**
-     * The response encoding is the character encoding of the textual response.
-     */
     private String encoding;
 
     private ActionList actionList;

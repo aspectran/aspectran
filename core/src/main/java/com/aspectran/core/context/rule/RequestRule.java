@@ -41,10 +41,6 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
 
     private MethodType allowedMethod;
 
-    /**
-     * The request encoding is the character encoding in which parameters
-     * in an incoming request are interpreted.
-     */
     private String encoding;
 
     private String multipartFormDataParser;
@@ -70,16 +66,16 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
     }
 
     /**
-     * Returns the HTTP method allowed for the request.
-     * @return the allowed method
+     * Returns the request method allowed for the request.
+     * @return the allowed request method
      */
     public MethodType getAllowedMethod() {
         return allowedMethod;
     }
 
     /**
-     * Sets the HTTP method allowed for the request.
-     * @param allowedMethod the new allowed method
+     * Sets the request method allowed for the request.
+     * @param allowedMethod the new allowed request method
      */
     public void setAllowedMethod(MethodType allowedMethod) {
         this.allowedMethod = allowedMethod;
@@ -168,9 +164,19 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("method", allowedMethod);
         tsb.append("encoding", encoding);
-        tsb.append("multipartFormDataParser", multipartFormDataParser);
-        tsb.append("parameters", parameterItemRuleMap);
-        tsb.append("attributes", attributeItemRuleMap);
+        if (multipartFormDataParser != null) {
+            if (multipartFormDataParser.isEmpty()) {
+                tsb.append("multipart", true);
+            } else {
+                tsb.append("multipartParser", multipartFormDataParser);
+            }
+        }
+        if (parameterItemRuleMap != null) {
+            tsb.append("parameters", parameterItemRuleMap.keySet());
+        }
+        if (attributeItemRuleMap != null) {
+            tsb.append("attributes", attributeItemRuleMap.keySet());
+        }
         return tsb.toString();
     }
 
@@ -186,7 +192,7 @@ public class RequestRule implements HasParameterRules, HasAttributeRules {
 
     /**
      * Creates a new instance of RequestRule.
-     * @param allowedMethod the allowed HTTP method
+     * @param allowedMethod the allowed request method
      * @param encoding the character encoding
      * @return a new RequestRule instance
      * @throws IllegalRuleException if the configuration is invalid
