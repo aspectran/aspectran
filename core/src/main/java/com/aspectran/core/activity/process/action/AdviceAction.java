@@ -18,6 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
+import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
@@ -74,6 +75,11 @@ public class AdviceAction extends InvokeAction {
             throw new ActionExecutionException("No advice bean found for " + adviceRule);
         }
         return bean;
+    }
+
+        @Override
+    public ActionType getActionType() {
+        return ActionType.ADVICE;
     }
 
     @Override

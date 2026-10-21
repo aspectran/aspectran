@@ -22,16 +22,42 @@
  * performs a specific operation during the processing of a translet. These actions
  * serve as the fundamental building blocks for defining application behavior.
  *
- * <p>Key actions include:
+ * <p>Key actions and components include:
  * <ul>
- *   <li><b>Business Logic:</b> {@link com.aspectran.core.activity.process.action.InvokeAction}
- *       for invoking methods on beans.</li>
- *   <li><b>Flow Control:</b> {@code IncludeAction} for executing other translets and
- *       {@code ChooseAction} for conditional branching.</li>
- *   <li><b>Response Handling:</b> {@code EchoAction} for writing data directly to the
- *       response and {@code HeaderAction} for setting response headers.</li>
- *   <li><b>AOP:</b> {@link com.aspectran.core.activity.process.action.AdviceAction} for
- *       executing AOP advice beans.</li>
+ *   <li><b>Business Logic & Method Invocation:</b>
+ *     <ul>
+ *       <li>{@link com.aspectran.core.activity.process.action.InvokeAction} -
+ *           for dynamically or statically invoking methods on beans based on XML/configuration rules.</li>
+ *       <li>{@link com.aspectran.core.activity.process.action.MethodAction} -
+ *           for directly executing action methods with parameter binding resolved from the current activity.</li>
+ *       <li>{@link com.aspectran.core.activity.process.action.ActionMethodInvoker} -
+ *           a utility engine providing the core logic for parameter binding and method invocation.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Flow Control:</b>
+ *     <ul>
+ *       <li>{@link com.aspectran.core.activity.process.action.IncludeAction} -
+ *           for executing other translets and incorporating their results.</li>
+ *       <li>{@link com.aspectran.core.activity.process.action.ChooseAction} -
+ *           for conditional branching based on dynamic evaluations.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Response Handling:</b>
+ *     <ul>
+ *       <li>{@link com.aspectran.core.activity.process.action.EchoAction} -
+ *           for writing data directly to the response context.</li>
+ *       <li>{@link com.aspectran.core.activity.process.action.HeaderAction} -
+ *           for manipulating and setting HTTP response headers.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>AOP Support:</b>
+ *     <ul>
+ *       <li>{@link com.aspectran.core.activity.process.action.AdviceAction} -
+ *           for executing rule-defined AOP advice beans.</li>
+ *       <li>{@link com.aspectran.core.activity.process.action.MethodAdviceAction} -
+ *           for executing annotation-based advice methods within the AOP aspect context.</li>
+ *     </ul>
+ *   </li>
  * </ul>
  */
 package com.aspectran.core.activity.process.action;

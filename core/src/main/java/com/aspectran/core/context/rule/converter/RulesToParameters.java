@@ -17,13 +17,13 @@ package com.aspectran.core.context.rule.converter;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.ChooseAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.activity.process.action.InvokeAction;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -32,7 +32,6 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.context.rule.AdviceRule;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -51,6 +50,7 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -910,17 +910,18 @@ public class RulesToParameters {
     }
 
     private static void toActionParameters(@NonNull Executable action, Parameters parameters) {
-        if (action.getActionType() == ActionType.INVOKE) {
+        if (action.getActionType() == ActionType.INVOKE ||
+                action.getActionType() == ActionType.ADVICE) {
             InvokeActionRule invokeActionRule = ((InvokeAction)action).getInvokeActionRule();
             if (invokeActionRule.getBeanId() != null) {
                 parameters.putValue("action", toActionParameters(invokeActionRule));
             } else {
                 parameters.putValue("invoke", toActionParameters(invokeActionRule));
             }
-        } else if (action.getActionType() == ActionType.INVOKE_ANNOTATED ||
-                action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) { // Set only via annotated configuration
-            AnnotatedActionRule annotatedActionRule = ((AnnotatedAction)action).getAnnotatedActionRule();
-            parameters.putValue("action", toActionParameters(annotatedActionRule));
+        } else if (action.getActionType() == ActionType.METHOD ||
+                action.getActionType() == ActionType.ADVICE_METHOD) { // Set only via annotated configuration
+            MethodActionRule methodActionRule = ((MethodAction)action).getMethodActionRule();
+            parameters.putValue("action", toActionParameters(methodActionRule));
         } else if (action.getActionType() == ActionType.INCLUDE) {
             IncludeActionRule includeActionRule = ((IncludeAction)action).getIncludeActionRule();
             parameters.putValue("include", toActionParameters(includeActionRule));
@@ -1041,25 +1042,25 @@ public class RulesToParameters {
     }
 
     /**
-     * Converts an {@code AnnotatedActionRule} to {@code ActionParameters}.
-     * <p>Note that {@code AnnotatedActionRule} cannot be converted back to a Rule object,
+     * Converts a {@code MethodActionRule} to {@code ActionParameters}.
+     * <p>Note that {@code MethodActionRule} cannot be converted back to a Rule object,
      * as it is only set via annotated configuration.</p>
-     * @param annotatedActionRule the annotated action rule
+     * @param methodActionRule the method action rule
      * @return the action parameters
      */
     @NonNull
-    public static ActionParameters toActionParameters(AnnotatedActionRule annotatedActionRule) {
-        if (annotatedActionRule == null) {
-            throw new IllegalArgumentException("annotatedActionRule must not be null");
+    public static ActionParameters toActionParameters(MethodActionRule methodActionRule) {
+        if (methodActionRule == null) {
+            throw new IllegalArgumentException("methodActionRule must not be null");
         }
 
         ActionParameters actionParameters = new ActionParameters();
-        actionParameters.putValueIfNotNull(ActionParameters.id, annotatedActionRule.getActionId());
-        if (annotatedActionRule.getBeanClass() != null) {
-            String className = BeanRule.CLASS_DIRECTIVE_PREFIX + annotatedActionRule.getBeanClass().getName();
+        actionParameters.putValueIfNotNull(ActionParameters.id, methodActionRule.getActionId());
+        if (methodActionRule.getBeanClass() != null) {
+            String className = BeanRule.CLASS_DIRECTIVE_PREFIX + methodActionRule.getBeanClass().getName();
             actionParameters.putValue(ActionParameters.bean, className);
         }
-        actionParameters.putValueIfNotNull(ActionParameters.method, annotatedActionRule.getMethodName());
+        actionParameters.putValueIfNotNull(ActionParameters.method, methodActionRule.getMethodName());
         return actionParameters;
     }
 

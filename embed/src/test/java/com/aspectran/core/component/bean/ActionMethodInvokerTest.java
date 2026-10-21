@@ -26,7 +26,7 @@ import org.junit.jupiter.api.TestInstance;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AnnotatedMethodInvokerTest {
+class ActionMethodInvokerTest {
 
     private EmbeddedAspectran aspectran;
 

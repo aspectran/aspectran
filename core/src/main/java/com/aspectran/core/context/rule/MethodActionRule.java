@@ -20,14 +20,15 @@ import com.aspectran.utils.ToStringBuilder;
 import java.lang.reflect.Method;
 
 /**
- * Represents an action that is defined via annotations rather than XML.
- * This rule holds metadata about the annotated method, such as its ID and parameter bindings.
+ * Represents an action that directly invokes a method on a bean, typically defined
+ * via annotations rather than XML.
+ * This rule holds metadata about the target method, such as its ID and parameter bindings.
  *
  * <p>Created: 2016. 2. 10.</p>
  *
  * @since 2.0.0
  */
-public class AnnotatedActionRule {
+public class MethodActionRule {
 
     private String actionId;
 

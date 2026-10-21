@@ -131,8 +131,8 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
     }
 
     @Override
-    public Executable putActionRule(@NonNull AnnotatedActionRule annotatedActionRule) {
-        return touchActionList().putActionRule(annotatedActionRule);
+    public Executable putActionRule(@NonNull MethodActionRule methodActionRule) {
+        return touchActionList().putActionRule(methodActionRule);
     }
 
     @Override

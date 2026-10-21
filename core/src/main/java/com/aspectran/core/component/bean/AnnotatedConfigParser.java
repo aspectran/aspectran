@@ -16,9 +16,9 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.process.action.AnnotatedAction;
-import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.MethodAction;
+import com.aspectran.core.activity.process.action.MethodAdviceAction;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.FileParameterMap;
 import com.aspectran.core.activity.response.transform.CustomTransformResponse;
@@ -62,7 +62,6 @@ import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AdviceRule;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.AutowireTargetRule;
@@ -75,6 +74,7 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.JoinpointRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -421,19 +421,19 @@ public class AnnotatedConfigParser {
             String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.value()) : null);
             if (method.isAnnotationPresent(Before.class)) {
                 AdviceRule adviceRule = aspectRule.newBeforeAdviceRule();
-                adviceRule.setAdviceAction(createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method));
+                adviceRule.setAdviceAction(createMethodAdviceAction(adviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
                 AdviceRule adviceRule = aspectRule.newAfterAdviceRule();
-                adviceRule.setAdviceAction(createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method));
+                adviceRule.setAdviceAction(createMethodAdviceAction(adviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(Finally.class)) {
                 AdviceRule adviceRule = aspectRule.newFinallyAdviceRule();
-                adviceRule.setAdviceAction(createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method));
+                adviceRule.setAdviceAction(createMethodAdviceAction(adviceRule, actionId, beanClass, method));
             } else {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
                 if (exceptionThrownAnno != null) {
                     Class<? extends Throwable>[] types = exceptionThrownAnno.value();
                     AdviceRule adviceRule = aspectRule.newThrownAdviceRule();
-                    AnnotatedAction action = createAnnotatedAdviceAction(adviceRule, actionId, beanClass, method);
+                    MethodAction action = createMethodAdviceAction(adviceRule, actionId, beanClass, method);
                     ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
                     aspectRule.putExceptionThrownRule(exceptionThrownRule);
                     Transform transformAnno = method.getAnnotation(Transform.class);
@@ -759,8 +759,8 @@ public class AnnotatedConfigParser {
 
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.value()) : null);
-        Executable annotatedAction = createAnnotatedAction(actionId, beanClass, method);
-        transletRule.putActionRule(annotatedAction);
+        Executable methodAction = createMethodAction(actionId, beanClass, method);
+        transletRule.putActionRule(methodAction);
 
         Class<?> returnType = method.getReturnType();
         if (CustomTransformer.class.isAssignableFrom(returnType)) {
@@ -1052,24 +1052,24 @@ public class AnnotatedConfigParser {
     }
 
     @NonNull
-    private AnnotatedAction createAnnotatedAction(String actionId, Class<?> beanClass, Method method) {
-        AnnotatedActionRule annotatedActionRule = new AnnotatedActionRule();
-        annotatedActionRule.setActionId(actionId);
-        annotatedActionRule.setBeanClass(beanClass);
-        annotatedActionRule.setMethod(method);
-        annotatedActionRule.setParameterBindingRules(createParameterBindingRules(method));
-        return new AnnotatedAction(annotatedActionRule);
+    private MethodAction createMethodAction(String actionId, Class<?> beanClass, Method method) {
+        MethodActionRule methodActionRule = new MethodActionRule();
+        methodActionRule.setActionId(actionId);
+        methodActionRule.setBeanClass(beanClass);
+        methodActionRule.setMethod(method);
+        methodActionRule.setParameterBindingRules(createParameterBindingRules(method));
+        return new MethodAction(methodActionRule);
     }
 
     @NonNull
-    private AnnotatedAction createAnnotatedAdviceAction(
+    private MethodAdviceAction createMethodAdviceAction(
             AdviceRule adviceRule, String actionId, Class<?> beanClass, Method method) {
-        AnnotatedActionRule annotatedActionRule = new AnnotatedActionRule();
-        annotatedActionRule.setActionId(actionId);
-        annotatedActionRule.setBeanClass(beanClass);
-        annotatedActionRule.setMethod(method);
-        annotatedActionRule.setParameterBindingRules(createParameterBindingRules(method));
-        return new AnnotatedAdviceAction(adviceRule, annotatedActionRule);
+        MethodActionRule methodActionRule = new MethodActionRule();
+        methodActionRule.setActionId(actionId);
+        methodActionRule.setBeanClass(beanClass);
+        methodActionRule.setMethod(method);
+        methodActionRule.setParameterBindingRules(createParameterBindingRules(method));
+        return new MethodAdviceAction(adviceRule, methodActionRule);
     }
 
     static ParameterBindingRule @Nullable [] createParameterBindingRules(@NonNull Method method) {

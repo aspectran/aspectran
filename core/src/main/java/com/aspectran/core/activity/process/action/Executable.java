@@ -29,7 +29,7 @@ import org.jspecify.annotations.NonNull;
  * of this interface carries out a distinct, concrete task. The range of tasks is diverse,
  * including:
  * <ul>
- *   <li>Invoking methods on user-defined beans (e.g., {@link InvokeAction})</li>
+ *   <li>Invoking methods on user-defined beans (e.g., {@link InvokeAction}, {@link MethodAction})</li>
  *   <li>Manipulating the HTTP response (e.g., {@link HeaderAction})</li>
  *   <li>Controlling the execution flow (e.g., {@link ChooseAction}, {@link IncludeAction})</li>
  *   <li>Rendering data back to the client (e.g., {@link EchoAction})</li>

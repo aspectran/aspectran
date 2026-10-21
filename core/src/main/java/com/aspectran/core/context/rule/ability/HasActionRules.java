@@ -16,12 +16,13 @@
 package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 
 /**
  * Defines a contract for rule classes that can contain and manage a list of executable actions.
@@ -57,12 +58,12 @@ public interface HasActionRules {
     Executable putActionRule(InvokeActionRule invokeActionRule);
 
     /**
-     * Applies an annotated action rule, creating and adding an
-     * {@link com.aspectran.core.activity.process.action.AnnotatedAction} to the current context.
-     * @param annotatedActionRule the annotated action rule to apply
+     * Applies a method action rule, creating and adding a
+     * {@link MethodAction} to the current context.
+     * @param methodActionRule the method action rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable putActionRule(AnnotatedActionRule annotatedActionRule);
+    Executable putActionRule(MethodActionRule methodActionRule);
 
     /**
      * Applies an include action rule, creating and adding an

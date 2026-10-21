@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
@@ -31,24 +31,24 @@ import java.lang.reflect.Modifier;
  *
  * <p>This allows for a convention-over-configuration approach, where actions can be
  * discovered and executed based on annotations rather than explicit XML rules.
- * It leverages {@link AnnotatedMethodInvoker} to handle parameter binding and method invocation.</p>
+ * It leverages {@link ActionMethodInvoker} to handle parameter binding and method invocation.</p>
  *
  * <p>Created: 2016. 2. 9.</p>
  */
-public class AnnotatedAction implements Executable {
+public class MethodAction implements Executable {
 
-    private final AnnotatedActionRule annotatedActionRule;
+    private final MethodActionRule methodActionRule;
 
     /**
-     * Instantiates a new AnnotatedAction.
-     * @param annotatedActionRule the rule that defines this annotated action
+     * Instantiates a new MethodAction.
+     * @param methodActionRule the rule that defines this method action
      */
-    public AnnotatedAction(@NonNull AnnotatedActionRule annotatedActionRule) {
-        this.annotatedActionRule = annotatedActionRule;
+    public MethodAction(@NonNull MethodActionRule methodActionRule) {
+        this.methodActionRule = methodActionRule;
     }
 
     /**
-     * Executes the annotated action method.
+     * Executes the action method.
      * @param activity the current activity
      * @return the result of the method invocation
      * @throws ActionExecutionException if an error occurs during method invocation
@@ -56,13 +56,13 @@ public class AnnotatedAction implements Executable {
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
         Object bean = resolveBean(activity);
-        Method method = annotatedActionRule.getMethod();
-        ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
-        return AnnotatedMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
+        Method method = methodActionRule.getMethod();
+        ParameterBindingRule[] parameterBindingRules = methodActionRule.getParameterBindingRules();
+        return ActionMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
     }
 
     /**
-     * Resolves the bean instance on which the annotated method will be invoked.
+     * Resolves the bean instance on which the action method will be invoked.
      * If the method is static, no bean is needed and this method returns {@code null}.
      * Otherwise, it retrieves a bean instance corresponding to the method's declaring class.
      * @param activity the current activity
@@ -71,34 +71,37 @@ public class AnnotatedAction implements Executable {
      */
     protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
         // A static method does not require a bean instance.
-        Method method = annotatedActionRule.getMethod();
+        Method method = methodActionRule.getMethod();
         if (Modifier.isStatic(method.getModifiers())) {
             return null;
         }
-        return activity.getBean(annotatedActionRule.getBeanClass());
+        return activity.getBean(methodActionRule.getBeanClass());
     }
 
     /**
-     * Returns the rule that defines this annotated action.
-     * @return the annotated action rule
+     * Returns the rule that defines this method action.
+     * @return the method action rule
      */
-    public AnnotatedActionRule getAnnotatedActionRule() {
-        return annotatedActionRule;
+    public MethodActionRule getMethodActionRule() {
+        return methodActionRule;
     }
 
     @Override
     public String getActionId() {
-        return annotatedActionRule.getActionId();
+        return methodActionRule.getActionId();
     }
 
     @Override
     public ActionType getActionType() {
-        return ActionType.INVOKE_ANNOTATED;
+        return ActionType.METHOD;
     }
 
     @Override
     public void toString(@NonNull ToStringBuilder tsb) {
-        tsb.append(getActionType().toString(), annotatedActionRule);
+        if (getActionId() != null) {
+            tsb.append("id", getActionId());
+        }
+        tsb.append(getActionType().toString(), methodActionRule.getMethod());
     }
 
     @Override

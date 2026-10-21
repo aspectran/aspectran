@@ -60,23 +60,26 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An abstract utility class that provides the core logic for invoking methods whose
+ * A utility class that provides the core logic for invoking methods whose
  * parameters are bound using Aspectran's parameter annotations.
  *
  * <p>This helper handles the complex process of resolving arguments from the current
  * {@link Activity} and {@link Translet}, performing type conversions, and then invoking
- * the target method. It is the engine behind annotated action execution.</p>
+ * the target method. It is the engine behind action method execution.</p>
  *
  * <p>Created: 2025. 5. 14.</p>
  */
-public abstract class AnnotatedMethodInvoker {
+public class ActionMethodInvoker {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnnotatedMethodInvoker.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionMethodInvoker.class);
 
     private static final Annotation[] EMPTY_ANNOTATION_ARRAY = {};
 
+    private ActionMethodInvoker() {
+    }
+
     /**
-     * Invokes the specified annotated method on the target bean with parameter binding.
+     * Invokes the specified action method on the target bean with parameter binding.
      * @param activity the current activity, used as the source for resolving arguments
      * @param bean the target bean instance on which to invoke the method
      * @param method the method to be invoked

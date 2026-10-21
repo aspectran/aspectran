@@ -32,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Test case for {@link AnnotatedMethodInvoker}.
+ * Test case for {@link ActionMethodInvoker}.
  */
 @AspectranTest
-class AnnotatedMethodInvokerTest {
+class ActionMethodInvokerTest {
 
     @Test
     void testInvokeSimple(@NonNull ActivityContext context) throws Exception {
@@ -59,7 +59,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1, pbr2 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("tester:20", result);
             return null;
         });
@@ -82,7 +82,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("hello", result);
             return null;
         });
@@ -105,7 +105,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("a,b,c", result);
             return null;
         });
@@ -128,7 +128,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("a-b-c", result);
             return null;
         });
@@ -152,7 +152,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("tester:30", result.toString());
             return null;
         });
@@ -174,7 +174,7 @@ class AnnotatedMethodInvokerTest {
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1, pbr1 }; // dummy second pbr
 
             assertThrows(ParameterBindingException.class, () -> {
-                AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+                ActionMethodInvoker.invoke(activity, action, method, pbrs);
             });
             return null;
         });
@@ -201,7 +201,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1, pbr2 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("null:0", result); // age defaults to 0 on conversion error
             return null;
         });
@@ -223,7 +223,7 @@ class AnnotatedMethodInvokerTest {
             pbr.setName("uploadFile");
             pbr.setType(com.aspectran.core.activity.request.FileParameter.class);
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
+            Object result = ActionMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
             assertEquals("test-image.png", result);
             return null;
         });
@@ -247,7 +247,7 @@ class AnnotatedMethodInvokerTest {
             pbr.setName("files");
             pbr.setType(com.aspectran.core.activity.request.FileParameter[].class);
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
+            Object result = ActionMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
             assertEquals(2, result);
             return null;
         });
@@ -272,7 +272,7 @@ class AnnotatedMethodInvokerTest {
             pbr.setName("model");
             pbr.setType(UploadModel.class);
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
+            Object result = ActionMethodInvoker.invoke(activity, action, method, new ParameterBindingRule[] { pbr });
             assertEquals("My Document:doc.pdf", result);
             return null;
         });
@@ -295,7 +295,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("a:b:c", result);
             return null;
         });
@@ -315,7 +315,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("ok", result);
             return null;
         });
@@ -339,7 +339,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("tester:99", result.toString());
             return null;
         });
@@ -365,7 +365,7 @@ class AnnotatedMethodInvokerTest {
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1, pbr2 };
 
             assertThrows(ParameterBindingException.class, () -> {
-                AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+                ActionMethodInvoker.invoke(activity, action, method, pbrs);
             });
             return null;
         });
@@ -390,7 +390,7 @@ class AnnotatedMethodInvokerTest {
 
             ParameterBindingRule[] pbrs = new ParameterBindingRule[] { pbr1 };
 
-            Object result = AnnotatedMethodInvoker.invoke(activity, action, method, pbrs);
+            Object result = ActionMethodInvoker.invoke(activity, action, method, pbrs);
             assertEquals("Aspectran:java,framework:admin,user", result.toString());
             return null;
         });

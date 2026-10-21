@@ -19,8 +19,8 @@ import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
 import com.aspectran.core.activity.aspect.AdviceResult;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
-import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.MethodAdviceAction;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.component.aspect.AdviceRulePostRegister;
@@ -538,8 +538,8 @@ public abstract class AdviceActivity extends AbstractActivity {
                     logger.debug("Advice {}", exceptionThrownRule.toString(action));
                 }
                 try {
-                    if (action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) {
-                        AdviceRule adviceRule = ((AnnotatedAdviceAction)action).getAdviceRule();
+                    if (action.getActionType() == ActionType.ADVICE_METHOD) {
+                        AdviceRule adviceRule = ((MethodAdviceAction)action).getAdviceRule();
                         Object adviceBean = getAdviceBean(adviceRule.getAspectId());
                         if (adviceBean == null) {
                             resolveAdviceBean(adviceRule);

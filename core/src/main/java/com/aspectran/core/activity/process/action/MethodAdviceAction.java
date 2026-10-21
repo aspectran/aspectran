@@ -17,8 +17,9 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AdviceRule;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Method;
@@ -29,22 +30,22 @@ import java.lang.reflect.Modifier;
  *
  * <p>This class is used internally by the framework to implement Aspectran's AOP features
  * for annotated advice beans, handling the invocation of methods marked with advice
- * annotations like {@code @Before}, {@code @After}, etc. It extends {@link AnnotatedAction}
+ * annotations like {@code @Before}, {@code @After}, etc. It extends {@link MethodAction}
  * and overrides bean resolution to fetch the advice bean from the AOP context.</p>
  *
  * <p>Created: 2019. 07. 18</p>
  */
-public class AnnotatedAdviceAction extends AnnotatedAction {
+public class MethodAdviceAction extends MethodAction {
 
     private final AdviceRule adviceRule;
 
     /**
-     * Instantiates a new AnnotatedAdviceAction.
+     * Instantiates a new MethodAdviceAction.
      * @param adviceRule the advice rule that this action executes
-     * @param annotatedActionRule the annotated action rule for the method call
+     * @param methodActionRule the method action rule for the method call
      */
-    public AnnotatedAdviceAction(AdviceRule adviceRule, AnnotatedActionRule annotatedActionRule) {
-        super(annotatedActionRule);
+    public MethodAdviceAction(AdviceRule adviceRule, MethodActionRule methodActionRule) {
+        super(methodActionRule);
         this.adviceRule = adviceRule;
     }
 
@@ -66,7 +67,7 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
     @Override
     protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
         // A static advice method does not require a bean instance.
-        Method method = getAnnotatedActionRule().getMethod();
+        Method method = getMethodActionRule().getMethod();
         if (Modifier.isStatic(method.getModifiers())) {
             return null;
         }
@@ -79,7 +80,19 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.INVOKE_ANNOTATED_ADVICE;
+        return ActionType.ADVICE_METHOD;
+    }
+
+    @Override
+    public void toString(@NonNull ToStringBuilder tsb) {
+        if (adviceRule == null) {
+            super.toString(tsb);
+        } else {
+            if (getActionId() != null) {
+                tsb.append("id", getActionId());
+            }
+            tsb.append("method", getMethodActionRule().getMethod());
+        }
     }
 
     @Override

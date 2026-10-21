@@ -210,9 +210,9 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     @Override
-    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(MethodActionRule methodActionRule) {
         throw new UnsupportedOperationException("An exception handling rule can only contain a single, direct action (e.g., echo, header, or invoke). " +
-                "Rules like 'annotated' that imply complex logic are not supported");
+                "Rules like 'method' that imply complex logic are not supported");
     }
 
     @Override

@@ -136,10 +136,10 @@ public class AdviceRule implements HasActionRules {
     }
 
     @Override
-    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(MethodActionRule methodActionRule) {
         throw new UnsupportedOperationException(
                 "An advice rule can only contain a single action (e.g., echo, header, or invoke). " +
-                "Therefore, rules like 'annotated' that imply multiple actions are not supported");
+                "Therefore, rules like 'method' that imply multiple actions are not supported");
     }
 
     @Override

@@ -15,19 +15,19 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.ChooseAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.activity.process.action.InvokeAction;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
@@ -147,9 +147,9 @@ public class ActionList extends ArrayList<Executable> implements HasActionRules 
 
     @Override
     @NonNull
-    public Executable putActionRule(@NonNull AnnotatedActionRule annotatedActionRule) {
-        Assert.notNull(annotatedActionRule, "annotatedActionRule must not be null");
-        Executable action = new AnnotatedAction(annotatedActionRule);
+    public Executable putActionRule(@NonNull MethodActionRule methodActionRule) {
+        Assert.notNull(methodActionRule, "methodActionRule must not be null");
+        Executable action = new MethodAction(methodActionRule);
         add(action);
         return action;
     }

@@ -17,13 +17,13 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.AdviceRule;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.type.AdviceType;
 import org.junit.jupiter.api.Test;
 
@@ -32,14 +32,14 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test case for {@link AdviceAction}, {@link AnnotatedAdviceAction}, and {@link AdviceRule}.
+ * Test case for {@link AdviceAction}, {@link MethodAdviceAction}, and {@link AdviceRule}.
  *
  * <p>Created: 2026-10-20</p>
  */
 class AdviceActionTest {
 
     @Test
-    void testAnnotatedAdviceActionToString() throws NoSuchMethodException {
+    void testMethodAdviceActionToString() throws NoSuchMethodException {
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId("AccessControlAspect");
         aspectRule.setOrder(2);
@@ -47,13 +47,13 @@ class AdviceActionTest {
         AdviceRule adviceRule = new AdviceRule(aspectRule, AdviceType.BEFORE);
 
         Method method = SampleAdvice.class.getMethod("checkPermission", Translet.class);
-        AnnotatedActionRule actionRule = new AnnotatedActionRule();
+        MethodActionRule actionRule = new MethodActionRule();
         actionRule.setMethod(method);
 
-        AnnotatedAdviceAction adviceAction = new AnnotatedAdviceAction(adviceRule, actionRule);
+        MethodAdviceAction adviceAction = new MethodAdviceAction(adviceRule, actionRule);
 
-        assertEquals("{type=before, aspect=AccessControlAspect, advice={method=" +
-                SampleAdvice.class.getName() + ".checkPermission(Translet)}, order=2}", adviceAction.toString());
+        assertEquals("{type=before, aspect=AccessControlAspect, method=" +
+                SampleAdvice.class.getName() + ".checkPermission(Translet), order=2}", adviceAction.toString());
     }
 
     @Test
@@ -71,7 +71,7 @@ class AdviceActionTest {
 
         AdviceAction adviceAction = new AdviceAction(adviceRule, invokeActionRule);
 
-        assertEquals("{type=before, aspect=xssFilter, invoke={bean=xssPreventionFilter, method=" +
+        assertEquals("{type=before, aspect=xssFilter, advice={bean=xssPreventionFilter, method=" +
                 SampleAdvice.class.getName() + ".checkPermission(Translet)}, order=0}", adviceAction.toString());
     }
 
@@ -155,20 +155,20 @@ class AdviceActionTest {
 
         AdviceAction adviceAction = new AdviceAction(null, invokeActionRule);
 
-        assertEquals("{invoke={bean=sampleBean, method=" +
+        assertEquals("{advice={bean=sampleBean, method=" +
                 SampleAdvice.class.getName() + ".checkPermission(Translet)}}", adviceAction.toString());
     }
 
     @Test
-    void testAnnotatedAdviceActionWithNullAdviceRuleToString() throws NoSuchMethodException {
+    void testMethodAdviceActionWithNullAdviceRuleToString() throws NoSuchMethodException {
         Method method = SampleAdvice.class.getMethod("checkPermission", Translet.class);
-        AnnotatedActionRule actionRule = new AnnotatedActionRule();
+        MethodActionRule actionRule = new MethodActionRule();
         actionRule.setMethod(method);
 
-        AnnotatedAdviceAction adviceAction = new AnnotatedAdviceAction(null, actionRule);
+        MethodAdviceAction adviceAction = new MethodAdviceAction(null, actionRule);
 
-        assertEquals("{advice={method=" +
-                SampleAdvice.class.getName() + ".checkPermission(Translet)}}", adviceAction.toString());
+        assertEquals("{adviceMethod=" +
+                SampleAdvice.class.getName() + ".checkPermission(Translet)}", adviceAction.toString());
     }
 
     public static class SampleAdvice {
