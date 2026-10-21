@@ -483,15 +483,6 @@ public class CoreTranslet extends AbstractTranslet {
         return StringUtils.EMPTY;
     }
 
-    @Override
-    public String toString() {
-        if (getTransletRule() != null) {
-            return getTransletRule().toString();
-        } else {
-            return super.toString();
-        }
-    }
-
     //---------------------------------------------------------------------
     // Implementation for AsEL (Aspectran Expression Language) evaluation
     //---------------------------------------------------------------------

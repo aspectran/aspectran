@@ -212,11 +212,10 @@ public class CoreActivity extends AdviceActivity {
 
         Translet prevTranslet = translet;
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Translet {}", transletRule);
-            }
-
             translet = new CoreTranslet(transletRule, this);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Translet {}", translet);
+            }
             translet.setRequestName(requestName);
             translet.setRequestMethod(requestMethod);
             if (prevTranslet != null) {

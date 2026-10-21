@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.utils.ToStringBuilder;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -121,6 +122,32 @@ public abstract class AbstractTranslet implements Translet {
      */
     protected String getMultipartFormDataParser() {
         return (getRequestRule() != null ? getRequestRule().getMultipartFormDataParser() : null);
+    }
+
+        @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", transletRule.getName());
+        RequestRule requestRule = transletRule.getRequestRule();
+        if (requestRule != null && requestRule.getAllowedMethod() != null) {
+            tsb.append("method", requestRule.getAllowedMethod());
+        } else if (transletRule.getAllowedMethods() != null) {
+            if (transletRule.getAllowedMethods().length == 1) {
+                tsb.append("method", transletRule.getAllowedMethods()[0]);
+            } else {
+                tsb.append("methods", transletRule.getAllowedMethods());
+            }
+        }
+        if (requestRule != null && requestRule.getMultipartFormDataParser() != null) {
+            if (requestRule.getMultipartFormDataParser().isEmpty()) {
+                tsb.append("multipart", true);
+            } else {
+                tsb.append("multipartParser", requestRule.getMultipartFormDataParser());
+            }
+        }
+        tsb.append("async", transletRule.getAsync());
+        tsb.append("timeout", transletRule.getTimeout());
+        return tsb.toString();
     }
 
 }
