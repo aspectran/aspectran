@@ -182,28 +182,27 @@ public class ProcessResult extends ArrayList<ContentResult> {
         if (!actionId.contains(ActivityContext.ID_SEPARATOR)) {
             ActionResult actionResult = getActionResult(actionId);
             return (actionResult != null ? actionResult.getResultValue() : null);
+        }
+        String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
+        if (ids.length == 0) {
+            return null;
+        }
+        if (ids.length == 1) {
+            ActionResult actionResult = getActionResult(ids[0]);
+            return (actionResult != null ? actionResult.getResultValue() : null);
         } else {
-            String[] ids = StringUtils.tokenize(actionId, ActivityContext.ID_SEPARATOR, true);
-            if (ids.length == 0) {
+            ActionResult actionResult = getActionResult(ids[0]);
+            if (actionResult == null || !(actionResult.getResultValue() instanceof Map<?, ?> valueMap)) {
                 return null;
             }
-            if (ids.length == 1) {
-                ActionResult actionResult = getActionResult(ids[0]);
-                return (actionResult != null ? actionResult.getResultValue() : null);
-            } else {
-                ActionResult actionResult = getActionResult(ids[0]);
-                if (actionResult == null || !(actionResult.getResultValue() instanceof Map<?, ?> valueMap)) {
+            for (int i = 1; i < ids.length - 1; i++) {
+                Object value = valueMap.get(ids[i]);
+                if (!(value instanceof Map<?, ?> nextMap)) {
                     return null;
                 }
-                for (int i = 1; i < ids.length - 1; i++) {
-                    Object value = valueMap.get(ids[i]);
-                    if (!(value instanceof Map<?, ?> nextMap)) {
-                        return null;
-                    }
-                    valueMap = nextMap;
-                }
-                return valueMap.get(ids[ids.length - 1]);
+                valueMap = nextMap;
             }
+            return valueMap.get(ids[ids.length - 1]);
         }
     }
 
