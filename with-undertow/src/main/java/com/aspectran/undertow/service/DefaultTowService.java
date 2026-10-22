@@ -88,10 +88,10 @@ public class DefaultTowService extends AbstractTowService {
             requestName = exchange.getRequestURI();
         }
         final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
-        final String reverseContextPath = getReverseContextPath(exchange, exchange.getResolvedPath());
+        final String effectiveContextPath = determineEffectiveContextPath(exchange, exchange.getResolvedPath());
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(exchange, reverseContextPath, requestName, requestMethod));
+            logger.debug(getRequestInfo(exchange, effectiveContextPath, requestName, requestMethod));
         }
 
         if (!isRequestAcceptable(requestName)) {
@@ -99,7 +99,7 @@ public class DefaultTowService extends AbstractTowService {
             return false;
         }
 
-        TowActivity activity = new TowActivity(this, exchange, reverseContextPath);
+        TowActivity activity = new TowActivity(this, exchange, effectiveContextPath);
         activity.setRequestName(requestName);
         activity.setRequestMethod(requestMethod);
         try {
@@ -149,8 +149,8 @@ public class DefaultTowService extends AbstractTowService {
             String requestNameWithTrailingSlash = activity.getRequestName() + ActivityContext.NAME_SEPARATOR_CHAR;
             if (getActivityContext().getTransletRuleRegistry().contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
                 String location;
-                if (StringUtils.hasLength(activity.getReverseContextPath())) {
-                    location = activity.getReverseContextPath() + requestNameWithTrailingSlash;
+                if (StringUtils.hasLength(activity.getEffectiveContextPath())) {
+                    location = activity.getEffectiveContextPath() + requestNameWithTrailingSlash;
                 } else {
                     location = requestNameWithTrailingSlash;
                 }
@@ -233,10 +233,27 @@ public class DefaultTowService extends AbstractTowService {
         }
     }
 
+    @Nullable
+    private String determineEffectiveContextPath(@NonNull HttpServerExchange exchange, String defaultContextPath) {
+        if (isProxyAddressForwarding()) {
+            String forwardedPath = exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_PATH);
+            if (forwardedPath != null) {
+                if (forwardedPath.equals("/")) {
+                    return StringUtils.EMPTY;
+                } else if (forwardedPath.endsWith("/")) {
+                    return forwardedPath.substring(0, forwardedPath.length() - 1);
+                } else {
+                    return forwardedPath;
+                }
+            }
+        }
+        return defaultContextPath;
+    }
+
     /**
      * Generates a concise, one-line log message for an incoming request.
      * @param exchange the current HTTP exchange
-     * @param reverseContextPath the reverse context path
+     * @param effectiveContextPath the effective context path for URL generation
      * @param requestName the processed request name
      * @param requestMethod the processed request method
      * @return a formatted string for logging
@@ -244,27 +261,18 @@ public class DefaultTowService extends AbstractTowService {
     @NonNull
     private String getRequestInfo(
             @NonNull HttpServerExchange exchange,
-            String reverseContextPath,
+            String effectiveContextPath,
             String requestName,
             MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append(requestMethod).append(" ");
-        if (StringUtils.hasLength(reverseContextPath)) {
-            sb.append(reverseContextPath);
+        if (StringUtils.hasLength(effectiveContextPath)) {
+            sb.append(effectiveContextPath);
         }
         sb.append(requestName).append(" ");
         sb.append(exchange.getProtocol()).append(" ");
         sb.append(getRemoteAddr(exchange));
         return sb.toString();
-    }
-
-    @Nullable
-    private String getReverseContextPath(@NonNull HttpServerExchange exchange, String defaultContextPath) {
-        if (isProxyAddressForwarding()) {
-            return WebUtils.getReverseContextPath(
-                    exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
-        }
-        return defaultContextPath;
     }
 
     @NonNull

@@ -56,7 +56,7 @@ public class NettyActivity extends CoreActivity {
 
     private final FullHttpRequest request;
 
-    private final String reverseContextPath;
+    private final String effectiveContextPath;
 
     private String requestName;
 
@@ -76,22 +76,22 @@ public class NettyActivity extends CoreActivity {
     }
 
     /**
-     * Instantiates a new {@code NettyActivity} with the specified reverse context path.
+     * Instantiates a new {@code NettyActivity} with the specified effective context path.
      * @param nettyService the Netty service managing this activity
      * @param ctx the Netty channel handler context for the client connection
      * @param request the native Netty HTTP request
-     * @param reverseContextPath the reverse context path for URL resolution
+     * @param effectiveContextPath the effective context path for URL resolution
      */
     public NettyActivity(
             @NonNull NettyService nettyService,
             @NonNull ChannelHandlerContext ctx,
             @NonNull FullHttpRequest request,
-            @Nullable String reverseContextPath) {
+            @Nullable String effectiveContextPath) {
         super(nettyService.getActivityContext(), nettyService.getContextPath());
         this.nettyService = nettyService;
         this.ctx = ctx;
         this.request = request;
-        this.reverseContextPath = reverseContextPath;
+        this.effectiveContextPath = effectiveContextPath;
     }
 
     @Override
@@ -102,8 +102,8 @@ public class NettyActivity extends CoreActivity {
 
     @Override
     @Nullable
-    public String getReverseContextPath() {
-        return reverseContextPath;
+    public String getEffectiveContextPath() {
+        return effectiveContextPath;
     }
 
     /**
@@ -177,8 +177,8 @@ public class NettyActivity extends CoreActivity {
         if (requestMethod != null) {
             sb.append(requestMethod).append(' ');
         }
-        if (StringUtils.hasLength(reverseContextPath)) {
-            sb.append(reverseContextPath);
+        if (StringUtils.hasLength(effectiveContextPath)) {
+            sb.append(effectiveContextPath);
         }
         if (requestName != null) {
             sb.append(requestName);

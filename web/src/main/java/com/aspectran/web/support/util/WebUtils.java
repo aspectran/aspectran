@@ -293,6 +293,36 @@ public class WebUtils {
     }
 
     /**
+     * Determines the effective context path for the current web request.
+     * <p>If the application is running behind a reverse proxy with proxy address forwarding
+     * enabled and the {@code X-Forwarded-Path} header is present, the forwarded path
+     * is returned. Otherwise, the underlying {@link WebRequestAdapter#getContextPath()} is returned.</p>
+     * @param requestAdapter the current request adapter
+     * @return the resolved effective context path, or an empty string if not applicable
+     */
+    @NonNull
+    public static String determineEffectiveContextPath(@NonNull RequestAdapter requestAdapter) {
+        Assert.notNull(requestAdapter, "requestAdapter must not be null");
+        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter) {
+            if (webRequestAdapter.isProxyAddressForwarding()) {
+                String forwardedPath = requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH);
+                if (forwardedPath != null) {
+                    if (forwardedPath.equals("/")) {
+                        return StringUtils.EMPTY;
+                    } else if (forwardedPath.endsWith("/")) {
+                        return forwardedPath.substring(0, forwardedPath.length() - 1);
+                    } else {
+                        return forwardedPath;
+                    }
+                }
+            }
+            String defaultContextPath = webRequestAdapter.getContextPath();
+            return (defaultContextPath != null ? defaultContextPath : StringUtils.EMPTY);
+        }
+        return StringUtils.EMPTY;
+    }
+
+    /**
      * Returns the path within the application for the given request URI.
      * <p>Detects and strips the context path from the beginning of the request URI.</p>
      * @param contextPath the context path of the application
@@ -305,90 +335,6 @@ public class WebUtils {
         } else {
             return requestUri;
         }
-    }
-
-    /**
-     * Normalizes the reverse-proxy context path extracted from the {@code X-Forwarded-Path} header.
-     * <p>If the path is "/", an empty string is returned; any trailing slash is removed.</p>
-     * @param forwardedPath the forwarded path header value
-     * @return the normalized reverse context path, or {@code null} if forwardedPath is {@code null}
-     */
-    @Nullable
-    public static String parseReverseContextPath(String forwardedPath) {
-        if (forwardedPath != null) {
-            if (forwardedPath.equals("/")) {
-                return StringUtils.EMPTY;
-            } else if (forwardedPath.endsWith("/")) {
-                return forwardedPath.substring(0, forwardedPath.length() - 1);
-            } else {
-                return forwardedPath;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Determines the context path to be used for reverse-proxy scenarios,
-     * falling back to a default context path.
-     * @param forwardedPath the forwarded path header value
-     * @param defaultContextPath the default context path to return if forwardedPath is {@code null}
-     * @return the reverse context path from the header, or the default context path
-     */
-    @Nullable
-    public static String parseReverseContextPath(String forwardedPath, String defaultContextPath) {
-        String reverseContextPath = parseReverseContextPath(forwardedPath);
-        if (reverseContextPath != null) {
-            return reverseContextPath;
-        } else {
-            return defaultContextPath;
-        }
-    }
-
-    /**
-     * Determines the context path to be used for reverse-proxy scenarios,
-     * falling back to a default context path.
-     * @param forwardedPath the forwarded path header value
-     * @param defaultContextPath the default context path to return if forwardedPath is {@code null}
-     * @return the reverse context path from the header, or the default context path
-     */
-    @Nullable
-    public static String getReverseContextPath(String forwardedPath, String defaultContextPath) {
-        return parseReverseContextPath(forwardedPath, defaultContextPath);
-    }
-
-    /**
-     * Determines the context path to be used for reverse-proxy scenarios.
-     * <p>This method inspects the {@code X-Forwarded-Path} header. If the header
-     * is present, it is returned (with any trailing slash removed). This is useful
-     * when an application is running behind a reverse proxy that alters the context path.</p>
-     * @param requestAdapter the current request adapter
-     * @return the reverse context path from the header, or {@code null} if the header is not found
-     * @see HttpHeaders#X_FORWARDED_PATH
-     */
-    @Nullable
-    public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter) {
-        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter && webRequestAdapter.isProxyAddressForwarding()) {
-            return parseReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH));
-        }
-        return null;
-    }
-
-    /**
-     * Determines the context path to be used for reverse-proxy scenarios,
-     * falling back to a default context path.
-     * @param requestAdapter the current request adapter
-     * @param defaultContextPath the default context path to return if the
-     *      {@code X-Forwarded-Path} header is not present
-     * @return the reverse context path from the header, or the default context path
-     * @see #getReverseContextPath(RequestAdapter)
-     */
-    @Nullable
-    public static String getReverseContextPath(@NonNull RequestAdapter requestAdapter, String defaultContextPath) {
-        if (requestAdapter instanceof WebRequestAdapter webRequestAdapter && webRequestAdapter.isProxyAddressForwarding()) {
-            return getReverseContextPath(requestAdapter.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
-        }
-        return defaultContextPath;
     }
 
     /**
@@ -486,7 +432,7 @@ public class WebUtils {
         StringBuilder sb = new StringBuilder(256);
         if (path != null) {
             if (path.startsWith("/")) {
-                String contextPath = activity.getReverseContextPath();
+                String contextPath = activity.getEffectiveContextPath();
                 if (StringUtils.hasLength(contextPath)) {
                     sb.append(contextPath);
                 }

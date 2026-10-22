@@ -119,7 +119,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public String getReverseContextPath() {
+    public String getEffectiveContextPath() {
         return null;
     }
 

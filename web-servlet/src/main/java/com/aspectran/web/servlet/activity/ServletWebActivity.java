@@ -59,7 +59,7 @@ public class ServletWebActivity extends CoreActivity {
 
     private final WebService webService;
 
-    private final String reverseContextPath;
+    private final String effectiveContextPath;
 
     private final HttpServletRequest request;
 
@@ -89,18 +89,18 @@ public class ServletWebActivity extends CoreActivity {
      * Instantiates a new WebActivity.
      * @param webService the {@link WebService} instance
      * @param contextPath the context path of the web application
-     * @param reverseContextPath the reverse context path for URL generation
+     * @param effectiveContextPath the effective context path for URL generation
      * @param request the HTTP request
      * @param response the HTTP response
      */
     public ServletWebActivity(@NonNull WebService webService,
                               @NonNull String contextPath,
-                              @Nullable String reverseContextPath,
+                              @Nullable String effectiveContextPath,
                               @NonNull HttpServletRequest request,
                               @NonNull HttpServletResponse response) {
         super(webService.getActivityContext(), contextPath);
         this.webService = webService;
-        this.reverseContextPath = reverseContextPath;
+        this.effectiveContextPath = effectiveContextPath;
         this.request = request;
         this.response = response;
     }
@@ -113,8 +113,8 @@ public class ServletWebActivity extends CoreActivity {
 
     @Override
     @Nullable
-    public String getReverseContextPath() {
-        return reverseContextPath;
+    public String getEffectiveContextPath() {
+        return effectiveContextPath;
     }
 
     /**
@@ -180,8 +180,8 @@ public class ServletWebActivity extends CoreActivity {
         if (requestMethod != null) {
             sb.append(requestMethod).append(' ');
         }
-        if (StringUtils.hasLength(reverseContextPath)) {
-            sb.append(reverseContextPath);
+        if (StringUtils.hasLength(effectiveContextPath)) {
+            sb.append(effectiveContextPath);
         }
         if (requestName != null) {
             sb.append(requestName);

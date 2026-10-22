@@ -253,7 +253,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
         if (this.type == UrlType.CONTEXT_RELATIVE) {
             // add application context to url
             if (this.context == null) {
-                String contextPath = getCurrentActivity().getReverseContextPath();
+                String contextPath = getCurrentActivity().getEffectiveContextPath();
                 if (StringUtils.hasLength(contextPath)) {
                     url.append(contextPath);
                 }

@@ -254,7 +254,7 @@ public class UriUtils {
                     webRequestAdapter.getScheme(),
                     webRequestAdapter.getServerName(),
                     webRequestAdapter.getServerPort(),
-                    activity.getReverseContextPath(),
+                    activity.getEffectiveContextPath(),
                     webRequestAdapter.getRequestURI(),
                     location
             );

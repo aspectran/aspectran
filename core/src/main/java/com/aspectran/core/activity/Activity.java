@@ -104,11 +104,11 @@ public interface Activity {
     String getContextPath();
 
     /**
-     * Returns the reverse context path used as a prefix to the actual request name.
-     * This is typically used in web environments for URL rewriting.
-     * @return the reverse context path
+     * Returns the effective context path used as a prefix for URL generation.
+     * If a reverse proxy path is present, it takes precedence over the internal context path.
+     * @return the effective context path
      */
-    String getReverseContextPath();
+    String getEffectiveContextPath();
 
     /**
      * Returns the {@link ClassLoader} associated with this activity's context.

@@ -82,10 +82,10 @@ public class DefaultServletWebService extends AbstractServletWebService {
 
         final String requestName = WebUtils.getRelativePath(getContextPath(), requestUri);
         final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        final String reverseContextPath = getReverseContextPath(request, getContextPath());
+        final String effectiveContextPath = determineEffectiveContextPath(request, getContextPath());
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
+            logger.debug(getRequestInfo(request, effectiveContextPath, requestName, requestMethod));
         }
 
         if (!isRequestAcceptable(requestName)) {
@@ -100,7 +100,7 @@ public class DefaultServletWebService extends AbstractServletWebService {
             return;
         }
 
-        ServletWebActivity activity = new ServletWebActivity(this, getContextPath(), reverseContextPath, request, response);
+        ServletWebActivity activity = new ServletWebActivity(this, getContextPath(), effectiveContextPath, request, response);
         activity.setRequestName(requestName);
         activity.setRequestMethod(requestMethod);
 
@@ -205,8 +205,8 @@ public class DefaultServletWebService extends AbstractServletWebService {
             TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
             if (transletRuleRegistry.contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
                 String location;
-                if (StringUtils.hasLength(activity.getReverseContextPath())) {
-                    location = activity.getReverseContextPath() + requestNameWithTrailingSlash;
+                if (StringUtils.hasLength(activity.getEffectiveContextPath())) {
+                    location = activity.getEffectiveContextPath() + requestNameWithTrailingSlash;
                 } else {
                     location = requestNameWithTrailingSlash;
                 }
@@ -283,27 +283,36 @@ public class DefaultServletWebService extends AbstractServletWebService {
         }
     }
 
+    @Nullable
+    private String determineEffectiveContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
+        if (isProxyAddressForwarding()) {
+            String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
+            if (forwardedPath != null) {
+                if (forwardedPath.equals("/")) {
+                    return StringUtils.EMPTY;
+                } else if (forwardedPath.endsWith("/")) {
+                    return forwardedPath.substring(0, forwardedPath.length() - 1);
+                } else {
+                    return forwardedPath;
+                }
+            }
+        }
+        return defaultContextPath;
+    }
+
     @NonNull
     private String getRequestInfo(
-            @NonNull HttpServletRequest request, String reverseContextPath,
+            @NonNull HttpServletRequest request, String effectiveContextPath,
             String requestName, MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append(requestMethod).append(" ");
-        if (StringUtils.hasLength(reverseContextPath)) {
-            sb.append(reverseContextPath);
+        if (StringUtils.hasLength(effectiveContextPath)) {
+            sb.append(effectiveContextPath);
         }
         sb.append(requestName).append(" ");
         sb.append(request.getProtocol()).append(" ");
         sb.append(getRemoteAddr(request));
         return sb.toString();
-    }
-
-    @Nullable
-    private String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
-        if (isProxyAddressForwarding()) {
-            return WebUtils.getReverseContextPath(request.getHeader(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
-        }
-        return defaultContextPath;
     }
 
     @NonNull

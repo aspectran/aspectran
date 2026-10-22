@@ -30,24 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class WebUtilsTest {
 
     @Test
-    void testParseReverseContextPath() {
-        assertNull(WebUtils.parseReverseContextPath(null));
-        assertEquals("", WebUtils.parseReverseContextPath("/"));
-        assertEquals("/myapp", WebUtils.parseReverseContextPath("/myapp/"));
-        assertEquals("/myapp", WebUtils.parseReverseContextPath("/myapp"));
-        assertEquals("/myapp/sub", WebUtils.parseReverseContextPath("/myapp/sub/"));
-    }
-
-    @Test
-    void testGetReverseContextPath() {
-        assertEquals("/default", WebUtils.parseReverseContextPath(null, "/default"));
-        assertEquals("/default", WebUtils.getReverseContextPath((String) null, "/default"));
-        assertEquals("", WebUtils.getReverseContextPath("/", "/default"));
-        assertEquals("/myapp", WebUtils.getReverseContextPath("/myapp/", "/default"));
-        assertEquals("/myapp", WebUtils.getReverseContextPath("/myapp", "/default"));
-    }
-
-    @Test
     void testParseForwardedFor() {
         assertNull(WebUtils.parseForwardedFor(null));
         assertNull(WebUtils.parseForwardedFor(""));
@@ -109,6 +91,58 @@ class WebUtilsTest {
         // Non-WebRequestAdapter returns null
         AbstractRequestAdapter nonWebAdapter = new AbstractRequestAdapter(MethodType.GET, null) {};
         assertNull(WebUtils.getRemoteAddr(nonWebAdapter));
+    }
+
+    @Test
+    void testDetermineEffectiveContextPathWithRequestAdapter() {
+        AbstractWebRequestAdapter adapter = new AbstractWebRequestAdapter(MethodType.GET, null) {
+            @Override
+            public String getRemoteAddr() {
+                return null;
+            }
+
+            @Override
+            public String getContextPath() {
+                return "/console";
+            }
+
+            @Override
+            public String getRequestURI() {
+                return null;
+            }
+
+            @Override
+            public String getQueryString() {
+                return null;
+            }
+
+            @Override
+            public void preparse() {
+            }
+        };
+
+        // Without X-Forwarded-Path header, fallback to getContextPath()
+        assertEquals("/console", WebUtils.determineEffectiveContextPath(adapter));
+
+        // With X-Forwarded-Path header but proxyAddressForwarding disabled, fallback to getContextPath()
+        adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_PATH, "/ops/console");
+        assertEquals("/console", WebUtils.determineEffectiveContextPath(adapter));
+
+        // With X-Forwarded-Path header and proxyAddressForwarding enabled, prefers X-Forwarded-Path
+        adapter.setProxyAddressForwarding(true);
+        assertEquals("/ops/console", WebUtils.determineEffectiveContextPath(adapter));
+
+        // Normalizes trailing slash
+        adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_PATH, "/ops/console/");
+        assertEquals("/ops/console", WebUtils.determineEffectiveContextPath(adapter));
+
+        // Normalizes root "/" to empty string
+        adapter.getHeaderMap().set(HttpHeaders.X_FORWARDED_PATH, "/");
+        assertEquals("", WebUtils.determineEffectiveContextPath(adapter));
+
+        // Non-WebRequestAdapter returns empty string
+        AbstractRequestAdapter nonWebAdapter = new AbstractRequestAdapter(MethodType.GET, null) {};
+        assertEquals("", WebUtils.determineEffectiveContextPath(nonWebAdapter));
     }
 
 }

@@ -51,7 +51,7 @@ public class WebActivityRequest extends AbstractActivityRequest {
     public WebActivityRequest(@NonNull WebRequestAdapter requestAdapter) {
         super(requestAdapter);
         this.webRequestAdapter = requestAdapter;
-        this.contextPath = WebUtils.getReverseContextPath(requestAdapter, requestAdapter.getContextPath());
+        this.contextPath = WebUtils.determineEffectiveContextPath(requestAdapter);
     }
 
     @Override

@@ -57,7 +57,7 @@ public class TowActivity extends CoreActivity {
 
     private final HttpServerExchange exchange;
 
-    private final String reverseContextPath;
+    private final String effectiveContextPath;
 
     private String requestName;
 
@@ -76,16 +76,16 @@ public class TowActivity extends CoreActivity {
      * Instantiates a new TowActivity.
      * @param towService the main Aspectran Undertow service
      * @param exchange the Undertow {@link HttpServerExchange} for the current request
-     * @param reverseContextPath the reverse context path for URL generation
+     * @param effectiveContextPath the effective context path for URL generation
      */
     public TowActivity(
             @NonNull TowService towService,
             @NonNull HttpServerExchange exchange,
-            @Nullable String reverseContextPath) {
-        super(towService.getActivityContext());
+            @Nullable String effectiveContextPath) {
+        super(towService.getActivityContext(), exchange.getResolvedPath());
         this.towService = towService;
         this.exchange = exchange;
-        this.reverseContextPath = reverseContextPath;
+        this.effectiveContextPath = effectiveContextPath;
     }
 
     @Override
@@ -96,8 +96,8 @@ public class TowActivity extends CoreActivity {
 
     @Override
     @Nullable
-    public String getReverseContextPath() {
-        return reverseContextPath;
+    public String getEffectiveContextPath() {
+        return effectiveContextPath;
     }
 
     /**
@@ -172,8 +172,8 @@ public class TowActivity extends CoreActivity {
         if (requestMethod != null) {
             sb.append(requestMethod).append(' ');
         }
-        if (StringUtils.hasLength(reverseContextPath)) {
-            sb.append(reverseContextPath);
+        if (StringUtils.hasLength(effectiveContextPath)) {
+            sb.append(effectiveContextPath);
         }
         if (requestName != null) {
             sb.append(requestName);

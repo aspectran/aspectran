@@ -123,10 +123,10 @@ public class DefaultNettyService extends AbstractNettyService {
             requestName = decodedPath;
         }
         final MethodType requestMethod = MethodType.resolve(request.method().name(), MethodType.GET);
-        final String reverseContextPath = getReverseContextPath(request, contextPath);
+        final String effectiveContextPath = determineEffectiveContextPath(request, contextPath);
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(ctx, request, reverseContextPath, requestName, requestMethod));
+            logger.debug(getRequestInfo(ctx, request, effectiveContextPath, requestName, requestMethod));
         }
 
         if (!isRequestAcceptable(requestName)) {
@@ -134,7 +134,7 @@ public class DefaultNettyService extends AbstractNettyService {
             return false;
         }
 
-        NettyActivity activity = new NettyActivity(this, ctx, request, reverseContextPath);
+        NettyActivity activity = new NettyActivity(this, ctx, request, effectiveContextPath);
         activity.setRequestName(requestName);
         activity.setRequestMethod(requestMethod);
         try {
@@ -174,8 +174,8 @@ public class DefaultNettyService extends AbstractNettyService {
             String requestNameWithTrailingSlash = activity.getRequestName() + ActivityContext.NAME_SEPARATOR_CHAR;
             if (getActivityContext().getTransletRuleRegistry().contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
                 String location;
-                if (StringUtils.hasLength(activity.getReverseContextPath())) {
-                    location = activity.getReverseContextPath() + requestNameWithTrailingSlash;
+                if (StringUtils.hasLength(activity.getEffectiveContextPath())) {
+                    location = activity.getEffectiveContextPath() + requestNameWithTrailingSlash;
                 } else {
                     location = requestNameWithTrailingSlash;
                 }
@@ -257,17 +257,34 @@ public class DefaultNettyService extends AbstractNettyService {
         }
     }
 
+    @Nullable
+    private String determineEffectiveContextPath(@NonNull FullHttpRequest request, String defaultContextPath) {
+        if (isProxyAddressForwarding()) {
+            String forwardedPath = request.headers().get(HttpHeaders.X_FORWARDED_PATH);
+            if (forwardedPath != null) {
+                if (forwardedPath.equals("/")) {
+                    return StringUtils.EMPTY;
+                } else if (forwardedPath.endsWith("/")) {
+                    return forwardedPath.substring(0, forwardedPath.length() - 1);
+                } else {
+                    return forwardedPath;
+                }
+            }
+        }
+        return defaultContextPath;
+    }
+
     @NonNull
     private String getRequestInfo(
             @NonNull ChannelHandlerContext ctx,
             @NonNull FullHttpRequest request,
-            String reverseContextPath,
+            String effectiveContextPath,
             String requestName,
             MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append(requestMethod).append(" ");
-        if (StringUtils.hasLength(reverseContextPath)) {
-            sb.append(reverseContextPath);
+        if (StringUtils.hasLength(effectiveContextPath)) {
+            sb.append(effectiveContextPath);
         }
         sb.append(requestName).append(" ");
         if (ctx.channel() instanceof Http2StreamChannel) {
@@ -277,14 +294,6 @@ public class DefaultNettyService extends AbstractNettyService {
         }
         sb.append(getRemoteAddr(ctx, request));
         return sb.toString();
-    }
-
-    @Nullable
-    private String getReverseContextPath(@NonNull FullHttpRequest request, String defaultContextPath) {
-        if (isProxyAddressForwarding()) {
-            return WebUtils.getReverseContextPath(request.headers().get(HttpHeaders.X_FORWARDED_PATH), defaultContextPath);
-        }
-        return defaultContextPath;
     }
 
     @NonNull
