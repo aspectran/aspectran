@@ -21,18 +21,18 @@
     --navbar-background-color: #445259;
     --navbar-text-color: #ffffff;
     /* Background color for subnavigation and various headers */
-    --subnav-background-color: #E4E4E4;
+    --subnav-background-color: #d8d8d8;
     /* Background and text colors for selected tabs and navigation items */
-    --selected-background-color: #0088cc;
+    --selected-background-color: #3d7b9a;
     --selected-text-color: #ffffff;
-    --selected-link-color: #1f389c;
+    --selected-link-color: #bdffff;
     /* Background colors for generated tables */
     --even-row-color: #ffffff;
     --odd-row-color: #eeeeef;
     /* Text color for page title */
     --title-color: #2c4557;
     /* Text colors for links */
-    --link-color: #155273;
+    --link-color: #086c9e;
     --link-color-active: #0088cc;
     /* Snippet colors */
     --snippet-background-color: #ebecee;
@@ -45,7 +45,7 @@
     --search-input-background-color: #ffffff;
     --search-input-text-color: #000000;
     --search-input-placeholder-color: #909090;
-    --search-input-border: 1px solid #4b4b4b;
+    --search-input-border: 1px solid #ffffff;
     /* Highlight color for active search tag target */
     --search-tag-highlight-color: #ffff00;
     /* Adjustments for icon and active background colors of copy-to-clipboard buttons */

@@ -279,7 +279,7 @@
                         </group>
                     </groups>
                     <overview>${project.basedir}/src/main/javadoc/overview.html</overview>
-                    <stylesheetfile>${stylesheetfile}</stylesheetfile>
+                    <stylesheetfile>${javadoc.stylesheetfile}</stylesheetfile>
                 </configuration>
                 <executions>
                     <execution>

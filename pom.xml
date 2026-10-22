@@ -120,6 +120,7 @@
 
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
+        <javadoc.stylesheetfile />
 
         <logback.version>1.6.5</logback.version>
         <slf4j.version>2.0.20</slf4j.version>
@@ -437,6 +438,7 @@
                     <doctitle>${javadoc.title}</doctitle>
                     <windowtitle>${javadoc.title}</windowtitle>
                     <locale>${javadoc.locale}</locale>
+                    <bottom><![CDATA[Copyright &#169; {inceptionYear}&#x2013;present <a href="${project.organization.url}">${project.organization.name}</a>. All rights reserved.]]></bottom>
                     <doclint>none</doclint>
                     <failOnError>false</failOnError>
                     <detectLinks>false</detectLinks>
@@ -459,30 +461,12 @@
 
     <profiles>
         <profile>
-            <id>javadoc-style-default</id>
+            <id>javadoc-style-java21</id>
             <activation>
-                <jdk>(,22)</jdk>
+                <jdk>[21,22)</jdk>
             </activation>
             <properties>
                 <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet.css</stylesheetfile>
-            </properties>
-        </profile>
-        <profile>
-            <id>javadoc-style-java22</id>
-            <activation>
-                <jdk>[22,23)</jdk>
-            </activation>
-            <properties>
-                <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet-java22.css</stylesheetfile>
-            </properties>
-        </profile>
-        <profile>
-            <id>javadoc-style-java23</id>
-            <activation>
-                <jdk>[23,)</jdk>
-            </activation>
-            <properties>
-                <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet-java23.css</stylesheetfile>
             </properties>
         </profile>
         <profile>
