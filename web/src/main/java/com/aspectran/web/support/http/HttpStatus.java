@@ -48,14 +48,6 @@ public enum HttpStatus {
      * @see <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>
      */
     EARLY_HINTS(103, "Early Hints"),
-    /**
-     * {@code 103 Checkpoint}.
-     * @see <a href="https://code.google.com/p/gears/wiki/ResumableHttpRequestsProposal">A proposal for supporting
-     * resumable POST/PUT HTTP requests in HTTP/1.0</a>
-     * @deprecated in favor of {@link #EARLY_HINTS}
-     */
-    @Deprecated
-    CHECKPOINT(103, "Checkpoint"),
 
     // 2xx Success
 
@@ -137,13 +129,6 @@ public enum HttpStatus {
      * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.5">Section 15.4.5 of RFC 9110</a>
      */
     NOT_MODIFIED(304, "Not Modified"),
-    /**
-     * {@code 305 Use Proxy}.
-     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.6">Section 15.4.6 of RFC 9110</a>
-     * @deprecated due to security concerns regarding in-band configuration of a proxy
-     */
-    @Deprecated
-    USE_PROXY(305, "Use Proxy"),
     /**
      * {@code 307 Temporary Redirect}.
      * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.8">Section 15.4.8 of RFC 9110</a>
