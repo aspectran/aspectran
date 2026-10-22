@@ -466,7 +466,7 @@
                 <jdk>[21,22)</jdk>
             </activation>
             <properties>
-                <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet.css</stylesheetfile>
+                <javadoc.stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet.css</javadoc.stylesheetfile>
             </properties>
         </profile>
         <profile>
