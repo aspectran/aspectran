@@ -24,7 +24,7 @@
  *
  * <p>Key actions and components include:
  * <ul>
- *   <li><b>Business Logic & Method Invocation:</b>
+ *   <li><b>Business Logic &amp; Method Invocation:</b>
  *     <ul>
  *       <li>{@link com.aspectran.core.activity.process.action.InvokeAction} -
  *           for dynamically or statically invoking methods on beans based on XML/configuration rules.</li>
