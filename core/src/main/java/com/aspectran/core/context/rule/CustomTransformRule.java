@@ -70,10 +70,22 @@ public class CustomTransformRule {
 
     @Override
     public String toString() {
+        return toString(transformer);
+    }
+
+    /**
+     * Returns a string representation of {@code CustomTransformRule} with the given {@code CustomTransformer}.
+     * @param transformer the custom transformer; if null, the configured transformer is used
+     * @return a string representation of {@code CustomTransformRule}
+     */
+    public String toString(@Nullable CustomTransformer transformer) {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("type", RESPONSE_TYPE);
         tsb.appendForce("format", FORMAT_TYPE);
-        tsb.append("transformer", transformer);
+        CustomTransformer actualTransformer = (transformer != null ? transformer : this.transformer);
+        if (actualTransformer != null) {
+            tsb.append("transformer", actualTransformer.getClass().getName());
+        }
         return tsb.toString();
     }
 

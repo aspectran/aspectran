@@ -95,4 +95,27 @@ class ProcessResultTest {
         assertTrue(desc.contains("size=1"));
     }
 
+    @Test
+    void testLastActionResultAndValue() {
+        ProcessResult pr = new ProcessResult();
+        assertNull(pr.lastActionResult());
+        assertNull(pr.lastResultValue());
+
+        ContentResult cr1 = new ContentResult(pr);
+        cr1.addActionResult(new ActionResult("act1", "val1"));
+        assertEquals("val1", pr.lastResultValue());
+
+        ContentResult cr2 = new ContentResult(pr);
+        cr2.addActionResult(new ActionResult("act2", "val2"));
+        cr2.addActionResult(new ActionResult("act3", 100));
+
+        assertNotNull(pr.lastActionResult());
+        assertEquals("act3", pr.lastActionResult().getActionId());
+        assertEquals(100, pr.lastResultValue());
+
+        assertEquals(100, pr.findResultValue(Integer.class));
+        assertEquals("val2", pr.findResultValue(String.class));
+        assertNull(pr.findResultValue(Boolean.class));
+    }
+
 }

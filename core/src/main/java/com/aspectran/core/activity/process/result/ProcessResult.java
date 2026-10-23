@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
@@ -139,15 +140,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
     }
 
     /**
-     * Returns the last {@link ContentResult} in this process result.
-     * @return the last added {@link ContentResult}, or {@code null} if this result is empty
-     */
-    @Nullable
-    public ContentResult lastContentResult() {
-        return (isEmpty() ? null : get(size() - 1));
-    }
-
-    /**
      * Retrieves an {@link ActionResult} by its action ID, searching through all contained
      * content results.
      * @param actionId the ID of the action to find
@@ -204,6 +196,77 @@ public class ProcessResult extends ArrayList<ContentResult> {
             }
             return valueMap.get(ids[ids.length - 1]);
         }
+    }
+
+    /**
+     * Returns the last {@link ContentResult} in this process result.
+     * @return the last added {@link ContentResult}, or {@code null} if this result is empty
+     */
+    @Nullable
+    public ContentResult lastContentResult() {
+        return (isEmpty() ? null : get(size() - 1));
+    }
+
+    /**
+     * Returns the last {@link ActionResult} in this process result.
+     * Searches backwards from the end of the content results list.
+     * @return the last {@link ActionResult}, or {@code null} if this result is empty
+     */
+    @Nullable
+    public ActionResult lastActionResult() {
+        for (ListIterator<ContentResult> iter1 = listIterator(size()); iter1.hasPrevious();) {
+            ContentResult contentResult = iter1.previous();
+            for (ListIterator<ActionResult> iter2 = contentResult.listIterator(contentResult.size()); iter2.hasPrevious();) {
+                ActionResult actionResult = iter2.previous();
+                if (actionResult != null) {
+                    return actionResult;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the result value of the last {@link ActionResult} in this process result.
+     * @return the result value of the last action, or {@code null} if not found
+     */
+    @Nullable
+    public Object lastResultValue() {
+        ActionResult actionResult = lastActionResult();
+        return (actionResult != null ? actionResult.getResultValue() : null);
+    }
+
+    /**
+     * Searches backwards through all action results and returns the first result value
+     * that matches the specified type.
+     * @param <T> the required result type
+     * @param requiredType the class of the required type
+     * @return the result value of the specified type, or {@code null} if not found
+     */
+    @Nullable
+    public <T> T findResultValue(@NonNull Class<T> requiredType) {
+        Assert.notNull(requiredType, "requiredType must not be null");
+        for (ListIterator<ContentResult> iter1 = listIterator(size()); iter1.hasPrevious();) {
+            ContentResult contentResult = iter1.previous();
+            for (ListIterator<ActionResult> iter2 = contentResult.listIterator(contentResult.size()); iter2.hasPrevious();) {
+                ActionResult actionResult = iter2.previous();
+                if (actionResult != null && requiredType.isInstance(actionResult.getResultValue())) {
+                    return requiredType.cast(actionResult.getResultValue());
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds a {@link CustomTransformer} instance from the process results.
+     * This method iterates backwards through the action results, returning the
+     * first action result value that is an instance of {@link CustomTransformer}.
+     * @return a {@link CustomTransformer} instance, or {@code null} if not found
+     */
+    @Nullable
+    public CustomTransformer findTransformer() {
+        return findResultValue(CustomTransformer.class);
     }
 
     /**

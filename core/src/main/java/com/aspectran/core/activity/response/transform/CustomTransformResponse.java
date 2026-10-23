@@ -16,18 +16,14 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
-import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ListIterator;
 
 /**
  * A {@link Response} that delegates the transformation of activity results
@@ -36,7 +32,7 @@ import java.util.ListIterator;
  * <p>This class provides a flexible way to integrate custom data transformation
  * logic. It can either use a pre-configured {@code CustomTransformer} or
  * dynamically discover one from the activity's process results by calling
- * {@link #findTransformer}.</p>
+ * {@link com.aspectran.core.activity.process.result.ProcessResult#findTransformer}.</p>
  *
  * <p>Created: 2019. 06. 15</p>
  */
@@ -74,15 +70,15 @@ public class CustomTransformResponse implements Response {
     @Override
     public void respond(@NonNull Activity activity) throws ResponseException {
         CustomTransformer transformer = customTransformRule.getTransformer();
-        if (transformer == null) {
-            transformer = findTransformer(activity.getProcessResult());
+        if (transformer == null && activity.getProcessResult() != null) {
+            transformer = activity.getProcessResult().findTransformer();
         }
         if (transformer == null) {
             return;
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Response {}", transformer);
+            logger.debug("Response {}", toString(transformer));
         }
 
         try {
@@ -109,34 +105,19 @@ public class CustomTransformResponse implements Response {
 
     @Override
     public String toString() {
-        if (customTransformRule == null) {
-            return super.toString();
-        }
-        return customTransformRule.toString();
+        return toString(null);
     }
 
     /**
-     * Finds a {@link CustomTransformer} instance from the process results.
-     * This method iterates backwards through the action results, returning the
-     * first action result value that is an instance of {@code CustomTransformer}.
-     * @param processResult the process result to search
-     * @return a {@code CustomTransformer} instance, or {@code null} if not found
+     * Returns a string representation of this response with the given {@code CustomTransformer}.
+     * @param transformer the custom transformer; if null, the configured transformer is used
+     * @return a string representation of this response
      */
-    private CustomTransformer findTransformer(ProcessResult processResult) {
-        if (processResult != null) {
-            for (ListIterator<ContentResult> iter1 = processResult.listIterator(processResult.size());
-                 iter1.hasPrevious(); ) {
-                ContentResult contentResult = iter1.previous();
-                for (ListIterator<ActionResult> iter2 = contentResult.listIterator(contentResult.size());
-                     iter2.hasPrevious(); ) {
-                    ActionResult actionResult = iter2.previous();
-                    if (actionResult != null && actionResult.getResultValue() instanceof CustomTransformer that) {
-                        return that;
-                    }
-                }
-            }
+    public String toString(@Nullable CustomTransformer transformer) {
+        if (customTransformRule == null) {
+            return super.toString();
         }
-        return null;
+        return customTransformRule.toString(transformer);
     }
 
 }
