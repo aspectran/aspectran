@@ -40,6 +40,8 @@ public class ResponsePayload {
 
     private ErrorPayload error;
 
+    private boolean protectedData;
+
     /**
      * Instantiates a new ResponsePayload.
      * @param success true if the operation was successful
@@ -136,11 +138,41 @@ public class ResponsePayload {
         return entity;
     }
 
+    /**
+     * Returns whether the data payload is protected from being exposed in string representations.
+     * @return true if the data payload is protected, false otherwise
+     */
+    public boolean isProtected() {
+        return protectedData;
+    }
+
+    /**
+     * Protects the data payload from being exposed in string representations.
+     * @return this {@code ResponsePayload} for fluent chaining
+     */
+    public ResponsePayload protect() {
+        return protect(true);
+    }
+
+    /**
+     * Sets whether the data payload should be protected from being exposed in string representations.
+     * @param protect true to protect the data payload, false otherwise
+     * @return this {@code ResponsePayload} for fluent chaining
+     */
+    public ResponsePayload protect(boolean protect) {
+        this.protectedData = protect;
+        return this;
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce(SUCCESS_NAME, success);
-        tsb.append(DATA_NAME, data);
+        if (protectedData && data != null) {
+            tsb.append(DATA_NAME, "[PROTECTED]");
+        } else {
+            tsb.append(DATA_NAME, data);
+        }
         tsb.append(ERROR_NAME, error);
         return tsb.toString();
     }

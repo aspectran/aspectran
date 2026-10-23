@@ -394,4 +394,23 @@ public interface RestResponse extends CustomTransformer {
     @Nullable
     MultiValueMap<String, String> getHeaders();
 
+    /**
+     * Protects the response data from being exposed in string representations or logs.
+     * @return this {@code RestResponse} object for fluent chaining
+     */
+    RestResponse protect();
+
+    /**
+     * Sets whether the response data should be protected from being exposed in string representations or logs.
+     * @param protect true to protect the response data, false otherwise
+     * @return this {@code RestResponse} object for fluent chaining
+     */
+    RestResponse protect(boolean protect);
+
+    /**
+     * Returns whether the response data is protected.
+     * @return true if the response data is protected, false otherwise
+     */
+    boolean isProtected();
+
 }

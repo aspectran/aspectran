@@ -101,6 +101,18 @@ public class FailureResponse extends DefaultRestResponse {
     }
 
     @Override
+    public FailureResponse protect() {
+        super.protect();
+        return this;
+    }
+
+    @Override
+    public FailureResponse protect(boolean protect) {
+        super.protect(protect);
+        return this;
+    }
+
+    @Override
     public String toString() {
         if (hasData()) {
             return getData().toString();

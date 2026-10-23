@@ -62,6 +62,18 @@ public class SuccessResponse extends DefaultRestResponse {
     }
 
     @Override
+    public SuccessResponse protect() {
+        super.protect();
+        return this;
+    }
+
+    @Override
+    public SuccessResponse protect(boolean protect) {
+        super.protect(protect);
+        return this;
+    }
+
+    @Override
     public String toString() {
         if (hasData()) {
             return getData().toString();

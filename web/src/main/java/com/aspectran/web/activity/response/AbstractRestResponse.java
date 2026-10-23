@@ -22,11 +22,13 @@ import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
+import com.aspectran.web.support.rest.response.ResponsePayload;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -63,6 +65,8 @@ public abstract class AbstractRestResponse implements RestResponse {
     private int status;
 
     private MultiValueMap<String, String> headers;
+
+    private boolean protectedData;
 
     /**
      * Instantiates a new {@code AbstractRestResponse}.
@@ -117,6 +121,9 @@ public abstract class AbstractRestResponse implements RestResponse {
         }
         this.name = name;
         this.data = data;
+        if (protectedData && data instanceof ResponsePayload payload) {
+            payload.protect(true);
+        }
         return this;
     }
 
@@ -426,6 +433,25 @@ public abstract class AbstractRestResponse implements RestResponse {
         return headers;
     }
 
+    @Override
+    public RestResponse protect() {
+        return protect(true);
+    }
+
+    @Override
+    public RestResponse protect(boolean protect) {
+        this.protectedData = protect;
+        if (data instanceof ResponsePayload payload) {
+            payload.protect(protect);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean isProtected() {
+        return protectedData;
+    }
+
     protected abstract List<MediaType> getSupportedContentTypes();
 
     protected abstract MediaType getContentTypeByPathExtension(String extension);
@@ -514,6 +540,23 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     protected String determineIntendedEncoding(@NonNull Activity activity) {
         return activity.getTranslet().getDefinitiveResponseEncoding();
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (status != 0) {
+            tsb.append("status", status);
+        }
+        if (protectedData && hasData()) {
+            tsb.append(name != null ? name : "data", "[PROTECTED]");
+        } else {
+            tsb.append(name != null ? name : "data", data);
+        }
+        if (headers != null && !headers.isEmpty()) {
+            tsb.append("headers", headers);
+        }
+        return tsb.toString();
     }
 
 }
