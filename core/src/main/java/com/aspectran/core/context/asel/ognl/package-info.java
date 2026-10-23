@@ -23,9 +23,9 @@
  * <p>This two-stage process allows for powerful "AsEL Expressions".
  * For example, an expression used for conditional logic might look like:
  * <pre>
- *   #{user^getRole()} == 'ADMIN' &amp;&amp; ${loginAttempts} &lt; 5
+ *   #{user^role} == 'ADMIN' &amp;&amp; ${loginAttempts} &lt; 5
  * </pre>
- * In this case, the token expressions <code>#{user^getRole()}</code> and
+ * In this case, the token expressions <code>#{user^role}</code> and
  * <code>${loginAttempts}</code> are resolved first. Then, the OGNL engine in this
  * package evaluates the entire expression to produce a final boolean value.
  * This mechanism is fundamental to features like conditional actions
