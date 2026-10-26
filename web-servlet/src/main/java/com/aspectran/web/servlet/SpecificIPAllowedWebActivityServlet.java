@@ -36,6 +36,12 @@ import java.io.Serial;
  * in the servlet configuration. The addresses can be a comma-separated list of
  * individual IP addresses, octet-level wildcards (e.g. {@code 192.168.1.*}), or
  * IP address ranges in CIDR notation (e.g., {@code 192.168.0.0/24}).</p>
+ * <p>Optionally, trusted upstream proxies can be configured via the 'trustedProxies'
+ * init-param (supporting the same formats: individual IPs, wildcards, or CIDR).
+ * When {@code proxyAddressForwarding} is enabled and {@code trustedProxies} is specified,
+ * the {@code X-Forwarded-For} header will only be trusted if the immediate socket connection
+ * comes from one of the trusted proxy IP addresses. Requests connecting directly from untrusted
+ * addresses will ignore the header and use the actual socket IP address, preventing IP spoofing.</p>
  * <p>
  * <strong>Note:</strong> For more advanced and robust security, using a dedicated
  * firewall or a reverse proxy for access control is recommended.</p>
@@ -49,6 +55,8 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     private String allowedAddresses;
 
+    private String trustedProxies;
+
     /**
      * Instantiates a new {@code SpecificIPAllowedWebActivityServlet}.
      */
@@ -59,6 +67,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     @Override
     public void init() throws ServletException {
         allowedAddresses = getServletConfig().getInitParameter("allowedAddresses");
+        trustedProxies = getServletConfig().getInitParameter("trustedProxies");
         super.init();
     }
 
@@ -77,8 +86,19 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     }
 
     private String getRemoteAddr(@NonNull HttpServletRequest req) {
-        String forwardedFor = (getWebService().isProxyAddressForwarding() ? req.getHeader(HttpHeaders.X_FORWARDED_FOR) : null);
-        return WebUtils.resolveRemoteAddr(forwardedFor, req.getRemoteAddr());
+        String remoteAddr = req.getRemoteAddr();
+        if (getWebService().isProxyAddressForwarding()) {
+            if (trustedProxies != null) {
+                if (IpAddressUtils.isAllowedIp(remoteAddr, trustedProxies)) {
+                    String forwardedFor = req.getHeader(HttpHeaders.X_FORWARDED_FOR);
+                    return WebUtils.resolveRemoteAddr(forwardedFor, remoteAddr);
+                }
+                return remoteAddr;
+            }
+            String forwardedFor = req.getHeader(HttpHeaders.X_FORWARDED_FOR);
+            return WebUtils.resolveRemoteAddr(forwardedFor, remoteAddr);
+        }
+        return remoteAddr;
     }
 
 }
