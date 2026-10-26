@@ -28,6 +28,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.ssl.SslHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,11 +193,8 @@ public class NettyRequestAdapter extends AbstractWebRequestAdapter {
     }
 
     @Override
-    public String getRemoteAddr() {
-        String remoteAddr = super.getRemoteAddr();
-        if (remoteAddr != null) {
-            return remoteAddr;
-        }
+    @Nullable
+    protected String getActualRemoteAddr() {
         if (ctx != null) {
             SocketAddress socketAddress = ctx.channel().remoteAddress();
             if (socketAddress instanceof InetSocketAddress inetSocketAddress) {

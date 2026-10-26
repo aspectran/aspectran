@@ -186,13 +186,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     }
 
     @Override
-    public String getRemoteAddr() {
-        if (isProxyAddressForwarding()) {
-            String remoteAddr = super.getRemoteAddr();
-            if (remoteAddr != null) {
-                return remoteAddr;
-            }
-        }
+    protected String getActualRemoteAddr() {
         return getHttpServletRequest().getRemoteAddr();
     }
 

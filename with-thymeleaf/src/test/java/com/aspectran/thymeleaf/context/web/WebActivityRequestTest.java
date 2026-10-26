@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.web.adapter.AbstractWebRequestAdapter;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -51,6 +52,11 @@ class WebActivityRequestTest {
             @Override
             public int getServerPort() {
                 return 8443;
+            }
+
+            @Override
+            protected @Nullable String getActualRemoteAddr() {
+                return null;
             }
 
             @Override

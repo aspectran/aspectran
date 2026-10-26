@@ -153,13 +153,7 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
 
     @Override
     @Nullable
-    public String getRemoteAddr() {
-        if (isProxyAddressForwarding()) {
-            String remoteAddr = super.getRemoteAddr();
-            if (remoteAddr != null) {
-                return remoteAddr;
-            }
-        }
+    protected String getActualRemoteAddr() {
         HttpServerExchange exchange = getAdaptee();
         if (exchange != null) {
             InetSocketAddress sourceAddress = exchange.getSourceAddress();

@@ -339,8 +339,7 @@ public class WebUtils {
 
     /**
      * Extracts the remote client IP address from the request adapter.
-     * <p>If the adapter is a {@link WebRequestAdapter}, the {@code X-Forwarded-For} header
-     * is inspected first if proxy address forwarding is enabled. Otherwise, its
+     * <p>If the adapter is a {@link WebRequestAdapter}, its
      * {@link WebRequestAdapter#getRemoteAddr()} method is returned.</p>
      * @param requestAdapter the current request adapter
      * @return the remote IP address, or {@code null} if not determinable
@@ -349,10 +348,6 @@ public class WebUtils {
     public static String getRemoteAddr(@NonNull RequestAdapter requestAdapter) {
         Assert.notNull(requestAdapter, "requestAdapter must not be null");
         if (requestAdapter instanceof WebRequestAdapter webRequestAdapter) {
-            if (webRequestAdapter.isProxyAddressForwarding()) {
-                return resolveRemoteAddr(webRequestAdapter.getHeader(HttpHeaders.X_FORWARDED_FOR),
-                        webRequestAdapter.getRemoteAddr());
-            }
             return webRequestAdapter.getRemoteAddr();
         }
         return null;

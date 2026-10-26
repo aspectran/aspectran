@@ -24,6 +24,7 @@ import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.util.WebUtils;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,8 +189,15 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
                 return remoteAddr;
             }
         }
-        return null;
+        return getActualRemoteAddr();
     }
+
+    /**
+     * Returns the physical remote IP address from the underlying connection.
+     * @return the remote IP address, or {@code null} if not determinable
+     */
+    @Nullable
+    protected abstract String getActualRemoteAddr();
 
     @Override
     public abstract String getContextPath();

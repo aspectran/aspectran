@@ -49,7 +49,7 @@ class WebUtilsTest {
     void testGetRemoteAddrWithRequestAdapter() {
         AbstractWebRequestAdapter adapter = new AbstractWebRequestAdapter(MethodType.GET, null) {
             @Override
-            public String getRemoteAddr() {
+            protected String getActualRemoteAddr() {
                 return "192.168.1.100";
             }
 
@@ -97,7 +97,7 @@ class WebUtilsTest {
     void testDetermineEffectiveContextPathWithRequestAdapter() {
         AbstractWebRequestAdapter adapter = new AbstractWebRequestAdapter(MethodType.GET, null) {
             @Override
-            public String getRemoteAddr() {
+            protected String getActualRemoteAddr() {
                 return null;
             }
 
