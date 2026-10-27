@@ -33,8 +33,10 @@
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.undertow</automatic.module.name>
         <undertow.version>2.3.27.Final</undertow.version>
-        <!-- Override the older version of JBoss Threads transitively imported by XNIO. Remove this once XNIO is upgraded. -->
-        <jboss-threads.version>3.9.2</jboss-threads.version>
+        <!-- Override the older JBoss Threads version transitively imported by Undertow and XNIO.
+             Ensures optimal thread pool stability and modern JDK compatibility.
+             Remove once Undertow aligns with newer versions. -->
+        <jboss-threads.version>3.11.1</jboss-threads.version>
     </properties>
 
     <dependencies>
