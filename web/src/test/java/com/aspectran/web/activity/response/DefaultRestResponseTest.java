@@ -375,19 +375,6 @@ class DefaultRestResponseTest {
             assertEquals("text/plain;charset=UTF-8", responseAdapter.getContentType());
             assertTrue(writer.toString().contains("name=Aspectran"));
         }
-
-        // 5. HTML extension
-        {
-            DefaultRestResponse restResponse = new DefaultRestResponse(data);
-            StringWriter writer = new StringWriter();
-            ResponseAdapter responseAdapter = new DefaultResponseAdapter(null, writer);
-            RequestAdapter requestAdapter = new DefaultRequestAdapter(MethodType.GET);
-            Activity activity = createMockActivity("/test/sample.html", requestAdapter, responseAdapter, "UTF-8");
-
-            restResponse.transform(activity);
-            assertEquals("text/html;charset=UTF-8", responseAdapter.getContentType());
-            assertTrue(writer.toString().contains("name=Aspectran"));
-        }
     }
 
 }

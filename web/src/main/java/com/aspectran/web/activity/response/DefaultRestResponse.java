@@ -58,11 +58,10 @@ public class DefaultRestResponse extends AbstractRestResponse {
     private static final List<MediaType> supportedContentTypes;
     static {
         supportedContentTypes = List.of(
-                MediaType.TEXT_PLAIN,
-                MediaType.TEXT_HTML,
                 MediaType.APPLICATION_JSON,
                 MediaType.APPLICATION_APON,
-                MediaType.APPLICATION_XML);
+                MediaType.APPLICATION_XML,
+                MediaType.TEXT_PLAIN);
     }
 
     private static final Map<String, MediaType> supportedPathExtensions;
@@ -71,9 +70,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
                 "json", MediaType.APPLICATION_JSON,
                 "apon", MediaType.APPLICATION_APON,
                 "xml", MediaType.APPLICATION_XML,
-                "txt", MediaType.TEXT_PLAIN,
-                "html", MediaType.TEXT_HTML,
-                "htm", MediaType.TEXT_HTML);
+                "txt", MediaType.TEXT_PLAIN);
     }
 
     /**
