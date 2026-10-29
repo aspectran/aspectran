@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * A concrete implementation of the {@link Session} interface.
@@ -636,6 +637,45 @@ public class ManagedSession implements Session {
         }
         if (!isResident()) {
             throw new IllegalStateException("Invalid for read; session id=" + sessionData.getId() + " not resident");
+        }
+    }
+
+    @Override
+    public <T> T read(Function<Session, T> action) {
+        if (action == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
+        try (AutoLock ignored = autoLock.lock()) {
+            if (state != State.VALID || isExpiredAt(System.currentTimeMillis())) {
+                return null;
+            }
+            return action.apply(this);
+        }
+    }
+
+    @Override
+    public SessionSnapshot getSnapshot() {
+        try (AutoLock ignored = autoLock.lock()) {
+            if (state != State.VALID || isExpiredAt(System.currentTimeMillis())) {
+                return null;
+            }
+            long remaining = sessionData.getExpiry() - System.currentTimeMillis();
+            if (sessionData.getInactiveInterval() <= 0L) {
+                remaining = -1L;
+            } else if (remaining < 0L) {
+                remaining = 0L;
+            }
+            boolean tempResident = (resident && sessionData.getExtraInactiveInterval() > 0L);
+            return new SessionSnapshot(
+                    sessionData.getId(),
+                    sessionData.getCreated(),
+                    sessionData.getLastAccessed(),
+                    getMaxInactiveInterval(),
+                    remaining,
+                    newSession,
+                    tempResident,
+                    sessionData.getAllAttributes()
+            );
         }
     }
 

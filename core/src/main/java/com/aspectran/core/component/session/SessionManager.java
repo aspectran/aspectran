@@ -18,6 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.utils.scheduling.Scheduler;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Manages the lifecycle of sessions, including creation, retrieval, invalidation,
@@ -159,6 +160,12 @@ public interface SessionManager {
      * Removes all registered session event listeners.
      */
     void clearSessionListeners();
+
+    /**
+     * Performs the given action for each active session currently held in the cache.
+     * @param action the action to be performed for each session
+     */
+    void forEachActiveSession(Consumer<Session> action);
 
     /**
      * Returns the set of IDs for sessions that are currently active in the cache.

@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import static java.lang.Math.round;
 
@@ -610,6 +611,13 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     protected void onSessionResided(Session session) {
         for (SessionListener listener : sessionListeners) {
             listener.sessionResided(session);
+        }
+    }
+
+    @Override
+    public void forEachActiveSession(Consumer<Session> action) {
+        if (sessionCache != null && action != null) {
+            sessionCache.forEachActiveSession(action);
         }
     }
 

@@ -21,11 +21,12 @@ import com.aspectran.utils.concurrent.AutoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -104,8 +105,21 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
+    public void forEachActiveSession(Consumer<? super ManagedSession> action) {
+        if (action == null || sessions.isEmpty()) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        for (ManagedSession session : sessions.values()) {
+            if (session != null && !session.isExpiredAt(now) && session.isValid()) {
+                action.accept(session);
+            }
+        }
+    }
+
+    @Override
     public Set<String> getActiveSessions() {
-        return new HashSet<>(sessions.keySet());
+        return Collections.unmodifiableSet(sessions.keySet());
     }
 
     @Override

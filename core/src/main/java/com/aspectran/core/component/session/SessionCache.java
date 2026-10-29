@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * An in-memory cache for active sessions.
@@ -193,6 +194,12 @@ public interface SessionCache {
      * @param time the time before which the sessions must have expired
      */
     void cleanOrphans(long time);
+
+    /**
+     * Performs the given action for each active session currently held in this cache.
+     * @param action the action to be performed for each session
+     */
+    void forEachActiveSession(Consumer<? super ManagedSession> action);
 
     /**
      * Returns the set of IDs for sessions currently active in the cache.

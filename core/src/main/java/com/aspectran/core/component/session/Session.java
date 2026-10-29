@@ -16,6 +16,8 @@
 package com.aspectran.core.component.session;
 
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Represents a user session, providing a mechanism to store and retrieve
@@ -150,6 +152,37 @@ public interface Session {
      * when the session expires or the application is undeployed.
      */
     void invalidate();
+
+    /**
+     * Performs the given action with the session lock acquired.
+     * <p>If the session is invalid or expired, returns {@code null} without executing the action.</p>
+     * @param <T> the type of the result
+     * @param action the action to execute within the session lock
+     * @return the result of the action, or {@code null} if the session is invalid or expired
+     */
+    <T> T read(Function<Session, T> action);
+
+    /**
+     * Performs the given action with the session lock acquired.
+     * <p>If the session is invalid or expired, the action is not executed.</p>
+     * @param action the action to execute within the session lock
+     */
+    default void read(Consumer<Session> action) {
+        if (action == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
+        read(session -> {
+            action.accept(session);
+            return null;
+        });
+    }
+
+    /**
+     * Returns an immutable, read-only snapshot of this session taken within a minimal lock hold time.
+     * <p>If this session is already a snapshot, returns {@code this}.</p>
+     * @return an immutable snapshot of this session, or {@code null} if the session is invalid or expired
+     */
+    SessionSnapshot getSnapshot();
 
     /**
      * Returns the reason why the session was destroyed.
