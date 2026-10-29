@@ -148,19 +148,6 @@ public class SessionStatistics {
     }
 
     /**
-     * Returns the number of sessions that are not managed by the current session manager.
-     * This number of sessions includes sessions that are inactive or have been transferred
-     * to a session manager on another clustered server.
-     * If this number is positive, it means that there were more sessions transferred from
-     * other servers to the current server, while a negative number means the opposite.
-     * If not in cluster mode, only the number of inactive sessions will be included.
-     * @return the number of sessions that are not managed by the current session manager
-     */
-    public long getNumberOfUnmanaged() {
-        return (getNumberOfCreated() - getNumberOfExpired() - getNumberOfActives());
-    }
-
-    /**
      * Returns the maximum amount of time a session remained valid.
      * @return the maximum amount of time a session remained valid
      */
