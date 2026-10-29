@@ -83,6 +83,15 @@ public interface SessionManager {
     ManagedSession getSession(String id);
 
     /**
+     * Finds an existing session by its ID without triggering expiration side effects.
+     * Unlike {@link #getSession(String)}, this method simply returns {@code null} if the
+     * session has expired, without invalidating it.
+     * @param id the session ID
+     * @return the managed session, or {@code null} if no session exists or has expired
+     */
+    ManagedSession findSession(String id);
+
+    /**
      * Creates a new session with the specified ID.
      * @param id the unique identifier for the new session
      * @return the newly created session

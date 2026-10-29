@@ -224,6 +224,25 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         }
     }
 
+    @Override
+    public ManagedSession findSession(String id) {
+        ManagedSession session = null;
+        try {
+            session = sessionCache.get(id);
+            if (session != null) {
+                if (session.isExpiredAt(System.currentTimeMillis())) {
+                    return null;
+                }
+            }
+            return session;
+        } catch (Exception e) {
+            if (session != null && session.isValid()) {
+                logger.warn(e.getMessage(), e);
+            }
+            return null;
+        }
+    }
+
     /**
      * {@inheritDoc}
      * <p>This implementation creates a new session with the default maximum idle time
