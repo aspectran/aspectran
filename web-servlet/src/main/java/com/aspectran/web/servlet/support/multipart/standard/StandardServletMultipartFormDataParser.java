@@ -188,7 +188,7 @@ public class StandardServletMultipartFormDataParser implements MultipartFormData
         }
     }
 
-    private String getValueAsString(Part part, String encoding) throws IOException {
+    private @NonNull String getValueAsString(@NonNull Part part, String encoding) throws IOException {
         byte[] bytes;
         try (InputStream in = part.getInputStream()) {
             bytes = in.readAllBytes();
