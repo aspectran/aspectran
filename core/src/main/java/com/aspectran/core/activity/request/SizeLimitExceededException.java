@@ -24,7 +24,7 @@ import java.io.Serial;
  *
  * @since 6.3.0
  */
-public class SizeLimitExceededException extends RequestParseException {
+public class SizeLimitExceededException extends RequestException {
 
     @Serial
     private static final long serialVersionUID = -6153625356301952978L;

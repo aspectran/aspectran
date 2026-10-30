@@ -331,11 +331,13 @@ public class CoreActivity extends AdviceActivity {
 
             if (translet == null) {
                 prepareAdviceRules();
-            } else if (!requestParsed) {
-                parseRequest();
             }
 
             try {
+                if (translet != null && !requestParsed) {
+                    parseRequest();
+                }
+
                 // Runs 'before' advice for the initial translet as well as during forwarding
                 // for the target translet (already executed advice is automatically skipped)
                 executeBeforeAdvices();
