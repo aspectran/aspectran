@@ -197,6 +197,13 @@ public interface SessionCache {
 
     /**
      * Performs the given action for each active session currently held in this cache.
+     * <p>The action is invoked while the lock of the visited session is held, so
+     * it should be short and must not try to acquire the locks of other sessions.
+     * Implementations must not block waiting for the lock of a session; sessions
+     * whose lock is currently held by another thread (e.g. while being invalidated
+     * or accessed) are skipped. This prevents deadlocks when this method is called,
+     * directly or indirectly, from a {@link SessionListener} callback, which is
+     * notified while the lock of the notifying session is held.</p>
      * @param action the action to be performed for each session
      */
     void forEachActiveSession(Consumer<? super ManagedSession> action);

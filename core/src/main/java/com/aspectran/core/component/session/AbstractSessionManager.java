@@ -419,6 +419,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                 return true;
             }
             if (session.isExpiredAt(now)) {
+                boolean tempResident = session.isTempResident();
                 // instead of expiring the session directly here, accumulate a list of
                 // session ids that need to be expired. This is an efficiency measure: as
                 // the expiration involves the SessionStore doing a delete, it is
@@ -426,8 +427,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                 // roundtrips to the persistent store.
                 if (!addCandidateSessionIdForExpiry(session.getId())) {
                     invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
-                }
-                if (session.isTempResident()) {
+                } else if (tempResident) {
                     onSessionEvicted(session);
                 }
                 return true;

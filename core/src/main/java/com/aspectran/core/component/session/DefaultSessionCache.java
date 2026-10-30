@@ -111,8 +111,25 @@ public class DefaultSessionCache extends AbstractSessionCache {
         }
         long now = System.currentTimeMillis();
         for (ManagedSession session : sessions.values()) {
-            if (session != null && !session.isExpiredAt(now) && session.isValid()) {
-                action.accept(session);
+            if (session == null) {
+                continue;
+            }
+            // Never block on the lock of a busy session. Session listeners are notified
+            // while the session lock is held, so a listener that iterates over sessions
+            // (directly or indirectly) could otherwise deadlock with another thread doing
+            // the same on a different session. A session whose lock is currently held is
+            // most likely being invalidated, evicted, or accessed, so it is simply skipped.
+            AutoLock lock = session.tryLock();
+            if (lock == null) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Skip busy session while iterating active sessions: {}", session.getSessionData().getId());
+                }
+                continue;
+            }
+            try (lock) {
+                if (session.isValid() && session.isResident() && !session.getSessionData().isExpiredAt(now)) {
+                    action.accept(session);
+                }
             }
         }
     }

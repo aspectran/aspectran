@@ -19,14 +19,21 @@ import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.apon.AponLines;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -715,6 +722,112 @@ class DefaultSessionManagerTest {
         String sessionId = sessionManager.createSessionId();
         assertNotNull(sessionId);
         assertTrue(sessionId.endsWith(".n1"), "Session ID with routeId should end with .n1");
+    }
+
+    @Test
+    @Timeout(value = 15, unit = TimeUnit.SECONDS)
+    void testConcurrentInvalidationAndForEachActiveSession_noDeadlock() throws Exception {
+        SessionManagerConfig config = new SessionManagerConfig(new AponLines()
+                .line("maxIdleSeconds", 2)
+                .line("maxIdleSecondsForNew", 1)
+                .toString());
+
+        sessionManager = new DefaultSessionManager();
+        sessionManager.setSessionManagerConfig(config);
+        sessionManager.initialize();
+
+        // Register a listener that iterates over all active sessions and takes snapshots
+        // whenever a session is created, resided, evicted, or destroyed (simulating AppMon)
+        sessionManager.addSessionListener(new SessionListener() {
+            @Override
+            public void sessionCreated(Session session) {
+                if (!session.isTempResident()) {
+                    scanActiveSessions();
+                }
+            }
+
+            @Override
+            public void sessionResided(Session session) {
+                scanActiveSessions();
+            }
+
+            @Override
+            public void sessionEvicted(Session session) {
+                if (!session.isTempResident()) {
+                    scanActiveSessions();
+                }
+            }
+
+            @Override
+            public void sessionDestroyed(Session session) {
+                if (!session.isTempResident()) {
+                    scanActiveSessions();
+                }
+            }
+
+            private void scanActiveSessions() {
+                sessionManager.forEachActiveSession(s -> {
+                    SessionSnapshot snapshot = s.getSnapshot();
+                    if (snapshot != null) {
+                        snapshot.getId();
+                    }
+                });
+            }
+        });
+
+        int totalSessions = 1800;
+        List<String> sessionIds = new CopyOnWriteArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(16);
+        CountDownLatch createLatch = new CountDownLatch(totalSessions);
+        AtomicReference<Throwable> errorRef = new AtomicReference<>();
+
+        try {
+            for (int i = 0; i < totalSessions; i++) {
+                final int idx = i;
+                executor.submit(() -> {
+                    try {
+                        String id = sessionManager.createSessionId();
+                        ManagedSession session = sessionManager.createSession(id);
+                        if (idx % 2 == 0) {
+                            session.access();
+                        }
+                        session.complete();
+                        sessionIds.add(id);
+                    } catch (Throwable t) {
+                        errorRef.compareAndSet(null, t);
+                    } finally {
+                        createLatch.countDown();
+                    }
+                });
+            }
+            assertTrue(createLatch.await(5, TimeUnit.SECONDS), "All 1,800 sessions should be created");
+            assertNull(errorRef.get());
+
+            CountDownLatch invalidateLatch = new CountDownLatch(sessionIds.size());
+            for (int i = 0; i < sessionIds.size(); i++) {
+                final int idx = i;
+                final String id = sessionIds.get(i);
+                executor.submit(() -> {
+                    try {
+                        if (idx % 2 == 0) {
+                            sessionManager.invalidate(id);
+                        } else {
+                            sessionManager.forEachActiveSession(Session::getSnapshot);
+                        }
+                    } catch (IllegalStateException ignored) {
+                    } catch (Throwable t) {
+                        errorRef.compareAndSet(null, t);
+                    } finally {
+                        invalidateLatch.countDown();
+                    }
+                });
+            }
+            assertTrue(invalidateLatch.await(5, TimeUnit.SECONDS), "Concurrent invalidation and iteration should complete");
+            assertNull(errorRef.get());
+        } finally {
+            executor.shutdownNow();
+            executor.awaitTermination(3, TimeUnit.SECONDS);
+        }
     }
 
     // ========================================================================

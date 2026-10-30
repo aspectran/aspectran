@@ -163,6 +163,14 @@ public interface SessionManager {
 
     /**
      * Performs the given action for each active session currently held in the cache.
+     * <p>The action is invoked while the lock of the visited session is held, so
+     * it should be short and must not try to acquire the locks of other sessions.
+     * Prefer taking a {@link Session#getSnapshot() snapshot} inside the action and
+     * processing it afterwards. Sessions that are busy (i.e. whose lock is held by
+     * another thread, for example while being invalidated) are skipped rather than
+     * waited for, so the result is a best-effort view of the active sessions.
+     * This guarantees that the method never deadlocks, even when it is called from
+     * a {@link SessionListener} callback.</p>
      * @param action the action to be performed for each session
      */
     void forEachActiveSession(Consumer<Session> action);

@@ -293,7 +293,7 @@ public class ManagedSession implements Session {
     @Override
     public boolean isTempResident() {
         try (AutoLock ignored = autoLock.lock()) {
-            return (resident && sessionData.getExtraInactiveInterval() > 0L);
+            return (sessionData.getExtraInactiveInterval() > 0L);
         }
     }
 
@@ -665,7 +665,7 @@ public class ManagedSession implements Session {
             } else if (remaining < 0L) {
                 remaining = 0L;
             }
-            boolean tempResident = (resident && sessionData.getExtraInactiveInterval() > 0L);
+            boolean tempResident = (sessionData.getExtraInactiveInterval() > 0L);
             return new SessionSnapshot(
                     sessionData.getId(),
                     sessionData.getCreated(),
@@ -685,6 +685,18 @@ public class ManagedSession implements Session {
      */
     protected AutoLock lock() {
         return autoLock.lock();
+    }
+
+    /**
+     * Attempts to acquire the lock on the session without waiting.
+     * <p>This is intended for operations that visit many sessions, such as
+     * iterating over all active sessions, where blocking on the lock of a busy
+     * session could cause a lock-order inversion with threads that already hold
+     * a session lock (e.g. while invalidating a session and notifying listeners).</p>
+     * @return the lock if it was acquired, or {@code null} if the lock is held by another thread
+     */
+    protected AutoLock tryLock() {
+        return autoLock.tryLock();
     }
 
     @Override
