@@ -18,8 +18,6 @@ package com.aspectran.netty.daemon.command;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.context.asel.item.ItemEvaluator;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -59,10 +57,8 @@ public class NettyCommand extends AbstractCommand {
         try {
             String mode = null;
             String serverName = null;
-            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                ItemEvaluator evaluator = getDaemonService().getDefaultActivity().getItemEvaluator();
-                ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+            ParameterMap parameterMap = getParameterMap(parameters);
+            if (parameterMap != null) {
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
             }

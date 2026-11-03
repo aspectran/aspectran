@@ -178,9 +178,6 @@ public class CommandExecutor {
      */
     @NonNull
     protected CommandResult executeNow(Command command, @NonNull CommandParameters parameters) {
-        // DefaultActivity will always be specified here
-        parameters.setActivity(daemonService.getActivityContext().getAvailableActivity());
-
         try {
             CommandResult commandResult = command.execute(parameters);
             if (commandResult.isSuccess()) {

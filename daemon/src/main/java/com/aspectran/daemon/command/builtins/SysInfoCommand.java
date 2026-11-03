@@ -56,7 +56,7 @@ public class SysInfoCommand extends AbstractCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try  {
-            Object[] args = parameters.getArguments();
+            Object[] args = getArguments(parameters);
             Writer writer = new StringWriter();
             PrintWriter printWriter = new PrintWriter(writer);
             Set<Object> done = new HashSet<>();

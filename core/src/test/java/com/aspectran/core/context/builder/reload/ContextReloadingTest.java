@@ -432,7 +432,7 @@ class ContextReloadingTest {
         }
 
         @Override
-        public Activity getDefaultActivity() {
+        public Activity getAvailableActivity() {
             return null;
         }
 

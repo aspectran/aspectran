@@ -15,9 +15,7 @@
  */
 package com.aspectran.daemon.command;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
@@ -26,15 +24,19 @@ import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
+import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.DefaultParameters;
+import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Holds all parameters required to execute a daemon command.
@@ -101,22 +103,11 @@ public class CommandParameters extends DefaultParameters {
         };
     }
 
-    private Activity activity;
-
     /**
      * Instantiates a new CommandParameters.
      */
     public CommandParameters() {
         super(parameterKeys);
-    }
-
-    /**
-     * Sets the activity, which is required to evaluate item rules for arguments,
-     * parameters, and attributes.
-     * @param activity the activity instance
-     */
-    public void setActivity(Activity activity) {
-        this.activity = activity;
     }
 
     /**
@@ -222,28 +213,6 @@ public class CommandParameters extends DefaultParameters {
     }
 
     /**
-     * Evaluates and returns the arguments for a bean method invocation.
-     * @return an array of evaluated argument values
-     * @throws IllegalRuleException if an error occurs while evaluating the rules
-     */
-    public Object[] getArguments() throws IllegalRuleException {
-        if (activity == null) {
-            throw new IllegalStateException("No available activity");
-        }
-        ItemRuleList itemRuleList = getArgumentItemRuleList();
-        if (itemRuleList != null) {
-            ItemEvaluator evaluator = activity.getItemEvaluator();
-            Object[] args = new Object[itemRuleList.size()];
-            for (int i = 0; i < itemRuleList.size(); i++) {
-                args[i] = evaluator.evaluate(itemRuleList.get(i));
-            }
-            return args;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Adds an argument item rule.
      * @param itemRule the item rule to add
      */
@@ -251,6 +220,34 @@ public class CommandParameters extends DefaultParameters {
         ItemHolderParameters ihp = touchParameters(CommandParameters.arguments);
         ihp.addItemParameters(RulesToParameters.toItemParameters(itemRule));
         putValue(arguments, ihp);
+    }
+
+    /**
+     * Adds a command argument with automatic {@link ItemValueType} inference.
+     * @param value the argument value
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters addArgument(Object value) {
+        ItemValueType inferredType = inferItemValueType(value);
+        return addArgument(value, inferredType);
+    }
+
+    /**
+     * Adds a command argument with the specified value and {@link ItemValueType}.
+     * @param value the argument value
+     * @param valueType the item value type
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters addArgument(Object value, ItemValueType valueType) {
+        ItemHolderParameters holder = touchParameters(arguments);
+        ItemParameters item = holder.newItemParameters();
+        if (valueType != null && valueType != ItemValueType.STRING) {
+            item.putValue(ItemParameters.valueType, valueType.toString());
+        }
+        if (value != null) {
+            item.putValue(ItemParameters.value, value);
+        }
+        return this;
     }
 
     /**
@@ -269,6 +266,47 @@ public class CommandParameters extends DefaultParameters {
     }
 
     /**
+     * Adds a property with the specified name and string value.
+     * @param name the property name
+     * @param value the property value
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setProperty(String name, String value) {
+        return setProperty(name, value, ItemValueType.STRING);
+    }
+
+    /**
+     * Adds a property with automatic {@link ItemValueType} inference.
+     * @param name the property name
+     * @param value the property value
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setProperty(String name, Object value) {
+        ItemValueType inferredType = inferItemValueType(value);
+        return setProperty(name, value, inferredType);
+    }
+
+    /**
+     * Adds a property with the specified name, value, and {@link ItemValueType}.
+     * @param name the property name
+     * @param value the property value
+     * @param valueType the item value type
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setProperty(String name, Object value, ItemValueType valueType) {
+        ItemHolderParameters holder = touchParameters(properties);
+        ItemParameters item = holder.newItemParameters();
+        item.putValue(ItemParameters.name, name);
+        if (valueType != null && valueType != ItemValueType.STRING) {
+            item.putValue(ItemParameters.valueType, valueType.toString());
+        }
+        if (value != null) {
+            item.putValue(ItemParameters.value, value);
+        }
+        return this;
+    }
+
+    /**
      * Returns the parameter item rules as a map.
      * @return the map of item rules for parameters
      * @throws IllegalRuleException if an error occurs while parsing the rules
@@ -284,21 +322,120 @@ public class CommandParameters extends DefaultParameters {
     }
 
     /**
-     * Evaluates and returns the request parameters as a {@link ParameterMap}.
-     * @return the evaluated parameter map
-     * @throws IllegalRuleException if an error occurs while evaluating the rules
+     * Adds a request parameter with the specified name and string value.
+     * @param name the parameter name
+     * @param value the parameter value
+     * @return this {@code CommandParameters} instance
      */
-    public ParameterMap getParameterMap() throws IllegalRuleException {
-        if (activity == null) {
-            throw new IllegalStateException("No available activity");
+    public CommandParameters setParameter(String name, String value) {
+        return setParameter(name, value, ItemValueType.STRING);
+    }
+
+    /**
+     * Adds a request parameter with automatic {@link ItemValueType} inference.
+     * @param name the parameter name
+     * @param value the parameter value
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setParameter(String name, Object value) {
+        if (value instanceof String[] values) {
+            return setParameter(name, values);
         }
-        ItemRuleMap parameterItemRuleMap = getParameterItemRuleMap();
-        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = activity.getItemEvaluator();
-            return evaluator.evaluateAsParameterMap(parameterItemRuleMap);
-        } else {
+        if (value instanceof Collection<?> collection) {
+            return setParameter(name, collection);
+        }
+        ItemValueType inferredType = inferItemValueType(value);
+        return setParameter(name, value, inferredType);
+    }
+
+    /**
+     * Adds a request parameter with the specified name, value, and {@link ItemValueType}.
+     * @param name the parameter name
+     * @param value the parameter value
+     * @param valueType the item value type
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setParameter(String name, Object value, ItemValueType valueType) {
+        ItemHolderParameters holder = touchParameters(parameters);
+        ItemParameters item = holder.newItemParameters();
+        item.putValue(ItemParameters.name, name);
+        if (valueType != null && valueType != ItemValueType.STRING) {
+            item.putValue(ItemParameters.valueType, valueType.toString());
+        }
+        if (value != null) {
+            item.putValue(ItemParameters.value, value);
+        }
+        return this;
+    }
+
+    /**
+     * Adds a multi-valued request parameter as an array.
+     * @param name the parameter name
+     * @param values the parameter values
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setParameter(String name, String[] values) {
+        if (values != null && values.length > 0) {
+            ItemHolderParameters holder = touchParameters(parameters);
+            ItemParameters item = holder.newItemParameters();
+            item.putValue(ItemParameters.name, name);
+            item.putValue(ItemParameters.type, ItemType.ARRAY.toString());
+            item.putValue(ItemParameters.value, values);
+        }
+        return this;
+    }
+
+    /**
+     * Adds a multi-valued request parameter as a collection.
+     * @param name the parameter name
+     * @param values the parameter values
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setParameter(String name, Collection<?> values) {
+        if (values != null && !values.isEmpty()) {
+            String[] stringValues = values.stream()
+                    .filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .toArray(String[]::new);
+            return setParameter(name, stringValues);
+        }
+        return this;
+    }
+
+    /**
+     * Extracts and returns the request parameters as a {@link ParameterMap}.
+     * @return the parameter map, or {@code null} if no parameters exist
+     */
+    public ParameterMap getParameterMap() {
+        ItemHolderParameters itemHolderParameters = getParameters(parameters);
+        if (itemHolderParameters == null) {
             return null;
         }
+        List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
+        if (itemParametersList == null || itemParametersList.isEmpty()) {
+            return null;
+        }
+        ParameterMap parameterMap = new ParameterMap();
+        for (ItemParameters ip : itemParametersList) {
+            String name = ip.getString(ItemParameters.name);
+            if (name != null) {
+                Parameter pv = ip.getParameter(ItemParameters.value);
+                if (pv != null) {
+                    if (pv.isArray()) {
+                        List<String> list = pv.getValueAsStringList();
+                        if (list != null) {
+                            parameterMap.put(name, list.toArray(new String[0]));
+                        }
+                    } else {
+                        String val = pv.getValueAsString();
+                        if (val != null) {
+                            parameterMap.setParameter(name, val);
+                        }
+                    }
+                }
+            }
+        }
+        return (!parameterMap.isEmpty() ? parameterMap : null);
     }
 
     /**
@@ -317,21 +454,34 @@ public class CommandParameters extends DefaultParameters {
     }
 
     /**
-     * Evaluates and returns the request attributes as a map.
-     * @return the evaluated attribute map
-     * @throws IllegalRuleException if an error occurs while evaluating the rules
+     * Adds an attribute with the specified name and value.
+     * @param name the attribute name
+     * @param value the attribute value
+     * @return this {@code CommandParameters} instance
      */
-    public Map<String, Object> getAttributeMap() throws IllegalRuleException {
-        if (activity == null) {
-            throw new IllegalStateException("No available activity");
+    public CommandParameters setAttribute(String name, Object value) {
+        ItemValueType inferredType = inferItemValueType(value);
+        return setAttribute(name, value, inferredType);
+    }
+
+    /**
+     * Adds an attribute with the specified name, value, and {@link ItemValueType}.
+     * @param name the attribute name
+     * @param value the attribute value
+     * @param valueType the item value type
+     * @return this {@code CommandParameters} instance
+     */
+    public CommandParameters setAttribute(String name, Object value, ItemValueType valueType) {
+        ItemHolderParameters holder = touchParameters(attributes);
+        ItemParameters item = holder.newItemParameters();
+        item.putValue(ItemParameters.name, name);
+        if (valueType != null && valueType != ItemValueType.STRING) {
+            item.putValue(ItemParameters.valueType, valueType.toString());
         }
-        ItemRuleMap attributeItemRuleMap = getAttributeItemRuleMap();
-        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = activity.getItemEvaluator();
-            return evaluator.evaluate(attributeItemRuleMap);
-        } else {
-            return null;
+        if (value != null) {
+            item.putValue(ItemParameters.value, value);
         }
+        return this;
     }
 
     /**
@@ -420,6 +570,22 @@ public class CommandParameters extends DefaultParameters {
                     .toString();
         } catch (IOException e) {
             return StringUtils.EMPTY;
+        }
+    }
+
+    private static ItemValueType inferItemValueType(Object value) {
+        if (value instanceof Integer) {
+            return ItemValueType.INT;
+        } else if (value instanceof Long) {
+            return ItemValueType.LONG;
+        } else if (value instanceof Boolean) {
+            return ItemValueType.BOOLEAN;
+        } else if (value instanceof Float) {
+            return ItemValueType.FLOAT;
+        } else if (value instanceof Double) {
+            return ItemValueType.DOUBLE;
+        } else {
+            return ItemValueType.STRING;
         }
     }
 

@@ -69,7 +69,7 @@ public class ComponentCommand extends AbstractCommand {
         DaemonService daemonService = getDaemonService();
 
         try {
-            ParameterMap parameterMap = parameters.getParameterMap();
+            ParameterMap parameterMap = getParameterMap(parameters);
             if (parameterMap == null) {
                 return failed(error("No parameters specified for the component command."));
             }

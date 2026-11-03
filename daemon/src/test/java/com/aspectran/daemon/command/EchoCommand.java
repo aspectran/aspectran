@@ -33,7 +33,7 @@ public class EchoCommand  extends AbstractCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try {
-            Object[] args = parameters.getArguments();
+            Object[] args = getArguments(parameters);
             if (args != null && args.length > 0) {
                 String msg = args[0].toString();
                 return success(debug(msg));

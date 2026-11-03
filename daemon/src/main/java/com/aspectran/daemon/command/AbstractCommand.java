@@ -15,23 +15,29 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
+import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRuleList;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * Base support class for daemon commands.
  * <p>
  * Implementations receive a {@link CommandRegistry} to access the {@link com.aspectran.daemon.Daemon}
  * and its services. The {@linkplain #isIsolated() isolated} flag indicates that a command should
- * be executed in an isolated activity context when necessary.
- * </p>
+ * be executed in an isolated activity context when necessary.</p>
  * <p>
  * This class also provides convenience logging helpers (debug/info/warn/error) that return the
- * logged message for easy composition, and factory methods to build {@link CommandResult} instances.
- * </p>
+ * logged message for easy composition, and factory methods to build {@link CommandResult} instances.</p>
  */
 public abstract class AbstractCommand implements Command {
 
@@ -88,6 +94,75 @@ public abstract class AbstractCommand implements Command {
     public boolean isServiceAvailable() {
         return (registry.getDaemonService() != null &&
                 registry.getDaemonService().getServiceLifeCycle().isActive());
+    }
+
+    /**
+     * Returns an available {@link Activity} from the active daemon service.
+     * @return the available activity
+     */
+    protected Activity getAvailableActivity() {
+        return getDaemonService().getAvailableActivity();
+    }
+
+    /**
+     * Evaluates and returns the request parameters from the given {@link CommandParameters}.
+     * @param parameters the command parameters
+     * @return the evaluated parameter map, or {@code null} if no parameters are specified
+     * @throws IllegalRuleException if an error occurs while evaluating the parameter rules
+     */
+    protected ParameterMap getParameterMap(CommandParameters parameters) throws IllegalRuleException {
+        if (parameters == null) {
+            return null;
+        }
+        ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+            ItemEvaluator evaluator = getAvailableActivity().getItemEvaluator();
+            return evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Evaluates and returns the arguments from the given {@link CommandParameters}.
+     * @param parameters the command parameters
+     * @return an array of evaluated argument values, or {@code null} if no arguments are specified
+     * @throws IllegalRuleException if an error occurs while evaluating the argument rules
+     */
+    protected Object[] getArguments(CommandParameters parameters) throws IllegalRuleException {
+        if (parameters == null) {
+            return null;
+        }
+        ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
+        if (itemRuleList != null && !itemRuleList.isEmpty()) {
+            ItemEvaluator evaluator = getAvailableActivity().getItemEvaluator();
+            Object[] args = new Object[itemRuleList.size()];
+            for (int i = 0; i < itemRuleList.size(); i++) {
+                args[i] = evaluator.evaluate(itemRuleList.get(i));
+            }
+            return args;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Evaluates and returns the request attributes from the given {@link CommandParameters}.
+     * @param parameters the command parameters
+     * @return the evaluated attribute map, or {@code null} if no attributes are specified
+     * @throws IllegalRuleException if an error occurs while evaluating the attribute rules
+     */
+    protected Map<String, Object> getAttributeMap(CommandParameters parameters) throws IllegalRuleException {
+        if (parameters == null) {
+            return null;
+        }
+        ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
+        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+            ItemEvaluator evaluator = getAvailableActivity().getItemEvaluator();
+            return evaluator.evaluate(attributeItemRuleMap);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -156,10 +156,12 @@ public interface CoreService {
     ClassLoader getAltClassLoader();
 
     /**
-     * Returns the default activity associated with this service.
-     * @return the default activity
+     * Returns the currently available activity.
+     * <p>If there is a current activity for the thread, it is returned.
+     * Otherwise, the default activity is returned.</p>
+     * @return the available activity
      */
-    Activity getDefaultActivity();
+    Activity getAvailableActivity();
 
     /**
      * Returns the scheduler service associated with this core service.

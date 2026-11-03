@@ -229,9 +229,9 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     @Override
-    public Activity getDefaultActivity() {
+    public Activity getAvailableActivity() {
         checkContextConfigured();
-        return getActivityContext().getDefaultActivity();
+        return getActivityContext().getAvailableActivity();
     }
 
     @Override

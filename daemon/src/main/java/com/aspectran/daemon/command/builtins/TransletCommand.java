@@ -56,8 +56,8 @@ public class TransletCommand extends AbstractCommand {
         }
 
         try {
-            Map<String, Object> attributeMap = parameters.getAttributeMap();
-            ParameterMap parameterMap = parameters.getParameterMap();
+            Map<String, Object> attributeMap = getAttributeMap(parameters);
+            ParameterMap parameterMap = getParameterMap(parameters);
             Translet translet = daemonService.translate(transletName, attributeMap, parameterMap);
             Writer writer = translet.getResponseAdapter().getWriter();
             if (writer instanceof OutputStringWriter stringWriter && !stringWriter.isDirty()) {

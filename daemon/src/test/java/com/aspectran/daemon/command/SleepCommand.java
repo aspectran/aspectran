@@ -35,7 +35,7 @@ public class SleepCommand extends AbstractCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try {
-            Object[] args = parameters.getArguments();
+            Object[] args = getArguments(parameters);
             long millis = 5000; // default 5s
             if (args != null && args.length > 0) {
                 millis = Long.parseLong(args[0].toString());

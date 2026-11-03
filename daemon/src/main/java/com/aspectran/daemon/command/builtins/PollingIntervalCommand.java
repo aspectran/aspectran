@@ -43,10 +43,10 @@ public class PollingIntervalCommand extends AbstractCommand {
             long oldPollingInterval = getDaemonService().getFileCommander().getPollingInterval();
             long newPollingInterval = 0L;
 
-            Object[] args = parameters.getArguments();
+            Object[] args = getArguments(parameters);
             if (args != null && args.length > 0) {
-                if (args[0] instanceof Long) {
-                    newPollingInterval = (Long)args[0];
+                if (args[0] instanceof Long interval) {
+                    newPollingInterval = interval;
                 } else {
                     newPollingInterval = Long.parseLong(args[0].toString());
                 }
