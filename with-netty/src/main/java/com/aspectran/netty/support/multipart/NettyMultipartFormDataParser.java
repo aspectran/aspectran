@@ -18,12 +18,11 @@ package com.aspectran.netty.support.multipart;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.web.activity.request.AbstractMultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -38,7 +37,6 @@ import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.InterfaceHttpPostRequestDecoder;
 import org.jspecify.annotations.NonNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -50,86 +48,21 @@ import java.nio.charset.StandardCharsets;
  *
  * <p>Created: 2026-09-02</p>
  */
-public class NettyMultipartFormDataParser implements MultipartFormDataParser {
-
-    private String tempFileDir;
-
-    private long maxRequestSize = -1L;
-
-    private long maxFileSize = -1L;
-
-    private int maxInMemorySize = 10240;
-
-    private String allowedFileExtensions;
-
-    private String deniedFileExtensions;
+public class NettyMultipartFormDataParser extends AbstractMultipartFormDataParser {
 
     /**
      * Constructs a new NettyMultipartFormDataParser.
      */
     public NettyMultipartFormDataParser() {
-    }
-
-    @Override
-    public String getTempFileDir() {
-        return tempFileDir;
+        super();
+        setMaxInMemorySize(10240);
     }
 
     @Override
     public void setTempFileDir(String tempFileDir) throws IOException {
-        if (tempFileDir == null) {
-            throw new IllegalArgumentException("tempFileDir must not be null");
-        }
-        File dir = new File(tempFileDir);
-        if (dir.exists()) {
-            if (!dir.isDirectory()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir + "] exists but is not a directory");
-            }
-        } else {
-            if (!dir.mkdirs()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir + "] could not be created");
-            }
-        }
-        this.tempFileDir = tempFileDir;
+        super.setTempFileDir(tempFileDir);
         DiskFileUpload.baseDirectory = tempFileDir;
         DiskAttribute.baseDirectory = tempFileDir;
-    }
-
-    @Override
-    public void setMaxRequestSize(long maxRequestSize) {
-        this.maxRequestSize = maxRequestSize;
-    }
-
-    public void setMaxRequestSize(String maxRequestSize) {
-        this.maxRequestSize = DataSizeUtils.toMachineFriendlyByteSize(maxRequestSize);
-    }
-
-    @Override
-    public void setMaxFileSize(long maxFileSize) {
-        this.maxFileSize = maxFileSize;
-    }
-
-    public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSize = DataSizeUtils.toMachineFriendlyByteSize(maxFileSize);
-    }
-
-    @Override
-    public void setMaxInMemorySize(int maxInMemorySize) {
-        this.maxInMemorySize = maxInMemorySize;
-    }
-
-    public void setMaxInMemorySize(String maxInMemorySize) {
-        this.maxInMemorySize = (int) DataSizeUtils.toMachineFriendlyByteSize(maxInMemorySize);
-    }
-
-    @Override
-    public void setAllowedFileExtensions(String allowedFileExtensions) {
-        this.allowedFileExtensions = allowedFileExtensions;
-    }
-
-    @Override
-    public void setDeniedFileExtensions(String deniedFileExtensions) {
-        this.deniedFileExtensions = deniedFileExtensions;
     }
 
     @Override
@@ -142,9 +75,10 @@ public class NettyMultipartFormDataParser implements MultipartFormDataParser {
         Charset charset = (requestAdapter.getEncoding() != null
                 ? Charset.forName(requestAdapter.getEncoding()) : StandardCharsets.UTF_8);
 
-        HttpDataFactory factory = new DefaultHttpDataFactory(maxInMemorySize);
+        HttpDataFactory factory = new DefaultHttpDataFactory(getMaxInMemorySize());
         InterfaceHttpPostRequestDecoder decoder = null;
         try {
+            long maxRequestSize = getMaxRequestSize();
             if (maxRequestSize >= 0L && request.content().readableBytes() > maxRequestSize) {
                 throw new SizeLimitExceededException("Maximum request length exceeded; actual: " +
                         request.content().readableBytes() + "; permitted: " + maxRequestSize,
@@ -165,14 +99,13 @@ public class NettyMultipartFormDataParser implements MultipartFormDataParser {
                         if (fileUpload.isCompleted()) {
                             String fileName = fileUpload.getFilename();
                             if (StringUtils.hasLength(fileName)) {
+                                long maxFileSize = getMaxFileSize();
                                 if (maxFileSize >= 0L && fileUpload.length() > maxFileSize) {
                                     throw new SizeLimitExceededException("Maximum file length exceeded; actual: " +
                                             fileUpload.length() + "; permitted: " + maxFileSize,
                                             fileUpload.length(), maxFileSize);
                                 }
-                                boolean valid = FilenameUtils.isValidFileExtension(fileName,
-                                        allowedFileExtensions, deniedFileExtensions);
-                                if (valid) {
+                                if (isValidFileExtension(fileName)) {
                                     decoder.removeHttpDataFromClean(fileUpload);
                                     NettyFileParameter fileParameter = new NettyFileParameter(fileUpload.retain());
                                     fileParameterMap.add(fileUpload.getName(), fileParameter);

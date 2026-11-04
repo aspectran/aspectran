@@ -144,6 +144,17 @@ class FilenameUtilsTest {
         assertTrue(FilenameUtils.isValidFileExtension("test.txt", null, "exe,bat"));
         assertFalse(FilenameUtils.isValidFileExtension("test.exe", null, "exe,bat"));
         assertTrue(FilenameUtils.isValidFileExtension("test.TXT", "txt", null));
+
+        java.util.Set<String> allowed = FilenameUtils.parseFileExtensions("txt, .jpg; png");
+        java.util.Set<String> denied = FilenameUtils.parseFileExtensions("exe", "bat");
+        assertTrue(allowed.contains("txt"));
+        assertTrue(allowed.contains("jpg"));
+        assertTrue(allowed.contains("png"));
+        assertTrue(FilenameUtils.isValidFileExtension("test.jpg", allowed, denied));
+        assertFalse(FilenameUtils.isValidFileExtension("test.exe", allowed, denied));
+        assertFalse(FilenameUtils.isValidFileExtension("test.gif", allowed, denied));
+        assertTrue(FilenameUtils.isValidFileExtension("test.png", null, denied));
+        assertFalse(FilenameUtils.isValidFileExtension("test.bat", null, denied));
     }
 
     @Test

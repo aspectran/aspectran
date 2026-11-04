@@ -22,7 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -204,6 +208,114 @@ public class FilenameUtils {
     }
 
     /**
+     * Parses a delimited string of file extensions into a set of normalized (lowercase) extensions.
+     * @param extensions a delimited string of extensions (may be {@code null})
+     * @return an unmodifiable set of normalized extensions, or an empty set if input is null or empty
+     */
+    @NonNull
+    public static Set<String> parseFileExtensions(String extensions) {
+        if (extensions == null || extensions.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<String> set = new LinkedHashSet<>();
+        StringTokenizer st = new StringTokenizer(extensions.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if (!token.isEmpty()) {
+                if (token.startsWith(EXTENSION_SEPARATOR)) {
+                    token = token.substring(1);
+                }
+                if (!token.isEmpty()) {
+                    set.add(token);
+                }
+            }
+        }
+        return Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * Parses an array of file extensions into a set of normalized (lowercase) extensions.
+     * @param extensions an array of extensions (may be {@code null})
+     * @return an unmodifiable set of normalized extensions, or an empty set if input is null or empty
+     */
+    @NonNull
+    public static Set<String> parseFileExtensions(String... extensions) {
+        if (extensions == null || extensions.length == 0) {
+            return Collections.emptySet();
+        }
+        Set<String> set = new LinkedHashSet<>();
+        for (String ext : extensions) {
+            if (ext != null && !ext.isEmpty()) {
+                StringTokenizer st = new StringTokenizer(ext.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
+                while (st.hasMoreTokens()) {
+                    String token = st.nextToken();
+                    if (!token.isEmpty()) {
+                        if (token.startsWith(EXTENSION_SEPARATOR)) {
+                            token = token.substring(1);
+                        }
+                        if (!token.isEmpty()) {
+                            set.add(token);
+                        }
+                    }
+                }
+            }
+        }
+        return Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * Parses a collection of file extensions into a set of normalized (lowercase) extensions.
+     * @param extensions a collection of extensions (may be {@code null})
+     * @return an unmodifiable set of normalized extensions, or an empty set if input is null or empty
+     */
+    @NonNull
+    public static Set<String> parseFileExtensions(Collection<String> extensions) {
+        if (extensions == null || extensions.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<String> set = new LinkedHashSet<>();
+        for (String ext : extensions) {
+            if (ext != null && !ext.isEmpty()) {
+                StringTokenizer st = new StringTokenizer(ext.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
+                while (st.hasMoreTokens()) {
+                    String token = st.nextToken();
+                    if (!token.isEmpty()) {
+                        if (token.startsWith(EXTENSION_SEPARATOR)) {
+                            token = token.substring(1);
+                        }
+                        if (!token.isEmpty()) {
+                            set.add(token);
+                        }
+                    }
+                }
+            }
+        }
+        return Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * Checks whether the extension of the filename is valid based on allowed and denied sets.
+     * The extension check is case-insensitive.
+     * @param filename the filename to check (may be {@code null})
+     * @param allowedFileExtensions a set of allowed extensions (may be {@code null})
+     * @param deniedFileExtensions a set of denied extensions (may be {@code null})
+     * @return {@code true} if the file extension is valid, {@code false} otherwise
+     */
+    public static boolean isValidFileExtension(String filename, Set<String> allowedFileExtensions, Set<String> deniedFileExtensions) {
+        if (filename == null) {
+            return false;
+        }
+        String ext = getExtension(filename).toLowerCase(Locale.ROOT);
+        if (allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
+            return !ext.isEmpty() && allowedFileExtensions.contains(ext);
+        }
+        if (deniedFileExtensions != null && !deniedFileExtensions.isEmpty()) {
+            return ext.isEmpty() || !deniedFileExtensions.contains(ext);
+        }
+        return true;
+    }
+
+    /**
      * Checks whether the extension of the filename is valid based on allowed and denied lists.
      * The extension check is case-insensitive.
      * @param filename the filename to check (may be {@code null})
@@ -215,34 +327,13 @@ public class FilenameUtils {
         if (filename == null) {
             return false;
         }
-        String ext = getExtension(filename).toLowerCase(Locale.ROOT);
-        if (allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
-            if (ext.isEmpty()) {
-                return false;
-            }
-            StringTokenizer st = new StringTokenizer(allowedFileExtensions.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
-            while (st.hasMoreTokens()) {
-                String ext2 = st.nextToken();
-                if (ext.equals(ext2)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if (deniedFileExtensions != null && !deniedFileExtensions.isEmpty()) {
-            if (ext.isEmpty()) {
-                return true;
-            }
-            StringTokenizer st = new StringTokenizer(deniedFileExtensions.toLowerCase(Locale.ROOT), EXTENSIONS_SEPARATORS);
-            while (st.hasMoreTokens()) {
-                String ext2 = st.nextToken();
-                if (ext.equals(ext2)) {
-                    return false;
-                }
-            }
+        if ((allowedFileExtensions == null || allowedFileExtensions.isEmpty()) &&
+                (deniedFileExtensions == null || deniedFileExtensions.isEmpty())) {
             return true;
         }
-        return true;
+        return isValidFileExtension(filename,
+                parseFileExtensions(allowedFileExtensions),
+                parseFileExtensions(deniedFileExtensions));
     }
 
     /**

@@ -18,6 +18,8 @@ package com.aspectran.web.activity.request;
 import com.aspectran.core.adapter.RequestAdapter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Strategy interface for parsing multipart form data requests (e.g. file uploads).
@@ -41,11 +43,25 @@ public interface MultipartFormDataParser {
     void setTempFileDir(String tempFileDir) throws IOException;
 
     /**
+     * Returns the maximum allowed size (in bytes) of the entire multipart request.
+     * A value of -1 indicates no limit.
+     * @return the maximum request size in bytes
+     */
+    long getMaxRequestSize();
+
+    /**
      * Sets the maximum allowed size (in bytes) of the entire multipart request.
      * A value of -1 indicates no limit (the default).
      * @param maxRequestSize the maximum request size in bytes
      */
     void setMaxRequestSize(long maxRequestSize);
+
+    /**
+     * Returns the maximum allowed size (in bytes) for each individual uploaded file.
+     * A value of -1 indicates no limit.
+     * @return the maximum upload size per file in bytes
+     */
+    long getMaxFileSize();
 
     /**
      * Sets the maximum allowed size (in bytes) for each individual uploaded file before
@@ -56,6 +72,12 @@ public interface MultipartFormDataParser {
     void setMaxFileSize(long maxFileSize);
 
     /**
+     * Returns the maximum allowed size (in bytes) before uploaded files are written to disk.
+     * @return the maximum in-memory size allowed in bytes
+     */
+    int getMaxInMemorySize();
+
+    /**
      * Sets the maximum allowed size (in bytes) before uploaded files are written to disk.
      * Uploaded files larger than this threshold will be written to temporary files on disk
      * rather than stored in memory.
@@ -64,16 +86,52 @@ public interface MultipartFormDataParser {
     void setMaxInMemorySize(int maxInMemorySize);
 
     /**
-     * Sets the comma-separated list of allowed file extensions.
-     * @param allowedFileExtensions a comma-separated string of allowed file extensions
+     * Returns the set of allowed file extensions.
+     * @return an unmodifiable set of allowed file extensions, or an empty set if no restrictions are configured
+     */
+    Set<String> getAllowedFileExtensions();
+
+    /**
+     * Sets the allowed file extensions from a delimited string (e.g. comma, semicolon, space).
+     * @param allowedFileExtensions a delimited string of allowed file extensions
      */
     void setAllowedFileExtensions(String allowedFileExtensions);
 
     /**
-     * Sets the comma-separated list of denied file extensions.
-     * @param deniedFileExtensions a comma-separated string of denied file extensions
+     * Sets the allowed file extensions.
+     * @param allowedFileExtensions an array of allowed file extensions
+     */
+    void setAllowedFileExtensions(String... allowedFileExtensions);
+
+    /**
+     * Sets the allowed file extensions from a collection.
+     * @param allowedFileExtensions a collection of allowed file extensions
+     */
+    void setAllowedFileExtensions(Collection<String> allowedFileExtensions);
+
+    /**
+     * Returns the set of denied file extensions.
+     * @return an unmodifiable set of denied file extensions, or an empty set if no blacklisted extensions are configured
+     */
+    Set<String> getDeniedFileExtensions();
+
+    /**
+     * Sets the denied file extensions from a delimited string (e.g. comma, semicolon, space).
+     * @param deniedFileExtensions a delimited string of denied file extensions
      */
     void setDeniedFileExtensions(String deniedFileExtensions);
+
+    /**
+     * Sets the denied file extensions.
+     * @param deniedFileExtensions an array of denied file extensions
+     */
+    void setDeniedFileExtensions(String... deniedFileExtensions);
+
+    /**
+     * Sets the denied file extensions from a collection.
+     * @param deniedFileExtensions a collection of denied file extensions
+     */
+    void setDeniedFileExtensions(Collection<String> deniedFileExtensions);
 
     /**
      * Parses the given request, resolving its multipart elements and populating

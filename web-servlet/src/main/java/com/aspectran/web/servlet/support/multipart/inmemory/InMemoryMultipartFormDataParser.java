@@ -19,10 +19,10 @@ import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.web.activity.request.AbstractMultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.servlet.support.multipart.commons.CommonsRequestContext;
@@ -46,24 +46,15 @@ import java.util.Map;
  * <p>This parser does not support temporary file storage, so methods related to
  * file-based operations (e.g., {@code setTempFileDir}) are not supported.
  */
-public class InMemoryMultipartFormDataParser implements MultipartFormDataParser {
+public class InMemoryMultipartFormDataParser extends AbstractMultipartFormDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(InMemoryMultipartFormDataParser.class);
-
-    private long maxRequestSize = -1L;
-
-    private long maxFileSize = -1L;
-
-    private int maxInMemorySize = -1;
-
-    private String allowedFileExtensions;
-
-    private String deniedFileExtensions;
 
     /**
      * Instantiates a new InMemoryMultipartFormDataParser.
      */
     public InMemoryMultipartFormDataParser() {
+        super();
     }
 
     /**
@@ -85,16 +76,6 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
     }
 
     /**
-     * Sets the maximum size of the entire multipart request, in bytes.
-     * A value of -1 indicates no limit.
-     * @param maxRequestSize the maximum request size
-     */
-    @Override
-    public void setMaxRequestSize(long maxRequestSize) {
-        this.maxRequestSize = maxRequestSize;
-    }
-
-    /**
      * Sets the maximum size of a single uploaded file, in bytes.
      * For in-memory storage, this value cannot exceed {@link Integer#MAX_VALUE}.
      * A value of -1 indicates no limit.
@@ -106,9 +87,8 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
             throw new IllegalArgumentException("In the In-Memory file uploads," +
                     "the maximum file size is up to 2147483648 bytes");
         }
-
-        this.maxFileSize = maxFileSize;
-        this.maxInMemorySize = (int)maxFileSize;
+        super.setMaxFileSize(maxFileSize);
+        super.setMaxInMemorySize((int) maxFileSize);
     }
 
     /**
@@ -121,22 +101,9 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Sets the comma-separated list of allowed file extensions.
-     * @param allowedFileExtensions a string containing allowed extensions
-     */
     @Override
-    public void setAllowedFileExtensions(String allowedFileExtensions) {
-        this.allowedFileExtensions = allowedFileExtensions;
-    }
-
-    /**
-     * Sets the comma-separated list of denied file extensions.
-     * @param deniedFileExtensions a string containing denied extensions
-     */
-    @Override
-    public void setDeniedFileExtensions(String deniedFileExtensions) {
-        this.deniedFileExtensions = deniedFileExtensions;
+    public void setMaxInMemorySize(String maxInMemorySize) {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -149,17 +116,17 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
     public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {
             InMemoryFileItemFactory factory = new InMemoryFileItemFactory();
-            if (maxInMemorySize > -1) {
-                factory.setSizeThreshold(maxInMemorySize);
+            if (getMaxInMemorySize() > -1) {
+                factory.setSizeThreshold(getMaxInMemorySize());
             }
 
             FileUpload upload = new ServletFileUpload(factory);
             upload.setHeaderEncoding(requestAdapter.getEncoding());
-            if (maxRequestSize > -1) {
-                upload.setSizeMax(maxRequestSize);
+            if (getMaxRequestSize() > -1) {
+                upload.setSizeMax(getMaxRequestSize());
             }
-            if (maxFileSize > -1) {
-                upload.setFileSizeMax(maxFileSize);
+            if (getMaxFileSize() > -1) {
+                upload.setFileSizeMax(getMaxFileSize());
             }
 
             Map<String, List<FileItem>> fileItemListMap;
@@ -211,9 +178,7 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
                             continue;
                         }
 
-                        boolean valid = FilenameUtils.isValidFileExtension(fileName,
-                                allowedFileExtensions, deniedFileExtensions);
-                        if (!valid) {
+                        if (!isValidFileExtension(fileName)) {
                             continue;
                         }
 

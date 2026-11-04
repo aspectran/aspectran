@@ -19,10 +19,10 @@ import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.web.activity.request.AbstractMultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,6 @@ import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -45,74 +44,15 @@ import java.util.Collection;
  *
  * @since 9.7.0
  */
-public class StandardServletMultipartFormDataParser implements MultipartFormDataParser {
+public class StandardServletMultipartFormDataParser extends AbstractMultipartFormDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(StandardServletMultipartFormDataParser.class);
-
-    private String tempFileDir;
-
-    private long maxRequestSize = -1L;
-
-    private long maxFileSize = -1L;
-
-    private int maxInMemorySize = -1;
-
-    private String allowedFileExtensions;
-
-    private String deniedFileExtensions;
 
     /**
      * Constructs a new StandardServletMultipartFormDataParser.
      */
     public StandardServletMultipartFormDataParser() {
-    }
-
-    @Override
-    public String getTempFileDir() {
-        return tempFileDir;
-    }
-
-    @Override
-    public void setTempFileDir(String tempFileDir) throws IOException {
-        if (tempFileDir == null) {
-            throw new IllegalArgumentException("tempFileDir must not be null");
-        }
-        File dir = new File(tempFileDir);
-        if (dir.exists()) {
-            if (!dir.isDirectory()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir + "] exists but is not a directory");
-            }
-        } else {
-            if (!dir.mkdirs()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir + "] could not be created");
-            }
-        }
-        this.tempFileDir = tempFileDir;
-    }
-
-    @Override
-    public void setMaxRequestSize(long maxRequestSize) {
-        this.maxRequestSize = maxRequestSize;
-    }
-
-    @Override
-    public void setMaxFileSize(long maxFileSize) {
-        this.maxFileSize = maxFileSize;
-    }
-
-    @Override
-    public void setMaxInMemorySize(int maxInMemorySize) {
-        this.maxInMemorySize = maxInMemorySize;
-    }
-
-    @Override
-    public void setAllowedFileExtensions(String allowedFileExtensions) {
-        this.allowedFileExtensions = allowedFileExtensions;
-    }
-
-    @Override
-    public void setDeniedFileExtensions(String deniedFileExtensions) {
-        this.deniedFileExtensions = deniedFileExtensions;
+        super();
     }
 
     @Override
@@ -124,6 +64,7 @@ public class StandardServletMultipartFormDataParser implements MultipartFormData
 
         try {
             long contentLength = request.getContentLengthLong();
+            long maxRequestSize = getMaxRequestSize();
             if (maxRequestSize >= 0L && contentLength > maxRequestSize) {
                 throw new SizeLimitExceededException("Maximum request length exceeded; actual: " +
                         contentLength + "; permitted: " + maxRequestSize,
@@ -157,13 +98,13 @@ public class StandardServletMultipartFormDataParser implements MultipartFormData
                     if (StringUtils.isEmpty(submittedFileName)) {
                         continue;
                     }
+                    long maxFileSize = getMaxFileSize();
                     if (maxFileSize >= 0L && part.getSize() > maxFileSize) {
                         throw new SizeLimitExceededException("Maximum file length exceeded; actual: " +
                                 part.getSize() + "; permitted: " + maxFileSize,
                                 part.getSize(), maxFileSize);
                     }
-                    if (!FilenameUtils.isValidFileExtension(submittedFileName,
-                            allowedFileExtensions, deniedFileExtensions)) {
+                    if (!isValidFileExtension(submittedFileName)) {
                         continue;
                     }
 

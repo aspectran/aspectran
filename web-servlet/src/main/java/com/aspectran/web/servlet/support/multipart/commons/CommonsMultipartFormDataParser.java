@@ -19,10 +19,10 @@ import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.web.activity.request.AbstractMultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import org.apache.commons.fileupload.FileItem;
@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
@@ -47,105 +46,15 @@ import java.util.Map;
  * <p>This parser handles file uploads and form fields, making them accessible
  * through the {@link RequestAdapter}.
  */
-public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
+public class CommonsMultipartFormDataParser extends AbstractMultipartFormDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonsMultipartFormDataParser.class);
-
-    private String tempFileDir;
-
-    private long maxRequestSize = -1L;
-
-    private long maxFileSize = -1L;
-
-    private int maxInMemorySize = -1;
-
-    private String allowedFileExtensions;
-
-    private String deniedFileExtensions;
 
     /**
      * Instantiates a new CommonsMultipartFormDataParser.
      */
     public CommonsMultipartFormDataParser() {
-    }
-
-    @Override
-    public String getTempFileDir() {
-        return tempFileDir;
-    }
-
-    /**
-     * Sets the temporary directory where uploaded files will be stored.
-     * @param tempFileDir the path to the temporary directory
-     * @throws IOException if the directory cannot be created
-     */
-    @Override
-    public void setTempFileDir(String tempFileDir) throws IOException {
-        if (tempFileDir == null) {
-            throw new IllegalArgumentException("tempFileDir must not be null");
-        }
-        File dir = new File(tempFileDir);
-        if (dir.exists()) {
-            if (!dir.isDirectory()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir +
-                        "] exists but is not a directory");
-            }
-        } else {
-            if (!dir.mkdirs()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir +
-                        "] could not be created");
-            }
-        }
-        this.tempFileDir = tempFileDir;
-    }
-
-    /**
-     * Sets the maximum size of the entire multipart request, in bytes.
-     * A value of -1 indicates no limit.
-     * @param maxRequestSize the maximum request size
-     */
-    @Override
-    public void setMaxRequestSize(long maxRequestSize) {
-        this.maxRequestSize = maxRequestSize;
-    }
-
-    /**
-     * Sets the maximum size of a single uploaded file, in bytes.
-     * A value of -1 indicates no limit.
-     * @param maxFileSize the maximum file size
-     */
-    @Override
-    public void setMaxFileSize(long maxFileSize) {
-        this.maxFileSize = maxFileSize;
-    }
-
-    /**
-     * Sets the maximum size of a file that will be stored in memory.
-     * Files larger than this threshold will be written to disk.
-     * A value of -1 indicates the system default.
-     * @param maxInMemorySize the maximum memory size
-     */
-    @Override
-    public void setMaxInMemorySize(int maxInMemorySize) {
-        this.maxInMemorySize = maxInMemorySize;
-    }
-
-    /**
-     * Sets the comma-separated list of allowed file extensions.
-     * @param allowedFileExtensions a string containing allowed extensions
-     */
-    @Override
-    public void setAllowedFileExtensions(String allowedFileExtensions) {
-        this.allowedFileExtensions = allowedFileExtensions;
-    }
-
-    /**
-     * Sets the comma-separated list of denied file extensions.
-     * @param deniedFileExtensions a string containing denied extensions
-     */
-    @Override
-    public void setDeniedFileExtensions(String deniedFileExtensions) {
-        this.deniedFileExtensions = deniedFileExtensions;
+        super();
     }
 
     /**
@@ -158,26 +67,26 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {
             DiskFileItemFactory factory = new DiskFileItemFactory();
-            if (maxInMemorySize > -1) {
-                factory.setSizeThreshold(maxInMemorySize);
+            if (getMaxInMemorySize() > -1) {
+                factory.setSizeThreshold(getMaxInMemorySize());
             }
 
-            if (tempFileDir != null) {
-                File dir = new File(tempFileDir);
+            if (getTempFileDir() != null) {
+                File dir = new File(getTempFileDir());
                 if (!dir.exists() && !dir.mkdirs()) {
                     throw new IllegalArgumentException("Given tempFileDir [" +
-                            tempFileDir + "] could not be created");
+                            getTempFileDir() + "] could not be created");
                 }
                 factory.setRepository(dir);
             }
 
             FileUpload upload = new ServletFileUpload(factory);
             upload.setHeaderEncoding(requestAdapter.getEncoding());
-            if (maxRequestSize > -1L) {
-                upload.setSizeMax(maxRequestSize);
+            if (getMaxRequestSize() > -1L) {
+                upload.setSizeMax(getMaxRequestSize());
             }
-            if (maxFileSize > -1L) {
-                upload.setFileSizeMax(maxFileSize);
+            if (getMaxFileSize() > -1L) {
+                upload.setFileSizeMax(getMaxFileSize());
             }
 
             Map<String, List<FileItem>> fileItemListMap;
@@ -230,9 +139,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                             continue;
                         }
 
-                        boolean valid = FilenameUtils.isValidFileExtension(fileName,
-                                allowedFileExtensions, deniedFileExtensions);
-                        if (!valid) {
+                        if (!isValidFileExtension(fileName)) {
                             continue;
                         }
 
