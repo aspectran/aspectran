@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public class CommonsMultipartFormDataParserFactory {
 
-    private String tempFileDir;
+    private String tempDir;
 
     private long maxRequestSize = -1L;
 
@@ -52,16 +52,16 @@ public class CommonsMultipartFormDataParserFactory {
      * Gets the directory path used to temporarily files.
      * @return the directory path used for temporary files
      */
-    public String getTempFileDir() {
-        return tempFileDir;
+    public String getTempDir() {
+        return tempDir;
     }
 
     /**
      * Sets the temporary directory where uploaded files will be stored.
-     * @param tempFileDir the path to the temporary directory
+     * @param tempDir the path to the temporary directory
      */
-    public void setTempFileDir(String tempFileDir) {
-        this.tempFileDir = tempFileDir;
+    public void setTempDir(String tempDir) {
+        this.tempDir = tempDir;
     }
 
     /**
@@ -164,10 +164,10 @@ public class CommonsMultipartFormDataParserFactory {
      */
     public MultipartFormDataParser createMultipartFormDataParser() throws IOException {
         MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
-        if (tempFileDir != null) {
-            parser.setTempFileDir(tempFileDir);
+        if (tempDir != null) {
+            parser.setTempDir(tempDir);
         } else {
-            parser.setTempFileDir(SystemUtils.getJavaIoTmpDir());
+            parser.setTempDir(SystemUtils.getJavaIoTmpDir());
         }
         if (maxRequestSize > -1L) {
             parser.setMaxRequestSize(maxRequestSize);

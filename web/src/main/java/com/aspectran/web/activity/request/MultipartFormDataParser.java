@@ -33,14 +33,14 @@ public interface MultipartFormDataParser {
      * Returns the directory path used for temporary files.
      * @return the directory path used for temporary files
      */
-    String getTempFileDir();
+    String getTempDir();
 
     /**
      * Sets the directory path used for temporary files.
-     * @param tempFileDir the directory path used for temporary files
+     * @param tempDir the directory path used for temporary files
      * @throws IOException if the directory could not be created or accessed
      */
-    void setTempFileDir(String tempFileDir) throws IOException;
+    void setTempDir(String tempDir) throws IOException;
 
     /**
      * Returns the maximum allowed size (in bytes) of the entire multipart request.

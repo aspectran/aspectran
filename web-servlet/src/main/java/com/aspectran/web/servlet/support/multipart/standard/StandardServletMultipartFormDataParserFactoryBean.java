@@ -39,11 +39,11 @@ public class StandardServletMultipartFormDataParserFactoryBean extends StandardS
     }
 
     @Override
-    public void setTempFileDir(String tempFileDir) {
+    public void setTempDir(String tempDir) {
         if (applicationAdapter != null) {
-            super.setTempFileDir(applicationAdapter.getRealPath(tempFileDir).toString());
+            super.setTempDir(applicationAdapter.getRealPath(tempDir).toString());
         } else {
-            super.setTempFileDir(tempFileDir);
+            super.setTempDir(tempDir);
         }
     }
 

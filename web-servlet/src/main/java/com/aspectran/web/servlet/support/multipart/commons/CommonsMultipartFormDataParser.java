@@ -71,11 +71,11 @@ public class CommonsMultipartFormDataParser extends AbstractMultipartFormDataPar
                 factory.setSizeThreshold(getMaxInMemorySize());
             }
 
-            if (getTempFileDir() != null) {
-                File dir = new File(getTempFileDir());
+            if (getTempDir() != null) {
+                File dir = new File(getTempDir());
                 if (!dir.exists() && !dir.mkdirs()) {
-                    throw new IllegalArgumentException("Given tempFileDir [" +
-                            getTempFileDir() + "] could not be created");
+                    throw new IllegalArgumentException("Given tempDir [" +
+                            getTempDir() + "] could not be created");
                 }
                 factory.setRepository(dir);
             }

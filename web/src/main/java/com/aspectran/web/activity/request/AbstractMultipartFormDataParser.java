@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public abstract class AbstractMultipartFormDataParser implements MultipartFormDataParser {
 
-    private String tempFileDir;
+    private String tempDir;
 
     private long maxRequestSize = -1L;
 
@@ -48,26 +48,26 @@ public abstract class AbstractMultipartFormDataParser implements MultipartFormDa
     }
 
     @Override
-    public String getTempFileDir() {
-        return tempFileDir;
+    public String getTempDir() {
+        return tempDir;
     }
 
     @Override
-    public void setTempFileDir(String tempFileDir) throws IOException {
-        if (tempFileDir == null) {
-            throw new IllegalArgumentException("tempFileDir must not be null");
+    public void setTempDir(String tempDir) throws IOException {
+        if (tempDir == null) {
+            throw new IllegalArgumentException("tempDir must not be null");
         }
-        File dir = new File(tempFileDir);
+        File dir = new File(tempDir);
         if (dir.exists()) {
             if (!dir.isDirectory()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir + "] exists but is not a directory");
+                throw new IOException("Given tempDir [" + tempDir + "] exists but is not a directory");
             }
         } else {
             if (!dir.mkdirs()) {
-                throw new IOException("Given tempFileDir [" + tempFileDir + "] could not be created");
+                throw new IOException("Given tempDir [" + tempDir + "] could not be created");
             }
         }
-        this.tempFileDir = tempFileDir;
+        this.tempDir = tempDir;
     }
 
     @Override

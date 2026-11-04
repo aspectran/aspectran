@@ -45,14 +45,14 @@ public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartF
      * Sets the temporary directory for uploaded files.
      * <p>If an {@link ApplicationAdapter} is available, the given path will be
      * resolved relative to the application's real path.
-     * @param tempFileDir the path to the temporary directory
+     * @param tempDir the path to the temporary directory
      */
     @Override
-    public void setTempFileDir(String tempFileDir) {
+    public void setTempDir(String tempDir) {
         if (applicationAdapter != null) {
-            super.setTempFileDir(applicationAdapter.getRealPath(tempFileDir).toString());
+            super.setTempDir(applicationAdapter.getRealPath(tempDir).toString());
         } else {
-            super.setTempFileDir(tempFileDir);
+            super.setTempDir(tempDir);
         }
     }
 

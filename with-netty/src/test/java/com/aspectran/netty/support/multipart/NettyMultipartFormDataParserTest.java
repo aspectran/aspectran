@@ -226,18 +226,18 @@ class NettyMultipartFormDataParserTest {
     }
 
     @Test
-    void testTempFileDir() throws IOException {
+    void testTempDir() throws IOException {
         NettyMultipartFormDataParser parser = new NettyMultipartFormDataParser();
         Path customDir = tempDir.resolve("custom_upload_tmp");
-        parser.setTempFileDir(customDir.toString());
+        parser.setTempDir(customDir.toString());
 
-        assertEquals(customDir.toString(), parser.getTempFileDir());
+        assertEquals(customDir.toString(), parser.getTempDir());
         assertTrue(Files.isDirectory(customDir));
 
         // When given a path that exists but is a file (not a directory)
         Path regularFile = tempDir.resolve("regular.txt");
         Files.createFile(regularFile);
-        assertThrows(IOException.class, () -> parser.setTempFileDir(regularFile.toString()));
+        assertThrows(IOException.class, () -> parser.setTempDir(regularFile.toString()));
     }
 
     @Test

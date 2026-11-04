@@ -28,7 +28,7 @@ import java.io.IOException;
  */
 public class StandardServletMultipartFormDataParserFactory {
 
-    private String tempFileDir;
+    private String tempDir;
 
     private long maxRequestSize = -1L;
 
@@ -46,12 +46,12 @@ public class StandardServletMultipartFormDataParserFactory {
     public StandardServletMultipartFormDataParserFactory() {
     }
 
-    public String getTempFileDir() {
-        return tempFileDir;
+    public String getTempDir() {
+        return tempDir;
     }
 
-    public void setTempFileDir(String tempFileDir) {
-        this.tempFileDir = tempFileDir;
+    public void setTempDir(String tempDir) {
+        this.tempDir = tempDir;
     }
 
     public long getMaxRequestSize() {
@@ -113,10 +113,10 @@ public class StandardServletMultipartFormDataParserFactory {
      */
     public MultipartFormDataParser createMultipartFormDataParser() throws IOException {
         StandardServletMultipartFormDataParser parser = new StandardServletMultipartFormDataParser();
-        if (tempFileDir != null) {
-            parser.setTempFileDir(tempFileDir);
+        if (tempDir != null) {
+            parser.setTempDir(tempDir);
         } else {
-            parser.setTempFileDir(SystemUtils.getJavaIoTmpDir());
+            parser.setTempDir(SystemUtils.getJavaIoTmpDir());
         }
         if (maxRequestSize > -1L) {
             parser.setMaxRequestSize(maxRequestSize);

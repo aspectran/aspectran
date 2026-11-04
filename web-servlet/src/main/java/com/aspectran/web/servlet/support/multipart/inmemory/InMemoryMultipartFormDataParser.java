@@ -44,7 +44,7 @@ import java.util.Map;
  * in memory. This is designed for environments where file system access is restricted,
  * such as Google App Engine.
  * <p>This parser does not support temporary file storage, so methods related to
- * file-based operations (e.g., {@code setTempFileDir}) are not supported.
+ * file-based operations (e.g., {@code setTempDir}) are not supported.
  */
 public class InMemoryMultipartFormDataParser extends AbstractMultipartFormDataParser {
 
@@ -62,7 +62,7 @@ public class InMemoryMultipartFormDataParser extends AbstractMultipartFormDataPa
      * @throws UnsupportedOperationException always
      */
     @Override
-    public String getTempFileDir() {
+    public String getTempDir() {
         throw new UnsupportedOperationException();
     }
 
@@ -71,7 +71,7 @@ public class InMemoryMultipartFormDataParser extends AbstractMultipartFormDataPa
      * @throws UnsupportedOperationException always
      */
     @Override
-    public void setTempFileDir(String tempFileDir) {
+    public void setTempDir(String tempDir) {
         throw new UnsupportedOperationException();
     }
 

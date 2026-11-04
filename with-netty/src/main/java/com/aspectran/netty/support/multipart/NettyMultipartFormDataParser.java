@@ -59,10 +59,10 @@ public class NettyMultipartFormDataParser extends AbstractMultipartFormDataParse
     }
 
     @Override
-    public void setTempFileDir(String tempFileDir) throws IOException {
-        super.setTempFileDir(tempFileDir);
-        DiskFileUpload.baseDirectory = tempFileDir;
-        DiskAttribute.baseDirectory = tempFileDir;
+    public void setTempDir(String tempDir) throws IOException {
+        super.setTempDir(tempDir);
+        DiskFileUpload.baseDirectory = tempDir;
+        DiskAttribute.baseDirectory = tempDir;
     }
 
     @Override
