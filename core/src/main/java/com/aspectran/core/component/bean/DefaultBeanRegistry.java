@@ -152,13 +152,46 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         }
     }
 
+    @Override
+    public boolean containsLocalBean(String id) {
+        if (id == null) {
+            return false;
+        }
+        return getBeanRuleRegistry().contains(id);
+    }
+
+    @Override
+    public boolean containsLocalBean(Class<?> type) {
+        if (type == null) {
+            return false;
+        }
+        return getBeanRuleRegistry().contains(type);
+    }
+
+    @Override
+    public boolean containsLocalBean(@NonNull Class<?> type, @Nullable String id) {
+        BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
+        if (beanRules == null) {
+            return false;
+        }
+        if (id == null) {
+            return true;
+        }
+        for (BeanRule beanRule : beanRules) {
+            if (id.equals(beanRule.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      * <p>Checks both this registry and its parent registry for a bean with the given ID.</p>
      */
     @Override
     public boolean containsBean(String id) {
-        if (getBeanRuleRegistry().contains(id)) {
+        if (containsLocalBean(id)) {
             return true;
         }
         BeanRegistry parent = getParentBeanRegistry();
@@ -174,7 +207,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
      */
     @Override
     public boolean containsBean(Class<?> type) {
-        if (getBeanRuleRegistry().contains(type)) {
+        if (containsLocalBean(type)) {
             return true;
         }
         BeanRegistry parent = getParentBeanRegistry();
@@ -190,43 +223,14 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
      */
     @Override
     public boolean containsBean(@NonNull Class<?> type, @Nullable String id) {
-        BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
-        if (beanRules == null) {
-            BeanRegistry parent = getParentBeanRegistry();
-            if (parent != null) {
-                return parent.containsBean(type, id);
-            }
-            return false;
+        if (containsLocalBean(type, id)) {
+            return true;
         }
-        if (beanRules.length == 1) {
-            if (id != null) {
-                if (id.equals(beanRules[0].getId())) {
-                    return true;
-                }
-                BeanRegistry parent = getParentBeanRegistry();
-                if (parent != null) {
-                    return parent.containsBean(type, id);
-                }
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            if (id != null) {
-                for (BeanRule beanRule : beanRules) {
-                    if (id.equals(beanRule.getId())) {
-                        return true;
-                    }
-                }
-                BeanRegistry parent = getParentBeanRegistry();
-                if (parent != null) {
-                    return parent.containsBean(type, id);
-                }
-                return false;
-            } else {
-                return true;
-            }
+        BeanRegistry parent = getParentBeanRegistry();
+        if (parent != null) {
+            return parent.containsBean(type, id);
         }
+        return false;
     }
 
     /**

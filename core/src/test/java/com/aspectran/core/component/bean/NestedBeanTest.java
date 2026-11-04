@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case for building ActivityContext.
@@ -81,6 +83,17 @@ class NestedBeanTest {
         BeanRegistry beanRegistry = context.getBeanRegistry();
         String result = beanRegistry.getBean("deepNestedStringBean");
         assertEquals("Nested String Bean", result);
+    }
+
+    @Test
+    void testContainsLocalBean(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
+        assertTrue(beanRegistry.containsLocalBean("stringBean"));
+        assertTrue(beanRegistry.containsLocalBean(String.class));
+        assertTrue(beanRegistry.containsLocalBean(String.class, "stringBean"));
+        assertFalse(beanRegistry.containsLocalBean("nonExistentBean"));
+        assertFalse(beanRegistry.containsLocalBean((String) null));
+        assertFalse(beanRegistry.containsLocalBean((Class<?>) null));
     }
 
 }

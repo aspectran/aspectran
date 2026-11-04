@@ -107,6 +107,31 @@ public interface BeanRegistry {
     boolean containsBean(@NonNull Class<?> type, @Nullable String id);
 
     /**
+     * Return whether the local bean registry contains a bean with the specified id,
+     * ignoring beans defined in ancestor contexts.
+     * @param id the id of the bean to query
+     * @return whether a bean with the specified id is present locally
+     */
+    boolean containsLocalBean(String id);
+
+    /**
+     * Return whether the local bean registry contains a bean of the specified object type,
+     * ignoring beans defined in ancestor contexts.
+     * @param type the object type of the bean to query
+     * @return whether a bean with the specified type is present locally
+     */
+    boolean containsLocalBean(Class<?> type);
+
+    /**
+     * Returns whether the local bean registry contains a bean of the specified object type and ID,
+     * ignoring beans defined in ancestor contexts.
+     * @param type the object type of the bean to query
+     * @param id the id of the bean to query (can be {@code null})
+     * @return whether a bean with the specified type and id is present locally
+     */
+    boolean containsLocalBean(@NonNull Class<?> type, @Nullable String id);
+
+    /**
      * Returns whether a single bean of the given type is present.
      * @param type the object type of the bean to query
      * @return whether a single bean of the given type is present
