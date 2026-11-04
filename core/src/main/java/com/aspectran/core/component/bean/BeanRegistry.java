@@ -77,6 +77,14 @@ public interface BeanRegistry {
     <V> V[] getBeansOfType(Class<V> type);
 
     /**
+     * Returns an instance of the bean for the given bean rule.
+     * @param <V> the type of bean object retrieved
+     * @param beanRule the bean rule
+     * @return an instance of the bean
+     */
+    <V> V getBean(@NonNull BeanRule beanRule);
+
+    /**
      * Returns a prototype-scoped bean instance for the given bean rule.
      * @param <V> the type of bean object retrieved
      * @param beanRule the bean rule

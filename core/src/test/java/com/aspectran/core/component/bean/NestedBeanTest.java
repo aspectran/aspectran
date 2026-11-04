@@ -94,6 +94,11 @@ class NestedBeanTest {
         assertFalse(beanRegistry.containsLocalBean("nonExistentBean"));
         assertFalse(beanRegistry.containsLocalBean((String) null));
         assertFalse(beanRegistry.containsLocalBean((Class<?>) null));
+
+        if (beanRegistry instanceof DefaultBeanRegistry defaultBeanRegistry) {
+            com.aspectran.core.context.rule.BeanRule rule = defaultBeanRegistry.getBeanRuleRegistry().getBeanRule("stringBean");
+            assertEquals("String Bean", beanRegistry.getBean(rule));
+        }
     }
 
 }

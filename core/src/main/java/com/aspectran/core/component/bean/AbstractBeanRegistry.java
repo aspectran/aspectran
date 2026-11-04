@@ -97,8 +97,9 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      * @throws BeanCreationException if the bean could not be created
      * @throws UnsupportedBeanScopeException if the specified scope is not supported
      */
+    @Override
     @SuppressWarnings("unchecked")
-    protected <V> V getBean(@NonNull BeanRule beanRule) {
+    public <V> V getBean(@NonNull BeanRule beanRule) {
         return switch (beanRule.getScopeType()) {
             case SINGLETON -> (V)getSingletonScopeBean(beanRule);
             case PROTOTYPE ->
