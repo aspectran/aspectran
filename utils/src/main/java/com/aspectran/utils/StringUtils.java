@@ -777,4 +777,45 @@ public class StringUtils {
         return count;
     }
 
+    /**
+     * Capitalize a {@code String}, changing the first letter to
+     * upper case as per {@link Character#toUpperCase(char)}.
+     * No other letters are changed.
+     * @param str the string to capitalize
+     * @return the capitalized string, or the original string if null or empty
+     */
+    public static String capitalize(String str) {
+        return changeFirstCharacterCase(str, true);
+    }
+
+    /**
+     * Uncapitalize a {@code String}, changing the first letter to
+     * lower case as per {@link Character#toLowerCase(char)}.
+     * No other letters are changed.
+     * @param str the string to uncapitalize
+     * @return the uncapitalized string, or the original string if null or empty
+     */
+    public static String uncapitalize(String str) {
+        return changeFirstCharacterCase(str, false);
+    }
+
+    private static String changeFirstCharacterCase(String str, boolean capitalize) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        char baseChar = str.charAt(0);
+        char updatedChar;
+        if (capitalize) {
+            updatedChar = Character.toUpperCase(baseChar);
+        } else {
+            updatedChar = Character.toLowerCase(baseChar);
+        }
+        if (baseChar == updatedChar) {
+            return str;
+        }
+        char[] chars = str.toCharArray();
+        chars[0] = updatedChar;
+        return new String(chars);
+    }
+
 }

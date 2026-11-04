@@ -203,6 +203,24 @@ class StringUtilsTest {
         void toStringArray_withValidCollection() {
             assertArrayEquals(new String[]{"a", "b"}, StringUtils.toStringArray(Arrays.asList("a", "b")));
         }
+
+        @Test
+        void capitalize() {
+            assertNull(StringUtils.capitalize(null));
+            assertEquals("", StringUtils.capitalize(""));
+            assertEquals("Hello", StringUtils.capitalize("hello"));
+            assertEquals("Hello", StringUtils.capitalize("Hello"));
+            assertEquals("H", StringUtils.capitalize("h"));
+        }
+
+        @Test
+        void uncapitalize() {
+            assertNull(StringUtils.uncapitalize(null));
+            assertEquals("", StringUtils.uncapitalize(""));
+            assertEquals("hello", StringUtils.uncapitalize("Hello"));
+            assertEquals("hello", StringUtils.uncapitalize("hello"));
+            assertEquals("h", StringUtils.uncapitalize("H"));
+        }
     }
 
 }
