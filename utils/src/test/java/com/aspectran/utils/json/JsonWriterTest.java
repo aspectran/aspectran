@@ -356,4 +356,16 @@ class JsonWriterTest {
         assertEquals("{\n  \"id\": 1,\n  \"name\": \"John Doe\"\n}", writer.toString().trim());
     }
 
+    @Test
+    void testClassAndTypeSerialization() throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter writer = new JsonWriter(stringWriter).prettyPrint(false);
+        writer.beginObject();
+        writer.name("class").value(String.class);
+        writer.name("primitive").value(int.class);
+        writer.endObject();
+
+        assertEquals("{\"class\":\"java.lang.String\",\"primitive\":\"int\"}", writer.toString());
+    }
+
 }
