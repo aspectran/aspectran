@@ -68,6 +68,21 @@ class DurationUtilsTest {
         assertEquals(expected, DurationUtils.toHumanReadableMillis(input));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "0, 0s",
+            "5, 5s",
+            "90, 1m 30s",
+            "1800, 30m",
+            "3600, 1h",
+            "3665, 1h 1m 5s",
+            "86400, 1d",
+            "-1, 0s"
+    })
+    void toHumanReadableSeconds(long input, String expected) {
+        assertEquals(expected, DurationUtils.toHumanReadableSeconds(input));
+    }
+
     @Test
     void toHumanReadableDuration() {
         assertEquals("0ns", DurationUtils.toHumanReadable(null));

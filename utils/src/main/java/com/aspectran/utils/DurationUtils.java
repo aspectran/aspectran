@@ -254,6 +254,24 @@ public class DurationUtils {
         return toHumanReadableNanos(millis * ONE_MILLISECOND_IN_NANOS);
     }
 
+    /**
+     * Converts a duration in seconds to a human-readable string.
+     * This method converts seconds to nanoseconds and then calls
+     * {@link #toHumanReadableNanos(long)}.
+     * @param seconds the duration in seconds
+     * @return a human-readable string representation of the duration
+     */
+    @NonNull
+    public static String toHumanReadableSeconds(long seconds) {
+        if (seconds < 0) {
+            seconds = 0;
+        }
+        if (seconds == 0) {
+            return "0s";
+        }
+        return toHumanReadableNanos(seconds * ONE_SECOND_IN_NANOS);
+    }
+
     @NonNull
     private static ChronoUnit resolveUnit(@NonNull String unitStr, @NonNull ChronoUnit defaultUnit) {
         if (unitStr.isEmpty()) {
