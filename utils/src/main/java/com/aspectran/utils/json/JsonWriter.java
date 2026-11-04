@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -466,6 +467,10 @@ public class JsonWriter {
             } else {
                 writeString(date.toString());
             }
+        } else if (object instanceof Class<?> clazz) {
+            writeString(clazz.getName());
+        } else if (object instanceof Type type) {
+            writeString(type.getTypeName());
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
@@ -475,7 +480,7 @@ public class JsonWriter {
                     try {
                         value = BeanUtils.getProperty(object, propertyName);
                     } catch (InvocationTargetException e) {
-                        throw new IOException(e);
+                        continue;
                     }
                     writeName(propertyName);
                     writeValue(value, object);
