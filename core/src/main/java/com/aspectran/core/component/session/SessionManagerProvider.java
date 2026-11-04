@@ -17,6 +17,8 @@ package com.aspectran.core.component.session;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.Map;
+
 /**
  * A provider interface for retrieving {@link SessionManager} instances
  * associated with deployments or context paths.
@@ -24,6 +26,14 @@ import org.jspecify.annotations.Nullable;
  * <p>Created: 2026-09-04</p>
  */
 public interface SessionManagerProvider {
+
+    /**
+     * Retrieves all {@link SessionManager} instances managed by this provider,
+     * mapped by their deployment name or context path.
+     * @return an unmodifiable map of deployment names or context paths to session managers,
+     *         or an empty map if none exist
+     */
+    Map<String, SessionManager> getAllSessionManagers();
 
     /**
      * Retrieves the {@link SessionManager} for the default or root context.

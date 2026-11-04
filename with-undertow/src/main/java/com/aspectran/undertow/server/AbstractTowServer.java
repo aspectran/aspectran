@@ -36,6 +36,9 @@ import org.xnio.OptionMap;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Abstract base class for {@link TowServer} implementations.
@@ -415,6 +418,25 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
             manager = container.getDeploymentByPath(path);
         }
         return manager;
+    }
+
+    @Override
+    public Map<String, SessionManager> getAllSessionManagers() {
+        if (requestHandlerFactory == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, SessionManager> sessionManagers = new LinkedHashMap<>();
+        ServletContainer container = requestHandlerFactory.getServletContainer();
+        for (String deploymentName : container.listDeployments()) {
+            DeploymentManager deploymentManager = container.getDeployment(deploymentName);
+            if (deploymentManager != null) {
+                SessionManager sessionManager = getSessionManager(deploymentManager);
+                if (sessionManager != null) {
+                    sessionManagers.put(deploymentName, sessionManager);
+                }
+            }
+        }
+        return (sessionManagers.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(sessionManagers));
     }
 
     /**

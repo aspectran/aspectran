@@ -98,6 +98,14 @@ class DefaultSessionListenerRegistrationTest {
 
         SessionManager nonExistent = nettyServer.getSessionManager("/nonexistent");
         assertNull(nonExistent, "Nonexistent context path should return null");
+
+        Map<String, SessionManager> allSessionManagers = nettyServer.getAllSessionManagers();
+        assertNotNull(allSessionManagers);
+        assertEquals(2, allSessionManagers.size());
+        assertTrue(allSessionManagers.containsKey("root"));
+        assertTrue(allSessionManagers.containsKey("admin"));
+        assertSame(rootSessionManager, allSessionManagers.get("root"));
+        assertSame(adminSessionManager, allSessionManagers.get("admin"));
     }
 
     @Test

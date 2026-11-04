@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import com.aspectran.utils.FileCopyUtils;
@@ -33,10 +34,13 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -93,6 +97,18 @@ class DefaultTowServerTest {
                 return null;
             });
         }
+    }
+
+    @Test
+    void testTowServerSessionManagerLookup() {
+        TowServer towServer = aspectran.getBean(TowServer.class);
+        assertNotNull(towServer);
+        Map<String, SessionManager> allSessionManagers = towServer.getAllSessionManagers();
+        assertNotNull(allSessionManagers);
+        assertFalse(allSessionManagers.isEmpty());
+        assertTrue(allSessionManagers.containsKey("root"));
+        assertNotNull(allSessionManagers.get("root"));
+        assertSame(towServer.getSessionManager(), allSessionManagers.get("root"));
     }
 
     @Test

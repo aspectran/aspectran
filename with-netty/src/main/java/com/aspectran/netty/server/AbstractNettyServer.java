@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.AbstractExecutorService;
@@ -573,6 +574,18 @@ public abstract class AbstractNettyServer extends AbstractLifeCycle implements N
             return listeners.get(index).getActualPort();
         }
         return -1;
+    }
+
+    @Override
+    public Map<String, SessionManager> getAllSessionManagers() {
+        Map<String, SessionManager> sessionManagers = new LinkedHashMap<>();
+        for (NettyContext context : getOrderedContexts()) {
+            SessionManager sessionManager = context.getSessionManager();
+            if (sessionManager != null) {
+                sessionManagers.put(context.getName(), sessionManager);
+            }
+        }
+        return (sessionManagers.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(sessionManagers));
     }
 
     @Override
