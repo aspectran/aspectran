@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -112,7 +113,7 @@ public class BeanDescriptor {
             }
         }
 
-        List<String> declaredFieldNames = getDeclaredFieldNames(beanClass);
+        Set<String> declaredFieldNames = getDeclaredFieldNames(beanClass);
         for (String fieldName : declaredFieldNames) {
             Method method = detectedGetters.remove(fieldName);
             if (method != null) {
@@ -144,7 +145,7 @@ public class BeanDescriptor {
         }
 
         Map<String, Method> resolvedSetters = resolveSetterConflicts(conflictingSetters);
-        List<String> declaredFieldNames = getDeclaredFieldNames(beanClass);
+        Set<String> declaredFieldNames = getDeclaredFieldNames(beanClass);
         for (String fieldName : declaredFieldNames) {
             Method method = resolvedSetters.remove(fieldName);
             if (method != null) {
@@ -203,7 +204,7 @@ public class BeanDescriptor {
     }
 
     @NonNull
-    private static List<String> getDeclaredFieldNames(Class<?> beanClass) {
+    private static Set<String> getDeclaredFieldNames(Class<?> beanClass) {
         List<Class<?>> hierarchy = new ArrayList<>();
         Class<?> currentClass = beanClass;
         while (currentClass != null && currentClass != Object.class) {
@@ -212,12 +213,16 @@ public class BeanDescriptor {
         }
         Collections.reverse(hierarchy);
 
-        List<String> fieldNames = new ArrayList<>();
+        Set<String> fieldNames = new LinkedHashSet<>();
         for (Class<?> clazz : hierarchy) {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    fieldNames.add(field.getName());
+            try {
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        fieldNames.add(field.getName());
+                    }
                 }
+            } catch (SecurityException ignored) {
+                // Ignore if security manager restricts access to declared fields
             }
         }
         return fieldNames;
