@@ -19,14 +19,16 @@ import com.aspectran.utils.annotation.NonSerializable;
 import org.jspecify.annotations.NonNull;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,13 +49,13 @@ public class BeanDescriptor {
 
     private final String[] writablePropertyNames;
 
-    private final Map<String, Method> getterMethods = new HashMap<>();
+    private final Map<String, Method> getterMethods = new LinkedHashMap<>();
 
-    private final Map<String, Class<?>> getterTypes = new HashMap<>();
+    private final Map<String, Class<?>> getterTypes = new LinkedHashMap<>();
 
-    private final Map<String, Method> setterMethods = new HashMap<>();
+    private final Map<String, Method> setterMethods = new LinkedHashMap<>();
 
-    private final Map<String, Class<?>> setterTypes = new HashMap<>();
+    private final Map<String, Class<?>> setterTypes = new LinkedHashMap<>();
 
     private BeanDescriptor(@NonNull Class<?> beanClass) {
         this.className = beanClass.getName();
@@ -75,7 +77,7 @@ public class BeanDescriptor {
             this.serializableReadablePropertyNames = this.readablePropertyNames;
         }
 
-        addSetterMethods(methods);
+        addSetterMethods(beanClass, methods);
         this.writablePropertyNames = setterMethods.keySet().toArray(new String[0]);
     }
 
@@ -92,20 +94,35 @@ public class BeanDescriptor {
                     nonSerializableReadPropertyNames.add(name);
                 }
             }
+            return nonSerializableReadPropertyNames;
         }
+
+        Map<String, Method> detectedGetters = new LinkedHashMap<>();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
                 String name = method.getName();
                 if ((name.startsWith("get") && name.length() > 3) ||
                         (name.startsWith("is") && name.length() > 2)) {
                     name = dropCase(name);
-                    addGetterMethod(name, method);
+                    detectedGetters.putIfAbsent(name, method);
                     if (method.isAnnotationPresent(NonSerializable.class)) {
                         nonSerializableReadPropertyNames.add(name);
                     }
                 }
             }
         }
+
+        List<String> declaredFieldNames = getDeclaredFieldNames(beanClass);
+        for (String fieldName : declaredFieldNames) {
+            Method method = detectedGetters.remove(fieldName);
+            if (method != null) {
+                addGetterMethod(fieldName, method);
+            }
+        }
+        for (Map.Entry<String, Method> entry : detectedGetters.entrySet()) {
+            addGetterMethod(entry.getKey(), entry.getValue());
+        }
+
         return nonSerializableReadPropertyNames;
     }
 
@@ -114,7 +131,7 @@ public class BeanDescriptor {
         getterTypes.put(name, method.getReturnType());
     }
 
-    private void addSetterMethods(Method @NonNull [] methods) {
+    private void addSetterMethods(@NonNull Class<?> beanClass, Method @NonNull [] methods) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 1) {
@@ -125,7 +142,18 @@ public class BeanDescriptor {
                 }
             }
         }
-        resolveSetterConflicts(conflictingSetters);
+
+        Map<String, Method> resolvedSetters = resolveSetterConflicts(conflictingSetters);
+        List<String> declaredFieldNames = getDeclaredFieldNames(beanClass);
+        for (String fieldName : declaredFieldNames) {
+            Method method = resolvedSetters.remove(fieldName);
+            if (method != null) {
+                addSetterMethod(fieldName, method);
+            }
+        }
+        for (Map.Entry<String, Method> entry : resolvedSetters.entrySet()) {
+            addSetterMethod(entry.getKey(), entry.getValue());
+        }
     }
 
     private void addConflictingSetter(
@@ -134,12 +162,15 @@ public class BeanDescriptor {
         list.add(method);
     }
 
-    private void resolveSetterConflicts(@NonNull Map<String, List<Method>> conflictingSetters) {
-        for (String propName : conflictingSetters.keySet()) {
-            List<Method> setters = conflictingSetters.get(propName);
+    @NonNull
+    private Map<String, Method> resolveSetterConflicts(@NonNull Map<String, List<Method>> conflictingSetters) {
+        Map<String, Method> resolvedSetters = new LinkedHashMap<>();
+        for (Map.Entry<String, List<Method>> entry : conflictingSetters.entrySet()) {
+            String propName = entry.getKey();
+            List<Method> setters = entry.getValue();
             Method firstMethod = setters.getFirst();
             if (setters.size() == 1) {
-                addSetterMethod(propName, firstMethod);
+                resolvedSetters.put(propName, firstMethod);
             } else {
                 Class<?> expectedType = getterTypes.get(propName);
                 if (expectedType == null) {
@@ -147,10 +178,8 @@ public class BeanDescriptor {
                             propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
                             "specification and can cause unpredictable results.");
                 } else {
-                    Iterator<Method> methods = setters.iterator();
                     Method setter = null;
-                    while (methods.hasNext()) {
-                        Method method = methods.next();
+                    for (Method method : setters) {
                         if (method.getParameterCount() == 1 && expectedType.equals(method.getParameterTypes()[0])) {
                             setter = method;
                             break;
@@ -161,15 +190,37 @@ public class BeanDescriptor {
                                 propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
                                 "specification and can cause unpredictable results.");
                     }
-                    addSetterMethod(propName, setter);
+                    resolvedSetters.put(propName, setter);
                 }
             }
         }
+        return resolvedSetters;
     }
 
     private void addSetterMethod(String name, Method method) {
         setterMethods.put(name, method);
         setterTypes.put(name, method.getParameterTypes()[0]);
+    }
+
+    @NonNull
+    private static List<String> getDeclaredFieldNames(Class<?> beanClass) {
+        List<Class<?>> hierarchy = new ArrayList<>();
+        Class<?> currentClass = beanClass;
+        while (currentClass != null && currentClass != Object.class) {
+            hierarchy.add(currentClass);
+            currentClass = currentClass.getSuperclass();
+        }
+        Collections.reverse(hierarchy);
+
+        List<String> fieldNames = new ArrayList<>();
+        for (Class<?> clazz : hierarchy) {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    fieldNames.add(field.getName());
+                }
+            }
+        }
+        return fieldNames;
     }
 
     /**
@@ -348,6 +399,10 @@ public class BeanDescriptor {
         return readablePropertyNames;
     }
 
+    /**
+     * Gets an array of readable property names excluding non-serializable properties.
+     * @return the readable property names for serializable properties
+     */
     public String[] getReadablePropertyNamesWithoutNonSerializable() {
         return serializableReadablePropertyNames;
     }

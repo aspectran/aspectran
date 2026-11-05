@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -258,6 +259,22 @@ class BeanUtilsTest {
 
         BeanUtils.setProperty(map, "title", "Aspectran 8.x");
         assertEquals("Aspectran 8.x", map.get("title"));
+    }
+
+    @Test
+    void testPropertyOrderPreservation() {
+        BeanDescriptor descriptor = BeanDescriptor.getInstance(Person.class);
+        String[] readableProperties = descriptor.getReadablePropertyNames();
+        String[] writableProperties = descriptor.getWritablePropertyNames();
+
+        String[] expectedReadable = { "name", "age", "address", "hobbies", "scores", "active" };
+        String[] expectedWritable = { "name", "age", "address", "hobbies", "scores", "active" };
+
+        assertArrayEquals(expectedReadable, readableProperties);
+        assertArrayEquals(expectedWritable, writableProperties);
+
+        BeanDescriptor recordDescriptor = BeanDescriptor.getInstance(PersonRecord.class);
+        assertArrayEquals(new String[] { "name", "age", "address" }, recordDescriptor.getReadablePropertyNames());
     }
 
 }
