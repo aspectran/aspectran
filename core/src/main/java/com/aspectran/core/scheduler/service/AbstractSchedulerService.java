@@ -149,7 +149,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
      * Returns all registered Quartz {@link Scheduler} instances.
      * @return a collection of schedulers
      */
-    protected Collection<Scheduler> getSchedulers() {
+    @Override
+    public Collection<Scheduler> getSchedulers() {
         return schedulerMap.values();
     }
 
@@ -158,7 +159,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
      * @param scheduleId the ID of the schedule
      * @return the scheduler instance, or {@code null} if not found
      */
-    protected Scheduler getScheduler(String scheduleId) {
+    @Override
+    public Scheduler getScheduler(String scheduleId) {
         return schedulerMap.get(scheduleId);
     }
 

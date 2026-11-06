@@ -18,6 +18,9 @@ package com.aspectran.core.scheduler.service;
 import com.aspectran.core.component.schedule.ScheduledJobLockProvider;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.ServiceLifeCycle;
+import org.quartz.Scheduler;
+
+import java.util.Collection;
 
 /**
  * The main interface for the Aspectran scheduling service.
@@ -81,6 +84,19 @@ public interface SchedulerService extends ServiceLifeCycle {
      * @return the logging group name
      */
     String getLoggingGroup();
+
+    /**
+     * Returns the Quartz {@link Scheduler} instance for the given schedule ID.
+     * @param scheduleId the ID of the schedule
+     * @return the scheduler instance, or {@code null} if not found
+     */
+    Scheduler getScheduler(String scheduleId);
+
+    /**
+     * Returns all registered Quartz {@link Scheduler} instances.
+     * @return a collection of schedulers
+     */
+    Collection<Scheduler> getSchedulers();
 
     /**
      * Pauses all job executions in the scheduler.
