@@ -79,6 +79,22 @@ public class RoutingEntityManagerAgent extends AbstractEntityManagerProvider imp
         this.replicaAspectId = replicaAspectId;
     }
 
+    /**
+     * Returns the ID for the primary aspect rule.
+     * @return the primary aspect ID
+     */
+    public String getPrimaryAspectId() {
+        return primaryAspectId;
+    }
+
+    /**
+     * Returns the ID for the replica aspect rule.
+     * @return the replica aspect ID
+     */
+    public String getReplicaAspectId() {
+        return replicaAspectId;
+    }
+
     @Override
     @NonNull
     public EntityManagerAdvice getEntityManagerAdvice() {

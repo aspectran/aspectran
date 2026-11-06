@@ -43,6 +43,14 @@ public class DefaultEntityManagerAgent extends AbstractEntityManagerProvider imp
         this.txAspectId = txAspectId;
     }
 
+    /**
+     * Returns the ID of the aspect that provides the EntityManagerAdvice.
+     * @return the aspect ID
+     */
+    public String getTxAspectId() {
+        return txAspectId;
+    }
+
     @Override
     @NonNull
     public EntityManagerAdvice getEntityManagerAdvice() {

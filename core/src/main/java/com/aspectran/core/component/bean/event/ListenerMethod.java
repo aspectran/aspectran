@@ -45,6 +45,22 @@ public class ListenerMethod {
     }
 
     /**
+     * Returns the target bean instance.
+     * @return the bean instance
+     */
+    public Object getBean() {
+        return bean;
+    }
+
+    /**
+     * Returns the listener method.
+     * @return the listener method
+     */
+    public Method getMethod() {
+        return method;
+    }
+
+    /**
      * Invokes the listener method with the given event.
      * @param event the event to pass to the listener method
      * @throws Exception if the underlying method throws an exception

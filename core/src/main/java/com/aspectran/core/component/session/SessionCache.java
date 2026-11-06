@@ -40,6 +40,12 @@ public interface SessionCache {
     int EVICT_ON_INACTIVITY = 1;
 
     /**
+     * Returns the session store used by this cache for persistence, or null if not configured.
+     * @return the session store, or null
+     */
+    SessionStore getSessionStore();
+
+    /**
      * Checks if the session manager is running in a clustered environment.
      * @return true if clustering is enabled, false otherwise
      */

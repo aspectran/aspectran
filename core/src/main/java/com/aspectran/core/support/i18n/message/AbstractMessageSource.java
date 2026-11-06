@@ -60,14 +60,23 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     private boolean useCodeAsDefaultMessage = false;
 
     @Override
+    @Nullable
+    public MessageSource getParentMessageSource() {
+        return this.parentMessageSource;
+    }
+
+    @Override
     public void setParentMessageSource(@Nullable MessageSource parent) {
         this.parentMessageSource = parent;
     }
 
-    @Override
+    /**
+     * Return a Properties object defining locale-independent common messages, if any.
+     * @return the common messages
+     */
     @Nullable
-    public MessageSource getParentMessageSource() {
-        return this.parentMessageSource;
+    protected Properties getCommonMessages() {
+        return this.commonMessages;
     }
 
     /**
@@ -80,12 +89,16 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     }
 
     /**
-     * Return a Properties object defining locale-independent common messages, if any.
-     * @return the common messages
+     * Return whether to use the message code as default message instead of
+     * throwing a NoSuchMessageException. Useful for development and debugging.
+     * Default is "false".
+     * <p>Alternatively, consider overriding the {@link #getDefaultMessage}
+     * method to return a custom fallback message for an unresolvable code.</p>
+     * @return whether use code as default message
+     * @see #getDefaultMessage(String) #getDefaultMessage(String)
      */
-    @Nullable
-    protected Properties getCommonMessages() {
-        return this.commonMessages;
+    public boolean isUseCodeAsDefaultMessage() {
+        return this.useCodeAsDefaultMessage;
     }
 
     /**
@@ -107,19 +120,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      */
     public void setUseCodeAsDefaultMessage(boolean useCodeAsDefaultMessage) {
         this.useCodeAsDefaultMessage = useCodeAsDefaultMessage;
-    }
-
-    /**
-     * Return whether to use the message code as default message instead of
-     * throwing a NoSuchMessageException. Useful for development and debugging.
-     * Default is "false".
-     * <p>Alternatively, consider overriding the {@link #getDefaultMessage}
-     * method to return a custom fallback message for an unresolvable code.</p>
-     * @return whether use code as default message
-     * @see #getDefaultMessage(String) #getDefaultMessage(String)
-     */
-    protected boolean isUseCodeAsDefaultMessage() {
-        return this.useCodeAsDefaultMessage;
     }
 
     @Override

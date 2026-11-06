@@ -90,12 +90,13 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         return sessionManager;
     }
 
-    protected SessionStore getSessionStore() {
-        return sessionStore;
-    }
-
     protected SessionStatistics getStatistics() {
         return sessionManager.getStatistics();
+    }
+
+    @Override
+    public SessionStore getSessionStore() {
+        return sessionStore;
     }
 
     @Override

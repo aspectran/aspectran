@@ -119,12 +119,37 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     }
 
     /**
+     * Return the default encoding to use for parsing property-based resource bundle files.
+     * @return the default encoding
+     */
+    public String getDefaultEncoding() {
+        return defaultEncoding;
+    }
+
+    /**
+     * Return whether to fall back to the system Locale if no files for a specific
+     * Locale have been found.
+     * @return whether fallback to system locale
+     */
+    public boolean isFallbackToSystemLocale() {
+        return fallbackToSystemLocale;
+    }
+
+    /**
      * Set the default encoding to use for parsing property-based resource bundle files.
      * <p>The default is the system's default encoding.</p>
      * @param defaultEncoding the default encoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
+    }
+
+    /**
+     * Return the number of milliseconds to cache loaded resource bundle files.
+     * @return the cache duration in milliseconds
+     */
+    public long getCacheMillis() {
+        return cacheMillis;
     }
 
     /**
@@ -160,6 +185,14 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      */
     public void setCacheSeconds(int cacheSeconds) {
         this.cacheMillis = cacheSeconds * 1000L;
+    }
+
+    /**
+     * Return the basenames of the resource bundles to load.
+     * @return the array of basenames
+     */
+    public String[] getBasenames() {
+        return basenames;
     }
 
     /**

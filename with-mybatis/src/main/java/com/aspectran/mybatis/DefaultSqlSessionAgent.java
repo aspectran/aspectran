@@ -44,6 +44,14 @@ public class DefaultSqlSessionAgent extends AbstractSqlSessionProvider implement
     }
 
     /**
+     * Returns the ID of the aspect that provides the SqlSessionAdvice.
+     * @return the aspect ID
+     */
+    public String getTxAspectId() {
+        return txAspectId;
+    }
+
+    /**
      * Retrieves the {@link SqlSessionAdvice} from the current activity context
      * using the registered {@code txAspectId}.
      * @return the SqlSessionAdvice found in the current activity

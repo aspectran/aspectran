@@ -67,6 +67,22 @@ public class RoutingSqlSessionAgent extends AbstractSqlSessionProvider implement
     }
 
     /**
+     * Returns the ID for the primary aspect rule.
+     * @return the primary aspect ID
+     */
+    public String getPrimaryAspectId() {
+        return primaryAspectId;
+    }
+
+    /**
+     * Returns the ID for the replica aspect rule.
+     * @return the replica aspect ID
+     */
+    public String getReplicaAspectId() {
+        return replicaAspectId;
+    }
+
+    /**
      * Retrieves the {@link SqlSessionAdvice} from the current activity context
      * by checking for a primary advice first, then falling back to a replica advice.
      * @return the SqlSessionAdvice found in the current activity

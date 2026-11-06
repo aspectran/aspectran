@@ -42,6 +42,14 @@ public abstract class AbstractEntityQuery extends AbstractEntityManagerProvider 
     private JPQLTemplates templates;
 
     /**
+     * Returns the Querydsl templates used for query construction.
+     * @return the JPQL templates, or {@code null} if default templates are used
+     */
+    public JPQLTemplates getTemplates() {
+        return templates;
+    }
+
+    /**
      * Sets the Querydsl templates to use for query construction.
      * @param templates the JPQL templates
      */
