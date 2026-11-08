@@ -53,9 +53,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Central registry for {@link com.aspectran.core.context.rule.BeanRule} definitions.
@@ -120,7 +122,7 @@ public class BeanRuleRegistry {
      * Instantiates a new Bean rule registry.
      * @param classLoader the class loader
      */
-    public BeanRuleRegistry(ClassLoader classLoader) {
+    public BeanRuleRegistry(@NonNull ClassLoader classLoader) {
         this.classLoader = classLoader;
 
         ignoreDependencyInterface(FactoryBean.class);
@@ -177,6 +179,18 @@ public class BeanRuleRegistry {
     }
 
     /**
+     * Returns the configurable bean rule for the given type.
+     * @param type the bean type
+     * @return the configurable bean rule, or {@code null} if not found
+     */
+    public BeanRule getBeanRuleForConfig(Class<?> type) {
+        if (type == null) {
+            throw new IllegalArgumentException("type must not be null");
+        }
+        return configurableBeanRuleMap.get(type);
+    }
+
+    /**
      * Returns an array of bean rules for the given name.
      * The name can be a bean ID or a class name with the prefix "class:".
      * @param name the bean id or class name
@@ -219,42 +233,6 @@ public class BeanRuleRegistry {
     }
 
     /**
-     * Returns the configurable bean rule for the given type.
-     * @param type the bean type
-     * @return the configurable bean rule, or {@code null} if not found
-     */
-    public BeanRule getBeanRuleForConfig(Class<?> type) {
-        if (type == null) {
-            throw new IllegalArgumentException("type must not be null");
-        }
-        return configurableBeanRuleMap.get(type);
-    }
-
-    /**
-     * Checks if a bean rule with the given id is registered.
-     * @param id the bean id
-     * @return {@code true} if a bean rule with the given id is registered, {@code false} otherwise
-     */
-    public boolean contains(String id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id must not be null");
-        }
-        return idBasedBeanRuleMap.containsKey(id);
-    }
-
-    /**
-     * Checks if a bean rule with the given type is registered.
-     * @param type the bean type
-     * @return {@code true} if a bean rule with the given type is registered, {@code false} otherwise
-     */
-    public boolean contains(Class<?> type) {
-        if (type == null) {
-            throw new IllegalArgumentException("type must not be null");
-        }
-        return (typeBasedBeanRuleMap.containsKey(type) || configurableBeanRuleMap.containsKey(type));
-    }
-
-    /**
      * Returns a collection of all id-based bean rules.
      * @return a collection of bean rules
      */
@@ -279,6 +257,67 @@ public class BeanRuleRegistry {
     }
 
     /**
+     * Returns a collection of all registered bean rules, combining ID-based,
+     * type-based, and configurable bean rules without duplicates.
+     * @return a collection of all registered bean rules
+     */
+    public Collection<BeanRule> getBeanRules() {
+        Set<BeanRule> allBeanRules = new LinkedHashSet<>(idBasedBeanRuleMap.values());
+        for (Set<BeanRule> rules : typeBasedBeanRuleMap.values()) {
+            allBeanRules.addAll(rules);
+        }
+        allBeanRules.addAll(configurableBeanRuleMap.values());
+        return allBeanRules;
+    }
+
+    /**
+     * Finds all bean rules whose target bean class is assignable to the specified target type.
+     * @param targetType the target class or interface to check
+     * @return a list of matching bean rules
+     */
+    public List<BeanRule> findBeanRules(Class<?> targetType) {
+        if (targetType == null) {
+            throw new IllegalArgumentException("targetType must not be null");
+        }
+        List<BeanRule> result = new ArrayList<>();
+        for (BeanRule rule : getBeanRules()) {
+            Class<?> beanClass = rule.getTargetBeanClass();
+            if (beanClass != null) {
+                if (targetType.isAssignableFrom(beanClass)) {
+                    result.add(rule);
+                }
+            } else if (rule.getClassName() != null) {
+                try {
+                    Class<?> loadedClass = classLoader.loadClass(rule.getClassName());
+                    if (targetType.isAssignableFrom(loadedClass)) {
+                        result.add(rule);
+                    }
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Finds all bean rules that match the given predicate filter.
+     * @param filter the predicate to match bean rules
+     * @return a list of matching bean rules
+     */
+    public List<BeanRule> findBeanRules(Predicate<BeanRule> filter) {
+        if (filter == null) {
+            throw new IllegalArgumentException("filter must not be null");
+        }
+        List<BeanRule> result = new ArrayList<>();
+        for (BeanRule rule : getBeanRules()) {
+            if (filter.test(rule)) {
+                result.add(rule);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Finds all configurable bean classes that are annotated with the given annotation type.
      * @param annotationType the annotation type to look for
      * @return a collection of bean classes
@@ -295,6 +334,30 @@ public class BeanRuleRegistry {
             }
         }
         return result;
+    }
+
+    /**
+     * Checks if a bean rule with the given id is registered.
+     * @param id the bean id
+     * @return {@code true} if a bean rule with the given id is registered, {@code false} otherwise
+     */
+    public boolean contains(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
+        return idBasedBeanRuleMap.containsKey(id);
+    }
+
+    /**
+     * Checks if a bean rule with the given type is registered.
+     * @param type the bean type
+     * @return {@code true} if a bean rule with the given type is registered, {@code false} otherwise
+     */
+    public boolean contains(Class<?> type) {
+        if (type == null) {
+            throw new IllegalArgumentException("type must not be null");
+        }
+        return (typeBasedBeanRuleMap.containsKey(type) || configurableBeanRuleMap.containsKey(type));
     }
 
     /**
