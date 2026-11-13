@@ -32,7 +32,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.shell.jline</automatic.module.name>
-        <jline.version>4.5.0</jline.version>
+        <jline.version>4.6.0</jline.version>
     </properties>
 
     <dependencies>
