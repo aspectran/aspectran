@@ -285,6 +285,12 @@ public interface HttpHeaders {
     String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
 
     /**
+     * The HTTP {@code Keep-Alive} header field name.
+     * @see <a href="https://tools.ietf.org/html/rfc2068#section-19.7.1.1">Section 19.7.1.1 of RFC 2068</a>
+     */
+    String KEEP_ALIVE = "Keep-Alive";
+
+    /**
      * The HTTP {@code Last-Modified} header field name.
      * @see <a href="https://www.rfc-editor.org/rfc/rfc9110#section-8.8.2">Section 8.8.2 of RFC 9110</a>
      */

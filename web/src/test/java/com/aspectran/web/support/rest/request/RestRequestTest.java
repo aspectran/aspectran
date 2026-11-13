@@ -192,6 +192,9 @@ class RestRequestTest {
         httpResponse.setEntity(new StringEntity("created", ContentType.TEXT_PLAIN));
         httpResponse.addHeader(HttpHeaders.LOCATION, "/items/123");
         httpResponse.addHeader(HttpHeaders.ETAG, "\"abc\"");
+        httpResponse.addHeader(HttpHeaders.CONTENT_LENGTH, "7");
+        httpResponse.addHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
+        httpResponse.addHeader(HttpHeaders.CONNECTION, "keep-alive");
 
         StubHttpClient stubClient = new StubHttpClient(httpResponse);
 
@@ -206,6 +209,9 @@ class RestRequestTest {
         assertEquals(HttpStatus.SC_CREATED, response.getStatus());
         assertEquals("/items/123", response.getHeader(HttpHeaders.LOCATION));
         assertEquals("\"abc\"", response.getHeader(HttpHeaders.ETAG));
+        assertNull(response.getHeader(HttpHeaders.CONTENT_LENGTH));
+        assertNull(response.getHeader(HttpHeaders.TRANSFER_ENCODING));
+        assertNull(response.getHeader(HttpHeaders.CONNECTION));
 
         ClassicHttpRequest captured = stubClient.getCapturedRequest();
         assertNotNull(captured);

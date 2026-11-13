@@ -47,9 +47,12 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A fluent client for performing HTTP requests, based on Apache HttpComponents.
@@ -60,6 +63,25 @@ import java.util.Map;
  * @since 8.6.0
  */
 public class RestRequest {
+
+    private static final Set<String> NON_PROPAGATABLE_RESPONSE_HEADERS;
+
+    static {
+        Set<String> headers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        headers.add(HttpHeaders.CONNECTION);
+        headers.add(HttpHeaders.KEEP_ALIVE);
+        headers.add(HttpHeaders.PROXY_AUTHENTICATE);
+        headers.add(HttpHeaders.PROXY_AUTHORIZATION);
+        headers.add(HttpHeaders.TE);
+        headers.add(HttpHeaders.TRAILER);
+        headers.add(HttpHeaders.TRANSFER_ENCODING);
+        headers.add(HttpHeaders.UPGRADE);
+        headers.add(HttpHeaders.CONTENT_LENGTH);
+        headers.add(HttpHeaders.CONTENT_TYPE);
+        headers.add(HttpHeaders.CONTENT_ENCODING);
+        headers.add(HttpHeaders.CONTENT_RANGE);
+        NON_PROPAGATABLE_RESPONSE_HEADERS = Collections.unmodifiableSet(headers);
+    }
 
     private final CloseableHttpClient httpClient;
 
@@ -532,7 +554,9 @@ public class RestRequest {
             }
 
             for (Header header : response.getHeaders()) {
-                restResponse.addHeader(header.getName(), header.getValue());
+                if (isPropagatableResponseHeader(header.getName())) {
+                    restResponse.addHeader(header.getName(), header.getValue());
+                }
             }
 
             return restResponse;
@@ -545,6 +569,10 @@ public class RestRequest {
         } else {
             return httpClient.execute(request, responseHandler);
         }
+    }
+
+    private static boolean isPropagatableResponseHeader(String name) {
+        return (name != null && !NON_PROPAGATABLE_RESPONSE_HEADERS.contains(name));
     }
 
     /**
