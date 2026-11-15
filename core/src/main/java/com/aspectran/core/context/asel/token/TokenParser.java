@@ -198,8 +198,7 @@ public class TokenParser {
      * @param path the path string to parse
      * @return an array of tokens if dynamic tokens are found; otherwise, {@code null}
      */
-    @Nullable
-    public static Token[] parsePathSafely(String path) {
+    public static Token @Nullable [] parsePathSafely(String path) {
         if (!StringUtils.hasText(path)) {
             return null;
         }
