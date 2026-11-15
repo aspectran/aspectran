@@ -225,20 +225,20 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     }
 
     @Override
-    protected void doStart() throws Exception {
-        super.doStart();
+    protected void doStarted() throws Exception {
         if (fileCommander != null) {
             fileCommander.requeue();
             polling = true;
             startPollingThread();
         }
+        super.doStarted();
     }
 
     @Override
-    protected void doStop() {
+    protected void doStopping() throws Exception {
         polling = false;
         stopPollingThread();
-        super.doStop();
+        super.doStopping();
     }
 
     /**

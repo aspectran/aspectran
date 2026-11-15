@@ -118,6 +118,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
                 doStart();
                 active = true;
+                doStarted();
 
                 for (ServiceLifeCycle serviceLifeCycle : subServices) {
                     serviceLifeCycle.start();
@@ -165,6 +166,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 try {
                     logger.info("Stopping {}", getServiceName());
 
+                    doStopping();
                     doStop();
 
                     logger.info("Stopped {}", getServiceName());
@@ -198,6 +200,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 }
 
                 active = false;
+                doStopping();
                 doStop();
 
                 if (serviceStateListener != null) {
@@ -210,6 +213,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
                 doStart();
                 active = true;
+                doStarted();
 
                 for (ServiceLifeCycle serviceLifeCycle : subServices) {
                     serviceLifeCycle.start();
@@ -356,6 +360,24 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
      * @throws Exception if an error occurs during startup
      */
     protected abstract void doStart() throws Exception;
+
+    /**
+     * Subclasses can override this method to perform logic immediately after
+     * the service has become active (e.g., starting background listeners or polling threads).
+     * This method is called by {@link #start()} within a synchronized block.
+     * @throws Exception if an error occurs while handling post-startup logic
+     */
+    protected void doStarted() throws Exception {
+    }
+
+    /**
+     * Subclasses can override this method to perform logic immediately before
+     * the service stops (e.g., stopping background listeners or rejecting incoming requests).
+     * This method is called by {@link #stop()} within a synchronized block.
+     * @throws Exception if an error occurs while handling pre-shutdown logic
+     */
+    protected void doStopping() throws Exception {
+    }
 
     /**
      * Subclasses must implement this method to perform the actual shutdown logic.

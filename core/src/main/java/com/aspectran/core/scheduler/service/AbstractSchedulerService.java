@@ -183,13 +183,25 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     /**
-     * Builds and starts all configured Quartz schedulers.
-     * @throws Exception if an error occurs during scheduler startup
+     * Builds all configured Quartz schedulers.
+     * @throws Exception if an error occurs during scheduler creation
      */
     @Override
     protected void doStart() throws Exception {
         try {
             buildSchedulers();
+        } catch (Exception e) {
+            throw new SchedulerServiceException("Could not start " + getServiceName(), e);
+        }
+    }
+
+    /**
+     * Starts all configured Quartz schedulers after the service has become active.
+     * @throws Exception if an error occurs during scheduler startup
+     */
+    @Override
+    protected void doStarted() throws Exception {
+        try {
             for (Scheduler scheduler : getSchedulers()) {
                 logger.info("Starting scheduler '{}'", scheduler.getSchedulerName());
 
@@ -202,6 +214,25 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         } catch (Exception e) {
             throw new SchedulerServiceException("Could not start " + getServiceName(), e);
         }
+        super.doStarted();
+    }
+
+    /**
+     * Puts all configured Quartz schedulers into standby mode before the service stops.
+     * @throws Exception if an error occurs while putting schedulers into standby mode
+     */
+    @Override
+    protected void doStopping() throws Exception {
+        try {
+            for (Scheduler scheduler : getSchedulers()) {
+                if (scheduler.isStarted() && !scheduler.isShutdown()) {
+                    scheduler.standby();
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Could not put schedulers into standby mode during shutdown", e);
+        }
+        super.doStopping();
     }
 
     /**

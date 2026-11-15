@@ -145,7 +145,7 @@ class DefaultFileCommanderTest {
 
         // 1. Submit a slow command first
         Path slowCommandFile = incomingDir.resolve("03-slow.apon");
-        Files.writeString(slowCommandFile, "command: sleep, arguments: { item: { value: 500, valueType: long } }");
+        Files.writeString(slowCommandFile, "command: sleep, arguments: { item: { value: 2000, valueType: long } }");
 
         // 2. Submit an isolated command (quit) which should be rejected
         Path isolatedCommandFile = incomingDir.resolve("04-isolated.apon");
@@ -153,23 +153,24 @@ class DefaultFileCommanderTest {
 
         daemon.start();
 
-        // Wait for polling and rollback
-        // The slow command should be moved out of incoming first
-        for (int i = 0; i < 5; i++) {
-            if (Files.notExists(slowCommandFile)) break;
+        // Wait for slow command to be moved to queued and start executing
+        for (int i = 0; i < 20; i++) {
+            if (Files.notExists(slowCommandFile) && Files.exists(queuedDir.resolve("03-slow.apon"))) break;
             System.out.println("Waiting for slow command to be moved out of " + incomingDir + "... " + i);
             Thread.sleep(100);
         }
 
-        // Then the isolated command should be attempted and potentially rolled back
-        // We wait a bit more to give the poller time to process the second file
-        for (int i = 0; i < 5; i++) {
-            if (Files.exists(isolatedCommandFile) && Files.notExists(queuedDir.resolve("04-isolated.apon"))) break;
+        // Wait for the poller to finish processing the isolated command and roll it back
+        for (int i = 0; i < 20; i++) {
+            if (Files.exists(isolatedCommandFile) && Files.notExists(queuedDir.resolve("04-isolated.apon"))) {
+                Thread.sleep(100);
+                break;
+            }
             System.out.println("Waiting for isolated command to be attempted... " + i);
             Thread.sleep(100);
         }
 
-        // The isolated command should be rolled back to incoming (or stayed there)
+        // The isolated command should be rolled back to incoming
         assertTrue(Files.exists(isolatedCommandFile), "Isolated command should be rolled back to incoming");
         assertTrue(Files.notExists(queuedDir.resolve("04-isolated.apon")), "Isolated command should not be in queued");
     }
