@@ -34,6 +34,11 @@ public class DefaultSchedulerServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSchedulerServiceBuilder.class);
 
+    // Private constructor to prevent instantiation
+    private DefaultSchedulerServiceBuilder() {
+        // not to be instantiated
+    }
+
     /**
      * Builds a new {@link DefaultSchedulerService}.
      * @param parentService the parent core service

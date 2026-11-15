@@ -22,8 +22,6 @@ import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
 import org.jspecify.annotations.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A builder class for creating and configuring {@link DefaultNettyService} instances.
@@ -32,7 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultNettyServiceBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultNettyServiceBuilder.class);
+    // Private constructor to prevent instantiation
+    private DefaultNettyServiceBuilder() {
+        // not to be instantiated
+    }
 
     /**
      * Builds a derived {@link DefaultNettyService} instance from the parent service.

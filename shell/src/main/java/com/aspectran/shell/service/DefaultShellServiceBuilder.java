@@ -36,6 +36,11 @@ public class DefaultShellServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultShellServiceBuilder.class);
 
+    // Private constructor to prevent instantiation
+    private DefaultShellServiceBuilder() {
+        // not to be instantiated
+    }
+
     /**
      * Builds a new {@link DefaultShellService} instance.
      * @param aspectranConfig the Aspectran configuration

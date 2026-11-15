@@ -51,6 +51,11 @@ public class DefaultServletWebServiceBuilder {
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
+    // Private constructor to prevent instantiation
+    private DefaultServletWebServiceBuilder() {
+        // not to be instantiated
+    }
+
     /**
      * Builds a new {@link DefaultServletWebService} instance for the given {@link ServletContext}.
      * @param servletContext the servlet context

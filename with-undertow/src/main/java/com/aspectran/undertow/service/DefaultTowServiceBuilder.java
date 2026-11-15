@@ -36,6 +36,11 @@ public class DefaultTowServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowServiceBuilder.class);
 
+    // Private constructor to prevent instantiation
+    private DefaultTowServiceBuilder() {
+        // not to be instantiated
+    }
+
     /**
      * Builds a new, derived {@link DefaultTowService} instance for the given parent service.
      * A derived service inherits its configuration from its parent.

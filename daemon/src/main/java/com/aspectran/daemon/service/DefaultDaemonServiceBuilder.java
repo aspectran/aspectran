@@ -32,9 +32,14 @@ import org.slf4j.LoggerFactory;
  * including session management, registration with the {@link CoreServiceHolder},
  * and pause/resume state.
  */
-public abstract class DefaultDaemonServiceBuilder {
+public class DefaultDaemonServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultDaemonServiceBuilder.class);
+
+    // Private constructor to prevent instantiation
+    private DefaultDaemonServiceBuilder() {
+        // not to be instantiated
+    }
 
     /**
      * Builds a new {@link DefaultDaemonService} instance from the given configuration.
