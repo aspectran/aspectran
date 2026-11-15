@@ -159,8 +159,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                     }
                 }
 
-                for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                    serviceLifeCycle.stop();
+                for (int i = subServices.size() - 1; i >= 0; i--) {
+                    subServices.get(i).stop();
                 }
 
                 try {
@@ -200,8 +200,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                     }
                 }
 
-                for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                    serviceLifeCycle.stop();
+                for (int i = subServices.size() - 1; i >= 0; i--) {
+                    subServices.get(i).stop();
                 }
 
                 try {
