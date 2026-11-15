@@ -221,7 +221,7 @@ public class DefaultServletWebServiceBuilder {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
                 CoreServiceHolder.release(webService);
             }
 

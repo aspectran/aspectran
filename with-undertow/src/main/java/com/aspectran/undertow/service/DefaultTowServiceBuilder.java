@@ -94,7 +94,7 @@ public class DefaultTowServiceBuilder {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
             }
 
             @Override

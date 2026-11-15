@@ -66,7 +66,7 @@ public class DefaultShellServiceBuilder {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
                 shellService.destroySessionManager();
                 CoreServiceHolder.release(shellService);
             }

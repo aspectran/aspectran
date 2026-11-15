@@ -84,7 +84,7 @@ public class DefaultNettyServiceBuilder {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
                 CoreServiceHolder.release(nettyService);
                 nettyService.pauseTimeout = -1L;
             }

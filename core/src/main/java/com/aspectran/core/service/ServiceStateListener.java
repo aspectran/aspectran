@@ -30,9 +30,9 @@ public interface ServiceStateListener extends EventListener {
     void started();
 
     /**
-     * Called when the service has been successfully stopped.
+     * Called when the service is stopping.
      */
-    void stopped();
+    void stopping();
 
     /**
      * Called when the service has been paused for a specific duration.

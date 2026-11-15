@@ -153,7 +153,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 if (serviceStateListener != null) {
                     try {
                         serviceStateListener.paused();
-                        serviceStateListener.stopped();
+                        serviceStateListener.stopping();
                     } catch (Exception e) {
                         logger.warn(e.getMessage(), e);
                     }
@@ -192,24 +192,27 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 logger.info("Restarting {}", getServiceName());
 
                 if (serviceStateListener != null) {
-                    serviceStateListener.paused();
+                    try {
+                        serviceStateListener.paused();
+                        serviceStateListener.stopping();
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage(), e);
+                    }
                 }
 
                 for (ServiceLifeCycle serviceLifeCycle : subServices) {
                     serviceLifeCycle.stop();
                 }
 
-                active = false;
-                doStopping();
-                doStop();
-
-                if (serviceStateListener != null) {
-                    try {
-                        serviceStateListener.stopped();
-                    } catch (Exception e) {
-                        logger.warn(e.getMessage(), e);
-                    }
+                try {
+                    doStopping();
+                    doStop();
+                } catch (Exception e) {
+                    logger.error("{} did not stop normally during restart", getServiceName(), e);
+                    throw e;
                 }
+
+                active = false;
 
                 doStart();
                 active = true;

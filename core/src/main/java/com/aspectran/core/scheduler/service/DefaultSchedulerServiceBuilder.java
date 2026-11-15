@@ -57,7 +57,7 @@ public class DefaultSchedulerServiceBuilder {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
             }
 
             @Override

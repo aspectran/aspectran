@@ -82,7 +82,7 @@ public abstract class DefaultDaemonServiceBuilder {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
                 daemonService.destroySessionManager();
                 CoreServiceHolder.release(daemonService);
             }

@@ -238,7 +238,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
 
             @Override
-            public void stopped() {
+            public void stopping() {
                 aspectran.destroySessionManager();
                 CoreServiceHolder.release(aspectran);
             }
