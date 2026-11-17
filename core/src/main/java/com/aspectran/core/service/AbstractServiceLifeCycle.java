@@ -81,6 +81,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
     @Override
     public void setServiceStateListener(ServiceStateListener serviceStateListener) {
+        Assert.state(this.serviceStateListener == null, "serviceStateListener already set");
         this.serviceStateListener = serviceStateListener;
     }
 
