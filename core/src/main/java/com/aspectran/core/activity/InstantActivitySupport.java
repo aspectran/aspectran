@@ -26,18 +26,15 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 
 /**
  * Convenience base class that exposes the current {@link ActivityContext}
  * and provides helpers to execute short-lived, programmatic activities.
- * <p>
- * Subclasses typically get injected with the {@link ActivityContext} by the container
+ * <p>Subclasses typically get injected with the {@link ActivityContext} by the container
  * and can then call convenience methods like {@link #instantActivity(InstantAction)}
  * or {@link #instantActivity(String, MethodType)} to run work within a proper
- * activity/transactional boundary without having to manage the plumbing.
- * </p>
+ * activity/transactional boundary without having to manage the plumbing.</p>
  *
  * <p>Created: 29/09/2019</p>
  */
@@ -63,6 +60,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
      */
     @Override
     public void setActivityContext(@NonNull ActivityContext context) {
+        Assert.notNull(context, "context must not be null");
         Assert.state(this.context == null, "ActivityContext already injected");
         this.context = context;
     }
@@ -150,6 +148,32 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     }
 
     /**
+     * Executes the given {@link InstantAction} within the current activity if one is already
+     * active on the current thread, or within a freshly created instant activity otherwise.
+     * <p>This avoids the overhead of instantiating and tearing down a new {@link InstantActivity}
+     * when work is already executing inside an active request or transaction context,
+     * while guaranteeing that an activity context is safely established when called from
+     * background threads or schedulers.</p>
+     * @param <V> the result type of the action
+     * @param instantAction the action to execute; must not be {@code null}
+     * @return the action result
+     * @throws IllegalArgumentException if {@code instantAction} is {@code null}
+     * @throws InstantActivityException if any error occurs while preparing or performing the activity
+     */
+    protected <V> V executeInActivity(InstantAction<V> instantAction) {
+        Assert.notNull(instantAction, "instantAction must not be null");
+        if (hasCurrentActivity()) {
+            try {
+                return instantAction.execute();
+            } catch (Exception e) {
+                throw new InstantActivityException(e);
+            }
+        } else {
+            return instantActivity(instantAction);
+        }
+    }
+
+    /**
      * Executes the given {@link InstantAction} within a freshly created instant activity
      * bound to the current {@link ActivityContext}.
      * @param <V> the result type of the action
@@ -159,9 +183,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
      * @throws InstantActivityException if any error occurs while preparing or performing the activity
      */
     protected <V> V instantActivity(InstantAction<V> instantAction) {
-        if (instantAction == null) {
-            throw new IllegalArgumentException("instantAction must not be null");
-        }
+        Assert.notNull(instantAction, "instantAction must not be null");
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
             return activity.perform(instantAction);
@@ -187,20 +209,17 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
      * inherits state (e.g., adapters, locale, etc.) from the current activity.
      * @param requestName the request name to execute; must not be blank
      * @param requestMethod the request method to use (e.g., GET or POST)
-     * @throws IllegalArgumentException if {@code requestName} is {@code null} or empty
+     * @throws IllegalArgumentException if {@code requestName} is {@code null} or empty, or {@code requestMethod} is {@code null}
      * @throws IllegalStateException if there is no current {@link Translet}
      * @throws InstantActivityException if any error occurs while preparing or performing the activity
      */
     protected void instantActivity(String requestName, MethodType requestMethod) {
         Assert.hasLength(requestName, "requestName must not be null or empty");
+        Assert.notNull(requestMethod, "requestMethod must not be null");
 
-        if (StringUtils.isEmpty(requestName)) {
-            throw new IllegalArgumentException("requestName must not be null or empty");
-        }
         Activity currentActivity = getCurrentActivity();
-        if (!currentActivity.hasTranslet()) {
-            throw new IllegalStateException("No Translet in " + currentActivity);
-        }
+        Assert.state(currentActivity.hasTranslet(), () -> "No Translet in " + currentActivity);
+
         try {
             InstantActivity activity = new InstantActivity(currentActivity);
             activity.prepare(requestName, requestMethod);
