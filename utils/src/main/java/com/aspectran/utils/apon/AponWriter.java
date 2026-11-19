@@ -25,6 +25,7 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -418,6 +419,8 @@ public class AponWriter implements Flushable {
                     }
                     endArray();
                 }
+            } else if (value instanceof Instant instant) {
+                writeString(instant.toString());
             } else if (value instanceof LocalDateTime localDateTime) {
                 if (stringifyContext != null) {
                     writeString(stringifyContext.toString(localDateTime));

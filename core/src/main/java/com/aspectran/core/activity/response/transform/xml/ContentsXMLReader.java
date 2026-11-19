@@ -39,6 +39,7 @@ import org.xml.sax.helpers.AttributesImpl;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -334,6 +335,8 @@ public class ContentsXMLReader implements XMLReader {
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
+        } else if (object instanceof Instant instant) {
+            parseString(instant.toString());
         } else if (object instanceof LocalDateTime localDateTime) {
             if (stringifyContext != null) {
                 parseString(stringifyContext.toString(localDateTime));

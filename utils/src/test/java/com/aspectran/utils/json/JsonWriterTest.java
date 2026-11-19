@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -366,6 +367,19 @@ class JsonWriterTest {
         writer.endObject();
 
         assertEquals("{\"class\":\"java.lang.String\",\"primitive\":\"int\"}", writer.toString());
+    }
+
+    @Test
+    void testInstantSerialization() throws IOException {
+        Instant instant = Instant.parse("2026-11-20T10:15:30.00Z");
+
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter writer = new JsonWriter(stringWriter).prettyPrint(false);
+        writer.beginObject();
+        writer.name("timestamp").value(instant);
+        writer.endObject();
+
+        assertEquals("{\"timestamp\":\"2026-11-20T10:15:30Z\"}", writer.toString());
     }
 
 }

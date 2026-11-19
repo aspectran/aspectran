@@ -21,6 +21,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -361,6 +362,8 @@ public class ToStringBuilder {
             appendValue(parameters);
         } else if (object.getClass().isArray()) {
             appendArrayValue(object);
+        } else if (object instanceof Instant instant) {
+            buffer.append(instant);
         } else if (object instanceof LocalDateTime localDateTime) {
             if (stringifyContext != null) {
                 buffer.append(stringifyContext.toString(localDateTime));

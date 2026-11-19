@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Date;
@@ -499,9 +500,9 @@ public class StringifyContext implements Cloneable {
         }
         TemporalAccessor temporal = formatter.parse(date);
         Instant instant;
-        if (temporal.isSupported(java.time.temporal.ChronoField.INSTANT_SECONDS)) {
+        if (temporal.isSupported(ChronoField.INSTANT_SECONDS)) {
             instant = Instant.from(temporal);
-        } else if (temporal.isSupported(java.time.temporal.ChronoField.HOUR_OF_DAY)) {
+        } else if (temporal.isSupported(ChronoField.HOUR_OF_DAY)) {
             LocalDateTime ldt = LocalDateTime.from(temporal);
             instant = ldt.atZone(ZoneId.systemDefault()).toInstant();
         } else {

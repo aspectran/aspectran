@@ -24,6 +24,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -225,6 +226,8 @@ public class ObjectToParameters {
                 putValue(ps, name, value);
             }
             return ps;
+        } else if (object instanceof Instant instant) {
+            return instant.toString();
         } else if (object instanceof LocalDateTime localDateTime) {
             if (stringifyContext != null) {
                 return stringifyContext.toString(localDateTime);

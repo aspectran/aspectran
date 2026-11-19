@@ -24,6 +24,7 @@ import com.aspectran.core.component.converter.impl.CharacterConverter;
 import com.aspectran.core.component.converter.impl.DateConverter;
 import com.aspectran.core.component.converter.impl.DoubleConverter;
 import com.aspectran.core.component.converter.impl.FloatConverter;
+import com.aspectran.core.component.converter.impl.InstantConverter;
 import com.aspectran.core.component.converter.impl.IntegerConverter;
 import com.aspectran.core.component.converter.impl.LocalDateConverter;
 import com.aspectran.core.component.converter.impl.LocalDateTimeConverter;
@@ -35,6 +36,7 @@ import com.aspectran.utils.TypeUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -105,6 +107,7 @@ public class TypeConverterRegistry extends AbstractComponent {
         register(BigInteger.class, new BigIntegerConverter());
         register(BigDecimal.class, new BigDecimalConverter());
         register(Date.class, new DateConverter());
+        register(Instant.class, new InstantConverter());
         register(LocalDate.class, new LocalDateConverter());
         register(LocalDateTime.class, new LocalDateTimeConverter());
         register(LocalTime.class, new LocalTimeConverter());

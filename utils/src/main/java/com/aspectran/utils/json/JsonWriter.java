@@ -31,6 +31,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -443,6 +444,8 @@ public class JsonWriter {
                 }
             }
             endArray();
+        } else if (object instanceof Instant instant) {
+            writeString(instant.toString());
         } else if (object instanceof LocalDateTime localDateTime) {
             if (stringifyContext != null) {
                 writeString(stringifyContext.toString(localDateTime));
