@@ -506,8 +506,8 @@ public class ManagedSession implements Session {
         try (AutoLock ignored = autoLock.lock()) {
             try {
                 if (state == State.VALID || state == State.INVALIDATING) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Invalidate session id={}", sessionData.getId());
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Invalidate session id={}", sessionData.getId());
                     }
                     Set<String> keys;
                     do {
