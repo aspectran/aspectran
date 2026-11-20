@@ -136,7 +136,13 @@ public abstract class AbstractLettuceSessionStore<
 
     @Override
     public SessionData load(String id) {
-        return sync(c -> c.get(id));
+        return sync(c -> {
+            SessionData data = c.get(id);
+            if (data != null && data.getExpiry() > 0L) {
+                data.setLastIndexedExpiry(data.getExpiry());
+            }
+            return data;
+        });
     }
 
     @Override
@@ -167,9 +173,18 @@ public abstract class AbstractLettuceSessionStore<
             c.set(id, data);
             long expiry = data.getExpiry();
             if (expiry > 0L) {
-                c.zadd(expiryIndexKey, (double)expiry, SessionData.of(id));
+                long lastIndexedExpiry = data.getLastIndexedExpiry();
+                long gracePeriod = getGracePeriodMillis(1);
+                if (lastIndexedExpiry <= 0L || Math.abs(expiry - lastIndexedExpiry) >= gracePeriod) {
+                    // For initial indexing, use exact expiry so short-lived/bot sessions are scavenged promptly;
+                    // for subsequent updates, add grace period offset to prevent premature scavenging while throttled
+                    long score = (lastIndexedExpiry <= 0L ? expiry : expiry + gracePeriod);
+                    c.zadd(expiryIndexKey, (double)score, SessionData.of(id));
+                    data.setLastIndexedExpiry(expiry);
+                }
             } else {
                 c.zrem(expiryIndexKey, SessionData.of(id));
+                data.setLastIndexedExpiry(0L);
             }
             return null;
         });

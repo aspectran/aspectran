@@ -79,6 +79,9 @@ public class SessionData implements Serializable {
     /** The timestamp when the session was last saved to the store */
     private long lastSaved;
 
+    /** The timestamp when the session expiry was last indexed in the store */
+    private transient long lastIndexedExpiry;
+
     /**
      * Instantiates a new SessionData with only an ID.
      * @param id the session ID
@@ -312,6 +315,22 @@ public class SessionData implements Serializable {
      */
     public void setLastSaved(long lastSaved) {
         this.lastSaved = lastSaved;
+    }
+
+    /**
+     * Returns the timestamp when the session expiry was last indexed in the store.
+     * @return the last indexed expiry timestamp
+     */
+    public long getLastIndexedExpiry() {
+        return lastIndexedExpiry;
+    }
+
+    /**
+     * Sets the timestamp when the session expiry was last indexed in the store.
+     * @param lastIndexedExpiry the last indexed expiry timestamp
+     */
+    public void setLastIndexedExpiry(long lastIndexedExpiry) {
+        this.lastIndexedExpiry = lastIndexedExpiry;
     }
 
     /**
