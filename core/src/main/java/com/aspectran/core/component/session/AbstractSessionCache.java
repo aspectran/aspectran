@@ -209,8 +209,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             throw thrown.get();
         }
         if (!forDeleting && session != null && loaded.get()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Reside evicted session id={}", session.getId());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Reside evicted session id={}", session.getId());
             }
             sessionManager.onSessionResided(session);
         }
@@ -404,8 +404,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             return null;
         }
         String id = session.getId();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Evict session id={}", id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Evict session id={}", id);
         }
         session.setResident(false);
         return doDelete(id);
@@ -535,8 +535,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             int evictionIdleSecs = session.getEvictionIdleSecs();
             if (evictionIdleSecs >= EVICT_ON_INACTIVITY && session.isIdleLongerThan(evictionIdleSecs) &&
                     session.isValid() && session.isResident() && session.getRequests() <= 0) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Evict idle session id={}", session.getId());
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Evict idle session id={}", session.getId());
                 }
                 // Do not re-save to the session store on idle eviction.
                 // Session data has already been saved on request completion (see release()),
