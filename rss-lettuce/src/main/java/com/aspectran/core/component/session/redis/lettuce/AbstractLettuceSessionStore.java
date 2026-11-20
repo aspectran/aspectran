@@ -20,6 +20,7 @@ import com.aspectran.core.component.session.SessionData;
 import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisConnectionException;
+import io.lettuce.core.RedisException;
 import io.lettuce.core.ScanIterator;
 import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.StatefulConnection;
@@ -96,12 +97,21 @@ public abstract class AbstractLettuceSessionStore<
      * @param <R> result type
      * @return the callback result
      * @throws RedisConnectionException if a connection cannot be obtained
+     * @throws RedisException if Redis command execution fails
      */
     protected <R> R sync(@NonNull Function<CMD, R> func) {
-        try (C conn = getPool().getConnection()) {
-            return func.apply(getCommands(conn));
+        C conn;
+        try {
+            conn = getPool().getConnection();
         } catch (Exception e) {
-            throw new RedisConnectionException("Could not get a resource from the pool", e);
+            throw new RedisConnectionException("Could not get a connection from the pool", e);
+        }
+        try (conn) {
+            return func.apply(getCommands(conn));
+        } catch (RedisException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RedisException("Failed to execute Redis command", e);
         }
     }
 
