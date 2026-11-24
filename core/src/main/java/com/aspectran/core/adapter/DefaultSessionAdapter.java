@@ -47,6 +47,11 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
+    public String getId(boolean create) {
+        return getSessionAgent().getId(create);
+    }
+
+    @Override
     public long getCreationTime() {
         return getSessionAgent().getCreationTime();
     }

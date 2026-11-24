@@ -64,14 +64,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private int evictionIdleSecsForNew = evictionIdleSecs;
 
-    /**
-     * If true, a new session is immediately persisted to the SessionStore upon creation.
-     */
+    /** If true, a new session is immediately persisted to the SessionStore upon creation. */
     private boolean saveOnCreate;
 
-    /**
-     * If true, a Session whose data cannot be read will be deleted from the SessionStore.
-     */
+    /** If true, a Session whose data cannot be read will be deleted from the SessionStore. */
     private boolean removeUnloadableSessions;
 
     /**

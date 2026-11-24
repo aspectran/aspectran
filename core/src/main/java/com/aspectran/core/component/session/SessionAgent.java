@@ -42,37 +42,51 @@ public class SessionAgent {
 
     /**
      * Returns the unique identifier assigned to this session.
-     * @return the session id
+     * @return the session id, or {@code null} if no session exists
      */
     public String getId() {
-        return getSession(true).getId();
+        return getId(false);
+    }
+
+    /**
+     * Returns the unique identifier assigned to this session.
+     * @param create {@code true} to create a new session if one does not exist;
+     *               {@code false} to return {@code null} if there is no current session
+     * @return the session ID, or {@code null} if {@code create} is false and no session exists
+     */
+    public String getId(boolean create) {
+        Session session = getSession(create);
+        return (session != null ? session.getId() : null);
     }
 
     /**
      * Returns the time when this session was created, measured in milliseconds
      * since midnight January 1, 1970 GMT.
-     * @return the session creation time
+     * @return the session creation time, or {@code 0L} if no session exists
      */
     public long getCreationTime() {
-        return getSession(true).getCreationTime();
+        Session session = getSession(false);
+        return (session != null ? session.getCreationTime() : 0L);
     }
 
     /**
      * Returns the last time the client sent a request associated with this session,
      * as the number of milliseconds since midnight January 1, 1970 GMT.
-     * @return the last accessed time
+     * @return the last accessed time, or {@code 0L} if no session exists
      */
     public long getLastAccessedTime() {
-        return getSession(true).getLastAccessedTime();
+        Session session = getSession(false);
+        return (session != null ? session.getLastAccessedTime() : 0L);
     }
 
     /**
      * Returns the maximum time interval, in seconds, that the session will be kept open
      * between client accesses.
-     * @return the maximum inactive interval
+     * @return the maximum inactive interval, or {@code 0} if no session exists
      */
     public int getMaxInactiveInterval() {
-        return getSession(true).getMaxInactiveInterval();
+        Session session = getSession(false);
+        return (session != null ? session.getMaxInactiveInterval() : 0);
     }
 
     /**

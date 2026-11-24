@@ -136,6 +136,11 @@ class FlashMapTest {
         }
 
         @Override
+        public String getId(boolean create) {
+            return "mock-session-id";
+        }
+
+        @Override
         public long getCreationTime() {
             return 0;
         }

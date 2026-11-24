@@ -55,10 +55,24 @@ public interface SessionAdapter {
 
     /**
      * Returns the unique identifier assigned to this session.
-     * @return the session ID
+     * <p>Unlike earlier versions, this method does not create a new session
+     * if one does not already exist, returning {@code null} instead.
+     * To ensure a session is created if absent, use {@link #getId(boolean)}
+     * with {@code true}.</p>
+     * @return the session ID, or {@code null} if no session exists
      * @since 1.5.0
      */
     String getId();
+
+    /**
+     * Returns the unique identifier assigned to this session.
+     * @param create {@code true} to create a new session if one does not exist;
+     *               {@code false} to return {@code null} if there is no current session
+     * @return the session ID, or {@code null} if {@code create} is false and no session exists
+     */
+    default String getId(boolean create) {
+        return (create || isValid() ? getId() : null);
+    }
 
     /**
      * Returns the time this session was created, in milliseconds since the epoch.

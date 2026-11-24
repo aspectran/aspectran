@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.json.JsonWriter;
-
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 

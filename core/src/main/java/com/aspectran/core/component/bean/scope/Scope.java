@@ -19,7 +19,6 @@ import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.session.NonPersistent;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
-
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 

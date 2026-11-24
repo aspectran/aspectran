@@ -64,22 +64,31 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public String getId() {
-        return getSession(true).getId();
+        return getId(false);
+    }
+
+    @Override
+    public String getId(boolean create) {
+        HttpSession session = getSession(create);
+        return (session != null ? session.getId() : null);
     }
 
     @Override
     public long getCreationTime() {
-        return getSession(true).getCreationTime();
+        HttpSession session = getSession(false);
+        return (session != null ? session.getCreationTime() : 0L);
     }
 
     @Override
     public long getLastAccessedTime() {
-        return getSession(true).getLastAccessedTime();
+        HttpSession session = getSession(false);
+        return (session != null ? session.getLastAccessedTime() : 0L);
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        return getSession(true).getMaxInactiveInterval();
+        HttpSession session = getSession(false);
+        return (session != null ? session.getMaxInactiveInterval() : 0);
     }
 
     public void setMaxInactiveInterval(int interval) {

@@ -16,7 +16,6 @@
 package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
-
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.locks.ReadWriteLock;

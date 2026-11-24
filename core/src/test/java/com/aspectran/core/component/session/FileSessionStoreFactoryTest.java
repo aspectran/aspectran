@@ -105,7 +105,7 @@ class FileSessionStoreFactoryTest {
     @Test
     void testSessionInvalidation() {
         SessionAgent agent = new SessionAgent(sessionManager);
-        String id = agent.getId();
+        String id = agent.getId(true);
         agent.setAttribute("test", "test");
         agent.invalidate();
         agent.complete();
@@ -146,7 +146,7 @@ class FileSessionStoreFactoryTest {
         sessionManager.setDefaultMaxIdleSecs(1);
 
         SessionAgent agent = new SessionAgent(sessionManager);
-        String id = agent.getId();
+        String id = agent.getId(true);
         agent.setAttribute("key", "value");
         agent.complete();
 

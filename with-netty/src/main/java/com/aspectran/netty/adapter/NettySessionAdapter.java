@@ -85,25 +85,30 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public String getId() {
-        Session sess = getSession(true);
+        return getId(false);
+    }
+
+    @Override
+    public String getId(boolean create) {
+        Session sess = getSession(create);
         return (sess != null ? sess.getId() : null);
     }
 
     @Override
     public long getCreationTime() {
-        Session sess = getSession(true);
+        Session sess = getSession(false);
         return (sess != null ? sess.getCreationTime() : 0L);
     }
 
     @Override
     public long getLastAccessedTime() {
-        Session sess = getSession(true);
+        Session sess = getSession(false);
         return (sess != null ? sess.getLastAccessedTime() : 0L);
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        Session sess = getSession(true);
+        Session sess = getSession(false);
         return (sess != null ? sess.getMaxInactiveInterval() : 0);
     }
 
