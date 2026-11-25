@@ -72,7 +72,7 @@ class XmlToParametersTest {
         // First container in the array
         Parameters container1 = containers.getFirst();
         assertEquals("34", container1.getString("id"));
-        java.util.List<Parameters> items1 = container1.getParametersList("item");
+        List<Parameters> items1 = container1.getParametersList("item");
         assertEquals(2, items1.size());
         assertEquals("56", items1.get(0).getString("id"));
         assertEquals("a\na\na", items1.get(0).getString("item"));

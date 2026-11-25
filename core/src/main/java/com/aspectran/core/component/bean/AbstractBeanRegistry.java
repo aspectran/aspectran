@@ -28,6 +28,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -286,7 +287,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         String beanId = beanRule.getId();
         Set<String> currentlyCreation = currentlyInCreation.get();
         if (currentlyCreation == null) {
-            currentlyCreation = new java.util.HashSet<>();
+            currentlyCreation = new HashSet<>();
             currentlyInCreation.set(currentlyCreation);
         }
         if (!currentlyCreation.add(beanId)) {

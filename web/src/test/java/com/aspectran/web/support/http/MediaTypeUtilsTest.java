@@ -18,6 +18,7 @@ package com.aspectran.web.support.http;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -161,7 +162,7 @@ class MediaTypeUtilsTest {
         assertEquals(0.9D, mt2.getQualityValue());
         assertEquals(1.0D, mt3.getQualityValue());
 
-        List<MediaType> list = new java.util.ArrayList<>(List.of(mt1, mt3, mt2));
+        List<MediaType> list = new ArrayList<>(List.of(mt1, mt3, mt2));
         MediaType.sortByQualityValue(list);
 
         assertEquals(mt3, list.get(0)); // 1.0
@@ -175,7 +176,7 @@ class MediaTypeUtilsTest {
         MediaType typeWildcard = MediaType.parseMediaType("text/*");
         MediaType concrete = MediaType.TEXT_HTML;
 
-        List<MediaType> list = new java.util.ArrayList<>(List.of(wildcard, concrete, typeWildcard));
+        List<MediaType> list = new ArrayList<>(List.of(wildcard, concrete, typeWildcard));
         MediaType.sortBySpecificity(list);
 
         assertEquals(concrete, list.get(0));
