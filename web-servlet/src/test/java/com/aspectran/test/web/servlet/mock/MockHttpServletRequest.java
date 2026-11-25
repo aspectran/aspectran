@@ -30,16 +30,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.servlet.http.Part;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -106,24 +109,34 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override public String getRequestURI() { return requestURI; }
     @Override public StringBuffer getRequestURL() { return new StringBuffer(requestURI); }
     @Override public String getServletPath() { return servletPath; }
-    @Override public HttpSession getSession(boolean create) { return session; }
-    @Override public HttpSession getSession() { return session; }
+    @Override
+    public HttpSession getSession(boolean create) {
+        if (session == null && create) {
+            session = new MockHttpSession(servletContext);
+        }
+        return session;
+    }
+
+    @Override
+    public HttpSession getSession() {
+        return getSession(true);
+    }
     @Override public String changeSessionId() { return null; }
     @Override public boolean isRequestedSessionIdValid() { return false; }
     @Override public boolean isRequestedSessionIdFromCookie() { return false; }
     @Override public boolean isRequestedSessionIdFromURL() { return false; }
-    private final java.util.List<jakarta.servlet.http.Part> parts = new java.util.ArrayList<>();
+    private final List<Part> parts = new ArrayList<>();
 
-    public void addPart(jakarta.servlet.http.Part part) {
+    public void addPart(Part part) {
         this.parts.add(part);
     }
 
     @Override public boolean authenticate(HttpServletResponse response) throws IOException, ServletException { return false; }
     @Override public void login(String username, String password) throws ServletException {}
     @Override public void logout() throws ServletException {}
-    @Override public Collection<jakarta.servlet.http.Part> getParts() throws IOException, ServletException { return parts; }
-    @Override public jakarta.servlet.http.Part getPart(String name) throws IOException, ServletException {
-        for (jakarta.servlet.http.Part p : parts) {
+    @Override public Collection<Part> getParts() throws IOException, ServletException { return parts; }
+    @Override public Part getPart(String name) throws IOException, ServletException {
+        for (Part p : parts) {
             if (p.getName().equals(name)) {
                 return p;
             }

@@ -18,6 +18,7 @@ package com.aspectran.web.servlet.activity;
 import com.aspectran.core.adapter.RequestAdapter;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpSession;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -36,6 +37,8 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     private final RequestAdapter requestAdapter;
 
+    private HttpSession lazySession;
+
     /**
      * Constructs a new request wrapper.
      * @param requestAdapter the request adapter to wrap
@@ -43,6 +46,30 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
     public ActivityRequestWrapper(@NonNull RequestAdapter requestAdapter) {
         super(requestAdapter.getAdaptee());
         this.requestAdapter = requestAdapter;
+    }
+
+    @Override
+    public HttpSession getSession() {
+        return getSession(true);
+    }
+
+    @Override
+    public HttpSession getSession(boolean create) {
+        if (!create) {
+            return super.getSession(false);
+        }
+        HttpSession session = super.getSession(false);
+        if (session != null) {
+            return session;
+        }
+        if (lazySession == null) {
+            lazySession = new LazyHttpSession(this);
+        }
+        return lazySession;
+    }
+
+    HttpSession getRealSession(boolean create) {
+        return super.getSession(create);
     }
 
     /**

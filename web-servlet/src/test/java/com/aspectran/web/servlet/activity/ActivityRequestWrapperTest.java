@@ -18,6 +18,7 @@ package com.aspectran.web.servlet.activity;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.test.web.servlet.mock.MockHttpServletRequest;
 import com.aspectran.web.servlet.adapter.HttpServletRequestAdapter;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -78,6 +80,60 @@ class ActivityRequestWrapperTest {
         Enumeration<Locale> locales = wrapper.getLocales();
         assertTrue(locales.hasMoreElements());
         assertEquals(Locale.KOREAN, locales.nextElement());
+    }
+
+    @Test
+    void testLazyHttpSession() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        HttpServletRequestAdapter adapter = new HttpServletRequestAdapter(MethodType.GET, mockRequest);
+        adapter.preparse();
+
+        ActivityRequestWrapper wrapper = new ActivityRequestWrapper(adapter);
+
+        // 1. getSession(false) should return null without creating a session
+        assertNull(wrapper.getSession(false));
+        assertNull(mockRequest.getSession(false));
+
+        // 2. getSession() or getSession(true) should return LazyHttpSession without creating an underlying session
+        HttpSession session = wrapper.getSession();
+        assertNotNull(session);
+        assertInstanceOf(LazyHttpSession.class, session);
+        assertNull(mockRequest.getSession(false)); // Underlying session is NOT created yet!
+
+        // 3. Read operations on LazyHttpSession do NOT create underlying session
+        assertNull(session.getAttribute("user"));
+        assertFalse(session.getAttributeNames().hasMoreElements());
+        assertNull(session.getId());
+        assertEquals(0, session.getMaxInactiveInterval());
+        assertNull(mockRequest.getSession(false)); // Still null!
+
+        // 4. State-changing operation (setAttribute) triggers real session creation
+        session.setAttribute("user", "aspectran-user");
+        assertNotNull(mockRequest.getSession(false)); // Real session is now created!
+        assertEquals("aspectran-user", session.getAttribute("user"));
+        assertNotNull(session.getId());
+
+        // 5. Subsequent wrapper.getSession() returns the real session
+        HttpSession realSession = wrapper.getSession();
+        assertNotNull(realSession);
+        assertEquals("aspectran-user", realSession.getAttribute("user"));
+    }
+
+    @Test
+    void testExistingSessionDelegation() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        HttpSession initialSession = mockRequest.getSession(true);
+        initialSession.setAttribute("existingKey", "existingVal");
+
+        HttpServletRequestAdapter adapter = new HttpServletRequestAdapter(MethodType.GET, mockRequest);
+        adapter.preparse();
+
+        ActivityRequestWrapper wrapper = new ActivityRequestWrapper(adapter);
+
+        // When a session already exists, getSession returns that session directly
+        HttpSession session = wrapper.getSession();
+        assertEquals(initialSession, session);
+        assertEquals("existingVal", session.getAttribute("existingKey"));
     }
 
 }
