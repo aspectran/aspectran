@@ -76,7 +76,7 @@
     <bean id="tow.server.handler.accessLogHandlerWrapper"
           class="com.aspectran.undertow.server.handler.accesslog.AccessLogHandlerWrapper"
           scope="prototype">
-        <property name="formatString" tokenize="false">%t %a %{i,X-Forwarded-For} %{c,JSESSIONID} "%r" %s %b "%{i,Referer}" "%{i,User-Agent}"</property>
+        <property name="formatString" tokenize="false">%t %a %{i,X-Forwarded-For} %S "%r" %s %b "%{i,Referer}" "%{i,User-Agent}"</property>
         <property name="category">io.undertow.accesslog</property>
     </bean>
 
