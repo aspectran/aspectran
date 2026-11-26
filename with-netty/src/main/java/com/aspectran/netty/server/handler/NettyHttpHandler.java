@@ -19,8 +19,10 @@ import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.netty.server.NettyContext;
 import com.aspectran.netty.server.NettyContextRouter;
+import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
 import com.aspectran.netty.server.handler.logging.ChannelLoggingGroupHelper;
 import com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler;
+import com.aspectran.netty.server.session.ChannelSessionHelper;
 import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.server.websocket.DefaultNettyWebSocketSession;
 import com.aspectran.netty.server.websocket.NettyWebSocketConfig;
@@ -250,8 +252,14 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<FullHttpReques
                 String sessionId = sessionConfig.findSessionId(request);
                 if (sessionId != null) {
                     httpSession = sessionManager.getSession(sessionId);
-                    if (httpSession != null && !httpSession.isValid()) {
-                        httpSession = null;
+                    if (httpSession != null) {
+                        if (httpSession.isValid()) {
+                            if (NettyAccessLogHandler.isLoggingEnabled(ctx)) {
+                                ChannelSessionHelper.setSessionId(ctx.channel(), sessionId);
+                            }
+                        } else {
+                            httpSession = null;
+                        }
                     }
                 }
             }

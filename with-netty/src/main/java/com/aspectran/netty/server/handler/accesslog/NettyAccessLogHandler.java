@@ -16,8 +16,10 @@
 package com.aspectran.netty.server.handler.accesslog;
 
 import com.aspectran.netty.server.handler.logging.ChannelLoggingGroupHelper;
+import com.aspectran.netty.server.session.ChannelSessionHelper;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.LoggingGroupHelper;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,6 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -66,6 +70,7 @@ import static com.aspectran.web.support.http.HttpHeaders.X_FORWARDED_FOR;
  *   <li>{@code %B} - Content-Length of response, or '0' if none</li>
  *   <li>{@code %D} - Time taken to process the request in milliseconds</li>
  *   <li>{@code %T} - Time taken to process the request in seconds</li>
+ *   <li>{@code %S} - Session ID, or '-' if none</li>
  *   <li>{@code %{i,Header-Name}} or {@code %{Header-Name}i} - Incoming request header</li>
  *   <li>{@code %{o,Header-Name}} or {@code %{Header-Name}o} - Outgoing response header</li>
  *   <li>{@code %{c,Cookie-Name}} or {@code %{Cookie-Name}c} - Request cookie value</li>
@@ -80,8 +85,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
 
     private static final String DEFAULT_FORMAT = "combined";
 
-    private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
+    private static final DateCache DATE_CACHE = new DateCache();
 
     private static final AttributeKey<AccessLogData> ACCESS_LOG_DATA_KEY =
             AttributeKey.valueOf("netty.access.data");
@@ -173,9 +177,45 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         this.proxyAddressForwarding = proxyAddressForwarding;
     }
 
+    /**
+     * Returns whether access logging is enabled and active.
+     * @return true if logger is configured and INFO level is enabled; false otherwise
+     */
+    public boolean isLoggingEnabled() {
+        return (logger != null && logger.isInfoEnabled());
+    }
+
+    /**
+     * Determines whether access logging is enabled on the pipeline associated with the specified context.
+     * @param ctx the Netty channel handler context
+     * @return true if a {@link NettyAccessLogHandler} exists in the pipeline and logging is enabled; false otherwise
+     */
+    public static boolean isLoggingEnabled(@Nullable ChannelHandlerContext ctx) {
+        return (ctx != null && isLoggingEnabled(ctx.channel()));
+    }
+
+    /**
+     * Determines whether access logging is enabled on the pipeline associated with the specified channel.
+     * @param channel the Netty channel
+     * @return true if a {@link NettyAccessLogHandler} exists in the pipeline and logging is enabled; false otherwise
+     */
+    public static boolean isLoggingEnabled(@Nullable Channel channel) {
+        if (channel != null) {
+            NettyAccessLogHandler handler = channel.pipeline().get(NettyAccessLogHandler.class);
+            return (handler != null && handler.isLoggingEnabled());
+        }
+        return false;
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest request) {
+            if (!isLoggingEnabled()) {
+                super.channelRead(ctx, msg);
+                return;
+            }
+
+            ChannelSessionHelper.clearSessionId(ctx.channel());
             AccessLogData data = new AccessLogData();
             data.startTime = System.currentTimeMillis();
 
@@ -199,7 +239,6 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
             } else {
                 data.protocol = request.protocolVersion().text();
             }
-            data.requestLine = data.method + " " + data.uri + " " + data.protocol;
             data.headers = request.headers();
 
             ctx.channel().attr(ACCESS_LOG_DATA_KEY).set(data);
@@ -211,21 +250,28 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof HttpResponse response) {
             AccessLogData data = ctx.channel().attr(ACCESS_LOG_DATA_KEY).getAndSet(null);
-            if (data != null && logger != null && logger.isInfoEnabled()) {
+            if (data != null && isLoggingEnabled()) {
+                data.sessionId = ChannelSessionHelper.getAndRemoveSessionId(ctx.channel());
                 data.duration = System.currentTimeMillis() - data.startTime;
                 data.statusCode = response.status().code();
                 data.responseHeaders = response.headers();
                 data.contentLength = HttpUtil.getContentLength(response, -1L);
 
-                StringBuilder sb = new StringBuilder(128);
+                StringBuilder sb = new StringBuilder(256);
                 for (LogElement element : logElements) {
                     element.append(sb, data);
                 }
-                ChannelLoggingGroupHelper.setFrom(ctx.channel());
-                try {
+
+                String groupName = ChannelLoggingGroupHelper.get(ctx.channel());
+                if (groupName != null) {
+                    LoggingGroupHelper.set(groupName);
+                    try {
+                        logger.info(sb.toString());
+                    } finally {
+                        LoggingGroupHelper.clear();
+                    }
+                } else {
                     logger.info(sb.toString());
-                } finally {
-                    LoggingGroupHelper.clear();
                 }
             }
         }
@@ -342,6 +388,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
             case 'B' -> new ContentLengthElement(false);
             case 'D' -> new DurationElement(true);
             case 'T' -> new DurationElement(false);
+            case 'S' -> new SessionIdElement();
             default -> null;
         };
     }
@@ -367,7 +414,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
     private static class DateTimeElement implements LogElement {
         @Override
         public void append(@NonNull StringBuilder sb, AccessLogData data) {
-            sb.append('[').append(ZonedDateTime.now().format(DATE_FORMATTER)).append(']');
+            sb.append(DATE_CACHE.getFormattedDate());
         }
     }
 
@@ -381,7 +428,7 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
     private static class RequestLineElement implements LogElement {
         @Override
         public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
-            sb.append(data.requestLine != null ? data.requestLine : "-");
+            sb.append(data.getRequestLine());
         }
     }
 
@@ -442,7 +489,16 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
             if (millis) {
                 sb.append(data.duration);
             } else {
-                sb.append(String.format(Locale.US, "%.3f", data.duration / 1000.0));
+                long duration = data.duration;
+                long seconds = duration / 1000L;
+                long millisPart = duration % 1000L;
+                sb.append(seconds).append('.');
+                if (millisPart < 10) {
+                    sb.append("00");
+                } else if (millisPart < 100) {
+                    sb.append('0');
+                }
+                sb.append(millisPart);
             }
         }
     }
@@ -488,6 +544,13 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
     }
 
+    private static class SessionIdElement implements LogElement {
+        @Override
+        public void append(@NonNull StringBuilder sb, @NonNull AccessLogData data) {
+            sb.append(data.sessionId != null ? data.sessionId : "-");
+        }
+    }
+
     private static class SuffixModifierElement implements LogElement {
         private final LogElement delegate;
 
@@ -508,12 +571,24 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         String method;
         String uri;
         String protocol;
-        String requestLine;
         HttpHeaders headers;
         int statusCode;
         HttpHeaders responseHeaders;
         long contentLength = -1L;
+        String sessionId;
+        private String requestLine;
+        private String path;
+        private String queryString;
         private Map<String, String> cookies;
+
+        String getRequestLine() {
+            if (requestLine == null) {
+                requestLine = (method != null ? method : "-") + " " +
+                        (uri != null ? uri : "-") + " " +
+                        (protocol != null ? protocol : "-");
+            }
+            return requestLine;
+        }
 
         @NonNull
         String getCookieValue(String name) {
@@ -551,20 +626,56 @@ public class NettyAccessLogHandler extends ChannelDuplexHandler {
         }
 
         String getPath() {
-            if (uri == null) {
-                return "-";
+            if (path == null) {
+                if (uri == null) {
+                    path = "-";
+                } else {
+                    int q = uri.indexOf('?');
+                    path = (q != -1 ? uri.substring(0, q) : uri);
+                }
             }
-            int q = uri.indexOf('?');
-            return (q != -1 ? uri.substring(0, q) : uri);
+            return path;
         }
 
         @NonNull
         String getQueryString() {
-            if (uri == null) {
-                return "";
+            if (queryString == null) {
+                if (uri == null) {
+                    queryString = "";
+                } else {
+                    int q = uri.indexOf('?');
+                    queryString = (q != -1 ? uri.substring(q) : "");
+                }
             }
-            int q = uri.indexOf('?');
-            return (q != -1 ? uri.substring(q) : "");
+            return queryString;
+        }
+    }
+
+    private static class DateCache {
+        private static final DateTimeFormatter DATE_FORMATTER =
+                DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
+
+        private volatile long lastSeconds = -1L;
+        private volatile String cachedDateString;
+
+        String getFormattedDate() {
+            long currentMillis = System.currentTimeMillis();
+            long currentSeconds = currentMillis / 1000L;
+            if (currentSeconds == lastSeconds) {
+                return cachedDateString;
+            }
+            return updateCache(currentSeconds, currentMillis);
+        }
+
+        private synchronized String updateCache(long currentSeconds, long currentMillis) {
+            if (currentSeconds == lastSeconds) {
+                return cachedDateString;
+            }
+            Instant instant = Instant.ofEpochMilli(currentMillis);
+            String formatted = '[' + ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DATE_FORMATTER) + ']';
+            cachedDateString = formatted;
+            lastSeconds = currentSeconds;
+            return formatted;
         }
     }
 

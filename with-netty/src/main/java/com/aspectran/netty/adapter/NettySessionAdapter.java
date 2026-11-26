@@ -20,6 +20,8 @@ import com.aspectran.core.component.session.ManagedSession;
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.netty.activity.NettyActivity;
+import com.aspectran.netty.server.handler.accesslog.NettyAccessLogHandler;
+import com.aspectran.netty.server.session.ChannelSessionHelper;
 import com.aspectran.netty.server.session.NettySessionConfig;
 import com.aspectran.netty.service.AbstractNettyService;
 import io.netty.channel.ChannelHandlerContext;
@@ -39,6 +41,10 @@ import java.util.Set;
  * <p>Created: 2026-09-02</p>
  */
 public class NettySessionAdapter extends AbstractSessionAdapter {
+
+    private final ChannelHandlerContext ctx;
+
+    private final boolean accessLogEnabled;
 
     private final FullHttpRequest request;
 
@@ -65,6 +71,8 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
             NettyResponseAdapter responseAdapter,
             @NonNull NettyActivity activity) {
         super(request);
+        this.ctx = ctx;
+        this.accessLogEnabled = NettyAccessLogHandler.isLoggingEnabled(ctx);
         this.request = request;
         this.responseAdapter = responseAdapter;
 
@@ -174,8 +182,12 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
     public void invalidate() {
         Session sess = getSession(false);
         if (sess != null) {
-            sess.invalidate();
-            session = null;
+            try {
+                sess.invalidate();
+            } finally {
+                session = null;
+                setSessionIdToChannel(null);
+            }
             if (sessionConfig != null && responseAdapter != null) {
                 responseAdapter.addHeader(HttpHeaderNames.SET_COOKIE.toString(), sessionConfig.encodeExpiredCookie());
             }
@@ -208,6 +220,7 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
             String oldId = sess.getId();
             String renewedId = sessionManager.renewSessionId(oldId, newId);
             if (renewedId != null) {
+                setSessionIdToChannel(renewedId);
                 if (responseAdapter != null) {
                     responseAdapter.addHeader(HttpHeaderNames.SET_COOKIE.toString(), sessionConfig.encodeCookie(renewedId));
                 }
@@ -245,9 +258,11 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
     public Session getSession(boolean create) {
         if (session != null) {
             if (session.isValid()) {
+                setSessionIdToChannel(session.getId());
                 return session;
             } else {
                 session = null;
+                setSessionIdToChannel(null);
             }
         }
 
@@ -260,6 +275,7 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
             ManagedSession existingSession = sessionManager.getSession(sessionId);
             if (existingSession != null && existingSession.isValid()) {
                 session = existingSession;
+                setSessionIdToChannel(session.getId());
                 return session;
             }
         }
@@ -268,6 +284,7 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
             String newId = sessionManager.createSessionId();
             session = sessionManager.createSession(newId);
             newSession = true;
+            setSessionIdToChannel(newId);
 
             if (responseAdapter != null) {
                 responseAdapter.addHeader(HttpHeaderNames.SET_COOKIE.toString(), sessionConfig.encodeCookie(newId));
@@ -276,6 +293,12 @@ public class NettySessionAdapter extends AbstractSessionAdapter {
         }
 
         return null;
+    }
+
+    private void setSessionIdToChannel(String sessionId) {
+        if (accessLogEnabled && ctx != null && ctx.channel() != null) {
+            ChannelSessionHelper.setSessionId(ctx.channel(), sessionId);
+        }
     }
 
 }

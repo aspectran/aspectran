@@ -34,7 +34,7 @@ public final class ChannelLoggingGroupHelper {
      * Netty channel attribute key for storing the logging group name.
      */
     public static final AttributeKey<String> LOGGING_GROUP_KEY =
-            AttributeKey.valueOf(LoggingGroupHelper.LOGGING_GROUP);
+            AttributeKey.valueOf("netty.logging.group");
 
     private ChannelLoggingGroupHelper() {
     }
