@@ -550,6 +550,7 @@ public class CoreActivity extends AdviceActivity {
     private void processExceptionRules() {
         reserveResponse(null);
         responded = false;
+        setExceptionHandled(false);
 
         if (hasTranslet() && getTransletRule().getExceptionRule() != null) {
             try {
@@ -571,6 +572,9 @@ public class CoreActivity extends AdviceActivity {
                 if (targetResponse != null) {
                     reserveResponse(targetResponse);
                 }
+            }
+            if (isResponseReserved()) {
+                setExceptionHandled(true);
             }
             return true;
         }

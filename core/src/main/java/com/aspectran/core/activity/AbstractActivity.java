@@ -73,6 +73,8 @@ public abstract class AbstractActivity implements Activity {
     /** The exception that was raised during processing, if any. */
     private Exception raisedException;
 
+    private boolean exceptionHandled;
+
     /** Arbitrary settings stored at the activity scope. */
     private Map<String, Object> settings;
 
@@ -272,11 +274,22 @@ public abstract class AbstractActivity implements Activity {
                 this.raisedException = raisedException;
             }
         }
+        this.exceptionHandled = false;
     }
 
     @Override
     public void clearRaisedException() {
         raisedException = null;
+        exceptionHandled = false;
+    }
+
+    @Override
+    public boolean isExceptionHandled() {
+        return exceptionHandled;
+    }
+
+    protected void setExceptionHandled(boolean exceptionHandled) {
+        this.exceptionHandled = exceptionHandled;
     }
 
     @Override

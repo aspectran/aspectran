@@ -388,6 +388,11 @@ public class InstantTranslet implements Translet {
     }
 
     @Override
+    public boolean isExceptionHandled() {
+        return activity.isExceptionHandled();
+    }
+
+    @Override
     public void removeRaisedException() {
         activity.clearRaisedException();
     }

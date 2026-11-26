@@ -456,6 +456,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public boolean isExceptionHandled() {
+        return activity.isExceptionHandled();
+    }
+
+    @Override
     public <V> V getAdviceBean(String aspectId) {
         return activity.getAdviceBean(aspectId);
     }

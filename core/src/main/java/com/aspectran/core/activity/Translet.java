@@ -470,6 +470,12 @@ public interface Translet {
     Throwable getRootCauseOfRaisedException();
 
     /**
+     * Returns whether an exception was raised and has been handled by an exception handling rule.
+     * @return {@code true} if an exception was raised and handled; {@code false} otherwise
+     */
+    boolean isExceptionHandled();
+
+    /**
      * Clears the currently stored raised exception.
      */
     void removeRaisedException();

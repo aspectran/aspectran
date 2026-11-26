@@ -245,6 +245,12 @@ public interface Activity {
     Throwable getRootCauseOfRaisedException();
 
     /**
+     * Returns whether an exception was raised and has been handled by an exception handling rule.
+     * @return {@code true} if an exception was raised and handled; {@code false} otherwise
+     */
+    boolean isExceptionHandled();
+
+    /**
      * Sets the exception that was raised during the activity's execution.
      * @param raisedException the exception to set
      */
