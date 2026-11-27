@@ -23,6 +23,7 @@ import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.config.SystemConfig;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
@@ -121,12 +122,41 @@ public class DefaultCoreService extends AbstractCoreService {
                 if (getContextName() == null && contextConfig.hasName()) {
                     setContextName(contextConfig.getName());
                 }
-                ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
-                if (autoReloadConfig == null && getParentService() != null) {
+                if (getParentService() != null) {
                     ContextConfig parentContextConfig = getParentService().getAspectranConfig().getContextConfig();
                     if (parentContextConfig != null) {
-                        ContextAutoReloadConfig parentAutoReloadConfig = parentContextConfig.getAutoReloadConfig();
-                        contextConfig.setAutoReloadConfig(parentAutoReloadConfig);
+                        ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
+                        if (autoReloadConfig == null) {
+                            ContextAutoReloadConfig parentAutoReloadConfig = parentContextConfig.getAutoReloadConfig();
+                            if (parentAutoReloadConfig != null) {
+                                contextConfig.setAutoReloadConfig(parentAutoReloadConfig);
+                            }
+                        }
+                        ContextProfilesConfig parentProfilesConfig = parentContextConfig.getProfilesConfig();
+                        if (parentProfilesConfig != null) {
+                            ContextProfilesConfig profilesConfig = contextConfig.getProfilesConfig();
+                            if (parentProfilesConfig.getBaseProfiles() != null &&
+                                    (profilesConfig == null || profilesConfig.getBaseProfiles() == null)) {
+                                if (profilesConfig == null) {
+                                    profilesConfig = contextConfig.touchProfilesConfig();
+                                }
+                                profilesConfig.setBaseProfiles(parentProfilesConfig.getBaseProfiles().clone());
+                            }
+                            if (parentProfilesConfig.getDefaultProfiles() != null &&
+                                    (profilesConfig == null || profilesConfig.getDefaultProfiles() == null)) {
+                                if (profilesConfig == null) {
+                                    profilesConfig = contextConfig.touchProfilesConfig();
+                                }
+                                profilesConfig.setDefaultProfiles(parentProfilesConfig.getDefaultProfiles().clone());
+                            }
+                            if (parentProfilesConfig.getActiveProfiles() != null &&
+                                    (profilesConfig == null || profilesConfig.getActiveProfiles() == null)) {
+                                if (profilesConfig == null) {
+                                    profilesConfig = contextConfig.touchProfilesConfig();
+                                }
+                                profilesConfig.setActiveProfiles(parentProfilesConfig.getActiveProfiles().clone());
+                            }
+                        }
                     }
                 }
             }

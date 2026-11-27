@@ -16,6 +16,7 @@
 package com.aspectran.test;
 
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.DefaultCoreService;
 import org.jspecify.annotations.NonNull;
 
@@ -30,6 +31,10 @@ public class TestCoreService extends DefaultCoreService {
         super();
     }
 
+    private TestCoreService(CoreService parentService) {
+        super(parentService, false);
+    }
+
     /**
      * Creates and starts a new TestCoreService based on the provided configuration.
      * @param aspectranConfig the Aspectran configuration
@@ -39,6 +44,21 @@ public class TestCoreService extends DefaultCoreService {
     @NonNull
     public static TestCoreService build(AspectranConfig aspectranConfig) throws Exception {
         TestCoreService testCoreService = new TestCoreService();
+        testCoreService.configure(aspectranConfig);
+        testCoreService.start();
+        return testCoreService;
+    }
+
+    /**
+     * Creates and starts a new child TestCoreService based on the provided configuration and parent service.
+     * @param aspectranConfig the Aspectran configuration
+     * @param parentService the parent service
+     * @return the started TestCoreService
+     * @throws Exception if an error occurs during building or starting
+     */
+    @NonNull
+    public static TestCoreService build(AspectranConfig aspectranConfig, CoreService parentService) throws Exception {
+        TestCoreService testCoreService = new TestCoreService(parentService);
         testCoreService.configure(aspectranConfig);
         testCoreService.start();
         return testCoreService;
