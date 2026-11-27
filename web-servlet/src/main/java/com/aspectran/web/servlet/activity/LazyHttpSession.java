@@ -35,6 +35,14 @@ import java.util.Enumeration;
  */
 public class LazyHttpSession implements HttpSession {
 
+    /**
+     * Prefix for JSTL internal configuration and formatting attributes.
+     * JSTL tags (such as {@code <fmt:formatNumber>} or {@code <fmt:setLocale>})
+     * attempt to store response character encodings or locale settings in the
+     * session under this namespace, which should not trigger premature session creation.
+     */
+    private static final String JSTL_PREFIX = "jakarta.servlet.jsp.jstl.";
+
     private final ActivityRequestWrapper wrapper;
 
     public LazyHttpSession(@NonNull ActivityRequestWrapper wrapper) {
@@ -104,6 +112,11 @@ public class LazyHttpSession implements HttpSession {
     @Override
     public void setAttribute(String name, Object value) {
         if (value != null) {
+            // Ignore JSTL internal attributes (e.g., request charset caching by fmt tags)
+            // if no real session exists yet, preventing unwanted session creation.
+            if (name != null && name.startsWith(JSTL_PREFIX) && getSession(false) == null) {
+                return;
+            }
             HttpSession session = getSession(true);
             if (session != null) {
                 session.setAttribute(name, value);

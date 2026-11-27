@@ -107,6 +107,10 @@ class ActivityRequestWrapperTest {
         assertEquals(0, session.getMaxInactiveInterval());
         assertNull(mockRequest.getSession(false)); // Still null!
 
+        // JSTL internal attributes do NOT trigger session creation
+        session.setAttribute("jakarta.servlet.jsp.jstl.fmt.request.charset", "UTF-8");
+        assertNull(mockRequest.getSession(false)); // Still null!
+
         // 4. State-changing operation (setAttribute) triggers real session creation
         session.setAttribute("user", "aspectran-user");
         assertNotNull(mockRequest.getSession(false)); // Real session is now created!
