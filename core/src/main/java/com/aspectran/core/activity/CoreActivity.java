@@ -535,7 +535,8 @@ public class CoreActivity extends AdviceActivity {
                 response();
             }
         } catch (Exception e) {
-            logger.error("A new exception occurred while handling the original exception. The original exception will be re-thrown.", e);
+            logger.error("A new exception occurred while handling the original exception. " +
+                    "The original exception will be re-thrown.", e);
         }
         if (isExceptionRaised()) {
             throw getRaisedException();

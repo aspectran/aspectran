@@ -25,12 +25,11 @@ import org.jspecify.annotations.NonNull;
 /**
  * A specialized {@link InvokeAction} for executing a method on an advice bean as part of an
  * AOP aspect.
- *
  * <p>This action is used internally by the framework to run advice logic (e.g., @Before, @After)
  * defined in an {@link com.aspectran.core.context.rule.AspectRule}.
  * It overrides the bean resolution logic. If the action specifies an explicit bean to invoke,
  * it uses the standard bean resolution. Otherwise, it resolves the bean from the current
- * AOP advice context.</p>
+ * AOP advice context.
  *
  * <p>Created: 2019. 07. 18</p>
  */
@@ -77,7 +76,7 @@ public class AdviceAction extends InvokeAction {
         return bean;
     }
 
-        @Override
+    @Override
     public ActionType getActionType() {
         return ActionType.ADVICE;
     }

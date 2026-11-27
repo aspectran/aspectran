@@ -35,7 +35,6 @@ import java.util.Objects;
  * {@code patternMatches} methods, which define how a single pattern string
  * (e.g., a wildcard or regular expression) is matched against a join point
  * attribute.
- * </p>
  */
 public abstract class AbstractPointcut implements Pointcut {
 
