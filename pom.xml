@@ -131,7 +131,7 @@
         <jakarta.servlet.jsp.jstl.api.version>3.0.2</jakarta.servlet.jsp.jstl.api.version>
         <jakarta.servlet.jsp.jstl.impl.version>3.0.1</jakarta.servlet.jsp.jstl.impl.version>
         <jakarta.websocket.api.version>2.1.1</jakarta.websocket.api.version>
-        <jasper.version>10.1.56</jasper.version>
+        <jasper.version>10.1.62</jasper.version>
 
         <ognl.version>3.4.17</ognl.version>
         <httpclient5.version>5.6.5</httpclient5.version>
