@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -279,7 +280,9 @@ class ExceptionUtilsTest {
         InvocationTargetException ite = new InvocationTargetException(original);
         UndeclaredThrowableException ute = new UndeclaredThrowableException(ite);
         ExecutionException ee = new ExecutionException(ute);
+        CompletionException ce = new CompletionException(ee);
 
+        assertSame(original, ExceptionUtils.unwrapThrowable(ce));
         assertSame(original, ExceptionUtils.unwrapThrowable(ee));
         assertSame(original, ExceptionUtils.unwrapThrowable(ute));
         assertSame(original, ExceptionUtils.unwrapThrowable(ite));
@@ -288,6 +291,10 @@ class ExceptionUtilsTest {
         // Empty execution exception without cause
         ExecutionException emptyEe = new ExecutionException("Empty", null);
         assertSame(emptyEe, ExceptionUtils.unwrapThrowable(emptyEe));
+
+        // Empty completion exception without cause
+        CompletionException emptyCe = new CompletionException("Empty", null);
+        assertSame(emptyCe, ExceptionUtils.unwrapThrowable(emptyCe));
     }
 
     private static class CustomThrowable extends Throwable {

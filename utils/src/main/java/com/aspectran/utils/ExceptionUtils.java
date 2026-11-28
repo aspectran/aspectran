@@ -25,9 +25,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -48,7 +47,7 @@ public class ExceptionUtils {
     /**
      * Returns the cause of the specified throwable. If the cause does not exist,
      * the specified throwable is returned.
-     * <p>This is a "shallow" get, not a deep root cause search.</p>
+     * <p>This is a "shallow" get, not a deep root cause search.
      * @param t the throwable to get the cause of, may not be null
      * @return the cause of the throwable, or the throwable itself if null
      */
@@ -79,12 +78,21 @@ public class ExceptionUtils {
      */
     public static @NonNull Throwable getRootCause(@NonNull Throwable t) {
         Assert.notNull(t, "t must not be null");
-        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
-        visited.add(t);
-        while (t.getCause() != null && visited.add(t.getCause())) {
-            t = t.getCause();
+        Throwable slow = t;
+        Throwable fast = t;
+        while (slow.getCause() != null) {
+            if (fast != null) {
+                fast = fast.getCause();
+                if (fast != null) {
+                    fast = fast.getCause();
+                    if (fast == slow) {
+                        break;
+                    }
+                }
+            }
+            slow = slow.getCause();
         }
-        return t;
+        return slow;
     }
 
     /**
@@ -128,7 +136,7 @@ public class ExceptionUtils {
         if (hasCause(chain, type)) {
             return true;
         }
-        if (more != null && more.length > 0) {
+        if (more != null) {
             for (Class<? extends Throwable> one : more) {
                 if (hasCause(chain, one)) {
                     return true;
@@ -152,13 +160,22 @@ public class ExceptionUtils {
         if (chain == null) {
             return null;
         }
-        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
-        Throwable current = chain;
-        while (current != null && visited.add(current)) {
-            if (type.isInstance(current)) {
-                return (T) current;
+        Throwable slow = chain;
+        Throwable fast = chain;
+        while (slow != null) {
+            if (type.isInstance(slow)) {
+                return (T) slow;
             }
-            current = current.getCause();
+            if (fast != null) {
+                fast = fast.getCause();
+                if (fast != null) {
+                    fast = fast.getCause();
+                    if (fast == slow) {
+                        break;
+                    }
+                }
+            }
+            slow = slow.getCause();
         }
         return null;
     }
@@ -174,9 +191,13 @@ public class ExceptionUtils {
             return Collections.emptyList();
         }
         List<Throwable> list = new ArrayList<>();
-        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
         Throwable current = t;
-        while (current != null && visited.add(current)) {
+        while (current != null) {
+            for (Throwable visited : list) {
+                if (visited == current) {
+                    return list;
+                }
+            }
             list.add(current);
             current = current.getCause();
         }
@@ -191,8 +212,8 @@ public class ExceptionUtils {
      */
     public static @NonNull String getStackTrace(@NonNull Throwable t) {
         Assert.notNull(t, "t must not be null");
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw, true);
+        StringWriter sw = new StringWriter(512);
+        PrintWriter pw = new PrintWriter(sw);
         t.printStackTrace(pw);
         return sw.getBuffer().toString().trim();
     }
@@ -328,8 +349,8 @@ public class ExceptionUtils {
 
     /**
      * Unwraps a throwable, specifically handling common wrapper exceptions like
-     * {@link InvocationTargetException}, {@link UndeclaredThrowableException}, and
-     * {@link ExecutionException}.
+     * {@link InvocationTargetException}, {@link UndeclaredThrowableException},
+     * {@link ExecutionException}, and {@link CompletionException}.
      * This method repeatedly unwraps the throwable until it is no longer a known wrapper.
      * Handles cyclic wrapper chains safely.
      * @param t the exception to unwrap
@@ -339,20 +360,39 @@ public class ExceptionUtils {
         if (t == null) {
             return null;
         }
-        Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
-        Throwable current = t;
-        while (current != null && visited.add(current)) {
-            if (current instanceof InvocationTargetException e) {
-                current = e.getTargetException();
-            } else if (current instanceof UndeclaredThrowableException e) {
-                current = e.getUndeclaredThrowable();
-            } else if (current instanceof ExecutionException e && e.getCause() != null) {
-                current = e.getCause();
-            } else {
-                return current;
+        Throwable slow = t;
+        Throwable fast = t;
+        while (slow != null) {
+            Throwable unwrapped = getNextUnwrapped(slow);
+            if (unwrapped == null) {
+                return slow;
             }
+            if (fast != null) {
+                fast = getNextUnwrapped(fast);
+                if (fast != null) {
+                    fast = getNextUnwrapped(fast);
+                    if (fast == slow) {
+                        return slow;
+                    }
+                }
+            }
+            slow = unwrapped;
         }
-        return current;
+        return null;
+    }
+
+    private static @Nullable Throwable getNextUnwrapped(@Nullable Throwable t) {
+        if (t instanceof InvocationTargetException e) {
+            return e.getTargetException();
+        } else if (t instanceof UndeclaredThrowableException e) {
+            return e.getUndeclaredThrowable();
+        } else if (t instanceof ExecutionException e && e.getCause() != null) {
+            return e.getCause();
+        } else if (t instanceof CompletionException e && e.getCause() != null) {
+            return e.getCause();
+        } else {
+            return null;
+        }
     }
 
 }
