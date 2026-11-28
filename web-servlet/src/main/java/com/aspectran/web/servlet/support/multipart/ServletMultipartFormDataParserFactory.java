@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.servlet.support.multipart.standard;
+package com.aspectran.web.servlet.support.multipart;
 
 import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.SystemUtils;
@@ -22,11 +22,11 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
 import java.io.IOException;
 
 /**
- * A factory for creating and configuring {@link StandardServletMultipartFormDataParser} instances.
+ * A factory for creating and configuring {@link ServletMultipartFormDataParser} instances.
  *
  * @since 9.7.0
  */
-public class StandardServletMultipartFormDataParserFactory {
+public class ServletMultipartFormDataParserFactory {
 
     private String tempDir;
 
@@ -41,9 +41,9 @@ public class StandardServletMultipartFormDataParserFactory {
     private String deniedFileExtensions;
 
     /**
-     * Constructs a new StandardServletMultipartFormDataParserFactory.
+     * Constructs a new ServletMultipartFormDataParserFactory.
      */
-    public StandardServletMultipartFormDataParserFactory() {
+    public ServletMultipartFormDataParserFactory() {
     }
 
     public String getTempDir() {
@@ -107,12 +107,12 @@ public class StandardServletMultipartFormDataParserFactory {
     }
 
     /**
-     * Creates and configures a new {@link StandardServletMultipartFormDataParser} instance.
-     * @return a new, configured {@code StandardServletMultipartFormDataParser} instance
+     * Creates and configures a new {@link ServletMultipartFormDataParser} instance.
+     * @return a new, configured {@code ServletMultipartFormDataParser} instance
      * @throws IOException if the temporary directory cannot be accessed or created
      */
     public MultipartFormDataParser createMultipartFormDataParser() throws IOException {
-        StandardServletMultipartFormDataParser parser = new StandardServletMultipartFormDataParser();
+        ServletMultipartFormDataParser parser = new ServletMultipartFormDataParser();
         if (tempDir != null) {
             parser.setTempDir(tempDir);
         } else {

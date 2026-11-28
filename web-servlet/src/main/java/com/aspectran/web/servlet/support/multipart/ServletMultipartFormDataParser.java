@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.servlet.support.multipart.standard;
+package com.aspectran.web.servlet.support.multipart;
 
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
@@ -38,20 +38,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 /**
- * Standard Jakarta Servlet {@link Part} based {@link MultipartFormDataParser} implementation.
+ * Jakarta Servlet {@link Part} based {@link MultipartFormDataParser} implementation.
  * <p>Uses standard {@link HttpServletRequest#getParts()} provided by Servlet 3.0+ containers
  * (Tomcat, Jetty, Undertow, etc.) without requiring external third-party libraries.</p>
  *
  * @since 9.7.0
  */
-public class StandardServletMultipartFormDataParser extends AbstractMultipartFormDataParser {
+public class ServletMultipartFormDataParser extends AbstractMultipartFormDataParser {
 
-    private static final Logger logger = LoggerFactory.getLogger(StandardServletMultipartFormDataParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServletMultipartFormDataParser.class);
 
     /**
-     * Constructs a new StandardServletMultipartFormDataParser.
+     * Constructs a new ServletMultipartFormDataParser.
      */
-    public StandardServletMultipartFormDataParser() {
+    public ServletMultipartFormDataParser() {
         super();
     }
 
@@ -108,7 +108,7 @@ public class StandardServletMultipartFormDataParser extends AbstractMultipartFor
                         continue;
                     }
 
-                    StandardServletMultipartFileParameter fileParameter = new StandardServletMultipartFileParameter(part);
+                    ServletMultipartFileParameter fileParameter = new ServletMultipartFileParameter(part);
                     fileParameterMap.add(part.getName(), fileParameter);
 
                     if (logger.isDebugEnabled()) {

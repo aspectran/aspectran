@@ -18,6 +18,8 @@ package com.aspectran.web.servlet.activity;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.test.web.servlet.ServletWebActivityTester;
 import com.aspectran.test.web.servlet.ServletWebAspectranTest;
+import com.aspectran.test.web.servlet.mock.MockHttpServletRequest;
+import com.aspectran.test.web.servlet.mock.MockPart;
 import com.aspectran.utils.json.JsonWriter;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
@@ -25,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
@@ -98,15 +101,13 @@ class ServletWebActivityTest {
 
     @Test
     void testMultipart(@NonNull ServletWebActivityTester tester) throws IOException {
-        String boundary = "AspeCtranBoundary";
-        String contentType = "multipart/form-data; boundary=" + boundary;
-        String body = "--" + boundary + "\r\n" +
-                "Content-Disposition: form-data; name=\"param1\"\r\n" +
-                "\r\n" +
-                "value1\r\n" +
-                "--" + boundary + "--\r\n";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod(MethodType.POST.name());
+        request.setRequestURI("/test/multipart");
+        request.setContentType("multipart/form-data; boundary=testBoundary");
+        request.addPart(new MockPart("param1", "value1".getBytes(StandardCharsets.UTF_8)));
 
-        tester.perform("/test/multipart", MethodType.POST, null, body.getBytes(), contentType);
+        tester.perform(request);
 
         String response = tester.getWrittenResponse();
         assertNotNull(response);
@@ -134,7 +135,7 @@ class ServletWebActivityTest {
         request1.setHeader(com.aspectran.web.support.http.HttpHeaders.X_HTTP_METHOD_OVERRIDE, "PATCH");
 
         tester.perform(request1);
-        Assertions.assertEquals("patched", tester.getWrittenResponse());
+        assertEquals("patched", tester.getWrittenResponse());
 
         com.aspectran.test.web.servlet.mock.MockHttpServletRequest request2 = new com.aspectran.test.web.servlet.mock.MockHttpServletRequest();
         request2.setMethod(MethodType.POST.name());
@@ -142,7 +143,7 @@ class ServletWebActivityTest {
         request2.setHeader(com.aspectran.web.support.http.HttpHeaders.X_METHOD_OVERRIDE, "PATCH");
 
         tester.perform(request2);
-        Assertions.assertEquals("patched", tester.getWrittenResponse());
+        assertEquals("patched", tester.getWrittenResponse());
     }
 
 }

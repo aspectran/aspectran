@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.servlet.support.multipart.standard;
+package com.aspectran.web.servlet.support.multipart;
 
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.utils.FilenameUtils;
@@ -28,26 +28,26 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * A {@link FileParameter} implementation that wraps a standard Jakarta Servlet
+ * A {@link FileParameter} implementation that wraps a Jakarta Servlet
  * {@link Part} object.
  *
  * @since 9.7.0
  */
-public class StandardServletMultipartFileParameter extends FileParameter {
+public class ServletMultipartFileParameter extends FileParameter {
 
     private final Part part;
 
     /**
      * Constructs a new instance wrapping the given {@link Part}.
-     * @param part the standard servlet part
+     * @param part the servlet part
      */
-    public StandardServletMultipartFileParameter(@NonNull Part part) {
+    public ServletMultipartFileParameter(@NonNull Part part) {
         super(null, part.getContentType());
         this.part = part;
     }
 
     /**
-     * Returns the underlying standard servlet {@link Part}.
+     * Returns the underlying servlet {@link Part}.
      * @return the servlet part
      */
     public Part getPart() {

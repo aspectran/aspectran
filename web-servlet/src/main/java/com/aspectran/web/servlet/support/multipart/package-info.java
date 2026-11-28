@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides support for multipart file uploads.
+ * Support for multipart/form-data request parsing using the Jakarta Servlet Part API.
  */
 package com.aspectran.web.servlet.support.multipart;

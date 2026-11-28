@@ -231,9 +231,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
             // For multipart requests, avoid calling request.getParameterMap() because
             // in servlet containers configured with @MultipartConfig (such as Undertow),
             // getParameterMap() triggers eager multipart form parsing and consumes the
-            // request InputStream, preventing custom multipart parsers (such as
-            // CommonsMultipartFormDataParser or InMemoryMultipartFormDataParser)
-            // from reading the stream.
+            // request InputStream, preventing custom multipart parsers from reading the stream.
             Map<String, String[]> queryParameters = ServletWebUtils.parseQueryParameters(request);
             if (!queryParameters.isEmpty()) {
                 getParameterMap().putAll(queryParameters);
